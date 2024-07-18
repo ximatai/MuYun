@@ -1,0 +1,10 @@
+plugins {
+    id 'java'
+    id 'org.kordamp.gradle.jandex' version '2.0.0'
+}
+
+
+dependencies {
+    implementation project(':my-core')
+//    implementation project(':my-core-uni')
+}

@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'org.kordamp.gradle.jandex' version '2.0.0'
+}
+
+
+dependencies {
+    api enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+
+    api 'io.quarkus:quarkus-rest'
+    api 'io.quarkus:quarkus-arc'
+    api 'io.quarkus:quarkus-rest-jackson'
+//    api "io.quarkus:quarkus-hibernate-orm"
+//    api "io.quarkus:quarkus-jdbc-postgresql"
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+}

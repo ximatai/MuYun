@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+}
+
+
+allprojects {
+    group 'net.ximatai'
+    version '1.0.0-SNAPSHOT'
+
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    test {
+        systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+    }
+    compileJava {
+        options.encoding = 'UTF-8'
+        options.compilerArgs << '-parameters'
+    }
+
+    compileTestJava {
+        options.encoding = 'UTF-8'
+    }
+}
+
+

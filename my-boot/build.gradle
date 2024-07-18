@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'io.quarkus'
+}
+
+
+dependencies {
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation project(":my-core")
+    implementation project(":my-platform")
+//    implementation project(":my-msg")
+
+    implementation 'io.quarkus:quarkus-smallrye-openapi'
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+}
