@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'java-library'
     id 'org.kordamp.gradle.jandex' version '2.0.0'
+    id 'checkstyle'
 }
 
 
@@ -16,4 +17,8 @@ dependencies {
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+}
+
+tasks.named('checkstyleMain').configure {
+    dependsOn 'jandex'
 }
