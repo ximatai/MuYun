@@ -1,66 +1,50 @@
-# muyun
+### MuYun 低代码开发平台
+#### 特点：
+* 云原生
+* 同步/异步双轨支持
+* JVM系，第一梯队性能
+* 分层次构建，按需插拔
+* 程序员友好（口号，一切为了开发人员）
+* 前后端分离
+* 测试驱动开发
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
-
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./gradlew quarkusDev
-```
-
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./gradlew build
-```
-
-It produces the `quarkus-run.jar` file in the `build/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar build/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./gradlew build -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./gradlew build -Dquarkus.native.enabled=true
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./gradlew build -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./build/muyun-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/gradle-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+### 开发计划
+#### 后端
+* [x] 主体框架搭建
+* [x] 同步数据库访问接入
+* [ ] 异步数据库访问接入
+* [ ] 标准增删改查能力接入
+  - [ ] 数据新增
+  - [ ] 数据修改
+  - [ ] 数据删除
+  - [ ] 数据查询
+    - [x] 数据查询-单条
+    - [ ] 数据查询-多行-分页
+    - [ ] 数据查询-多行-分页-条件查询
+    - [ ] 数据查询-多表关联
+    - [ ] 数据查询-树形构建
+* [ ] 扩展能力接入
+    - [ ] 软删除
+    - [ ] 数据归档
+    - [ ] 数据加密，数据完整性
+    - [ ] 内部数据变动广播
+* [ ] UI渲染接口
+    - [ ] 列表配置
+    - [ ] 查询配置
+    - [ ] 表单配置
+* [ ] 平台业务
+    - [ ] 机构
+    - [ ] 部门
+    - [ ] 人员
+    - [ ] 角色
+    - [ ] 模块
+    - [ ] 菜单
+    - [ ] 权限
+      - [ ] 功能权限
+      - [ ] 数据权限
+    - [ ] 单据编码
+    - [ ] 工作流
+* [ ] 微服务
+    - [ ] 通信
+#### 前端
+**暂无，待后端开发到80%以上后再考虑推进前端开发**

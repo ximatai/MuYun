@@ -8,16 +8,9 @@ plugins {
 
 dependencies {
     api enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation project(':my-database')
 
-    api project(':my-database')
-
-    api 'io.quarkus:quarkus-rest'
-    api 'io.quarkus:quarkus-arc'
-    api 'io.quarkus:quarkus-rest-jackson'
-
-
-    testImplementation 'io.quarkus:quarkus-junit5'
-    testImplementation 'io.rest-assured:rest-assured'
+    api "io.quarkus:quarkus-jdbc-postgresql"
 }
 
 tasks.named('checkstyleMain').configure {

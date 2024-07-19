@@ -1,4 +1,8 @@
 package net.ximatai.muyun.core;
 
-public class ServerConfig {
+import io.smallrye.config.ConfigMapping;
+
+@ConfigMapping(prefix = "server")
+public interface ServerConfig {
+    Boolean debug();
 }
