@@ -8,8 +8,7 @@ import net.ximatai.muyun.database.standard.DataAccess;
 
 @Path("/module")
 public class ModuleController implements ICURDAbility {
-
-
+    
     @Inject
     DataAccess dataAccess;
 
