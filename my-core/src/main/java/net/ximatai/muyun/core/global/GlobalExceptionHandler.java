@@ -14,6 +14,8 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception e) {
+        e.printStackTrace();
+
         return Response
             .status(Response.Status.INTERNAL_SERVER_ERROR)
             .entity(config.debug() ? e.getMessage() : "服务器错误，请检查。")

@@ -7,8 +7,12 @@ public interface IMetadataAbility {
 
     String getMainTable();
 
+    default String getPK() {
+        return "id";
+    }
+
     default String getSelectOneRowSql() {
-        return "select * from " + getMainTable() + " where id=:id";
+        return "select * from " + getMainTable() + " where " + getPK() + "=:id";
     }
 
     default String getInsertSql(Map<String, Object> params) {
@@ -19,7 +23,7 @@ public interface IMetadataAbility {
             values.add(":" + key);
         });
 
-        return "INSERT INTO " + getMainTable() + " " + columns + " VALUES " + values + " ";
+        return "INSERT INTO " + getMainTable() + " " + columns + " VALUES " + values + " RETURNING " + getPK();
     }
 
     default String getUpdateSql(Map<String, Object> params) {
@@ -27,7 +31,11 @@ public interface IMetadataAbility {
         params.keySet().forEach(key -> {
             setClause.add(key + "=:" + key);
         });
-        return "UPDATE " + getMainTable() + " SET " + setClause + " WHERE id=:id";
+        return "UPDATE " + getMainTable() + " SET " + setClause + " WHERE " + getPK() + "=:id";
+    }
+
+    default String getDeleteSql() {
+        return "DELETE FROM " + getMainTable() + " WHERE " + getPK() + "=:id";
     }
 
 }

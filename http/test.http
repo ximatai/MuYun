@@ -1,0 +1,27 @@
+POST http://localhost:8080/module/create
+Content-Type: application/json
+
+{
+    "id": "2",
+    "name": "test"
+}
+
+###
+POST http://localhost:8080/module/update/2
+Content-Type: application/json
+
+{
+    "name": "test2"
+}
+
+###
+
+GET http://localhost:8080/module/view/2
+Accept: application/json
+
+###
+
+GET http://localhost:8080/module/delete/2
+
+
+###
