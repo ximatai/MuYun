@@ -59,7 +59,9 @@
 
 本项目使用 Java 21 开发。
 
-项目使用 PostgreSQL 作为数据库，可以使用 Docker Compose 一键启动环境：
+本项目目前支持使用 [PostgreSQL](https://www.postgresql.org/) 作为数据库，未来会引入 [MySQL](https://www.mysql.com/) 支持。
+
+可以使用 [Docker Compose](https://docs.docker.com/compose/) 一键启动环境：
 
 ```shell
 docker compose up -d
