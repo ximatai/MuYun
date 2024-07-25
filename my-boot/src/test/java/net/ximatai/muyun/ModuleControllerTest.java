@@ -15,13 +15,12 @@ class ModuleControllerTest {
     void create() {
         given()
             .contentType("application/json")
-            .body( Map.of("id", "1", "name", "test1"))
+            .body(Map.of("id", "1", "name", "test1"))
 //            .when()
             .post("/module/create")
             .then()
             .statusCode(200)
             .body(is("1"));
     }
-
 
 }

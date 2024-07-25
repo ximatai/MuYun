@@ -17,5 +17,4 @@ class GreetingResourceTest {
              .body(is("Hello from Quarkus REST"));
     }
 
-
 }
