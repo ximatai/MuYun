@@ -15,7 +15,6 @@
         <module name="NeedBraces">
             <property name="allowSingleLineStatement" value="true"/>
         </module>
-        <module name="DeclarationOrder"/>
         <module name="DefaultComesLast">
             <property name="skipIfLastAndSharedWithCase" value="true"/>
         </module>
