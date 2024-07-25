@@ -12,10 +12,9 @@ public interface IUpdateAbility extends IDatabaseAbility, IMetadataAbility {
 
     @POST
     @Path("/update/{id}")
-    default Integer update(@PathParam("id") String id,Map body) {
+    default Integer update(@PathParam("id") String id, Map body) {
         body.put("id", id);
         return getDatabase().update(getUpdateSql(body), body);
     }
-
 
 }
