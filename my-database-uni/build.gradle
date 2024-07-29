@@ -1,15 +1,11 @@
 plugins {
     id 'java'
-    alias libs.plugins.jandex
     id 'checkstyle'
+    id 'configure-jandex'
 }
 
 
 dependencies {
     implementation project(':my-database')
 //    implementation project(':my-core-uni')
-}
-
-tasks.named('checkstyleMain').configure {
-    dependsOn 'jandex'
 }

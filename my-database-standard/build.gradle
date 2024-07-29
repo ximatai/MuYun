@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'java-library'
-    alias libs.plugins.jandex
     id 'checkstyle'
+    id 'configure-jandex'
 }
 
 
@@ -11,8 +11,4 @@ dependencies {
     implementation project(':my-database')
 
     api "io.quarkus:quarkus-jdbc-postgresql"
-}
-
-tasks.named('checkstyleMain').configure {
-    dependsOn 'jandex'
 }

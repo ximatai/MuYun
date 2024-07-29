@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'java-library'
-    alias libs.plugins.jandex
     id 'checkstyle'
+    id 'configure-jandex'
 }
 
 
@@ -15,11 +15,6 @@ dependencies {
     api 'io.quarkus:quarkus-arc'
     api 'io.quarkus:quarkus-rest-jackson'
 
-
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
-}
-
-tasks.named('checkstyleMain').configure {
-    dependsOn 'jandex'
 }

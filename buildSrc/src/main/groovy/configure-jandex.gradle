@@ -1,0 +1,7 @@
+plugins {
+    id 'org.kordamp.gradle.jandex'
+}
+
+tasks.named('checkstyleMain').configure {
+    dependsOn 'jandex'
+}
