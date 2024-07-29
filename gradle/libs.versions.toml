@@ -1,5 +1,14 @@
 [versions]
 testcontainers = "1.20.0"
 
+jandex = "2.0.0"
+
+quarkus = "3.12.3"
+
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+
+quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
+
+[plugins]
+jandex = { id = "org.kordamp.gradle.jandex", version.ref = "jandex" }

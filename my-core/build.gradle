@@ -1,13 +1,13 @@
 plugins {
     id 'java'
     id 'java-library'
-    id 'org.kordamp.gradle.jandex' version '2.0.0'
+    alias libs.plugins.jandex
     id 'checkstyle'
 }
 
 
 dependencies {
-    api enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    api enforcedPlatform(libs.quarkus.platform.bom)
 
     api project(':my-database')
 
