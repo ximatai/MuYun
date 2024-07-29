@@ -18,11 +18,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
       - name: Checkstyle
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: checkstyleMain checkstyleTest
+        run: ./gradlew checkstyleMain checkstyleTest --scan
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: check
+        run: ./gradlew check --scan
