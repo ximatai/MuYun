@@ -11,19 +11,6 @@ on:
 jobs:
   check:
     runs-on: 'ubuntu-latest'
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: muyun2024
-          POSTGRES_DB: muyun
-        ports:
-          - 54324:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 21
