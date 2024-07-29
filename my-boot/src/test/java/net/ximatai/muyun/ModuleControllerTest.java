@@ -1,6 +1,8 @@
 package net.ximatai.muyun;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -9,6 +11,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 class ModuleControllerTest {
 
     @Test
