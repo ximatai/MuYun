@@ -9,3 +9,4 @@ testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
 
 [plugins]
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }
