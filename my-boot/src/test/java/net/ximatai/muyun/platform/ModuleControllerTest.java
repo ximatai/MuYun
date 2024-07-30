@@ -21,7 +21,7 @@ class ModuleControllerTest {
     String id = UUID.randomUUID().toString();
 
     @Test
-    void CURD() {
+    void curd() {
         given()
             .contentType("application/json")
             .body(Map.of("id", id, "name", "test1"))
@@ -31,7 +31,6 @@ class ModuleControllerTest {
             .statusCode(200)
             .body(is(id));
 
-
         HashMap response = given()
             .get("/module/view/" + id)
             .then()
@@ -39,7 +38,6 @@ class ModuleControllerTest {
             .body("$", hasKey("name"))
             .extract()
             .as(HashMap.class);
-
 
         assertEquals("test1", response.get("name"));
 
@@ -52,19 +50,16 @@ class ModuleControllerTest {
             .statusCode(200)
             .body(is("1"));
 
-
         given()
             .get("/module/delete/" + id)
             .then()
             .statusCode(200)
             .body(is("1"));
 
-
         given()
             .get("/module/view/" + id)
             .then()
             .statusCode(500);
-
 
         given()
             .contentType("application/json")
@@ -78,6 +73,5 @@ class ModuleControllerTest {
             .then()
             .statusCode(500);
     }
-
 
 }
