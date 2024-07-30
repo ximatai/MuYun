@@ -1,4 +1,4 @@
-package net.ximatai.muyun;
+package net.ximatai.muyun.platform;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;

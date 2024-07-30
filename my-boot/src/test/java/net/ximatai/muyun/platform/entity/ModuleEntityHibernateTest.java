@@ -8,6 +8,9 @@ import jakarta.transaction.Transactional;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
@@ -28,6 +31,7 @@ class ModuleEntityHibernateTest {
         entityManager.flush();
 
         assertNotNull(e.id);
+        assertEquals(e.id.length(), UUID.randomUUID().toString().length());
         assertNotNull(e.tCreate);
     }
 
