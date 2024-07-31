@@ -1,10 +1,8 @@
-package net.ximatai.muyun.core.ability.curd;
+package net.ximatai.muyun.ability;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import net.ximatai.muyun.core.ability.IDatabaseAbility;
-import net.ximatai.muyun.core.ability.IMetadataAbility;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package net.ximatai.muyun.core.ability;
+package net.ximatai.muyun.ability;
 
 import net.ximatai.muyun.database.IDatabaseAccess;
 

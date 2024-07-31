@@ -12,5 +12,7 @@ dependencies {
 
     api 'io.quarkus:quarkus-arc'
     api "io.quarkus:quarkus-hibernate-orm"
+
+    compileOnlyApi "io.quarkus:quarkus-hibernate-reactive-panache"
 }
 

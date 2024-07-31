@@ -3,7 +3,7 @@ package net.ximatai.muyun.database;
 import java.util.List;
 import java.util.Map;
 
-public interface IDatabaseAccess {
+public interface IDatabaseAccess extends IDatabaseAccessBase {
 
     String insert(String sql, Map<String, Object> params);
 

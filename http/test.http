@@ -1,4 +1,4 @@
-POST http://localhost:8080/module/create
+POST http://localhost:8080/api/module/create
 Content-Type: application/json
 
 {

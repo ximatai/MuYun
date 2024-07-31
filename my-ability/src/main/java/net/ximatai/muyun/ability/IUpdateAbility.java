@@ -1,11 +1,9 @@
-package net.ximatai.muyun.core.ability.curd;
+package net.ximatai.muyun.ability;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import net.ximatai.muyun.core.ability.IDatabaseAbility;
-import net.ximatai.muyun.core.ability.IMetadataAbility;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 
 import java.util.Map;
