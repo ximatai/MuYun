@@ -92,7 +92,7 @@ class ModuleControllerTest {
             .when()
             .post("/module/update/" + id)
             .then()
-            .statusCode(500);
+            .statusCode(404);
     }
 
     @Test
@@ -129,7 +129,7 @@ class ModuleControllerTest {
         given()
             .get("/module/view/" + id)
             .then()
-            .statusCode(500);
+            .statusCode(404);
     }
 
     @Test
@@ -150,7 +150,7 @@ class ModuleControllerTest {
         given()
             .get("/module/delete/" + id)
             .then()
-            .statusCode(500);
+            .statusCode(404);
     }
 
 }

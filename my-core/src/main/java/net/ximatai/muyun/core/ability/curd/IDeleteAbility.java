@@ -1,9 +1,12 @@
 package net.ximatai.muyun.core.ability.curd;
 
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.core.ability.IDatabaseAbility;
 import net.ximatai.muyun.core.ability.IMetadataAbility;
+import net.ximatai.muyun.database.exception.MyDatabaseException;
 
 import java.util.Map;
 
@@ -14,7 +17,10 @@ public interface IDeleteAbility extends IDatabaseAbility, IMetadataAbility {
     @Transactional
     default Integer delete(@PathParam("id") String id) {
         Integer num = getDatabase().delete(getDeleteSql(), Map.of("id", id));
-        assert num == 1;
+        if (num == 0) {
+            throw new MyDatabaseException(MyDatabaseException.Type.DATA_NOT_FOUND);
+        }
+
         return num;
     }
 }

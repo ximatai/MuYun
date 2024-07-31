@@ -39,7 +39,7 @@ public class DataAccess implements IDatabaseAccess {
 
             return TupleTool.toMap(tuple);
         } catch (Exception e) {
-            throw new MyDatabaseException("数据不存在");
+            throw new MyDatabaseException(e.getMessage(), MyDatabaseException.Type.DATA_NOT_FOUND);
         }
 
     }
