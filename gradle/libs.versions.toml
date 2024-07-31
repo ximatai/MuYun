@@ -1,5 +1,12 @@
 [versions]
 testcontainers = "1.20.0"
 
+quarkus = "3.12.3"
+
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+
+quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
+
+[plugins]
+quarkus = { id = "io.quarkus", version.ref = "quarkus" }

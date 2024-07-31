@@ -1,13 +1,13 @@
 plugins {
     id 'java'
     id 'java-library'
-    id 'org.kordamp.gradle.jandex' version '2.0.0'
     id 'checkstyle'
+    id 'configure-jandex'
 }
 
 
 dependencies {
-    api enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    api enforcedPlatform(libs.quarkus.platform.bom)
 
     api project(':my-database')
 
@@ -15,11 +15,6 @@ dependencies {
     api 'io.quarkus:quarkus-arc'
     api 'io.quarkus:quarkus-rest-jackson'
 
-
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
-}
-
-tasks.named('checkstyleMain').configure {
-    dependsOn 'jandex'
 }

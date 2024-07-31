@@ -1,15 +1,11 @@
 plugins {
     id 'java'
-    id 'org.kordamp.gradle.jandex' version '2.0.0'
     id 'checkstyle'
+    id 'configure-jandex'
 }
 
 
 dependencies {
     implementation project(':my-database')
 //    implementation project(':my-core-uni')
-}
-
-tasks.named('checkstyleMain').configure {
-    dependsOn 'jandex'
 }

@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'io.quarkus'
     id 'checkstyle'
+    alias libs.plugins.quarkus
 }
 
 
 dependencies {
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation enforcedPlatform(libs.quarkus.platform.bom)
     implementation project(":my-core")
     implementation project(":my-platform")
 //    implementation project(":my-msg")

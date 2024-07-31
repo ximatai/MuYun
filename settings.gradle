@@ -1,14 +1,3 @@
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        mavenLocal()
-    }
-    plugins {
-        id "${quarkusPluginId}" version "${quarkusPluginVersion}"
-    }
-}
-
 plugins {
     id "com.gradle.develocity" version "3.17.5"
 }
