@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseAccessStandard;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.tool.TupleTool;
 
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
-public class DataAccess implements IDatabaseAccess {
+public class DataAccess implements IDatabaseAccessStandard {
 
     @Inject
     EntityManager entityManager;

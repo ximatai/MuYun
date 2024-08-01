@@ -5,7 +5,7 @@ import io.smallrye.mutiny.Uni;
 import java.util.List;
 import java.util.Map;
 
-public interface IDatabaseAccessUni {
+public interface IDatabaseAccessUni extends IDatabaseAccess {
 
     Uni<String> insert(String sql, Map<String, Object> params);
 

@@ -9,7 +9,8 @@ plugins {
 dependencies {
     api enforcedPlatform(libs.quarkus.platform.bom)
 
-    api project(':my-ability')
-    api project(':my-database-uni')
+//    api project(':my-ability')
+    api project(':my-core')
+//    api project(':my-database-uni')
 
 }

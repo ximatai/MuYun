@@ -3,13 +3,13 @@ package net.ximatai.muyun.platform.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.uni.ICURDUniAbility;
-import net.ximatai.muyun.database.IDatabaseAccessUni;
+import net.ximatai.muyun.database.IDatabaseAccess;
 
 @Path("/module")
 public class ModuleController implements ICURDUniAbility {
 
     @Inject
-    IDatabaseAccessUni databaseAccess;
+    IDatabaseAccess databaseAccess;
 
 
     @Override
@@ -17,8 +17,9 @@ public class ModuleController implements ICURDUniAbility {
         return "app_module";
     }
 
+
     @Override
-    public IDatabaseAccessUni getDatabase() {
+    public IDatabaseAccess getDatabaseAccess() {
         return databaseAccess;
     }
 }

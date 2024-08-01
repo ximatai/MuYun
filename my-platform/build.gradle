@@ -7,7 +7,8 @@ plugins {
 
 dependencies {
     implementation project(':my-core')
+//    implementation project(':my-ability')
+//    implementation project(':my-database-standard')
     implementation project(':my-ability-uni')
     implementation project(':my-database-uni')
-//    implementation project(':my-core-uni')
 }
