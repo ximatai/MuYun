@@ -2,7 +2,7 @@ package net.ximatai.muyun.platform.controller;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
-import net.ximatai.muyun.ability.std.curd.uni.ICURDUniAbility;
+import net.ximatai.muyun.ability.curd.uni.ICURDUniAbility;
 import net.ximatai.muyun.database.IDatabaseAccess;
 
 @Path("/module")

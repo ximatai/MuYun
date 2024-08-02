@@ -1,4 +1,4 @@
-package net.ximatai.muyun.ability.std.curd.uni;
+package net.ximatai.muyun.ability.curd.uni;
 
 public interface ICURDUniAbility extends ICreateAbilityUni {
 }

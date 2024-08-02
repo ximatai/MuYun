@@ -1,4 +1,4 @@
-package net.ximatai.muyun.ability.std.curd.std;
+package net.ximatai.muyun.ability.curd.std;
 
 public interface ICURDAbility extends ICreateAbility, IUpdateAbility, IDeleteAbility, ISelectAbility {
 }

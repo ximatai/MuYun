@@ -1,4 +1,4 @@
-package net.ximatai.muyun.ability.std;
+package net.ximatai.muyun.ability;
 
 import java.util.Map;
 import java.util.StringJoiner;
