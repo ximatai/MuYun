@@ -6,12 +6,7 @@ plugins {
 
 
 dependencies {
-    api enforcedPlatform(libs.quarkus.platform.bom)
-//    implementation project(':my-core')
-//    implementation project(':my-core-uni')
-
-
-
+    compileOnlyApi enforcedPlatform(libs.quarkus.platform.bom)
     compileOnlyApi "io.quarkus:quarkus-hibernate-reactive-panache"
 }
 
