@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
-public class UniDataAccess implements IDatabaseAccessUni {
+public class DataAccessUni implements IDatabaseAccessUni {
 
     @Inject
     Mutiny.SessionFactory sessionFactory;
