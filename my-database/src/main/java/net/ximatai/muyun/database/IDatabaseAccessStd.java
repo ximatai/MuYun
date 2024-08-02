@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface IDatabaseAccessStd extends IDatabaseAccess {
 
-    String insert(String sql, Map<String, Object> params);
+    String insert(String sql, Map<String, Object> params, String pk);
 
     Map<String, Object> row(String sql, Map<String, Object> params);
 

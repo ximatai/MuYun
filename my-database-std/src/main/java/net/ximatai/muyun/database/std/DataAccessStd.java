@@ -3,6 +3,7 @@ package net.ximatai.muyun.database.std;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceUnit;
 import jakarta.persistence.Query;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
@@ -17,12 +18,13 @@ import java.util.Map;
 public class DataAccessStd implements IDatabaseAccessStd {
 
     @Inject
+    @PersistenceUnit(name = "standard")
     EntityManager entityManager;
-    
+
     //TODO 要审查params的内容类型，比如字符串的日期要做转化，才能入库
     @Override
-    public String insert(String sql, Map<String, Object> params) {
-        return row(sql, params).get("id").toString();
+    public String insert(String sql, Map<String, Object> params, String pk) {
+        return row(sql, params).get(pk).toString();
     }
 
     @Override

@@ -19,8 +19,8 @@ public class DataAccessUni implements IDatabaseAccessUni {
     Mutiny.SessionFactory sessionFactory;
 
     @Override
-    public Uni<String> insert(String sql, Map<String, Object> params) {
-        return this.row(sql, params).map(row -> row.get("id").toString());
+    public Uni<String> insert(String sql, Map<String, Object> params, String pk) {
+        return this.row(sql, params).map(row -> row.get(pk).toString());
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface IDatabaseAccessUni extends IDatabaseAccess {
 
-    Uni<String> insert(String sql, Map<String, Object> params);
+    Uni<String> insert(String sql, Map<String, Object> params, String pk);
 
     Uni<Map<String, Object>> row(String sql, Map<String, Object> params);
 

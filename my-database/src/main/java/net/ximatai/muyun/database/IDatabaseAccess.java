@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface IDatabaseAccess {
 
-    Object insert(String sql, Map<String, Object> params);
+    Object insert(String sql, Map<String, Object> params, String pk);
 
     Object row(String sql, Map<String, Object> params);
 

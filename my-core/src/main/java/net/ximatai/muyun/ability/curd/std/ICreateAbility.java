@@ -12,7 +12,7 @@ public interface ICreateAbility extends IDatabaseAbility, IMetadataAbility {
     @POST
     @Path("/create")
     default String create(Map body) {
-        return getDatabase().insert(getInsertSql(body), body);
+        return getDatabase().insert(getInsertSql(body), body, getPK());
     }
 
 }
