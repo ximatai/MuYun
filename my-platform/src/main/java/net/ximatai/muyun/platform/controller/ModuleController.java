@@ -11,12 +11,10 @@ public class ModuleController implements ICURDAbility {
     @Inject
     IDatabaseAccess databaseAccess;
 
-
     @Override
     public String getMainTable() {
         return "app_module";
     }
-
 
     @Override
     public IDatabaseAccess getDatabaseAccess() {
