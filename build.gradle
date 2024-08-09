@@ -21,6 +21,8 @@ allprojects {
 
     test {
         systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+
+        maxHeapSize = '2g'
     }
     compileJava {
         options.encoding = 'UTF-8'
