@@ -19,7 +19,12 @@ public class DataAccessUni implements IDatabaseAccessUni {
     Mutiny.SessionFactory sessionFactory;
 
     @Override
-    public Uni<String> insert(String sql, Map<String, Object> params, String pk) {
+    public Object insert(String sql, Map<String, Object> params) {
+        return null;
+    }
+
+    @Override
+    public Uni<String> create(String sql, Map<String, Object> params, String pk) {
         return this.row(sql, params).map(row -> row.get(pk).toString());
     }
 
@@ -64,6 +69,13 @@ public class DataAccessUni implements IDatabaseAccessUni {
     @Override
     public Uni<Integer> delete(String sql, Map<String, Object> params) {
         return null;
+    }
+
+    @Override
+    public Uni<Void> execute(String sql) {
+        return sessionFactory.withTransaction((session, tx) ->
+            session.createNativeQuery(sql).executeUpdate()
+        ).replaceWithVoid();
     }
 
 }

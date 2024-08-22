@@ -4,9 +4,10 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import net.ximatai.muyun.platform.entity.TestEntity;
+import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.exception.MyDatabaseException;
+import net.ximatai.muyun.platform.controller.TestController;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,32 +18,53 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 class TestControllerTest {
 
-    @Inject
-    EntityManager entityManager;
 
-    private static List<TestEntity> data;
+    @Inject
+    IDatabaseAccess databaseAccess;
+
+    @Inject
+    TestController testController;
+
+    String tableName;
+
+    List<String> ids;
 
     @BeforeEach
     @Transactional
     void setUp() {
-        entityManager.createNativeQuery("TRUNCATE TABLE test_table").executeUpdate();
+        tableName = testController.getMainTable();
 
-        TestEntity e1 = new TestEntity();
-        e1.name = "test1";
-        TestEntity e2 = new TestEntity();
-        e2.name = "test2";
-        TestEntity e3 = new TestEntity();
-        e3.name = "test3";
+        databaseAccess.execute("drop table if exists " + tableName);
 
-        data = List.of(e1, e2, e3);
-        data.forEach(entityManager::persist);
+        databaseAccess.execute("""
+            create table public.%s
+            (
+                id       varchar   default gen_random_uuid() not null
+                    constraint test_table_pk
+                        primary key,
+                name     varchar,
+                t_create timestamp default now()
+            )
+            """.formatted(tableName));
+
+        databaseAccess.execute("TRUNCATE TABLE %s".formatted(tableName));
+
+        var id1 = testController.create(Map.of("id", "1", "name", "test1"));
+        var id2 = testController.create(Map.of("id", "2", "name", "test2"));
+        var id3 = testController.create(Map.of("id", "3", "name", "test3"));
+
+        ids = List.of(id1, id2, id3);
+
+//        var id1 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test1"));
+//        var id2 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test2"));
+//        var id3 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test3"));
+
     }
 
     @Test
@@ -58,15 +80,15 @@ class TestControllerTest {
             .statusCode(200)
             .body(is(id));
 
-        TestEntity e = entityManager.find(TestEntity.class, id);
+        Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
 
-        assertEquals(request.get("id"), e.id);
-        assertEquals(request.get("name"), e.name);
+        assertEquals(request.get("id"), e.get("id"));
+        assertEquals(request.get("name"), e.get("name"));
     }
 
     @Test
     void testUpdate() {
-        String id = data.getFirst().id;
+        String id = ids.getFirst();
         Map<String, String> request = Map.of("name", "test");
         given()
             .contentType("application/json")
@@ -77,9 +99,9 @@ class TestControllerTest {
             .statusCode(200)
             .body(is("1"));
 
-        TestEntity e = entityManager.find(TestEntity.class, id);
+        Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
 
-        assertEquals(request.get("name"), e.name);
+        assertEquals(request.get("name"), e.get("name"));
     }
 
     @Test
@@ -97,7 +119,7 @@ class TestControllerTest {
 
     @Test
     void testUpdateFieldNotExists() {
-        String id = data.getFirst().id;
+        String id = ids.getFirst();
         Map<String, String> request = Map.of("unknown", "field");
         given()
             .contentType("application/json")
@@ -110,17 +132,20 @@ class TestControllerTest {
 
     @Test
     void testGet() {
-        String id = data.getFirst().id;
+        String id = ids.getFirst();
         HashMap response = given()
             .get("/test/view/" + id)
             .then()
             .statusCode(200)
             .extract()
             .as(new TypeRef<>() {
+
             });
 
-        assertEquals(data.getFirst().name, response.get("name"));
-        assertEquals(data.getFirst().id, response.get("id"));
+        Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+
+        assertEquals(e.get("name"), response.get("name"));
+        assertEquals(e.get("id"), response.get("id"));
     }
 
     @Test
@@ -134,14 +159,15 @@ class TestControllerTest {
 
     @Test
     void testDelete() {
-        String id = data.getFirst().id;
+        String id = ids.getFirst();
         given()
             .get("/test/delete/" + id)
             .then()
             .statusCode(200);
 
-        TestEntity e = entityManager.find(TestEntity.class, id);
-        assertNull(e);
+        assertThrows(MyDatabaseException.class, () -> {
+            databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+        });
     }
 
     @Test

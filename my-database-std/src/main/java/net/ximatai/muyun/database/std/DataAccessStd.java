@@ -16,26 +16,33 @@ public class DataAccessStd implements IDatabaseAccessStd {
     @Inject
     Jdbi jdbi;
 
+    @Override
+    public Object insert(String sql, Map<String, Object> params) {
+        return update(sql, params);
+    }
+
     //TODO 要审查params的内容类型，比如字符串的日期要做转化，才能入库
     @Override
-    public String insert(String sql, Map<String, Object> params, String pk) {
+    public String create(String sql, Map<String, Object> params, String pk) {
         return row(sql, params).get(pk).toString();
     }
 
     @Override
     public Map<String, Object> row(String sql, Map<String, Object> params) {
-        try {
-            return jdbi.withHandle(handle -> {
-                var query = handle.createQuery(sql);
-                if (params != null) {
-                    params.forEach(query::bind);
-                }
+        var row = jdbi.withHandle(handle -> {
+            var query = handle.createQuery(sql);
+            if (params != null) {
+                params.forEach(query::bind);
+            }
 
-                return query.mapToMap().one();
-            });
-        } catch (Exception e) {
-            throw new MyDatabaseException(e.getMessage(), MyDatabaseException.Type.DATA_NOT_FOUND);
+            return query.mapToMap().findOne().orElse(null);
+        });
+
+        if (row == null) {
+            throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
         }
+
+        return row;
     }
 
     @Override
@@ -68,5 +75,11 @@ public class DataAccessStd implements IDatabaseAccessStd {
     @Override
     public Integer delete(String sql, Map<String, Object> params) {
         return update(sql, params);
+    }
+
+    @Override
+    public Object execute(String sql) {
+        jdbi.withHandle(handle -> handle.execute(sql));
+        return null;
     }
 }
