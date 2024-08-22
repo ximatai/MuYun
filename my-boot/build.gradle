@@ -4,16 +4,22 @@ plugins {
     alias libs.plugins.quarkus
 }
 
+tasks.named('compileJava').configure {
+    dependsOn 'compileQuarkusGeneratedSourcesJava'
+}
 
 dependencies {
     implementation enforcedPlatform(libs.quarkus.platform.bom)
     implementation project(":my-core")
-    implementation project(":my-platform")
+    implementation project(':my-database-std')
 //    implementation project(":my-msg")
 
     implementation 'io.quarkus:quarkus-smallrye-openapi'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
+
+    testImplementation "io.quarkus:quarkus-agroal"
+    testImplementation "io.quarkus:quarkus-jdbc-postgresql"
     testImplementation libs.testcontainers.postgresql
 }

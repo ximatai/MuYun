@@ -5,15 +5,15 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.database.IDatabaseAccess;
 
-@Path("/module")
-public class ModuleController implements ICURDAbility {
+@Path("/test")
+public class TestController implements ICURDAbility {
 
     @Inject
     IDatabaseAccess databaseAccess;
 
     @Override
     public String getMainTable() {
-        return "app_module";
+        return "test_table";
     }
 
     @Override
