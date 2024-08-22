@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface IDatabaseAccessUni extends IDatabaseAccess {
 
-    Uni<String> insert(String sql, Map<String, Object> params, String pk);
+    Uni<String> create(String sql, Map<String, Object> params, String pk);
 
     Uni<Map<String, Object>> row(String sql, Map<String, Object> params);
 
@@ -20,5 +20,7 @@ public interface IDatabaseAccessUni extends IDatabaseAccess {
     Uni<Integer> update(String sql, Map<String, Object> params);
 
     Uni<Integer> delete(String sql, Map<String, Object> params);
+
+    Uni<Void> execute(String sql);
 
 }

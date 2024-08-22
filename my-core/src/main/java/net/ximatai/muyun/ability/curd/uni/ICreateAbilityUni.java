@@ -14,7 +14,7 @@ public interface ICreateAbilityUni extends IDatabaseUniAbility, IMetadataAbility
     @POST
     @Path("/create")
     default Uni<String> create(Map body) {
-        return getDatabase().insert(getInsertSql(body), body, getPK());
+        return getDatabase().create(getInsertSql(body), body, getPK());
     }
 
 }

@@ -4,7 +4,9 @@ import java.util.Map;
 
 public interface IDatabaseAccess {
 
-    Object insert(String sql, Map<String, Object> params, String pk);
+    Object insert(String sql, Map<String, Object> params);
+
+    Object create(String sql, Map<String, Object> params, String pk);
 
     Object row(String sql, Map<String, Object> params);
 
@@ -18,4 +20,5 @@ public interface IDatabaseAccess {
 
     Object delete(String sql, Map<String, Object> params);
 
+    Object execute(String sql);
 }
