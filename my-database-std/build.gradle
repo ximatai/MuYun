@@ -10,7 +10,7 @@ dependencies {
     api enforcedPlatform(libs.quarkus.platform.bom)
     implementation project(':my-database')
 
-    api "org.jdbi:jdbi3-core:3.45.4"
+    api libs.jdbi.core
     api "io.quarkus:quarkus-hibernate-orm"
     api "io.quarkus:quarkus-jdbc-postgresql"
 }

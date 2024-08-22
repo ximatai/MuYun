@@ -1,12 +1,13 @@
 [versions]
 testcontainers = "1.20.0"
-
 quarkus = "3.12.3"
+jdbi = "3.45.4"
 
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
-
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
+jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+
 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }

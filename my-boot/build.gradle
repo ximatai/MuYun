@@ -4,6 +4,9 @@ plugins {
     alias libs.plugins.quarkus
 }
 
+tasks.named('compileJava').configure {
+    dependsOn 'compileQuarkusGeneratedSourcesJava'
+}
 
 dependencies {
     implementation enforcedPlatform(libs.quarkus.platform.bom)
