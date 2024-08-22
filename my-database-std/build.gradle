@@ -12,4 +12,9 @@ dependencies {
 
     api "io.quarkus:quarkus-hibernate-orm"
     api "io.quarkus:quarkus-jdbc-postgresql"
+
+    api "org.jdbi:jdbi3-core:3.45.4"
+    // https://mvnrepository.com/artifact/org.jdbi/jdbi3-core
+//    implementation group: 'org.jdbi', name: 'jdbi3-core', version: '3.45.4'
+
 }

@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 @Transactional
-class ModuleEntityHibernateTest {
+class HibernateEntityTest {
 
     @Inject
     EntityManager entityManager;
 
     @Test
     void createEntityTest() {
-        ModuleEntity e = new ModuleEntity();
+        TestEntity e = new TestEntity();
         e.name = "test1";
 
         entityManager.persist(e);

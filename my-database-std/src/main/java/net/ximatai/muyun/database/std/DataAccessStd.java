@@ -2,13 +2,10 @@ package net.ximatai.muyun.database.std;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
-import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseAccessStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
-import net.ximatai.muyun.database.tool.TupleTool;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +14,7 @@ import java.util.Map;
 public class DataAccessStd implements IDatabaseAccessStd {
 
     @Inject
-    EntityManager entityManager;
+    Jdbi jdbi;
 
     //TODO 要审查params的内容类型，比如字符串的日期要做转化，才能入库
     @Override
@@ -28,19 +25,17 @@ public class DataAccessStd implements IDatabaseAccessStd {
     @Override
     public Map<String, Object> row(String sql, Map<String, Object> params) {
         try {
-            Query query = entityManager.createNativeQuery(sql, Tuple.class);
+            return jdbi.withHandle(handle -> {
+                var query = handle.createQuery(sql);
+                if (params != null) {
+                    params.forEach(query::bind);
+                }
 
-            if (params != null) {
-                params.forEach(query::setParameter);
-            }
-
-            Tuple tuple = (Tuple) query.getSingleResult();
-
-            return TupleTool.toMap(tuple);
+                return query.mapToMap().one();
+            });
         } catch (Exception e) {
             throw new MyDatabaseException(e.getMessage(), MyDatabaseException.Type.DATA_NOT_FOUND);
         }
-
     }
 
     @Override
@@ -61,13 +56,13 @@ public class DataAccessStd implements IDatabaseAccessStd {
     @Override
     @Transactional
     public Integer update(String sql, Map<String, Object> params) {
-        Query query = entityManager.createNativeQuery(sql);
-
-        if (params != null) {
-            params.forEach(query::setParameter);
-        }
-
-        return query.executeUpdate();
+        return jdbi.withHandle(handle -> {
+            var update = handle.createUpdate(sql);
+            if (params != null) {
+                params.forEach(update::bind);
+            }
+            return update.execute();
+        });
     }
 
     @Override

@@ -6,7 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import net.ximatai.muyun.platform.entity.ModuleEntity;
+import net.ximatai.muyun.platform.entity.TestEntity;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,23 +22,23 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
-class ModuleControllerTest {
+class TestControllerTest {
 
     @Inject
     EntityManager entityManager;
 
-    private static List<ModuleEntity> data;
+    private static List<TestEntity> data;
 
     @BeforeEach
     @Transactional
     void setUp() {
-        entityManager.createNativeQuery("TRUNCATE TABLE app_module").executeUpdate();
+        entityManager.createNativeQuery("TRUNCATE TABLE test_table").executeUpdate();
 
-        ModuleEntity e1 = new ModuleEntity();
+        TestEntity e1 = new TestEntity();
         e1.name = "test1";
-        ModuleEntity e2 = new ModuleEntity();
+        TestEntity e2 = new TestEntity();
         e2.name = "test2";
-        ModuleEntity e3 = new ModuleEntity();
+        TestEntity e3 = new TestEntity();
         e3.name = "test3";
 
         data = List.of(e1, e2, e3);
@@ -53,12 +53,12 @@ class ModuleControllerTest {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/module/create")
+            .post("/test/create")
             .then()
             .statusCode(200)
             .body(is(id));
 
-        ModuleEntity e = entityManager.find(ModuleEntity.class, id);
+        TestEntity e = entityManager.find(TestEntity.class, id);
 
         assertEquals(request.get("id"), e.id);
         assertEquals(request.get("name"), e.name);
@@ -72,12 +72,12 @@ class ModuleControllerTest {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/module/update/" + id)
+            .post("/test/update/" + id)
             .then()
             .statusCode(200)
             .body(is("1"));
 
-        ModuleEntity e = entityManager.find(ModuleEntity.class, id);
+        TestEntity e = entityManager.find(TestEntity.class, id);
 
         assertEquals(request.get("name"), e.name);
     }
@@ -90,7 +90,7 @@ class ModuleControllerTest {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/module/update/" + id)
+            .post("/test/update/" + id)
             .then()
             .statusCode(404);
     }
@@ -103,7 +103,7 @@ class ModuleControllerTest {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/module/update/" + id)
+            .post("/test/update/" + id)
             .then()
             .statusCode(500);
     }
@@ -112,7 +112,7 @@ class ModuleControllerTest {
     void testGet() {
         String id = data.getFirst().id;
         HashMap response = given()
-            .get("/module/view/" + id)
+            .get("/test/view/" + id)
             .then()
             .statusCode(200)
             .extract()
@@ -127,7 +127,7 @@ class ModuleControllerTest {
     void testGetNotFound() {
         String id = "666";
         given()
-            .get("/module/view/" + id)
+            .get("/test/view/" + id)
             .then()
             .statusCode(404);
     }
@@ -136,11 +136,11 @@ class ModuleControllerTest {
     void testDelete() {
         String id = data.getFirst().id;
         given()
-            .get("/module/delete/" + id)
+            .get("/test/delete/" + id)
             .then()
             .statusCode(200);
 
-        ModuleEntity e = entityManager.find(ModuleEntity.class, id);
+        TestEntity e = entityManager.find(TestEntity.class, id);
         assertNull(e);
     }
 
@@ -148,7 +148,7 @@ class ModuleControllerTest {
     void testDeleteNotFound() {
         String id = "666";
         given()
-            .get("/module/delete/" + id)
+            .get("/test/delete/" + id)
             .then()
             .statusCode(404);
     }
