@@ -17,12 +17,13 @@ public class TableBuilderTest {
     @Inject
     Jdbi jdbi;
 
-
     @Inject
     IDatabaseAccess databaseAccess;
 
     @BeforeEach
     void setUp() {
+        databaseAccess.execute("DROP TABLE IF EXISTS test_table");
+
         databaseAccess.execute("create schema if not exists test");
 
         databaseAccess.execute("""
@@ -35,6 +36,10 @@ public class TableBuilderTest {
                 t_create timestamp default now()
             )
             """.formatted("test_table"));
+
+        databaseAccess.execute("""
+            comment on column test.test_table.name is '名称';
+            """);
     }
 
     @Test
@@ -55,11 +60,12 @@ public class TableBuilderTest {
         assertNotNull(table);
         assertFalse(table.getColumns().isEmpty());
         assertNotNull(
-            table.getColumns().stream().filter(dbColumn -> "id".equals(dbColumn.getName())).findFirst()
+            table.getColumns().stream().filter(dbColumn -> "id".equals(dbColumn.getName())).findFirst().orElse(null)
         );
-        assertNotNull(
-            table.getColumns().stream().filter(dbColumn -> "name".equals(dbColumn.getName())).findFirst()
-        );
+        var nameColumn = table.getColumns().stream().filter(dbColumn -> "name".equals(dbColumn.getName())).findFirst().orElse(null);
+        assertNotNull(nameColumn);
+
+        assertEquals(nameColumn.getDescription(), "名称");
 
     }
 

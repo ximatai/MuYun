@@ -33,4 +33,9 @@ public class DBSchema {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DBSchema && name.equals(((DBSchema) obj).name);
+    }
 }

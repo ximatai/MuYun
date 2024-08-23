@@ -1,14 +1,14 @@
 package net.ximatai.muyun.database.metadata;
 
 public class DBColumn {
-   private String name;
-   private String description;
-   private String type;
-   private String defaultValue;
-   private boolean nullable;
-   private boolean primaryKey;
-   private boolean unique;
-   private boolean sequence;
+    private String name;
+    private String description;
+    private String type;
+    private String defaultValue;
+    private boolean nullable;
+    private boolean primaryKey;
+    private boolean unique;
+    private boolean sequence;
 
     public String getName() {
         return name;
@@ -73,4 +73,21 @@ public class DBColumn {
     public void setSequence(boolean sequence) {
         this.sequence = sequence;
     }
+
+    public void setSequence() {
+        this.sequence = true;
+    }
+
+    public void setUnique() {
+        this.unique = true;
+    }
+
+    public void setNullable() {
+        this.nullable = true;
+    }
+
+    public void setPrimaryKey() {
+        this.primaryKey = true;
+    }
+
 }

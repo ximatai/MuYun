@@ -55,7 +55,6 @@ public class TableWrapper {
         return this;
     }
 
-
     private static class Index {
         List<String> columns;
         boolean unique;

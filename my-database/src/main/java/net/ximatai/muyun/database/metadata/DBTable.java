@@ -58,9 +58,14 @@ public class DBTable {
                             );
                             column.setType(rs.getString("TYPE_NAME"));
                             column.setNullable(rs.getInt("NULLABLE") == DatabaseMetaData.columnNullable);
-                            column.setDefaultValue(rs.getString("COLUMN_DEF"));
                             var defaultValue = column.getDefaultValue();
-                            column.setSequence("YES".equals(rs.getString("IS_AUTOINCREMENT")) || (defaultValue != null && defaultValue.startsWith("nextval(")));
+                            column.setDefaultValue(defaultValue);
+                            if ("YES".equals(rs.getString("IS_AUTOINCREMENT"))) {
+                                column.setSequence();
+                            }
+                            if (defaultValue != null && defaultValue.startsWith("nextval(")) {
+                                column.setSequence();
+                            }
                             column.setDescription(rs.getString("REMARKS"));
 
                             columns.add(column);
