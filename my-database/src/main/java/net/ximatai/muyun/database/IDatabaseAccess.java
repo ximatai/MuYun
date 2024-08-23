@@ -1,8 +1,12 @@
 package net.ximatai.muyun.database;
 
+import net.ximatai.muyun.database.metadata.DBInfo;
+
 import java.util.Map;
 
 public interface IDatabaseAccess {
+
+    DBInfo getDBInfo();
 
     Object insert(String sql, Map<String, Object> params);
 

@@ -6,7 +6,8 @@ public class MyDatabaseException extends RuntimeException {
 
     public enum Type {
         DEFAULT,
-        DATA_NOT_FOUND
+        DATA_NOT_FOUND,
+        READ_METADATA_ERROR,
     }
 
     public MyDatabaseException(Type type) {
