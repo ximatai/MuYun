@@ -6,6 +6,8 @@ plugins {
 
 
 dependencies {
+    api libs.jdbi.core
+
     compileOnlyApi enforcedPlatform(libs.quarkus.platform.bom)
     compileOnlyApi "io.quarkus:quarkus-hibernate-reactive-panache"
 }

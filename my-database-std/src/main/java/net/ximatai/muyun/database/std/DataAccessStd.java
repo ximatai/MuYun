@@ -5,16 +5,56 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseAccessStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
+import net.ximatai.muyun.database.metadata.DBInfo;
+import net.ximatai.muyun.database.metadata.DBSchema;
+import net.ximatai.muyun.database.metadata.DBTable;
 import org.jdbi.v3.core.Jdbi;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+
+import static net.ximatai.muyun.database.exception.MyDatabaseException.Type.READ_METADATA_ERROR;
 
 @ApplicationScoped
 public class DataAccessStd implements IDatabaseAccessStd {
 
     @Inject
     Jdbi jdbi;
+
+    @Override
+    public DBInfo getDBInfo() {
+
+        return jdbi.withHandle(handle -> {
+            Connection connection = handle.getConnection();
+            try {
+                DatabaseMetaData metaData = connection.getMetaData();
+
+                DBInfo info = new DBInfo(metaData.getDatabaseProductName());
+
+                try (ResultSet schemasRs = metaData.getSchemas()) {
+                    while (schemasRs.next()) {
+                        info.addSchema(new DBSchema(schemasRs.getString("TABLE_SCHEM")));
+                    }
+                }
+
+                try (ResultSet tablesRs = metaData.getTables(null, null, null, new String[]{"TABLE"})) {
+                    while (tablesRs.next()) {
+                        String tableName = tablesRs.getString("TABLE_NAME");
+                        String schema = tablesRs.getString("TABLE_SCHEM");
+                        DBTable table = new DBTable(jdbi).setName(tableName).setSchema(schema);
+                        info.getSchema(schema).addTable(table);
+                    }
+                }
+
+                return info;
+            } catch (Exception e) {
+                throw new MyDatabaseException(READ_METADATA_ERROR);
+            }
+        });
+    }
 
     @Override
     public Object insert(String sql, Map<String, Object> params) {
