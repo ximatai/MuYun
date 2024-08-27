@@ -39,20 +39,6 @@ class TestControllerTest {
     @Transactional
     void setUp() {
         tableName = testController.getMainTable();
-
-        databaseAccess.execute("drop table if exists " + tableName);
-
-        databaseAccess.execute("""
-            create table public.%s
-            (
-                id       varchar   default gen_random_uuid() not null
-                    constraint test_table_pk
-                        primary key,
-                name     varchar,
-                t_create timestamp default now()
-            )
-            """.formatted(tableName));
-
         databaseAccess.execute("TRUNCATE TABLE %s".formatted(tableName));
 
         var id1 = testController.create(Map.of("id", "1", "name", "test1"));

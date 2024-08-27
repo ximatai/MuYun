@@ -99,6 +99,9 @@ public class Column {
     }
 
     public String getType() {
+        if (type == null) {
+            return buildTypeWithColumnName(name);
+        }
         return type;
     }
 
@@ -124,5 +127,41 @@ public class Column {
 
     public boolean isIndexed() {
         return indexed;
+    }
+
+    String buildTypeWithColumnName(String name) {
+        String type;
+        if ("id".equals(name)) {
+            type = "varchar";
+        } else if (name.startsWith("v_")) {
+            type = "varchar";
+        } else if (name.startsWith("i_")) {
+            type = "int";
+        } else if (name.startsWith("b_")) {
+            type = "boolean";
+        } else if (name.startsWith("t_")) {
+            type = "timestamp";
+        } else if (name.startsWith("d_")) {
+            type = "date";
+        } else if (name.startsWith("n_")) {
+            type = "numeric";
+        } else if (name.startsWith("id_")) {
+            type = "varchar";
+        } else if (name.startsWith("j_")) {
+            type = "jsonb";
+        } else if (name.startsWith("dict_")) {
+            type = "varchar";
+        } else if (name.startsWith("file_")) {
+            type = "varchar";
+        } else if (name.startsWith("files_")) {
+            type = "varchar[]";
+        } else if (name.startsWith("ids_")) {
+            type = "varchar[]";
+        } else if (name.startsWith("dicts_")) {
+            type = "varchar[]";
+        } else {
+            throw new IllegalArgumentException("Unsupported column type: " + name);
+        }
+        return type;
     }
 }

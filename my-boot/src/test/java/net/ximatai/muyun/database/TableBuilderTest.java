@@ -58,7 +58,7 @@ public class TableBuilderTest {
     @Test
     void testTableBuilder() {
         TableBuilder tableBuilder = new TableBuilder(databaseAccess);
-        TableWrapper wrapper = new TableWrapper("test_table2")
+        TableWrapper wrapper = TableWrapper.withName("test_table2")
             .setSchema("test")
             .setComment("a demo")
             .setPrimaryKey(ID_POSTGRES)

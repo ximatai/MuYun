@@ -16,6 +16,10 @@ public class TableWrapper {
 
     private Column primaryKey;
 
+    public static TableWrapper withName(String name) {
+        return new TableWrapper(name);
+    }
+
     public TableWrapper setSchema(String schema) {
         this.schema = schema;
         return this;
