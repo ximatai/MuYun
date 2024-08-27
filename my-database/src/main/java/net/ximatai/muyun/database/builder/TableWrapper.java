@@ -2,6 +2,7 @@ package net.ximatai.muyun.database.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TableWrapper {
 
@@ -40,8 +41,30 @@ public class TableWrapper {
         return this;
     }
 
+    public TableWrapper addIndex(String columnName) {
+        this.addIndex(columnName, false);
+        return this;
+    }
+
     public TableWrapper addIndex(String columnName, boolean unique) {
+        Column col = getColumns().stream().filter(column -> column.getName().equals(columnName)).findFirst().orElse(null);
+        if (col == null) {
+            throw new IllegalArgumentException("No such column: " + columnName);
+        }
+
         indexes.add(new Index(columnName, unique));
+        return this;
+    }
+
+    public TableWrapper addIndex(List<String> columns) {
+        columns.forEach(columnName -> {
+            Column col = getColumns().stream().filter(column -> column.getName().equals(columnName)).findFirst().orElse(null);
+            if (col == null) {
+                throw new IllegalArgumentException("No such column: " + columnName);
+            }
+        });
+
+        this.addIndex(columns, false);
         return this;
     }
 
@@ -56,24 +79,12 @@ public class TableWrapper {
     }
 
     public TableWrapper addColumn(Column column) {
+        if (primaryKey != null && Objects.equals(column.getName(), primaryKey.getName())) {
+            throw new IllegalArgumentException("Primary key already exists");
+        }
+
         columns.add(column);
         return this;
-    }
-
-    private static class Index {
-        List<String> columns;
-        boolean unique;
-
-        public Index(String columnName, boolean unique) {
-            this.columns = new ArrayList<>();
-            this.columns.add(columnName);
-            this.unique = unique;
-        }
-
-        public Index(List<String> columns, boolean unique) {
-            this.columns = columns;
-            this.unique = unique;
-        }
     }
 
     public String getName() {

@@ -6,15 +6,15 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DBTable {
     private Jdbi jdbi;
 
     private String name;
     private String schema;
-    private List<DBColumn> columns;
+    private Map<String, DBColumn> columnMap;
 
     public DBTable(Jdbi jdbi) {
         this.jdbi = jdbi;
@@ -30,11 +30,6 @@ public class DBTable {
         return this;
     }
 
-    public DBTable setColumns(List<DBColumn> columns) {
-        this.columns = columns;
-        return this;
-    }
-
     public String getName() {
         return name;
     }
@@ -43,13 +38,13 @@ public class DBTable {
         return schema;
     }
 
-    public List<DBColumn> getColumns() {
-        if (columns == null) {
+    public Map<String, DBColumn> getColumnMap() {
+        if (columnMap == null) {
             jdbi.useHandle(handle -> {
                 Connection connection = handle.getConnection();
                 try {
                     DatabaseMetaData metaData = connection.getMetaData();
-                    List<DBColumn> columns = new ArrayList<>();
+                    Map<String, DBColumn> columnMap = new HashMap<>();
                     try (ResultSet rs = metaData.getColumns(null, schema, name, null)) {
                         while (rs.next()) {
                             DBColumn column = new DBColumn();
@@ -68,7 +63,7 @@ public class DBTable {
                             }
                             column.setDescription(rs.getString("REMARKS"));
 
-                            columns.add(column);
+                            columnMap.put(column.getName(), column);
                         }
                     }
 
@@ -76,35 +71,35 @@ public class DBTable {
                     try (ResultSet rs = metaData.getPrimaryKeys(null, schema, name)) {
                         while (rs.next()) {
                             String primaryKeyColumn = rs.getString("COLUMN_NAME");
-                            for (DBColumn column : columns) {
-                                if (column.getName().equals(primaryKeyColumn)) {
-                                    column.setPrimaryKey(true);
-                                    break;
-                                }
+                            DBColumn column = columnMap.get(primaryKeyColumn);
+                            if (column != null) {
+                                column.setPrimaryKey(true);
                             }
                         }
                     }
 
-                    // Uniqueness (including primary key)
-                    try (ResultSet rs = metaData.getIndexInfo(null, schema, name, true, false)) {
+                    // index
+                    try (ResultSet rs = metaData.getIndexInfo(null, schema, name, false, false)) {
                         while (rs.next()) {
-                            String uniqueColumn = rs.getString("COLUMN_NAME");
-                            for (DBColumn column : columns) {
-                                if (column.getName().equals(uniqueColumn)) {
+                            String columnName = rs.getString("COLUMN_NAME");
+                            DBColumn column = columnMap.get(columnName);
+                            if (column != null) {
+                                column.setIndexName(rs.getString("INDEX_NAME"));
+                                column.setIndexed(true);
+                                if (!rs.getBoolean("NON_UNIQUE")) {
                                     column.setUnique(true);
-                                    break;
                                 }
                             }
                         }
                     }
 
-                    this.columns = columns;
+                    this.columnMap = columnMap;
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
-        return columns;
+        return columnMap;
     }
 
     public boolean contains(String column) {
@@ -112,10 +107,10 @@ public class DBTable {
     }
 
     public DBColumn getColumn(String column) {
-        return getColumns().stream().filter(c -> c.getName().equals(column)).findFirst().orElse(null);
+        return getColumnMap().get(column);
     }
 
     public void resetColumns() {
-        this.columns = null;
+        this.columnMap = null;
     }
 }

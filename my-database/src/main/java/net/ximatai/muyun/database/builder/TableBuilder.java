@@ -75,6 +75,12 @@ public class TableBuilder {
 
         dbTable.resetColumns();
 
+        wrapper.getIndexes().forEach(index -> {
+            checkAndBuildIndex(dbTable, index);
+        });
+
+        dbTable.resetColumns();
+
         return result;
 
     }
@@ -88,7 +94,6 @@ public class TableBuilder {
         boolean sequence = column.isSequence();
         boolean nullable = column.isNullable();
         boolean primaryKey = column.isPrimaryKey();
-
 
         if (!dbTable.contains(name)) {
             databaseAccess.execute("alter table %s.%s add %s %s".formatted(dbTable.getSchema(), dbTable.getName(), name, type));
@@ -129,7 +134,38 @@ public class TableBuilder {
                 """.formatted(dbTable.getSchema(), dbTable.getName(), name));
         }
 
+        return result;
 
+    }
+
+    private boolean checkAndBuildIndex(DBTable dbTable, Index index) {
+        boolean result = false;
+        List<String> columns = index.getColumns();
+        int size = columns.size();
+        if (size == 1) {
+            String col = columns.getFirst();
+            DBColumn dbColumn = dbTable.getColumn(col);
+            if (index.isUnique() && !dbColumn.isUnique()) { //之前不是唯一索引
+                String indexName = "%s_%s_uindex".formatted(dbTable.getName(), col);
+                databaseAccess.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
+                result = true;
+            } else if (!index.isUnique() && !dbColumn.isIndexed()) { //之前没有索引
+                String indexName = "%s_%s_index".formatted(dbTable.getName(), col);
+                databaseAccess.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
+                result = true;
+            }
+        } else if (size > 0) {
+            if (index.isUnique()) {
+                String indexName = "%s_%s_uindex".formatted(dbTable.getName(), String.join("_", columns));
+                databaseAccess.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
+                result = true;
+            } else {
+                String indexName = "%s_%s_index".formatted(dbTable.getName(), String.join("_", columns));
+                databaseAccess.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
+                result = true;
+            }
+
+        }
         return result;
     }
 
