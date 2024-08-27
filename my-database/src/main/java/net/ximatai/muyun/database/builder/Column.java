@@ -11,7 +11,7 @@ public class Column {
     private boolean sequence = false;
     private boolean indexed = false;
 
-    public static Column ID_POSTGRES = new Column("id")
+    public static final Column ID_POSTGRES = new Column("id")
         .setPrimaryKey()
         .setType("varchar")
         .setDefaultValue("gen_random_uuid()");
