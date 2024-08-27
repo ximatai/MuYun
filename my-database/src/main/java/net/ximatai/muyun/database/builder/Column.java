@@ -1,87 +1,128 @@
 package net.ximatai.muyun.database.builder;
 
 public class Column {
-    String name;
-    String comment;
-    String type;
-    Object defaultValue;
-    boolean nullable;
-    boolean unique;
-    boolean primaryKey;
-    boolean sequence;
-    boolean indexed;
+    private String name;
+    private String comment;
+    private String type;
+    private Object defaultValue;
+    private boolean nullable = true;
+    private boolean unique = false;
+    private boolean primaryKey = false;
+    private boolean sequence = false;
+    private boolean indexed = false;
 
-    public Column(String name) {
+    public static Column ID_POSTGRES = new Column("id")
+        .setPrimaryKey()
+        .setType("varchar")
+        .setDefaultValue("gen_random_uuid()");
+
+    private Column(String name) {
         this.name = name;
     }
 
-    static Column of(String name) {
+    public static Column of(String name) {
         return new Column(name);
     }
 
-    Column setComment(String comment) {
+    public Column setComment(String comment) {
         this.comment = comment;
         return this;
     }
 
-    Column setType(String type) {
+    public Column setType(String type) {
         this.type = type;
         return this;
     }
 
-    Column setDefaultValue(Object defaultValue) {
+    public Column setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         return this;
     }
 
-    Column setNullable(boolean nullable) {
+    public Column setNullable(boolean nullable) {
         this.nullable = nullable;
         return this;
     }
 
-    Column setUnique(boolean unique) {
+    public Column setUnique(boolean unique) {
         this.unique = unique;
         return this;
     }
 
-    Column setPrimaryKey(boolean primaryKey) {
+    public Column setPrimaryKey(boolean primaryKey) {
         this.primaryKey = primaryKey;
         return this;
     }
 
-    Column setSequence(boolean sequence) {
+    public Column setSequence(boolean sequence) {
         this.sequence = sequence;
         return this;
     }
 
-    Column setIndexed(boolean indexed) {
+    public Column setIndexed(boolean indexed) {
         this.indexed = indexed;
         return this;
     }
 
-    Column setNullable() {
+    public Column setNullable() {
         this.nullable = true;
         return this;
     }
 
-    Column setUnique() {
+    public Column setUnique() {
         this.unique = true;
         return this;
     }
 
-    Column setPrimaryKey() {
+    public Column setPrimaryKey() {
         this.primaryKey = true;
+        this.nullable = false;
         return this;
     }
 
-    Column setSequence() {
+    public Column setSequence() {
         this.sequence = true;
         return this;
     }
 
-    Column setIndexed() {
+    public Column setIndexed() {
         this.indexed = true;
         return this;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public boolean isPrimaryKey() {
+        return primaryKey;
+    }
+
+    public boolean isSequence() {
+        return sequence;
+    }
+
+    public boolean isIndexed() {
+        return indexed;
+    }
 }

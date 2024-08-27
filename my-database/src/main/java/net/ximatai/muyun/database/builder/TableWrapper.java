@@ -15,42 +15,47 @@ public class TableWrapper {
 
     private Column primaryKey;
 
-    TableWrapper setSchema(String schema) {
+    public TableWrapper setSchema(String schema) {
         this.schema = schema;
         return this;
     }
 
-    TableWrapper setComment(String comment) {
+    public TableWrapper setComment(String comment) {
         this.comment = comment;
         return this;
     }
 
-    TableWrapper setInherits(List<String> inherits) {
+    public TableWrapper setInherits(List<String> inherits) {
         this.inherits = inherits;
         return this;
     }
 
-    TableWrapper setPrimaryKey(String name) {
-        primaryKey = new Column(name).setPrimaryKey();
+    public TableWrapper setPrimaryKey(String name) {
+        primaryKey = Column.of(name).setPrimaryKey().setType("varchar").setNullable(false);
         return this;
     }
 
-    TableWrapper addIndex(String columnName, boolean unique) {
+    public TableWrapper setPrimaryKey(Column column) {
+        primaryKey = column;
+        return this;
+    }
+
+    public TableWrapper addIndex(String columnName, boolean unique) {
         indexes.add(new Index(columnName, unique));
         return this;
     }
 
-    TableWrapper addIndex(List<String> columns, boolean unique) {
+    public TableWrapper addIndex(List<String> columns, boolean unique) {
         indexes.add(new Index(columns, unique));
         return this;
     }
 
-    TableWrapper addColumn(String columnName) {
-        columns.add(new Column(columnName));
+    public TableWrapper addColumn(String columnName) {
+        columns.add(Column.of(columnName));
         return this;
     }
 
-    TableWrapper addColumn(Column column) {
+    public TableWrapper addColumn(Column column) {
         columns.add(column);
         return this;
     }

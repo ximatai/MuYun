@@ -58,7 +58,7 @@ public class DBTable {
                             );
                             column.setType(rs.getString("TYPE_NAME"));
                             column.setNullable(rs.getInt("NULLABLE") == DatabaseMetaData.columnNullable);
-                            var defaultValue = column.getDefaultValue();
+                            var defaultValue = rs.getString("COLUMN_DEF");
                             column.setDefaultValue(defaultValue);
                             if ("YES".equals(rs.getString("IS_AUTOINCREMENT"))) {
                                 column.setSequence();
@@ -107,4 +107,15 @@ public class DBTable {
         return columns;
     }
 
+    public boolean contains(String column) {
+        return getColumn(column) != null;
+    }
+
+    public DBColumn getColumn(String column) {
+        return getColumns().stream().filter(c -> c.getName().equals(column)).findFirst().orElse(null);
+    }
+
+    public void resetColumns() {
+        this.columns = null;
+    }
 }
