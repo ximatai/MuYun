@@ -5,9 +5,11 @@ public class DBColumn {
     private String description;
     private String type;
     private String defaultValue;
+    private String indexName;
     private boolean nullable;
     private boolean primaryKey;
     private boolean unique;
+    private boolean indexed;
     private boolean sequence;
 
     public String getName() {
@@ -88,6 +90,22 @@ public class DBColumn {
 
     public void setPrimaryKey() {
         this.primaryKey = true;
+    }
+
+    public boolean isIndexed() {
+        return indexed;
+    }
+
+    public void setIndexed(boolean indexed) {
+        this.indexed = indexed;
+    }
+
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
     }
 
 }
