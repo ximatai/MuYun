@@ -1,17 +1,19 @@
 package net.ximatai.muyun.database;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.testcontainers.PostgresTestResource;
+import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.TableBuilder;
+import net.ximatai.muyun.database.builder.TableWrapper;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TableBuilderTest {
 
     @Inject
@@ -22,7 +24,7 @@ public class TableBuilderTest {
 
     @BeforeEach
     void setUp() {
-        databaseAccess.execute("DROP TABLE IF EXISTS test_table");
+        databaseAccess.execute("DROP TABLE IF EXISTS test.test_table");
 
         databaseAccess.execute("create schema if not exists test");
 
@@ -43,12 +45,24 @@ public class TableBuilderTest {
     }
 
     @Test
-    void testCreate() {
+    void testDB() {
         jdbi.useHandle(h -> {
             var row = h.createQuery("select 1 as title")
                 .mapToMap().findOne().orElseThrow(RuntimeException::new);
             assertEquals(1, row.get("title"));
         });
+    }
+
+    @Test
+    void testTableBuilder() {
+        TableBuilder tableBuilder = new TableBuilder(databaseAccess);
+        TableWrapper wrapper = new TableWrapper("test_table2")
+            .setSchema("test")
+            .setComment("a demo")
+            .setPrimaryKey(ID_POSTGRES)
+            .addColumn(Column.of("v_test").setType("varchar"));
+        tableBuilder.build(wrapper);
+
     }
 
     @Test

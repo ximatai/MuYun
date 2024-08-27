@@ -1,10 +1,13 @@
 package net.ximatai.muyun.database;
 
 import net.ximatai.muyun.database.metadata.DBInfo;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.Map;
 
 public interface IDatabaseAccess {
+
+    Jdbi getJdbi();
 
     DBInfo getDBInfo();
 

@@ -24,36 +24,46 @@ public class DataAccessStd implements IDatabaseAccessStd {
     @Inject
     Jdbi jdbi;
 
+    private DBInfo dbInfo;
+    
+    @Override
+    public Jdbi getJdbi() {
+        return jdbi;
+    }
+
     @Override
     public DBInfo getDBInfo() {
+        if (dbInfo == null) {
+            dbInfo = jdbi.withHandle(handle -> {
+                Connection connection = handle.getConnection();
+                try {
+                    DatabaseMetaData metaData = connection.getMetaData();
 
-        return jdbi.withHandle(handle -> {
-            Connection connection = handle.getConnection();
-            try {
-                DatabaseMetaData metaData = connection.getMetaData();
+                    DBInfo info = new DBInfo(metaData.getDatabaseProductName());
 
-                DBInfo info = new DBInfo(metaData.getDatabaseProductName());
-
-                try (ResultSet schemasRs = metaData.getSchemas()) {
-                    while (schemasRs.next()) {
-                        info.addSchema(new DBSchema(schemasRs.getString("TABLE_SCHEM")));
+                    try (ResultSet schemasRs = metaData.getSchemas()) {
+                        while (schemasRs.next()) {
+                            info.addSchema(new DBSchema(schemasRs.getString("TABLE_SCHEM")));
+                        }
                     }
-                }
 
-                try (ResultSet tablesRs = metaData.getTables(null, null, null, new String[]{"TABLE"})) {
-                    while (tablesRs.next()) {
-                        String tableName = tablesRs.getString("TABLE_NAME");
-                        String schema = tablesRs.getString("TABLE_SCHEM");
-                        DBTable table = new DBTable(jdbi).setName(tableName).setSchema(schema);
-                        info.getSchema(schema).addTable(table);
+                    try (ResultSet tablesRs = metaData.getTables(null, null, null, new String[]{"TABLE"})) {
+                        while (tablesRs.next()) {
+                            String tableName = tablesRs.getString("TABLE_NAME");
+                            String schema = tablesRs.getString("TABLE_SCHEM");
+                            DBTable table = new DBTable(jdbi).setName(tableName).setSchema(schema);
+                            info.getSchema(schema).addTable(table);
+                        }
                     }
-                }
 
-                return info;
-            } catch (Exception e) {
-                throw new MyDatabaseException(READ_METADATA_ERROR);
-            }
-        });
+                    return info;
+                } catch (Exception e) {
+                    throw new MyDatabaseException(READ_METADATA_ERROR);
+                }
+            });
+
+        }
+        return dbInfo;
     }
 
     @Override

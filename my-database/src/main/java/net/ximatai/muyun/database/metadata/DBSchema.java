@@ -38,4 +38,12 @@ public class DBSchema {
     public boolean equals(Object obj) {
         return obj instanceof DBSchema && name.equals(((DBSchema) obj).name);
     }
+
+    public Map<String, DBTable> getTables() {
+        return tables;
+    }
+
+    public boolean containsTable(String tableName) {
+        return getTables().containsKey(tableName);
+    }
 }
