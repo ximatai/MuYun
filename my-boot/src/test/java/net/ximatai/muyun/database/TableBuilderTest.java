@@ -11,6 +11,12 @@ import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +71,8 @@ public class TableBuilderTest {
             .addColumn(Column.of("v_test").setType("varchar"))
             .addColumn(Column.of("v_test2").setType("varchar"))
             .addIndex("v_test")
-            .addIndex("v_test2", true);
+            .addIndex("v_test2", true)
+            .addIndex(List.of("v_test", "v_test2"));
         tableBuilder.build(wrapper);
 
         assertTrue(databaseAccess.getDBInfo().getSchema("test").containsTable("test_table2"));
@@ -86,6 +93,21 @@ public class TableBuilderTest {
         assertNotNull(table.getColumnMap().get("id"));
         assertNotNull(table.getColumnMap().get("name"));
         assertEquals(table.getColumnMap().get("name").getDescription(), "名称");
+
+    }
+
+    @Test
+    void testMetadataRead() throws SQLException {
+        jdbi.useHandle(h -> {
+            Connection conn = h.getConnection();
+            DatabaseMetaData metaData = conn.getMetaData();
+            try (ResultSet rs = metaData.getIndexInfo(null, "test", "test_table2", false, false)) {
+                while (rs.next()) {
+                    System.out.println(rs.getString("COLUMN_NAME"));
+                    System.out.println(rs.getString("INDEX_NAME"));
+                }
+            }
+        });
 
     }
 }
