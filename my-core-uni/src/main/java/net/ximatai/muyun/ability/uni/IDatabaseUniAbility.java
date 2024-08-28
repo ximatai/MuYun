@@ -1,7 +1,7 @@
-package net.ximatai.muyun.ability;
+package net.ximatai.muyun.ability.uni;
 
 import net.ximatai.muyun.database.IDatabaseAccess;
-import net.ximatai.muyun.database.IDatabaseAccessUni;
+import net.ximatai.muyun.database.uni.IDatabaseAccessUni;
 
 public interface IDatabaseUniAbility {
 

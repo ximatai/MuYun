@@ -1,6 +1,7 @@
-package net.ximatai.muyun.database;
+package net.ximatai.muyun.database.uni;
 
 import io.smallrye.mutiny.Uni;
+import net.ximatai.muyun.database.IDatabaseAccess;
 
 import java.util.List;
 import java.util.Map;

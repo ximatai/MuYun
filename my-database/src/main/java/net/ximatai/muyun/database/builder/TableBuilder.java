@@ -1,6 +1,5 @@
 package net.ximatai.muyun.database.builder;
 
-import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
@@ -21,7 +20,6 @@ public class TableBuilder {
         this.info = databaseAccess.getDBInfo();
     }
 
-    @Transactional
     public boolean build(TableWrapper wrapper) {
         var result = false;
         String schema = wrapper.getSchema();

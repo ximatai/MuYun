@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'checkstyle'
+    id 'configure-jandex'
+}
+
+
+dependencies {
+    api project(':my-core')
+    api project(':my-database-uni')
+}
