@@ -5,15 +5,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Tuple;
-import net.ximatai.muyun.database.IDatabaseAccessUni;
-import net.ximatai.muyun.database.tool.TupleTool;
+import net.ximatai.muyun.database.DBInfoProvider;
+import net.ximatai.muyun.database.uni.tool.TupleTool;
 import org.hibernate.reactive.mutiny.Mutiny;
 
 import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
-public class DataAccessUni implements IDatabaseAccessUni {
+public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni {
 
     @Inject
     Mutiny.SessionFactory sessionFactory;

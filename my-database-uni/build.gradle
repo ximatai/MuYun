@@ -8,7 +8,8 @@ plugins {
 
 dependencies {
     api enforcedPlatform(libs.quarkus.platform.bom)
-    implementation project(':my-database')
+    api project(':my-database')
+    api project(':my-database-std')
 
     api "io.quarkus:quarkus-hibernate-reactive-panache"
     api "io.quarkus:quarkus-reactive-pg-client"
