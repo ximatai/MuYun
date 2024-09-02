@@ -50,8 +50,9 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
         if (!orderColumns.isEmpty()) {
             querySql.append(" order by ");
             querySql.append(orderColumns.stream()
-                .map(oc -> oc.getColumnName() + " " + (oc.getType().isASC() ? "asc" : "desc"))
-                .collect(Collectors.joining(", ")));
+                .map(oc -> "? " + (oc.getType().isASC() ? " asc" : " desc"))
+                .collect(Collectors.joining(",")));
+            orderColumns.forEach(oc -> params.add(oc.getColumnName()));
         }
 
         // 添加分页参数

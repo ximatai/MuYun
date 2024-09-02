@@ -4,7 +4,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.domain.PageResult;
@@ -36,7 +35,6 @@ class TestControllerTest {
     List<String> ids;
 
     @BeforeEach
-    @Transactional
     void setUp() {
         tableName = testController.getMainTable();
         databaseAccess.execute("TRUNCATE TABLE %s".formatted(tableName));
@@ -68,6 +66,32 @@ class TestControllerTest {
         assertEquals(response.getList().size(), 2);
         assertEquals(response.getPage(), 1);
         assertEquals(response.getLimit(), 2);
+    }
+
+    @Test
+    void testPageViewSort() {
+        PageResult<HashMap> response = given()
+            .get("/test/view?page=1&limit=2&orderField=t_create")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(response.getList().getFirst().get("id"), "1");
+    }
+
+    @Test
+    void testPageViewSortDesc() {
+        PageResult<HashMap> response = given()
+            .get("/test/view?page=1&limit=2&orderField=t_create&orderType=desc")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals("3", response.getList().getFirst().get("id"));
     }
 
     @Test
