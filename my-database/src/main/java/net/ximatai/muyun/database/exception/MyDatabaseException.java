@@ -10,6 +10,21 @@ public class MyDatabaseException extends RuntimeException {
         READ_METADATA_ERROR,
     }
 
+    @Override
+    public String getMessage() {
+
+        switch (type) {
+            case DATA_NOT_FOUND -> {
+                return "操作的数据不存在";
+            }
+            case READ_METADATA_ERROR -> {
+                return "元数据读取失败，" + super.getMessage();
+            }
+        }
+
+        return super.getMessage();
+    }
+
     public MyDatabaseException(Type type) {
         this.type = type;
     }

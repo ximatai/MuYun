@@ -113,7 +113,7 @@ class TestControllerTest {
             .when()
             .post("/test/update/" + id)
             .then()
-            .statusCode(500);
+            .statusCode(200);
     }
 
     @Test

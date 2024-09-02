@@ -10,11 +10,10 @@ import java.util.Map;
 
 public interface ICreateAbilityUni extends IDatabaseUniAbility, IMetadataAbility {
 
-    //TODO 与ICreateAbility 函数内容过于雷同，考虑合并
     @POST
     @Path("/create")
     default Uni<String> create(Map body) {
-        return getDatabase().insert(getInsertSql(body), body, getPK(), String.class);
+        return getDatabase().insertItem(getMainTable(), body);
     }
 
 }

@@ -1,6 +1,7 @@
 package net.ximatai.muyun.database.uni;
 
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.NoResultException;
@@ -19,33 +20,16 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     Mutiny.SessionFactory sessionFactory;
 
     @Override
-    public void insert(String sql, Map<String, Object> params) {
-    }
-
-    @Override
-    public Uni<String> insertItem(String table, Map<String, Object> params) {
-        return null;
-    }
-
-    @Override
-    public Object updateItem(String table, Map<String, Object> params) {
-        return null;
-    }
-
-    @Override
     public <T> Uni<T> insert(String sql, Map<String, Object> params, String pk, Class<T> idType) {
-//        return this.row(sql, params).map(row -> row.get(pk).toString());
-//        return sessionFactory.withTransaction((session, tx) -> {
-//            var query = session.createNativeQuery(sql);
-//            if (params != null) {
-//                params.forEach(query::setParameter);
-//            }
-//            return query.executeUpdate()
-//                .replaceWith(session.flush()) // Ensure the persistence context is synchronized
-//                .replaceWith(session.createSelectionQuery("SELECT LAST_INSERT_ID()", Tuple.class).getSingleResult())
-//                .map(tuple -> (T) tuple.get(0, idType));
-//        });
-        return null;
+        return this.row(sql + " returning " + pk, params)
+            .map(Unchecked.function(row -> {
+                Object value = row.get(pk);
+                if (idType.isInstance(value)) {
+                    return idType.cast(value);
+                } else {
+                    throw new IllegalArgumentException("The returned value type does not match the expected type: " + idType.getName());
+                }
+            }));
     }
 
     @Override
