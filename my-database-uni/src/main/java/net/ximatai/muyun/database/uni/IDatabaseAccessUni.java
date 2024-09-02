@@ -8,7 +8,9 @@ import java.util.Map;
 
 public interface IDatabaseAccessUni extends IDatabaseAccess {
 
-    Uni<String> create(String sql, Map<String, Object> params, String pk);
+    Uni<String> insertItem(String table, Map<String, Object> params);
+
+    <T> Uni<T> insert(String sql, Map<String, Object> params, String pk, Class<T> idType);
 
     Uni<Map<String, Object>> row(String sql, Map<String, Object> params);
 

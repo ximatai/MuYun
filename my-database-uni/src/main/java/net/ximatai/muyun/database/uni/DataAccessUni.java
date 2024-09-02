@@ -19,13 +19,33 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     Mutiny.SessionFactory sessionFactory;
 
     @Override
-    public Object insert(String sql, Map<String, Object> params) {
+    public void insert(String sql, Map<String, Object> params) {
+    }
+
+    @Override
+    public Uni<String> insertItem(String table, Map<String, Object> params) {
         return null;
     }
 
     @Override
-    public Uni<String> create(String sql, Map<String, Object> params, String pk) {
-        return this.row(sql, params).map(row -> row.get(pk).toString());
+    public Object updateItem(String table, Map<String, Object> params) {
+        return null;
+    }
+
+    @Override
+    public <T> Uni<T> insert(String sql, Map<String, Object> params, String pk, Class<T> idType) {
+//        return this.row(sql, params).map(row -> row.get(pk).toString());
+//        return sessionFactory.withTransaction((session, tx) -> {
+//            var query = session.createNativeQuery(sql);
+//            if (params != null) {
+//                params.forEach(query::setParameter);
+//            }
+//            return query.executeUpdate()
+//                .replaceWith(session.flush()) // Ensure the persistence context is synchronized
+//                .replaceWith(session.createSelectionQuery("SELECT LAST_INSERT_ID()", Tuple.class).getSingleResult())
+//                .map(tuple -> (T) tuple.get(0, idType));
+//        });
+        return null;
     }
 
     @Override

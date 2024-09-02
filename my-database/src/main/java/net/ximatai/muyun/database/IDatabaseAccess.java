@@ -4,9 +4,13 @@ import java.util.Map;
 
 public interface IDatabaseAccess extends IDBInfoProvider {
 
-    Object insert(String sql, Map<String, Object> params);
+    Object insertItem(String table, Map<String, Object> params);
 
-    Object create(String sql, Map<String, Object> params, String pk);
+    Object updateItem(String table, Map<String, Object> params);
+
+    void insert(String sql, Map<String, Object> params);
+
+    <T> Object insert(String sql, Map<String, Object> params, String pk, Class<T> idType);
 
     Object row(String sql, Map<String, Object> params);
 

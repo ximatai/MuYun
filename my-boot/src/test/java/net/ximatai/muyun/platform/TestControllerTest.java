@@ -18,8 +18,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
@@ -56,7 +55,7 @@ class TestControllerTest {
     @Test
     void testCreate() {
         String id = "666";
-        Map<String, String> request = Map.of("id", id, "name", "test");
+        Map<String, String> request = Map.of("id", id, "name", "test", "name2", "test2");
         given()
             .contentType("application/json")
             .body(request)
@@ -70,6 +69,7 @@ class TestControllerTest {
 
         assertEquals(request.get("id"), e.get("id"));
         assertEquals(request.get("name"), e.get("name"));
+        assertNull(e.get("name2"));
     }
 
     @Test
