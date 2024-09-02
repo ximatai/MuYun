@@ -20,7 +20,7 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     Mutiny.SessionFactory sessionFactory;
 
     @Override
-    public <T> Uni<T> insert(String sql, Map<String, Object> params, String pk, Class<T> idType) {
+    public <T> Uni<T> insert(String sql, Map<String, ?> params, String pk, Class<T> idType) {
         return this.row(sql + " returning " + pk, params)
             .map(Unchecked.function(row -> {
                 Object value = row.get(pk);
@@ -33,7 +33,7 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     }
 
     @Override
-    public Uni<Map<String, Object>> row(String sql, Map<String, Object> params) {
+    public Uni<Map<String, Object>> row(String sql, Map<String, ?> params) {
         return sessionFactory.withSession(session -> {
 
             Mutiny.SelectionQuery<Tuple> query = session.createNativeQuery(sql, Tuple.class);
@@ -56,7 +56,12 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     }
 
     @Override
-    public Uni<List<Map<String, Object>>> query(String sql, Map<String, Object> params) {
+    public Uni<List<Map<String, Object>>> query(String sql, Map<String, ?> params) {
+        return null;
+    }
+
+    @Override
+    public Uni<List<Map<String, Object>>> query(String sql, List<?> params) {
         return null;
     }
 
@@ -66,12 +71,12 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     }
 
     @Override
-    public Uni<Integer> update(String sql, Map<String, Object> params) {
+    public Uni<Integer> update(String sql, Map<String, ?> params) {
         return null;
     }
 
     @Override
-    public Uni<Integer> delete(String sql, Map<String, Object> params) {
+    public Uni<Integer> delete(String sql, Map<String, ?> params) {
         return null;
     }
 

@@ -13,7 +13,7 @@ import java.util.Map;
 public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd {
 
     @Override
-    public <T> T insert(String sql, Map<String, Object> params, String pk, Class<T> idType) {
+    public <T> T insert(String sql, Map<String, ?> params, String pk, Class<T> idType) {
         return getJdbi().withHandle(handle -> {
             var query = handle.createUpdate(sql);
             if (params != null) {
@@ -25,7 +25,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     }
 
     @Override
-    public Map<String, Object> row(String sql, Map<String, Object> params) {
+    public Map<String, Object> row(String sql, Map<String, ?> params) {
         var row = getJdbi().withHandle(handle -> {
             var query = handle.createQuery(sql);
             if (params != null) {
@@ -48,8 +48,30 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     }
 
     @Override
-    public List<Map<String, Object>> query(String sql, Map<String, Object> params) {
-        return List.of();
+    public List<Map<String, Object>> query(String sql, Map<String, ?> params) {
+        return getJdbi().withHandle(handle -> {
+            var query = handle.createQuery(sql);
+            if (params != null) {
+                params.forEach(query::bind);
+            }
+
+            return query.mapToMap().list();
+        });
+    }
+
+    @Override
+    public List<Map<String, Object>> query(String sql, List<?> params) {
+        return getJdbi().withHandle(handle -> {
+            var query = handle.createQuery(sql);
+
+            if (params != null && !params.isEmpty()) {
+                for (int i = 0; i < params.size(); i++) {
+                    query.bind(i, params.get(i));  // 通过索引绑定参数
+                }
+            }
+
+            return query.mapToMap().list();
+        });
     }
 
     @Override
@@ -59,7 +81,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
 
     @Override
     @Transactional
-    public Integer update(String sql, Map<String, Object> params) {
+    public Integer update(String sql, Map<String, ?> params) {
         return getJdbi().withHandle(handle -> {
             var update = handle.createUpdate(sql);
             if (params != null) {
@@ -70,7 +92,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     }
 
     @Override
-    public Integer delete(String sql, Map<String, Object> params) {
+    public Integer delete(String sql, Map<String, ?> params) {
         return update(sql, params);
     }
 

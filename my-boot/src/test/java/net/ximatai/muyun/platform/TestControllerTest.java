@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
+import net.ximatai.muyun.domain.PageResult;
 import net.ximatai.muyun.platform.controller.TestController;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,23 @@ class TestControllerTest {
 //        var id2 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test2"));
 //        var id3 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test3"));
 
+    }
+
+    @Test
+    void testPageView() {
+        String id = ids.getFirst();
+        PageResult response = given()
+            .get("/test/view?page=1&limit=2")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(response.getTotal(), 3);
+        assertEquals(response.getList().size(), 2);
+        assertEquals(response.getPage(), 1);
+        assertEquals(response.getLimit(), 2);
     }
 
     @Test

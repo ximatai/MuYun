@@ -3,13 +3,14 @@ package net.ximatai.muyun.database;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 public interface IDatabaseAccess extends IDBInfoProvider {
 
-    default String buildInsertSql(String tableName, Map<String, Object> params) {
+    default String buildInsertSql(String tableName, Map<String, ?> params) {
         DBTable dbTable = getDBInfo().getTables().get(tableName);
         Objects.requireNonNull(dbTable);
 
@@ -27,7 +28,7 @@ public interface IDatabaseAccess extends IDBInfoProvider {
         return "INSERT INTO " + tableName + " " + columns + " VALUES " + values;
     }
 
-    default String buildUpdateSql(String tableName, Map<String, Object> params, String pk) {
+    default String buildUpdateSql(String tableName, Map<String, ?> params, String pk) {
         DBTable dbTable = getDBInfo().getTables().get(tableName);
         Objects.requireNonNull(dbTable);
 
@@ -43,11 +44,11 @@ public interface IDatabaseAccess extends IDBInfoProvider {
         return "UPDATE " + tableName + " SET " + setClause + " WHERE " + pk + "=:" + pk;
     }
 
-    default Object insertItem(String tableName, Map<String, Object> params) {
+    default Object insertItem(String tableName, Map<String, ?> params) {
         return this.insert(buildInsertSql(tableName, params), params, "id", String.class);
     }
 
-    default Object updateItem(String tableName, Map<String, Object> params) {
+    default Object updateItem(String tableName, Map<String, ?> params) {
         return this.update(buildUpdateSql(tableName, params, "id"), params);
     }
 
@@ -58,19 +59,21 @@ public interface IDatabaseAccess extends IDBInfoProvider {
         return this.delete("DELETE FROM " + tableName + " WHERE id=:id", Map.of("id", id));
     }
 
-    <T> Object insert(String sql, Map<String, Object> params, String pk, Class<T> idType);
+    <T> Object insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
 
-    Object row(String sql, Map<String, Object> params);
+    Object row(String sql, Map<String, ?> params);
 
     Object row(String sql);
 
-    Object query(String sql, Map<String, Object> params);
+    Object query(String sql, Map<String, ?> params);
+
+    Object query(String sql, List<?> params);
 
     Object query(String sql);
 
-    Object update(String sql, Map<String, Object> params);
+    Object update(String sql, Map<String, ?> params);
 
-    Object delete(String sql, Map<String, Object> params);
+    Object delete(String sql, Map<String, ?> params);
 
     Object execute(String sql);
 }
