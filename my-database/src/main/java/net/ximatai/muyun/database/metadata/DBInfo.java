@@ -23,7 +23,7 @@ public class DBInfo {
         return schemas.stream()
             .filter(schema -> schemaName.equals(schema.getName()))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Schema not found: " + schemaName));
+            .orElse(null);
     }
 
     public Map<String, DBTable> getTables() {

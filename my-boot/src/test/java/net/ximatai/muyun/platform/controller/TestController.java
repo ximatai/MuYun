@@ -11,6 +11,11 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 public class TestController extends Scaffold implements ICURDAbility, ITableCreateAbility {
 
     @Override
+    public String getSchemaName() {
+        return "test";
+    }
+
+    @Override
     public String getMainTable() {
         return "test_table";
     }
@@ -18,7 +23,7 @@ public class TestController extends Scaffold implements ICURDAbility, ITableCrea
     @Override
     public TableWrapper fitOutTable() {
         return TableWrapper.withName(getMainTable())
-            .setSchema("public")
+            .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("name").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));

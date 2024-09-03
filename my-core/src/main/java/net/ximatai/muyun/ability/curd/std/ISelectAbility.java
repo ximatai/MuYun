@@ -26,8 +26,7 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
     @GET
     @Path("/view")
     default PageResult view(@QueryParam("page") int page, @QueryParam("limit") int limit, @QueryParam("orderField") String orderField, @QueryParam("orderType") String orderType) {
-
-        DBTable dbTable = getDatabase().getDBInfo().getTables().get(getMainTable());
+        DBTable dbTable = getDatabase().getDBInfo().getSchema(getSchemaName()).getTables().get(getMainTable());
 
         List<OrderColumn> orderColumns = (orderField != null) ? List.of(new OrderColumn(orderField, orderType)) : getOrderColumns();
 

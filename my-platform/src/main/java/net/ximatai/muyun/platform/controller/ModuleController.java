@@ -12,6 +12,11 @@ public class ModuleController implements ICURDAbility {
     IDatabaseAccess databaseAccess;
 
     @Override
+    public String getSchemaName() {
+        return "platform";
+    }
+
+    @Override
     public String getMainTable() {
         return "app_module";
     }

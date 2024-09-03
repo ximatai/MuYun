@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IMetadataAbility {
 
+    String getSchemaName();
+
     String getMainTable();
 
     default String getPK() {
@@ -21,11 +23,11 @@ public interface IMetadataAbility {
     }
 
     default String getSelectOneRowSql() {
-        return "select * from " + getMainTable() + " where " + getPK() + "=:id";
+        return "select * from %s.%s where %s =:id".formatted(getSchemaName(), getMainTable(), getPK());
     }
 
     default String getSelectSql() {
-        return "select * from " + getMainTable();
+        return "select * from %s.%s".formatted(getSchemaName(), getMainTable());
     }
 
 }
