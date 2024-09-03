@@ -84,7 +84,7 @@ class TestControllerTest {
     @Test
     void testPageViewSortDesc() {
         PageResult<HashMap> response = given()
-            .get("/test/view?page=1&limit=2&orderField=t_create&orderType=desc")
+            .get("/test/view?page=1&limit=2&orderField=t_create&orderType=DESC")
             .then()
             .statusCode(200)
             .extract()

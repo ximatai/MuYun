@@ -17,6 +17,14 @@ import java.util.stream.Collectors;
 
 public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
 
+    default OrderColumn getOrderColumn() {
+        return OrderColumn.T_CREATE;
+    }
+
+    default List<OrderColumn> getOrderColumns() {
+        return List.of(getOrderColumn());
+    }
+
     @GET
     @Path("/view/{id}")
     default Map<String, ?> view(@PathParam("id") String id) {
