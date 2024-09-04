@@ -4,10 +4,15 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
+import net.ximatai.muyun.ability.ITableCreateAbility;
+import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
-import net.ximatai.muyun.domain.PageResult;
-import net.ximatai.muyun.platform.controller.TestController;
+import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
-class TestControllerTest {
+class TestBasicCURD {
 
     @Inject
     IDatabaseAccess databaseAccess;
@@ -207,4 +212,28 @@ class TestControllerTest {
             .statusCode(404);
     }
 
+}
+
+@Path("/test")
+class TestController extends Scaffold implements ICURDAbility, ITableCreateAbility {
+
+    @Override
+    public String getSchemaName() {
+        return "test";
+    }
+
+    @Override
+    public String getMainTable() {
+        return "test_table";
+    }
+
+    @Override
+    public TableWrapper fitOutTable() {
+        return TableWrapper.withName(getMainTable())
+            .setSchema(getSchemaName())
+            .setPrimaryKey(Column.ID_POSTGRES)
+            .addColumn(Column.of("name").setType("varchar"))
+            .addColumn(Column.of("t_create").setDefaultValue("now()"));
+
+    }
 }
