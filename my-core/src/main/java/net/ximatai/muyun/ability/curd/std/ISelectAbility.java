@@ -6,13 +6,18 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbility;
 import net.ximatai.muyun.ability.IMetadataAbility;
+import net.ximatai.muyun.core.exception.QueryException;
+import net.ximatai.muyun.core.tool.DateTool;
 import net.ximatai.muyun.database.metadata.DBTable;
-import net.ximatai.muyun.domain.OrderColumn;
-import net.ximatai.muyun.domain.PageResult;
+import net.ximatai.muyun.model.OrderColumn;
+import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.model.QueryItem;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
@@ -34,19 +39,111 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
     @GET
     @Path("/view")
     default PageResult view(@QueryParam("page") int page, @QueryParam("limit") int limit, @QueryParam("orderField") String orderField, @QueryParam("orderType") String orderType) {
+        return view(page, limit, orderField, orderType, null, null);
+    }
+
+    default PageResult view(int page,
+                            int limit,
+                            String orderField,
+                            String orderType,
+                            Map<String, Object> queryBody,
+                            List<QueryItem> queryItemList
+    ) {
         DBTable dbTable = getDatabase().getDBInfo().getSchema(getSchemaName()).getTables().get(getMainTable());
+        List<Object> params = new ArrayList<>();
 
         List<OrderColumn> orderColumns = (orderField != null) ? List.of(new OrderColumn(orderField, orderType)) : getOrderColumns();
 
         String authCondition = "and 1=1";
-        String baseSql = "select * from (%s) %s where 1=1 %s".formatted(getSelectSql(), getMainTable(), authCondition);
+        StringBuilder queryCondition = new StringBuilder();
+
+        // 查询条件处理
+        if (queryBody != null && queryItemList != null && !queryItemList.isEmpty()) {
+            queryBody.forEach((k, v) -> {
+                StringBuilder condition = new StringBuilder();
+                QueryItem qi = queryItemList.stream().filter(item -> item.getField().equals(k)).findFirst().orElse(null);
+
+                if (qi == null) {
+                    throw new QueryException("查询条件%s未配置，查询失败".formatted(k));
+                }
+
+                condition.append(" and %s ".formatted(qi.getField()));
+
+                if (v == null) {
+                    condition.append(" isnull ");
+                    queryCondition.append(condition);
+                    return;
+                }
+
+                QueryItem.SymbolType symbolType = qi.getSymbolType();
+
+                if (qi.isDate() || qi.isDatetime()) { // 是日期，需要提前转换
+                    Function<String, Date> converter = s -> qi.isDate() ? DateTool.stringToSqlDate(s) : DateTool.stringToSqlTime(s);
+
+                    if (v instanceof String s) {
+                        v = converter.apply(s);
+                    } else if (v instanceof List<?> list) {
+                        v = list.stream().map(o -> o instanceof String s ? converter.apply(s) : o).toList();
+                    }
+                }
+
+                switch (symbolType) {
+                    case LIKE:
+                        condition.append(" like ? ");
+                        params.add("%" + v + "%");
+                        break;
+                    case IN, NOT_IN:
+                        if (!(v instanceof List list)) {
+                            throw new QueryException("IN 条件的值必须是列表");
+                        }
+
+                        if (list.isEmpty()) {
+                            list.add("muyuntage_20240903_nanjing");
+                        }
+
+                        String symbol = qi.getSymbolType().equals(QueryItem.SymbolType.IN) ? "in" : "not in";
+                        condition.append(" %s (%s) ".formatted(symbol, list.stream().map(x -> "?").collect(Collectors.joining(","))));
+                        params.addAll(list);
+                        break;
+                    case EQUAL, NOT_EQUAL:
+                        String notMark = symbolType.equals(QueryItem.SymbolType.NOT_EQUAL) ? "!" : "";
+                        condition.append(" %s= ? ".formatted(notMark));
+                        params.add(v);
+                        break;
+                    case RANGE:
+                        if (!(v instanceof List list) || list.size() != 2) {
+                            throw new QueryException("区间查询%s的内容必须是长度为2的数组".formatted(k));
+                        }
+
+                        Object a = list.get(0);
+                        Object b = list.get(1);
+
+                        if (a != null) {
+                            condition.append(" >= ? ");
+                            params.add(a);
+                        }
+
+                        if (b != null) {
+                            condition.append(" and %s ".formatted(qi.getField()));
+                            condition.append(" <= ? ");
+                            params.add(b);
+                        }
+                        break;
+                    default:
+                        throw new QueryException("不支持的符号类型: " + symbolType);
+                }
+
+                queryCondition.append(condition);
+            });
+        }
+
+        String baseSql = "select * from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition);
 
         // 计算总数
-        long total = (long) getDatabase().row("select count(*) as num from (%s) %s where 1=1 %s ".formatted(getSelectSql(), getMainTable(), authCondition)).get("num");
+        long total = (long) getDatabase().row("select count(*) as num from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition)).get("num");
 
         // 构建查询 SQL
         StringBuilder querySql = new StringBuilder(baseSql);
-        List<Object> params = new ArrayList<>();
 
         // 添加排序列
         if (!orderColumns.isEmpty()) {
@@ -67,4 +164,5 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
 
         return new PageResult<>(list, total, limit, page);
     }
+
 }

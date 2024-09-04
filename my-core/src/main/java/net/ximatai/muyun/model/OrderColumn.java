@@ -1,4 +1,4 @@
-package net.ximatai.muyun.domain;
+package net.ximatai.muyun.model;
 
 public class OrderColumn {
 
