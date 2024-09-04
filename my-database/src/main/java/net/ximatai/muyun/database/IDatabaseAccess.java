@@ -61,6 +61,8 @@ public interface IDatabaseAccess extends IDBInfoProvider {
 
     <T> Object insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
 
+    Object row(String sql, List<?> params);
+
     Object row(String sql, Map<String, ?> params);
 
     Object row(String sql);

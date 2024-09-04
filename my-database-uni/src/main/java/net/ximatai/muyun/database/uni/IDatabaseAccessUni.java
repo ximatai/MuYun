@@ -22,6 +22,8 @@ public interface IDatabaseAccessUni extends IDatabaseAccess {
 
     Uni<Map<String, Object>> row(String sql, Map<String, ?> params);
 
+    Uni<Map<String, Object>> row(String sql, List<?> params);
+
     Uni<Map<String, Object>> row(String sql);
 
     Uni<List<Map<String, Object>>> query(String sql, Map<String, ?> params);

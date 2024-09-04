@@ -38,21 +38,31 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
 
     @GET
     @Path("/view")
-    default PageResult view(@QueryParam("page") int page, @QueryParam("limit") int limit, @QueryParam("orderField") String orderField, @QueryParam("orderType") String orderType) {
-        return view(page, limit, orderField, orderType, null, null);
+    default PageResult view(@QueryParam("page") int page, @QueryParam("size") int size, @QueryParam("sort") List<String> sort) {
+        return view(page, size, sort, null, null);
     }
 
     default PageResult view(int page,
-                            int limit,
-                            String orderField,
-                            String orderType,
+                            int size,
+                            List<String> sort,
                             Map<String, Object> queryBody,
                             List<QueryItem> queryItemList
     ) {
         DBTable dbTable = getDatabase().getDBInfo().getSchema(getSchemaName()).getTables().get(getMainTable());
         List<Object> params = new ArrayList<>();
 
-        List<OrderColumn> orderColumns = (orderField != null) ? List.of(new OrderColumn(orderField, orderType)) : getOrderColumns();
+        List<OrderColumn> orderColumns = new ArrayList<>();
+
+        if (sort != null && !sort.isEmpty()) {
+            sort.forEach(s -> {
+                String[] strings = s.split(",");
+                String order = "ASC";
+                if (strings.length > 1) {
+                    order = strings[1];
+                }
+                orderColumns.add(new OrderColumn(strings[0], order));
+            });
+        }
 
         String authCondition = "and 1=1";
         StringBuilder queryCondition = new StringBuilder();
@@ -140,7 +150,7 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
         String baseSql = "select * from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition);
 
         // 计算总数
-        long total = (long) getDatabase().row("select count(*) as num from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition)).get("num");
+        long total = (long) getDatabase().row("select count(*) as num from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition), params).get("num");
 
         // 构建查询 SQL
         StringBuilder querySql = new StringBuilder(baseSql);
@@ -157,12 +167,12 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
 
         // 添加分页参数
         querySql.append(" offset ? limit ? ");
-        params.add((page - 1) * limit);
-        params.add(limit);
+        params.add((page - 1) * size);
+        params.add(size);
 
         List<?> list = getDatabase().query(querySql.toString(), params);
 
-        return new PageResult<>(list, total, limit, page);
+        return new PageResult<>(list, total, size, page);
     }
 
 }

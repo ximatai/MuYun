@@ -29,6 +29,8 @@ public interface IDatabaseAccessStd extends IDatabaseAccess {
 
     <T> T insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
 
+    Map<String, Object> row(String sql, List<?> params);
+
     Map<String, Object> row(String sql, Map<String, ?> params);
 
     Map<String, Object> row(String sql);

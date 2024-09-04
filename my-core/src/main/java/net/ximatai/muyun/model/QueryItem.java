@@ -19,7 +19,7 @@ public class QueryItem {
 
     private Object defaultValue; //ui
 
-    public QueryItem of(String field) {
+    public static QueryItem of(String field) {
         QueryItem item = new QueryItem();
         item.field = field;
         item.alias = field;

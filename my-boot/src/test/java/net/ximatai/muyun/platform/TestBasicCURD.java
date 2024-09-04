@@ -33,7 +33,7 @@ class TestBasicCURD {
     IDatabaseAccess databaseAccess;
 
     @Inject
-    TestController testController;
+    TestBasicCURDController testController;
 
     String tableName;
 
@@ -60,7 +60,9 @@ class TestBasicCURD {
     void testPageView() {
         String id = ids.getFirst();
         PageResult response = given()
-            .get("/test/view?page=1&limit=2")
+            .queryParam("page", 1)
+            .queryParam("size", 2)
+            .get("/test/view")
             .then()
             .statusCode(200)
             .extract()
@@ -70,13 +72,16 @@ class TestBasicCURD {
         assertEquals(response.getTotal(), 3);
         assertEquals(response.getList().size(), 2);
         assertEquals(response.getPage(), 1);
-        assertEquals(response.getLimit(), 2);
+        assertEquals(response.getSize(), 2);
     }
 
     @Test
     void testPageViewSort() {
         PageResult<HashMap> response = given()
-            .get("/test/view?page=1&limit=2&orderField=t_create")
+            .queryParam("page", 1)
+            .queryParam("size", 2)
+            .queryParam("sort", "t_create")
+            .get("/test/view")
             .then()
             .statusCode(200)
             .extract()
@@ -89,7 +94,11 @@ class TestBasicCURD {
     @Test
     void testPageViewSortDesc() {
         PageResult<HashMap> response = given()
-            .get("/test/view?page=1&limit=2&orderField=t_create&orderType=DESC")
+            .queryParam("page", 1)
+            .queryParam("size", 2)
+            .queryParam("sort", "t_create,desc")
+            .queryParam("sort", "name,desc")
+            .get("/test/view")
             .then()
             .statusCode(200)
             .extract()
@@ -215,7 +224,7 @@ class TestBasicCURD {
 }
 
 @Path("/test")
-class TestController extends Scaffold implements ICURDAbility, ITableCreateAbility {
+class TestBasicCURDController extends Scaffold implements ICURDAbility, ITableCreateAbility {
 
     @Override
     public String getSchemaName() {

@@ -5,16 +5,16 @@ import java.util.List;
 public class PageResult<T> {
     private List<T> list;
     private long total;
-    private int limit;
+    private int size;
     private int page;
 
     public PageResult() {
     }
 
-    public PageResult(List<T> list, long total, int limit, int page) {
+    public PageResult(List<T> list, long total, int size, int page) {
         this.list = list;
         this.total = total;
-        this.limit = limit;
+        this.size = size;
         this.page = page;
     }
 
@@ -26,8 +26,8 @@ public class PageResult<T> {
         return total;
     }
 
-    public int getLimit() {
-        return limit;
+    public int getSize() {
+        return size;
     }
 
     public int getPage() {
@@ -42,8 +42,8 @@ public class PageResult<T> {
         this.total = total;
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public void setPage(int page) {

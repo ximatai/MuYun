@@ -6,6 +6,7 @@ import net.ximatai.muyun.database.DBInfoProvider;
 import net.ximatai.muyun.database.IDatabaseAccessStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +44,29 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     }
 
     @Override
+    public Map<String, Object> row(String sql, List<?> params) {
+        var row = getJdbi().withHandle(handle -> {
+            var query = handle.createQuery(sql);
+
+            if (params != null && !params.isEmpty()) {
+                for (int i = 0; i < params.size(); i++) {
+                    query.bind(i, params.get(i));  // 通过索引绑定参数
+                }
+            }
+
+            return query.mapToMap().findOne().orElse(null);
+        });
+
+        if (row == null) {
+            throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
+        }
+
+        return row;
+    }
+
+    @Override
     public Map<String, Object> row(String sql) {
-        return row(sql, null);
+        return row(sql, Collections.emptyList());
     }
 
     @Override

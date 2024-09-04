@@ -51,6 +51,11 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     }
 
     @Override
+    public Uni<Map<String, Object>> row(String sql, List<?> params) {
+        return null;
+    }
+
+    @Override
     public Uni<Map<String, Object>> row(String sql) {
         return null;
     }
