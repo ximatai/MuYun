@@ -7,5 +7,6 @@ plugins {
 
 dependencies {
     api libs.jdbi.core
+    testImplementation 'com.h2database:h2:2.1.214'
 }
 

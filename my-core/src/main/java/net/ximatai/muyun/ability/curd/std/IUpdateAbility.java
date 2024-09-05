@@ -16,7 +16,7 @@ public interface IUpdateAbility extends IDatabaseAbility, IMetadataAbility {
     @Transactional
     default Integer update(@PathParam("id") String id, Map body) {
         body.put("id", id);
-        return getDatabase().updateItem(getMainTable(), body);
+        return getDatabase().updateItem(getSchemaName(), getMainTable(), body);
     }
 
 }

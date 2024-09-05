@@ -10,6 +10,10 @@ import java.util.StringJoiner;
 
 public interface IDatabaseAccess extends IDBInfoProvider {
 
+    default Map<String, ?> transformDataForDB(DBTable dbTable, Map<String, ?> data) {
+        return data;
+    }
+
     default String buildInsertSql(String tableName, Map<String, ?> params) {
         DBTable dbTable = getDBInfo().getTables().get(tableName);
         Objects.requireNonNull(dbTable);
@@ -44,12 +48,16 @@ public interface IDatabaseAccess extends IDBInfoProvider {
         return "UPDATE " + tableName + " SET " + setClause + " WHERE " + pk + "=:" + pk;
     }
 
-    default Object insertItem(String tableName, Map<String, ?> params) {
-        return this.insert(buildInsertSql(tableName, params), params, "id", String.class);
+    default Object insertItem(String schema, String tableName, Map<String, ?> params) {
+        DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
+        Map<String, ?> transformed = transformDataForDB(table, params);
+        return this.insert(buildInsertSql(tableName, transformed), transformed, "id", String.class);
     }
 
-    default Object updateItem(String tableName, Map<String, ?> params) {
-        return this.update(buildUpdateSql(tableName, params, "id"), params);
+    default Object updateItem(String schema, String tableName, Map<String, ?> params) {
+        DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
+        Map<String, ?> transformed = transformDataForDB(table, params);
+        return this.update(buildUpdateSql(tableName, transformed, "id"), transformed);
     }
 
     default Object deleteItem(String tableName, String id) {

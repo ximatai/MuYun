@@ -10,6 +10,7 @@ dependencies {
     api enforcedPlatform(libs.quarkus.platform.bom)
     api project(':my-database')
 
+    api "org.eclipse:yasson:3.0.4"
     api "io.quarkus:quarkus-hibernate-orm"
     api "io.quarkus:quarkus-jdbc-postgresql"
 }

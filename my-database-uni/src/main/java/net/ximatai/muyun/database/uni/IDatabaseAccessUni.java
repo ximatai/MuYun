@@ -9,12 +9,12 @@ import java.util.Map;
 public interface IDatabaseAccessUni extends IDatabaseAccess {
 
     @Override
-    default Uni<String> insertItem(String tableName, Map<String, ?> params) {
-        return (Uni<String>) IDatabaseAccess.super.insertItem(tableName, params);
+    default Uni<String> insertItem(String schema, String tableName, Map<String, ?> params) {
+        return (Uni<String>) IDatabaseAccess.super.insertItem(schema, tableName, params);
     }
 
-    default Uni<Boolean> updateItem(String tableName, Map<String, ?> params) {
-        Uni<Integer> updated = (Uni<Integer>) IDatabaseAccess.super.updateItem(tableName, params);
+    default Uni<Boolean> updateItem(String schema, String tableName, Map<String, ?> params) {
+        Uni<Integer> updated = (Uni<Integer>) IDatabaseAccess.super.updateItem(schema, tableName, params);
         return updated.onItem().transform(rowsUpdated -> rowsUpdated == 1);
     }
 

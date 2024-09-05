@@ -7,12 +7,12 @@ import java.util.Map;
 
 public interface IDatabaseAccessStd extends IDatabaseAccess {
 
-    default String insertItem(String tableName, Map<String, ?> params) {
-        return (String) IDatabaseAccess.super.insertItem(tableName, params);
+    default String insertItem(String schema, String tableName, Map<String, ?> params) {
+        return (String) IDatabaseAccess.super.insertItem(schema, tableName, params);
     }
 
-    default Integer updateItem(String tableName, Map<String, ?> params) {
-        Integer num = (Integer) IDatabaseAccess.super.updateItem(tableName, params);
+    default Integer updateItem(String schema, String tableName, Map<String, ?> params) {
+        Integer num = (Integer) IDatabaseAccess.super.updateItem(schema, tableName, params);
         if (num == 0) {
             throw new MyDatabaseException(MyDatabaseException.Type.DATA_NOT_FOUND);
         }

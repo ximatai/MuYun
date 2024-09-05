@@ -1,15 +1,11 @@
 package net.ximatai.muyun.platform.controller;
 
-import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.core.Scaffold;
 
 @Path("/module")
-public class ModuleController implements ICURDAbility {
-
-    @Inject
-    IDatabaseAccess databaseAccess;
+public class ModuleController extends Scaffold implements ICURDAbility {
 
     @Override
     public String getSchemaName() {
@@ -21,8 +17,4 @@ public class ModuleController implements ICURDAbility {
         return "app_module";
     }
 
-    @Override
-    public IDatabaseAccess getDatabaseAccess() {
-        return databaseAccess;
-    }
 }
