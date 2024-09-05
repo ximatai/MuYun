@@ -38,12 +38,13 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
 
     @GET
     @Path("/view")
-    default PageResult view(@QueryParam("page") int page, @QueryParam("size") int size, @QueryParam("sort") List<String> sort) {
-        return view(page, size, sort, null, null);
+    default PageResult view(@QueryParam("page") Integer page, @QueryParam("size") Integer size, @QueryParam("noPage") Boolean noPage, @QueryParam("sort") List<String> sort) {
+        return view(page, size, noPage, sort, null, null);
     }
 
-    default PageResult view(int page,
-                            int size,
+    default PageResult view(Integer page,
+                            Integer size,
+                            Boolean noPage,
                             List<String> sort,
                             Map<String, Object> queryBody,
                             List<QueryItem> queryItemList
@@ -71,7 +72,7 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
         if (queryBody != null && queryItemList != null && !queryItemList.isEmpty()) {
             queryBody.forEach((k, v) -> {
                 StringBuilder condition = new StringBuilder();
-                QueryItem qi = queryItemList.stream().filter(item -> item.getField().equals(k)).findFirst().orElse(null);
+                QueryItem qi = queryItemList.stream().filter(item -> item.getAlias().equals(k)).findFirst().orElse(null);
 
                 if (qi == null) {
                     throw new QueryException("查询条件%s未配置，查询失败".formatted(k));
@@ -165,10 +166,15 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
             );
         }
 
-        // 添加分页参数
-        querySql.append(" offset ? limit ? ");
-        params.add((page - 1) * size);
-        params.add(size);
+        page = page == null ? 1 : page;
+        size = size == null ? 10 : size;
+
+        if (noPage == null || !noPage) {
+            // 添加分页参数
+            querySql.append(" offset ? limit ? ");
+            params.add((page - 1) * size);
+            params.add(size);
+        }
 
         List<?> list = getDatabase().query(querySql.toString(), params);
 

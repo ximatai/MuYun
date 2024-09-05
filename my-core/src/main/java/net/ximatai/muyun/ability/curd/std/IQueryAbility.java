@@ -23,11 +23,12 @@ public interface IQueryAbility extends ISelectAbility {
 
     @POST
     @Path("/view")
-    default PageResult view(@QueryParam("page") int page,
-                            @QueryParam("size") int size,
+    default PageResult view(@QueryParam("page") Integer page,
+                            @QueryParam("size") Integer size,
+                            @QueryParam("noPage") Boolean noPage,
                             @QueryParam("sort") List<String> sort,
                             Map<String, Object> queryBody) {
-        return ISelectAbility.super.view(page, size, sort, queryBody, queryItemList());
+        return ISelectAbility.super.view(page, size, noPage, sort, queryBody, queryItemList());
     }
 
 }
