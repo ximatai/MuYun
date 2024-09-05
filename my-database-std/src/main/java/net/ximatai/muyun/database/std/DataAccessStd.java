@@ -9,14 +9,13 @@ import net.ximatai.muyun.database.IDatabaseAccessStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
+import net.ximatai.muyun.database.tool.DateTool;
 import org.postgresql.util.PGobject;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
             case "int8" -> convertToBigInteger(value);
             case "int4", "int2" -> convertToInteger(value);
             case "bool" -> isTrue(value);
-            case "date", "timestamp" -> handleDateTimestamp(value);
+            case "date", "timestamp" -> DateTool.handleDateTimestamp(value);
             case "numeric" -> convertToBigDecimal(value);
             case "json", "jsonb" -> convertToJson(value);
             case "bytea" -> convertToByteArray(value);
@@ -204,19 +203,6 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
         } catch (SQLException e) {
             throw new MyDatabaseException("Error converting to PGobject for JSON type: " + e.getMessage());
         }
-    }
-
-    private Timestamp handleDateTimestamp(Object value) {
-        if (value instanceof Date) {
-            return new Timestamp(((Date) value).getTime());
-        } else if (value instanceof String strValue) {
-            try {
-                return strValue.length() == 10 ? Timestamp.valueOf(strValue + " 00:00:00") : Timestamp.valueOf(strValue);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Invalid date format: " + value);
-            }
-        }
-        return null;
     }
 
     private boolean isBlank(String value) {

@@ -185,7 +185,7 @@ class TestQuery {
             .as(new TypeRef<>() {
             });
 
-        assertEquals(4, response.getTotal());
+        assertEquals(5, response.getTotal());
     }
 
     @Test
@@ -224,6 +224,25 @@ class TestQuery {
             });
 
         assertEquals(8, response.getTotal());
+    }
+
+    @Test
+    void testRange5() {
+        Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-05 12:00:00", "2024-01-05 12:00:00"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(1, response.getTotal());
     }
 
 }

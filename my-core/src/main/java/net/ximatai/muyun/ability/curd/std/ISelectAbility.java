@@ -7,8 +7,8 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbility;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.core.exception.QueryException;
-import net.ximatai.muyun.core.tool.DateTool;
 import net.ximatai.muyun.database.metadata.DBTable;
+import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.OrderColumn;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
@@ -89,7 +89,7 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
                 QueryItem.SymbolType symbolType = qi.getSymbolType();
 
                 if (qi.isDate() || qi.isDatetime()) { // 是日期，需要提前转换
-                    Function<String, Date> converter = s -> qi.isDate() ? DateTool.stringToSqlDate(s) : DateTool.stringToSqlTime(s);
+                    Function<String, Date> converter = s -> qi.isDate() ? DateTool.stringToSqlDate(s) : DateTool.stringToSqlTimestamp(s);
 
                     if (v instanceof String s) {
                         v = converter.apply(s);
