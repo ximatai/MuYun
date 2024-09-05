@@ -38,30 +38,24 @@ class TestQuery {
 
     String tableName;
 
-    List<String> ids;
-
     @BeforeEach
     void setUp() {
         tableName = testController.getMainTable();
         databaseAccess.execute("TRUNCATE TABLE %s".formatted(tableName));
 
-        var id1 = testController.create(Map.of("id", "1", "name", "test1", "t_create", "2024-01-01 12:00:00"));
-        var id2 = testController.create(Map.of("id", "2", "name", "test2", "t_create", "2024-01-02 12:00:00"));
-        var id3 = testController.create(Map.of("id", "3", "name", "test3", "t_create", "2024-01-03 12:00:00"));
-        var id4 = testController.create(Map.of("id", "4", "name", "test4", "t_create", "2024-01-04 12:00:00"));
-        var id5 = testController.create(Map.of("id", "5", "name", "test5", "t_create", "2024-01-05 12:00:00"));
-        var id6 = testController.create(Map.of("id", "6", "name", "test6", "t_create", "2024-01-06 12:00:00"));
-        var id7 = testController.create(Map.of("id", "7", "name", "test7", "t_create", "2024-01-07 12:00:00"));
-        var id8 = testController.create(Map.of("id", "8", "name", "test8", "t_create", "2024-01-08 12:00:00"));
-
-        ids = List.of(id1, id2, id3, id4, id5, id6, id7, id8);
+        testController.create(Map.of("id", "1", "name", "test1", "t_create", "2024-01-01 12:00:00"));
+        testController.create(Map.of("id", "2", "name", "test2", "t_create", "2024-01-02 12:00:00"));
+        testController.create(Map.of("id", "3", "name", "test3", "t_create", "2024-01-03 12:00:00"));
+        testController.create(Map.of("id", "4", "name", "test4", "t_create", "2024-01-04 12:00:00"));
+        testController.create(Map.of("id", "5", "name", "test5", "t_create", "2024-01-05 12:00:00"));
+        testController.create(Map.of("id", "6", "name", "test6", "t_create", "2024-01-06 12:00:00"));
+        testController.create(Map.of("id", "7", "name", "test7", "t_create", "2024-01-07 12:00:00"));
+        testController.create(Map.of("id", "8", "name", "test8", "t_create", "2024-01-08 12:00:00"));
     }
 
     @Test
     void testEqual() {
-        String id = ids.getFirst();
-
-        Map<String, String> request = Map.of("id", id);
+        Map<String, String> request = Map.of("id", "1");
 
         PageResult<Map> response = given()
             .contentType("application/json")
@@ -77,14 +71,12 @@ class TestQuery {
 
         assertEquals(1, response.getTotal());
         assertEquals(1, response.getList().size());
-        assertEquals(id, response.getList().get(0).get("id"));
+        assertEquals("1", response.getList().get(0).get("id"));
     }
 
     @Test
     void testNotEqual() {
-        String id = ids.getFirst();
-
-        Map<String, String> request = Map.of("no_id", id);
+        Map<String, String> request = Map.of("no_id", "1");
 
         PageResult<Map> response = given()
             .contentType("application/json")
@@ -99,6 +91,139 @@ class TestQuery {
             });
 
         assertEquals(7, response.getTotal());
+    }
+
+    @Test
+    void testIn() {
+        Map<String, ?> request = Map.of("in_id", List.of("1", "2", "3"));
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(3, response.getTotal());
+    }
+
+    @Test
+    void testNotIn() {
+        Map<String, ?> request = Map.of("not_in_id", List.of("1", "2", "3"));
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(5, response.getTotal());
+    }
+
+    @Test
+    void testLike() {
+        Map<String, ?> request = Map.of("name", "test");
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(8, response.getTotal());
+    }
+
+    @Test
+    void testRange1() {
+        Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-05 12:00:00", null});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(4, response.getTotal());
+    }
+
+    @Test
+    void testRange2() {
+        Map<String, ?> request = Map.of("t_create", new String[]{null, "2024-01-05 12:00:00"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(4, response.getTotal());
+    }
+
+    @Test
+    void testRange3() {
+        Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-05 00:00:00", "2024-01-05 24:00:00"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(1, response.getTotal());
+    }
+
+    @Test
+    void testRange4() {
+        Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-01 00:00:00", "2024-01-10 24:00:00"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(8, response.getTotal());
     }
 
 }
@@ -131,7 +256,10 @@ class TestQueryController extends Scaffold implements ICURDAbility, ITableCreate
         return List.of(
             QueryItem.of("id"),
             QueryItem.of("id").setAlias("no_id").setSymbolType(QueryItem.SymbolType.NOT_EQUAL),
-            QueryItem.of("name")
+            QueryItem.of("id").setAlias("in_id").setSymbolType(QueryItem.SymbolType.IN),
+            QueryItem.of("id").setAlias("not_in_id").setSymbolType(QueryItem.SymbolType.NOT_IN),
+            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("t_create").setTime(true).setSymbolType(QueryItem.SymbolType.RANGE)
         );
     }
 }

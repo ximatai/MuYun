@@ -129,7 +129,9 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
                         Object a = list.get(0);
                         Object b = list.get(1);
 
-                        if (a != null) {
+                        if (a == null) {
+                            condition.append(" = %s ".formatted(qi.getField()));
+                        } else {
                             condition.append(" >= ? ");
                             params.add(a);
                         }
