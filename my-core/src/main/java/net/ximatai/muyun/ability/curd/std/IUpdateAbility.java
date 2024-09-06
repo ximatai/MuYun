@@ -4,12 +4,12 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import net.ximatai.muyun.ability.IDatabaseAbility;
+import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 
 import java.util.Map;
 
-public interface IUpdateAbility extends IDatabaseAbility, IMetadataAbility {
+public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     @POST
     @Path("/update/{id}")

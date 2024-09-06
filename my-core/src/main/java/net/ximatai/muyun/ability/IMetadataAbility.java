@@ -1,6 +1,8 @@
 package net.ximatai.muyun.ability;
 
-public interface IMetadataAbility {
+import net.ximatai.muyun.database.metadata.DBTable;
+
+public interface IMetadataAbility extends IDatabaseAbility {
 
     String getSchemaName();
 
@@ -10,12 +12,8 @@ public interface IMetadataAbility {
         return "id";
     }
 
-    default String getSelectOneRowSql() {
-        return "select * from %s.%s where %s =:id".formatted(getSchemaName(), getMainTable(), getPK());
-    }
-
-    default String getSelectSql() {
-        return "select * from %s.%s".formatted(getSchemaName(), getMainTable());
+    default DBTable getDBTable() {
+        return getDatabaseAccess().getDBInfo().getSchema(getSchemaName()).getTable(getMainTable());
     }
 
 }

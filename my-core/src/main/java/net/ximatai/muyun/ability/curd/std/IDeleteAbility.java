@@ -4,10 +4,10 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import net.ximatai.muyun.ability.IDatabaseAbility;
+import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 
-public interface IDeleteAbility extends IDatabaseAbility, IMetadataAbility {
+public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     @GET
     @Path("/delete/{id}")

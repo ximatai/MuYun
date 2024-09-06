@@ -4,8 +4,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
-import net.ximatai.muyun.ability.IDatabaseAbility;
+import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
+import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.database.tool.DateTool;
@@ -17,10 +18,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
+public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default OrderColumn getOrderColumn() {
         return OrderColumn.T_CREATE;
@@ -28,6 +30,31 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
 
     default List<OrderColumn> getOrderColumns() {
         return List.of(getOrderColumn());
+    }
+
+    default String getSelectOneRowSql() {
+        return "%s where %s =:id".formatted(getSelectSql(), getPK());
+    }
+
+    default String getSelectSql() {
+        StringBuilder starSql = new StringBuilder("%s.*".formatted(getMainTable()));
+        StringBuilder joinSql = new StringBuilder();
+
+        if (this instanceof IReferenceAbility referenceAbility) {
+
+            referenceAbility.getReferenceList().forEach(info -> {
+                String referenceTable = info.getReferenceTable();
+                String referenceTableTempName = "%s_%s".formatted(referenceTable, UUID.randomUUID().toString().substring(25));
+                info.getTranslates().forEach((column, alias) -> {
+                    starSql.append(",%s.%s as %s ".formatted(referenceTableTempName, column, alias));
+                });
+
+                joinSql.append("\n left join %s as %s on %s.%s = %s.%s ".formatted(referenceTable, referenceTableTempName, getMainTable(), info.getRelationColumn(), referenceTableTempName, info.getHitField()));
+            });
+
+        }
+
+        return "select %s from %s.%s %s".formatted(starSql, getSchemaName(), getMainTable(), joinSql);
     }
 
     @GET
@@ -63,6 +90,10 @@ public interface ISelectAbility extends IDatabaseAbility, IMetadataAbility {
                 }
                 orderColumns.add(new OrderColumn(strings[0], order));
             });
+        }
+
+        if (orderColumns.isEmpty()) {
+            orderColumns.addAll(getOrderColumns());
         }
 
         String authCondition = "and 1=1";
