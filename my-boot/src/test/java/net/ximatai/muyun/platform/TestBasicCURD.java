@@ -126,6 +126,8 @@ class TestBasicCURD {
         assertEquals(request.get("id"), e.get("id"));
         assertEquals(request.get("name"), e.get("name"));
         assertNull(e.get("name2"));
+        assertNull(e.get("t_update"));
+        assertNotNull(e.get("t_create"));
     }
 
     @Test
@@ -143,6 +145,7 @@ class TestBasicCURD {
 
         Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
 
+        assertNotNull(e.get("t_update"));
         assertEquals(request.get("name"), e.get("name"));
     }
 
@@ -242,7 +245,8 @@ class TestBasicCURDController extends Scaffold implements ICURDAbility, ITableCr
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("name").setType("varchar"))
-            .addColumn(Column.of("t_create").setDefaultValue("now()"));
+            .addColumn(Column.of("t_create"))
+            .addColumn(Column.of("t_update"));
 
     }
 }

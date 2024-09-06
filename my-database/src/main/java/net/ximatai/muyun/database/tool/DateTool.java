@@ -41,10 +41,12 @@ public class DateTool {
     }
 
     public static Timestamp handleDateTimestamp(Object value) {
-        if (value instanceof Date) {
-            return new Timestamp(((Date) value).getTime());
-        } else if (value instanceof String) {
-            return stringToSqlTimestamp((String) value);
+        if (value instanceof LocalDateTime localDateTime) {
+            return Timestamp.valueOf(localDateTime);
+        } else if (value instanceof Date date) {
+            return new Timestamp(date.getTime());
+        } else if (value instanceof String str) {
+            return stringToSqlTimestamp(str);
         } else {
             throw new IllegalArgumentException("Unsupported type: " + value.getClass().getName());
         }

@@ -54,7 +54,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         }
 
-        return "select %s from %s.%s %s".formatted(starSql, getSchemaName(), getMainTable(), joinSql);
+        return "select %s from %s.%s %s ".formatted(starSql, getSchemaName(), getMainTable(), joinSql);
     }
 
     @GET

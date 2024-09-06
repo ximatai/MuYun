@@ -7,6 +7,8 @@ import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
@@ -15,8 +17,13 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Path("/update/{id}")
     @Transactional
     default Integer update(@PathParam("id") String id, Map body) {
-        body.put("id", id);
-        return getDatabase().updateItem(getSchemaName(), getMainTable(), body);
+        HashMap map = new HashMap(body);
+        map.put("id", id);
+        if (!map.containsKey("t_update")) {
+            map.put("t_update", LocalDateTime.now());
+        }
+
+        return getDatabase().updateItem(getSchemaName(), getMainTable(), map);
     }
 
 }

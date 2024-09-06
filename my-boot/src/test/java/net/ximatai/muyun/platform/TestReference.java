@@ -151,7 +151,7 @@ class TestReferableController extends Scaffold implements ICURDAbility, ITableCr
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType("varchar"))
-            .addColumn(Column.of("t_create").setDefaultValue("now()"));
+            .addColumn(Column.of("t_create"));
 
     }
 
