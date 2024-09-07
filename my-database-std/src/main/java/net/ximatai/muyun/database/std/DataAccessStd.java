@@ -9,12 +9,14 @@ import net.ximatai.muyun.database.IDatabaseAccessStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
+import net.ximatai.muyun.database.std.mapper.MyPgMapMapper;
 import net.ximatai.muyun.database.tool.DateTool;
 import org.postgresql.util.PGobject;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +45,43 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     }
 
     public Object getDBValue(Object value, String type) {
-        if (value == null || isBlank(value.toString())) {
+        if (value == null) {
             return null;
+        }
+
+//        if (value instanceof List) {
+//            return ((List<?>) value).toArray();
+//        }
+
+        // 以_开头的是数组类型，形如：_int4，目前只考虑支持 varchar、integer 和 bool
+        if (type.startsWith("_")) {
+            if (value instanceof java.sql.Array) {
+                return value; // 已经是数组类型，直接返回
+            }
+
+            Object[] arrayValue;
+            if (value instanceof String string) {
+                arrayValue = string.split(",");
+            } else if (value instanceof List<?> list) {
+                arrayValue = list.toArray();
+            } else {
+                return value; // 不支持的输入类型，直接返回
+            }
+
+            String subType = type.substring(1);
+
+            return switch (subType) {
+                case "varchar" -> Arrays.stream(arrayValue)
+                    .map(Object::toString)
+                    .toArray(String[]::new);
+                case "int4" -> Arrays.stream(arrayValue)
+                    .map(val -> Integer.parseInt(val.toString()))
+                    .toArray(Integer[]::new);
+                case "bool" -> Arrays.stream(arrayValue)
+                    .map(val -> Boolean.parseBoolean(val.toString()))
+                    .toArray(Boolean[]::new);
+                default -> value; // 不支持的类型，返回原值
+            };
         }
 
         return switch (type) {
@@ -54,7 +91,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
             case "bool" -> isTrue(value);
             case "date", "timestamp" -> DateTool.handleDateTimestamp(value);
             case "numeric" -> convertToBigDecimal(value);
-            case "json", "jsonb" -> convertToJson(value);
+//            case "json", "jsonb" -> convertToJson(value);
             case "bytea" -> convertToByteArray(value);
             default -> value;
         };
@@ -71,7 +108,8 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     public Map<String, Object> row(String sql, Map<String, ?> params) {
         var row = getJdbi().withHandle(handle -> handle.createQuery(sql)
             .bindMap(params)
-            .mapToMap().findOne().orElse(null));
+            .map(new MyPgMapMapper())
+            .findOne().orElse(null));
 
         if (row == null) {
             throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
@@ -90,7 +128,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
                 }
             }
 
-            return query.mapToMap().findOne().orElse(null);
+            return query.map(new MyPgMapMapper()).findOne().orElse(null);
         });
 
         if (row == null) {
@@ -109,7 +147,8 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
     public List<Map<String, Object>> query(String sql, Map<String, ?> params) {
         return getJdbi().withHandle(handle -> handle.createQuery(sql)
             .bindMap(params)
-            .mapToMap().list());
+            .map(new MyPgMapMapper())
+            .list());
     }
 
     @Override
@@ -123,7 +162,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseAccessStd 
                 }
             }
 
-            return query.mapToMap().list();
+            return query.map(new MyPgMapMapper()).list();
         });
     }
 

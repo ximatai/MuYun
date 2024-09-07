@@ -7,6 +7,8 @@ jdbi = "3.45.4"
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
 jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+jdbi-postgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbi" }
+jdbi-jackson2 = { module = "org.jdbi:jdbi3-jackson2", version.ref = "jdbi" }
 
 
 [plugins]
