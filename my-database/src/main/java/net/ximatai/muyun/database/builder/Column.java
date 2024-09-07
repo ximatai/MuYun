@@ -22,6 +22,7 @@ public class Column {
 
     private Column(String name) {
         this.name = name;
+        this.type = buildTypeWithColumnName(name);
     }
 
     public static Column of(String name) {
@@ -103,9 +104,6 @@ public class Column {
     }
 
     public String getType() {
-        if (type == null) {
-            return buildTypeWithColumnName(name);
-        }
         return type;
     }
 
@@ -134,7 +132,8 @@ public class Column {
     }
 
     String buildTypeWithColumnName(String name) {
-        String type;
+        String type = null;
+
         if ("id".equals(name)) {
             type = "varchar";
         } else if (name.startsWith("v_")) {
@@ -163,9 +162,8 @@ public class Column {
             type = "varchar[]";
         } else if (name.startsWith("dicts_")) {
             type = "varchar[]";
-        } else {
-            throw new IllegalArgumentException("Unsupported column type: " + name);
         }
+
         return type;
     }
 }
