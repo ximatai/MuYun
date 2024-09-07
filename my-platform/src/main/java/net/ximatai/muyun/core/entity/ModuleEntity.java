@@ -1,4 +1,4 @@
-package net.ximatai.muyun.platform.entity;
+package net.ximatai.muyun.core.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

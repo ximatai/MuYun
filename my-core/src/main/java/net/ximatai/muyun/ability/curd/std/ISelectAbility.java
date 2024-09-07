@@ -7,6 +7,7 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
+import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.database.tool.DateTool;
@@ -33,12 +34,16 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     }
 
     default String getSelectOneRowSql() {
-        return "%s where %s =:id".formatted(getSelectSql(), getPK());
+        return "select * from (%s) %s where %s = :id ".formatted(getSelectSql(), getMainTable(), getPK());
     }
 
     default String getSelectSql() {
         StringBuilder starSql = new StringBuilder("%s.*".formatted(getMainTable()));
         StringBuilder joinSql = new StringBuilder();
+        String softDeleteSql = "";
+        if (this instanceof ISoftDeleteAbility ability) {
+            softDeleteSql = " and %s.%s = false ".formatted(getMainTable(), ability.getSoftDeleteColumn().getName());
+        }
 
         if (this instanceof IReferenceAbility referenceAbility) {
 
@@ -54,7 +59,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         }
 
-        return "select %s from %s.%s %s ".formatted(starSql, getSchemaName(), getMainTable(), joinSql);
+        return "select %s from %s.%s %s where 1=1 %s ".formatted(starSql, getSchemaName(), getMainTable(), joinSql, softDeleteSql);
     }
 
     @GET

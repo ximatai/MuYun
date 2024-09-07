@@ -19,8 +19,8 @@ public interface IDatabaseAccessStd extends IDatabaseAccess {
         return num;
     }
 
-    default Integer deleteItem(String tableName, String id) {
-        Integer num = (Integer) IDatabaseAccess.super.deleteItem(tableName, id);
+    default Integer deleteItem(String schema, String tableName, String id) {
+        Integer num = (Integer) IDatabaseAccess.super.deleteItem(schema, tableName, id);
         if (num == 0) {
             throw new MyDatabaseException(MyDatabaseException.Type.DATA_NOT_FOUND);
         }

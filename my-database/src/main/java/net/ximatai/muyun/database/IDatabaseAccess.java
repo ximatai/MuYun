@@ -3,6 +3,7 @@ package net.ximatai.muyun.database;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -60,14 +61,18 @@ public interface IDatabaseAccess extends IDBInfoProvider {
         return this.update(buildUpdateSql(tableName, transformed, "id"), transformed);
     }
 
-    default Object deleteItem(String tableName, String id) {
+    default Object deleteItem(String schema, String tableName, String id) {
         DBTable dbTable = getDBInfo().getTables().get(tableName);
         Objects.requireNonNull(dbTable);
 
-        return this.delete("DELETE FROM " + tableName + " WHERE id=:id", Map.of("id", id));
+        return this.delete("DELETE FROM %s.%s WHERE id=:id".formatted(schema, tableName), Map.of("id", id));
     }
 
     <T> Object insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
+
+    default Object row(String sql, Object... params) {
+        return this.row(sql, Arrays.stream(params).toList());
+    }
 
     Object row(String sql, List<?> params);
 

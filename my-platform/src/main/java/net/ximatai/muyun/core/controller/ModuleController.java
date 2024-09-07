@@ -1,4 +1,4 @@
-package net.ximatai.muyun.platform.controller;
+package net.ximatai.muyun.core.controller;
 
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;

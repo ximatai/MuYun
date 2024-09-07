@@ -16,6 +16,10 @@ public class Column {
         .setType("varchar")
         .setDefaultValue("gen_random_uuid()");
 
+    public static final Column DELETE_FLAG = new Column("b_delete")
+        .setType("boolean")
+        .setDefaultValue("false");
+
     private Column(String name) {
         this.name = name;
     }

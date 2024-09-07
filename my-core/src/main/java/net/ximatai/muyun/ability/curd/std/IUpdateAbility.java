@@ -18,10 +18,8 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Transactional
     default Integer update(@PathParam("id") String id, Map body) {
         HashMap map = new HashMap(body);
-        map.put("id", id);
-        if (!map.containsKey("t_update")) {
-            map.put("t_update", LocalDateTime.now());
-        }
+        map.put(getPK(), id);
+        map.put("t_update", LocalDateTime.now());
 
         return getDatabase().updateItem(getSchemaName(), getMainTable(), map);
     }

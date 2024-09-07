@@ -1,4 +1,4 @@
-package net.ximatai.muyun.platform;
+package net.ximatai.muyun.core;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -10,7 +10,6 @@ import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
