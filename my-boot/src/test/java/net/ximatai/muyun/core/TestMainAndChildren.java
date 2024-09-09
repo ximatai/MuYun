@@ -1,0 +1,235 @@
+package net.ximatai.muyun.core;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
+import net.ximatai.muyun.ability.IChildAbility;
+import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.ITableCreateAbility;
+import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
+import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.model.QueryItem;
+import net.ximatai.muyun.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+class TestMainAndChildren {
+
+    private String mainPath = "/testmain";
+    private String childPath = "/testchildren";
+
+    @Inject
+    IDatabaseAccess databaseAccess;
+
+    @Inject
+    TestMain testMain;
+
+    @Inject
+    TestChildren testChildren;
+
+    String idMain;
+    String idChild;
+
+    @BeforeEach
+    void setUp() {
+        idMain = testMain.create(Map.of("v_name", "main"));
+        idChild = testChildren.create(Map.of("v_name", "child1", "id_at_testmain", idMain));
+    }
+
+    @Test
+    void testInsertOK() {
+
+        Map response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .when()
+            .get("%s/view/%s".formatted(mainPath, idMain))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(idMain, response.get("id"));
+
+        Map responseChild = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .when()
+            .get("%s/view/%s".formatted(childPath, idChild))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(idChild, responseChild.get("id"));
+        assertEquals(idMain, responseChild.get("id_at_testmain"));
+    }
+
+    @Test
+    void testGetChildTableList() {
+        List<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .when()
+            .get("%s/view/%s/children/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertNotNull(response.stream().filter(it -> it.get("id").equals(idChild)));
+    }
+
+    @Test
+    void testChildCRUD() {
+        String child2 = given()
+            .contentType("application/json")
+            .body(Map.of("v_name", "child2"))
+            .when()
+            .post("%s/update/%s/children/%s/create".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        assertNotNull(child2);
+
+        Map child2Map = given()
+            .get("%s/view/%s/children/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(idMain, child2Map.get("id_at_testmain"));
+        assertEquals("child2", child2Map.get("v_name"));
+
+        String editCount = given()
+            .contentType("application/json")
+            .body(Map.of("v_name", "child22"))
+            .when()
+            .post("%s/update/%s/children/%s/update/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        assertEquals("1", editCount);
+
+        Map child2Map2 = given()
+            .get("%s/view/%s/children/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(idMain, child2Map2.get("id_at_testmain"));
+        assertEquals("child22", child2Map2.get("v_name"));
+
+        String delCount = given()
+            .get("%s/update/%s/children/%s/delete/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        assertEquals("1", delCount);
+
+        given()
+            .get("%s/view/%s/children/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .then()
+            .statusCode(404);
+
+    }
+}
+
+@Path("/testmain")
+class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, IChildrenAbility {
+
+    @Inject
+    TestChildren testChildren;
+
+    @Override
+    public String getSchemaName() {
+        return "test";
+    }
+
+    @Override
+    public String getMainTable() {
+        return "testmain";
+    }
+
+    @Override
+    public TableWrapper fitOutTable() {
+        return TableWrapper.withName(getMainTable())
+            .setSchema(getSchemaName())
+            .setPrimaryKey(Column.ID_POSTGRES)
+            .addColumn(Column.of("name").setType("varchar"))
+            .addColumn(Column.of("t_create").setDefaultValue("now()"));
+
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("id"),
+            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE)
+        );
+    }
+
+    @Override
+    public List<ChildTableInfo> getChildren() {
+        return List.of(testChildren.toChildTable("id_at_testmain"));
+    }
+}
+
+@Path("/testchildren")
+class TestChildren extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, IChildAbility {
+
+    @Override
+    public String getSchemaName() {
+        return "test";
+    }
+
+    @Override
+    public String getMainTable() {
+        return "testchildren";
+    }
+
+    @Override
+    public TableWrapper fitOutTable() {
+        return TableWrapper.withName(getMainTable())
+            .setSchema(getSchemaName())
+            .setPrimaryKey(Column.ID_POSTGRES)
+            .addColumn(Column.of("v_name").setType("varchar"))
+            .addColumn(Column.of("id_at_testmain"));
+
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("id")
+        );
+    }
+}
