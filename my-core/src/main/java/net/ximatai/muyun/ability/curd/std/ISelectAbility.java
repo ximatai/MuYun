@@ -26,11 +26,22 @@ import java.util.stream.Collectors;
 public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default OrderColumn getOrderColumn() {
-        return OrderColumn.T_CREATE;
+        if (getDBTable().contains(OrderColumn.I_ORDER.getColumnName())) {
+            return OrderColumn.I_ORDER;
+        }
+        if (getDBTable().contains(OrderColumn.T_CREATE.getColumnName())) {
+            return OrderColumn.T_CREATE;
+        }
+        return null;
     }
 
     default List<OrderColumn> getOrderColumns() {
-        return List.of(getOrderColumn());
+        OrderColumn orderColumn = getOrderColumn();
+        if (orderColumn == null) {
+            return List.of();
+        } else {
+            return List.of(getOrderColumn());
+        }
     }
 
     default String getSelectOneRowSql() {
