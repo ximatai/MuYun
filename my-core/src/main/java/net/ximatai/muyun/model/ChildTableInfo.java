@@ -1,23 +1,23 @@
 package net.ximatai.muyun.model;
 
-import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.ability.IChildAbility;
 
-public class ChildTable {
-    private ICURDAbility ctrl;
+public class ChildTableInfo {
+    private IChildAbility ctrl;
     private String foreignKey;
     private boolean isAutoDelete = false;
 
-    public ChildTable(ICURDAbility ctrl, String foreignKey) {
+    public ChildTableInfo(IChildAbility ctrl, String foreignKey) {
         this.ctrl = ctrl;
         this.foreignKey = foreignKey;
     }
 
-    public ChildTable setAutoDelete() {
+    public ChildTableInfo setAutoDelete() {
         this.isAutoDelete = true;
         return this;
     }
 
-    public ICURDAbility getCtrl() {
+    public IChildAbility getCtrl() {
         return ctrl;
     }
 

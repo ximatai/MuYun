@@ -15,10 +15,14 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Path("/create")
     default String create(Map body) {
         HashMap map = new HashMap(body);
-        if (!map.containsKey("t_create")) {
-            map.put("t_create", LocalDateTime.now());
-        }
+        fitOutDefaultValue(map);
         return getDatabase().insertItem(getSchemaName(), getMainTable(), map);
+    }
+
+    default void fitOutDefaultValue(Map body) {
+        if (!body.containsKey("t_create")) {
+            body.put("t_create", LocalDateTime.now());
+        }
     }
 
 }
