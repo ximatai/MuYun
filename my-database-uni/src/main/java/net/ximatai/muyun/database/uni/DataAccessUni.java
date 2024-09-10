@@ -33,6 +33,11 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
     }
 
     @Override
+    public Object row(String sql, Object... params) {
+        return null;
+    }
+
+    @Override
     public Uni<Map<String, Object>> row(String sql, Map<String, ?> params) {
         return sessionFactory.withSession(session -> {
 
@@ -67,6 +72,11 @@ public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni 
 
     @Override
     public Uni<List<Map<String, Object>>> query(String sql, List<?> params) {
+        return null;
+    }
+
+    @Override
+    public Object query(String sql, Object... params) {
         return null;
     }
 

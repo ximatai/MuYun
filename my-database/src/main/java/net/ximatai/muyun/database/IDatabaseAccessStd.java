@@ -2,6 +2,7 @@ package net.ximatai.muyun.database;
 
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,10 @@ public interface IDatabaseAccessStd extends IDatabaseAccess {
 
     Map<String, Object> row(String sql, List<?> params);
 
+    default Map<String, Object> row(String sql, Object... params) {
+        return this.row(sql, Arrays.stream(params).toList());
+    }
+
     Map<String, Object> row(String sql, Map<String, ?> params);
 
     Map<String, Object> row(String sql);
@@ -38,6 +43,10 @@ public interface IDatabaseAccessStd extends IDatabaseAccess {
     List<Map<String, Object>> query(String sql, Map<String, ?> params);
 
     List<Map<String, Object>> query(String sql, List<?> params);
+
+    default List<Map<String, Object>> query(String sql, Object... params) {
+        return this.query(sql, Arrays.stream(params).toList());
+    }
 
     List<Map<String, Object>> query(String sql);
 

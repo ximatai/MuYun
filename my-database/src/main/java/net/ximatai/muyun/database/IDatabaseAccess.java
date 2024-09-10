@@ -3,7 +3,6 @@ package net.ximatai.muyun.database;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,7 +14,7 @@ public interface IDatabaseAccess extends IDBInfoProvider {
         return data;
     }
 
-    default String buildInsertSql(String tableName, Map<String, ?> params) {
+    default String buildInsertSql(String schema, String tableName, Map<String, ?> params) {
         DBTable dbTable = getDBInfo().getTables().get(tableName);
         Objects.requireNonNull(dbTable);
 
@@ -30,10 +29,10 @@ public interface IDatabaseAccess extends IDBInfoProvider {
             }
         });
 
-        return "INSERT INTO " + tableName + " " + columns + " VALUES " + values;
+        return "insert into %s.%s %s values %s".formatted(schema, tableName, columns, values);
     }
 
-    default String buildUpdateSql(String tableName, Map<String, ?> params, String pk) {
+    default String buildUpdateSql(String schema, String tableName, Map<String, ?> params, String pk) {
         DBTable dbTable = getDBInfo().getTables().get(tableName);
         Objects.requireNonNull(dbTable);
 
@@ -46,19 +45,19 @@ public interface IDatabaseAccess extends IDBInfoProvider {
             }
         });
 
-        return "UPDATE " + tableName + " SET " + setClause + " WHERE " + pk + "=:" + pk;
+        return "update %s.%s set %s where %s = :%s".formatted(schema, tableName, setClause, pk, pk);
     }
 
     default Object insertItem(String schema, String tableName, Map<String, ?> params) {
         DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
         Map<String, ?> transformed = transformDataForDB(table, params);
-        return this.insert(buildInsertSql(tableName, transformed), transformed, "id", String.class);
+        return this.insert(buildInsertSql(schema, tableName, transformed), transformed, "id", String.class);
     }
 
     default Object updateItem(String schema, String tableName, Map<String, ?> params) {
         DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
         Map<String, ?> transformed = transformDataForDB(table, params);
-        return this.update(buildUpdateSql(tableName, transformed, "id"), transformed);
+        return this.update(buildUpdateSql(schema, tableName, transformed, "id"), transformed);
     }
 
     default Object deleteItem(String schema, String tableName, String id) {
@@ -70,9 +69,7 @@ public interface IDatabaseAccess extends IDBInfoProvider {
 
     <T> Object insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
 
-    default Object row(String sql, Object... params) {
-        return this.row(sql, Arrays.stream(params).toList());
-    }
+    Object row(String sql, Object... params);
 
     Object row(String sql, List<?> params);
 
@@ -83,6 +80,8 @@ public interface IDatabaseAccess extends IDBInfoProvider {
     Object query(String sql, Map<String, ?> params);
 
     Object query(String sql, List<?> params);
+
+    Object query(String sql, Object... params);
 
     Object query(String sql);
 

@@ -3,13 +3,15 @@ package net.ximatai.muyun.model;
 import net.ximatai.muyun.ability.IChildAbility;
 
 public class ChildTableInfo {
-    private IChildAbility ctrl;
-    private String foreignKey;
+    private final IChildAbility ctrl;
+    private final String foreignKey;
     private boolean isAutoDelete = false;
+    private final String childAlias;
 
     public ChildTableInfo(IChildAbility ctrl, String foreignKey) {
         this.ctrl = ctrl;
         this.foreignKey = foreignKey;
+        this.childAlias = ctrl.getChildAlias();
     }
 
     public ChildTableInfo setAutoDelete() {
@@ -27,5 +29,9 @@ public class ChildTableInfo {
 
     public boolean isAutoDelete() {
         return isAutoDelete;
+    }
+
+    public String getChildAlias() {
+        return childAlias;
     }
 }

@@ -4,12 +4,15 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
+import net.ximatai.muyun.model.ChildTableInfo;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
 public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
@@ -17,15 +20,25 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Path("/delete/{id}")
     @Transactional
     default Integer delete(@PathParam("id") String id) {
+        int result;
+
+        if (this instanceof IChildrenAbility ability) { // 如果带子表，考虑级联删除
+            ability.getChildren().stream().filter(ChildTableInfo::isAutoDelete).forEach(childTableInfo -> {
+                ability.putChildTableList(id, childTableInfo.getChildAlias(), List.of()); //对应即可清空子表
+            });
+        }
+
         if (this instanceof ISoftDeleteAbility ability) {
             HashMap map = new HashMap();
             map.put(getPK(), id);
             map.put(ability.getSoftDeleteColumn().getName(), true);
             map.put("t_delete", LocalDateTime.now());
 
-            return getDatabase().updateItem(getSchemaName(), getMainTable(), map);
+            result = getDatabase().updateItem(getSchemaName(), getMainTable(), map);
         } else {
-            return getDatabase().deleteItem(getSchemaName(), getMainTable(), id);
+            result = getDatabase().deleteItem(getSchemaName(), getMainTable(), id);
         }
+
+        return result;
     }
 }

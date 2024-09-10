@@ -13,6 +13,7 @@ import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.BatchResult;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
@@ -85,10 +86,8 @@ class TestMainAndChildren {
     @Test
     void testGetChildTableList() {
         List<Map> response = given()
-            .contentType("application/json")
             .queryParam("noPage", true)
-            .when()
-            .get("%s/view/%s/children/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .get("%s/view/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
             .then()
             .statusCode(200)
             .extract()
@@ -104,7 +103,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(Map.of("v_name", "child2"))
             .when()
-            .post("%s/update/%s/children/%s/create".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .post("%s/update/%s/child/%s/create".formatted(mainPath, idMain, testChildren.getMainTable()))
             .then()
             .statusCode(200)
             .extract()
@@ -113,7 +112,7 @@ class TestMainAndChildren {
         assertNotNull(child2);
 
         Map child2Map = given()
-            .get("%s/view/%s/children/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -127,7 +126,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(Map.of("v_name", "child22"))
             .when()
-            .post("%s/update/%s/children/%s/update/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .post("%s/update/%s/child/%s/update/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -136,7 +135,7 @@ class TestMainAndChildren {
         assertEquals("1", editCount);
 
         Map child2Map2 = given()
-            .get("%s/view/%s/children/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -147,7 +146,7 @@ class TestMainAndChildren {
         assertEquals("child22", child2Map2.get("v_name"));
 
         String delCount = given()
-            .get("%s/update/%s/children/%s/delete/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/update/%s/child/%s/delete/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -156,10 +155,107 @@ class TestMainAndChildren {
         assertEquals("1", delCount);
 
         given()
-            .get("%s/view/%s/children/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
             .then()
             .statusCode(404);
 
+    }
+
+    @Test
+    void testBatch() {
+        System.out.println(idMain);
+        System.out.println(idChild);
+
+        List children = List.of(
+            Map.of("id", idChild, "v_name", "child1"),
+            Map.of("v_name", "child2"),
+            Map.of("v_name", "child3")
+        );
+
+        BatchResult result = given()
+            .contentType("application/json")
+            .body(children)
+            .when()
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(2, result.getCreate());
+        assertEquals(1, result.getUpdate());
+        assertEquals(0, result.getDelete());
+
+        List children2 = List.of(
+            Map.of("id", idChild, "v_name", "child1")
+        );
+
+        BatchResult result2 = given()
+            .contentType("application/json")
+            .body(children2)
+            .when()
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(0, result2.getCreate());
+        assertEquals(1, result2.getUpdate());
+        assertEquals(2, result2.getDelete());
+
+        //这种情况会直接清空子表数据
+        BatchResult result3 = given()
+            .contentType("application/json")
+            .body(List.of())
+            .when()
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(0, result3.getCreate());
+        assertEquals(0, result3.getUpdate());
+        assertEquals(1, result3.getDelete());
+    }
+
+    @Test
+    void testDeleteMainTable() {
+        String mainID = testMain.create(Map.of("v_name", "main"));
+
+        BatchResult result = given()
+            .contentType("application/json")
+            .body(List.of(
+                Map.of("v_name", "child1"),
+                Map.of("v_name", "child2"),
+                Map.of("v_name", "child3")
+            ))
+            .when()
+            .post("%s/update/%s/child/%s".formatted(mainPath, mainID, testChildren.getMainTable()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(3, result.getCreate());
+
+        List rows = (List) databaseAccess.query("select * from test.testchildren where id_at_testmain = ? ", mainID);
+
+        assertEquals(3, rows.size());
+
+        given()
+            .get("%s/delete/%s".formatted(mainPath, mainID))
+            .then()
+            .statusCode(200);
+
+        List rows2 = (List) databaseAccess.query("select * from test.testchildren where id_at_testmain = ? ", mainID);
+
+        assertEquals(0, rows2.size());
     }
 }
 
@@ -199,7 +295,9 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
 
     @Override
     public List<ChildTableInfo> getChildren() {
-        return List.of(testChildren.toChildTable("id_at_testmain"));
+        return List.of(
+            testChildren.toChildTable("id_at_testmain").setAutoDelete()
+        );
     }
 }
 

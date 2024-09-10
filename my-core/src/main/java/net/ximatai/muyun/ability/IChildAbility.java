@@ -13,4 +13,8 @@ public interface IChildAbility extends ICURDAbility {
         }
     }
 
+    default String getChildAlias() {
+        return getMainTable();
+    }
+
 }
