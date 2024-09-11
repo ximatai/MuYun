@@ -20,6 +20,9 @@ public class Column {
         .setType("boolean")
         .setDefaultValue("false");
 
+    public static final Column TREE_PID = new Column("pid")
+        .setType("varchar").setIndexed();
+
     private Column(String name) {
         this.name = name;
         this.type = buildTypeWithColumnName(name);
@@ -135,6 +138,8 @@ public class Column {
         String type = null;
 
         if ("id".equals(name)) {
+            type = "varchar";
+        } else if ("pid".equals(name)) {
             type = "varchar";
         } else if (name.startsWith("v_")) {
             type = "varchar";

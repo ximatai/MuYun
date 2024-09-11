@@ -18,6 +18,9 @@ public interface ITableCreateAbility {
         if (this instanceof ISoftDeleteAbility softDeleteAbility) {
             wrapper.addColumn(softDeleteAbility.getSoftDeleteColumn());
         }
+        if (this instanceof ITreeAbility treeAbility) {
+            wrapper.addColumn(treeAbility.getParentKeyColumn());
+        }
         new TableBuilder(databaseAccess).build(wrapper);
     }
 }

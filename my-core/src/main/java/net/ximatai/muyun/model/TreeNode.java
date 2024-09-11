@@ -11,8 +11,20 @@ public class TreeNode {
     public TreeNode() {
     }
 
-    public String id() {
+    public String getId() {
         return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public List<TreeNode> getChildren() {
+        return children;
     }
 
     public TreeNode setId(String id) {
@@ -20,26 +32,14 @@ public class TreeNode {
         return this;
     }
 
-    public String label() {
-        return label;
-    }
-
     public TreeNode setLabel(String label) {
         this.label = label;
         return this;
     }
 
-    public Object data() {
-        return data;
-    }
-
     public TreeNode setData(Object data) {
         this.data = data;
         return this;
-    }
-
-    public List<TreeNode> children() {
-        return children;
     }
 
     public TreeNode setChildren(List<TreeNode> children) {

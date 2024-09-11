@@ -88,6 +88,13 @@ public class TableWrapper {
         }
 
         columns.add(column);
+
+        if (column.isUnique()) {
+            addIndex(column.getName(), true);
+        } else if (column.isIndexed()) {
+            addIndex(column.getName());
+        }
+
         return this;
     }
 

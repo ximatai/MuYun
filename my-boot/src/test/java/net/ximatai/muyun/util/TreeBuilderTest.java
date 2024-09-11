@@ -9,7 +9,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class TreeBuilderTest {
 
     static List list = List.of(
@@ -27,25 +26,25 @@ class TreeBuilderTest {
     void testTree() {
         List<TreeNode> tree = TreeBuilder.build("id", "pid", list, null, true, "name", 10);
         TreeNode nodeA = tree.get(0);
-        assertEquals("A", nodeA.label());
-        assertEquals(2, nodeA.children().size());
-        assertEquals("A.a.1", nodeA.children().get(0).children().get(0).label());
+        assertEquals("A", nodeA.getLabel());
+        assertEquals(2, nodeA.getChildren().size());
+        assertEquals("A.a.1", nodeA.getChildren().get(0).getChildren().get(0).getLabel());
     }
 
     @Test
     void testTreeA() {
         List<TreeNode> tree = TreeBuilder.build("id", "pid", list, "A", true, "name", 10);
         TreeNode nodeA = tree.get(0);
-        assertEquals("A", nodeA.label());
-        assertEquals(2, nodeA.children().size());
-        assertEquals("A.a.1", nodeA.children().get(0).children().get(0).label());
+        assertEquals("A", nodeA.getLabel());
+        assertEquals(2, nodeA.getChildren().size());
+        assertEquals("A.a.1", nodeA.getChildren().get(0).getChildren().get(0).getLabel());
     }
 
     @Test
     void testTreeANotShowMe() {
         List<TreeNode> tree = TreeBuilder.build("id", "pid", list, "A", false, "name", 10);
         assertEquals(2, tree.size());
-        assertEquals("A.a.1", tree.get(0).children().get(0).label());
+        assertEquals("A.a.1", tree.get(0).getChildren().get(0).getLabel());
     }
 
     @Test

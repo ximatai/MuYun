@@ -1,29 +1,27 @@
 package net.ximatai.muyun.core;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
-import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
+import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.model.PageResult;
-import net.ximatai.muyun.testcontainers.PostgresTestResource;
+import net.ximatai.muyun.model.TreeNode;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 class TestTreeAbility {
 
     private String path = "/TestTreeAbility";
@@ -32,26 +30,27 @@ class TestTreeAbility {
     IDatabaseAccess databaseAccess;
 
     @Inject
-    TestTreeAbilityController testTreeAbilityController;
+    TestTreeAbilityController testController;
+
+    String aID;
+
+    @BeforeEach
+    void setUp() {
+        databaseAccess.execute("TRUNCATE TABLE test.%s".formatted(testController.getMainTable()));
+
+        aID = testController.create(Map.of("v_name", "A"));
+        var bID = testController.create(Map.of("v_name", "B"));
+        var aaID = testController.create(Map.of("pid", aID, "v_name", "A.a"));
+        testController.create(Map.of("pid", aID, "v_name", "A.b"));
+        var baID = testController.create(Map.of("pid", bID, "v_name", "B.a"));
+
+        var aa1ID = testController.create(Map.of("pid", aaID, "v_name", "A.a.1"));
+    }
 
     @Test
-    void testDelete() {
-        Map<String, Object> request = Map.of("name", "test");
-
-        String id = given()
-            .contentType("application/json")
-            .body(request)
-            .when()
-            .post("%s/create".formatted(path))
-            .then()
-            .statusCode(200)
-            .extract()
-            .response()
-            .asString();
-        //.body(is(id));
-
-        HashMap response = given()
-            .get("%s/view/%s".formatted(path, id))
+    void testTree() {
+        List<TreeNode> response = given()
+            .get("%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -59,34 +58,45 @@ class TestTreeAbility {
 
             });
 
-        assertNotNull(response.get("name"));
+        assertEquals(response.size(), 2);
+    }
 
-        given().get("%s/delete/%s".formatted(path, id)).then().statusCode(200);
-
-        given().get("/test/view/" + id).then().statusCode(404);
-
-        Map row = (Map) databaseAccess.row("select * from testsoftdelete where id = ?", id);
-
-        assertEquals(true, row.get("b_delete"));
-
-        PageResult<Map> response2 = given()
-            .contentType("application/json")
-            .queryParam("noPage", true)
-            .when()
-            .get("%s/view".formatted(path))
+    @Test
+    void testTreeA() {
+        List<TreeNode> response = given()
+            .queryParam("rootID", aID)
+            .get("%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
             .as(new TypeRef<>() {
+
             });
 
-        assertEquals(0, response2.getTotal());
+        assertEquals(response.size(), 1);
+        assertEquals(response.get(0).getChildren().size(), 2);
+    }
+
+    @Test
+    void testTreeANotShowMe() {
+        List<TreeNode> response = given()
+            .queryParam("rootID", aID)
+            .queryParam("showMe", false)
+            .get("%s/tree".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertEquals(response.size(), 2);
     }
 
 }
 
 @Path("/TestTreeAbility")
-class TestTreeAbilityController extends Scaffold implements ICURDAbility, ITableCreateAbility, ISoftDeleteAbility {
+class TestTreeAbilityController extends Scaffold implements ICURDAbility, ITableCreateAbility, ITreeAbility {
 
     @Override
     public String getSchemaName() {
@@ -103,9 +113,9 @@ class TestTreeAbilityController extends Scaffold implements ICURDAbility, ITable
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("name").setType("varchar"))
+            .addColumn(Column.of("v_name").setType("varchar"))
+            .addColumn(Column.of("pid").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
-
     }
 
 }
