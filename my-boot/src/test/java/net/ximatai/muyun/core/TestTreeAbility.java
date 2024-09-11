@@ -1,5 +1,6 @@
 package net.ximatai.muyun.core;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
@@ -11,6 +12,7 @@ import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.TreeNode;
+import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +23,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 class TestTreeAbility {
 
     private String path = "/TestTreeAbility";
