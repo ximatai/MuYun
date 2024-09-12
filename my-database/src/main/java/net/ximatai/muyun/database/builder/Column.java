@@ -23,6 +23,14 @@ public class Column {
     public static final Column TREE_PID = new Column("pid")
         .setType("varchar").setIndexed();
 
+    public static final Column SORT = new Column("i_sort")
+        .setSequence()
+        .setType("int")
+        .setIndexed();
+
+    public static final Column CREATE = new Column("t_create")
+        .setIndexed();
+
     private Column(String name) {
         this.name = name;
         this.type = buildTypeWithColumnName(name);

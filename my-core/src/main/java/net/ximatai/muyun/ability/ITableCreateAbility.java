@@ -21,6 +21,9 @@ public interface ITableCreateAbility {
         if (this instanceof ITreeAbility treeAbility) {
             wrapper.addColumn(treeAbility.getParentKeyColumn());
         }
+        if (this instanceof ISortAbility sortAbility) {
+            wrapper.addColumn(sortAbility.getSortColumn().getColumn());
+        }
         new TableBuilder(databaseAccess).build(wrapper);
     }
 }

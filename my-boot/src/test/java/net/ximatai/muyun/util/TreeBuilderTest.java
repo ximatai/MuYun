@@ -24,7 +24,7 @@ class TreeBuilderTest {
 
     @Test
     void testTree() {
-        List<TreeNode> tree = TreeBuilder.build("id", "pid", list, null, true, "name", 10);
+        List<TreeNode> tree = TreeBuilder.build("id", "pid", list, null, false, "name", 10);
         TreeNode nodeA = tree.get(0);
         assertEquals("A", nodeA.getLabel());
         assertEquals(2, nodeA.getChildren().size());

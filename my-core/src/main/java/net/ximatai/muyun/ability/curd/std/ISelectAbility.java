@@ -8,12 +8,13 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
+import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.database.tool.DateTool;
-import net.ximatai.muyun.model.OrderColumn;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
+import net.ximatai.muyun.model.SortColumn;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,22 +26,25 @@ import java.util.stream.Collectors;
 
 public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
-    default OrderColumn getOrderColumn() {
-        if (getDBTable().contains(OrderColumn.I_ORDER.getColumnName())) {
-            return OrderColumn.I_ORDER;
+    default SortColumn getDefatultSortColumn() {
+        if (this instanceof ISortAbility ability) {
+            return ability.getSortColumn();
         }
-        if (getDBTable().contains(OrderColumn.T_CREATE.getColumnName())) {
-            return OrderColumn.T_CREATE;
+        if (getDBTable().contains(SortColumn.SORT.getColumnName())) {
+            return SortColumn.SORT;
+        }
+        if (getDBTable().contains(SortColumn.CREATE.getColumnName())) {
+            return SortColumn.CREATE;
         }
         return null;
     }
 
-    default List<OrderColumn> getOrderColumns() {
-        OrderColumn orderColumn = getOrderColumn();
+    default List<SortColumn> getSortDefaultColumns() {
+        SortColumn orderColumn = getDefatultSortColumn();
         if (orderColumn == null) {
             return List.of();
         } else {
-            return List.of(getOrderColumn());
+            return List.of(getDefatultSortColumn());
         }
     }
 
@@ -95,7 +99,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         DBTable dbTable = getDatabase().getDBInfo().getSchema(getSchemaName()).getTables().get(getMainTable());
         List<Object> params = new ArrayList<>();
 
-        List<OrderColumn> orderColumns = new ArrayList<>();
+        List<SortColumn> orderColumns = new ArrayList<>();
 
         if (sort != null && !sort.isEmpty()) {
             sort.forEach(s -> {
@@ -104,12 +108,12 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                 if (strings.length > 1) {
                     order = strings[1];
                 }
-                orderColumns.add(new OrderColumn(strings[0], order));
+                orderColumns.add(new SortColumn(strings[0], order));
             });
         }
 
         if (orderColumns.isEmpty()) {
-            orderColumns.addAll(getOrderColumns());
+            orderColumns.addAll(getSortDefaultColumns());
         }
 
         String authCondition = "and 1=1";

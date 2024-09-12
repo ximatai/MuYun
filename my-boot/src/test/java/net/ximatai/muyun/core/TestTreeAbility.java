@@ -92,7 +92,28 @@ class TestTreeAbility {
 
             });
 
-        assertEquals(response.size(), 2);
+        assertEquals(2, response.size());
+        assertEquals("A.a", response.getFirst().getLabel());
+        assertEquals("A.b", response.getLast().getLabel());
+
+        //修改顺序
+        testController.update(response.getFirst().getId(), Map.of("i_sort", 2));
+        testController.update(response.getLast().getId(), Map.of("i_sort", 1));
+
+        List<TreeNode> response2 = given()
+            .queryParam("rootID", aID)
+            .queryParam("showMe", false)
+            .get("%s/tree".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertEquals(2, response2.size());
+        assertEquals("A.b", response2.getFirst().getLabel());
+        assertEquals("A.a", response2.getLast().getLabel());
     }
 
 }

@@ -11,7 +11,7 @@ import net.ximatai.muyun.util.TreeBuilder;
 import java.util.List;
 import java.util.Objects;
 
-public interface ITreeAbility extends ISelectAbility, IMetadataAbility {
+public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbility {
 
     default Column getParentKeyColumn() {
         return Column.TREE_PID;

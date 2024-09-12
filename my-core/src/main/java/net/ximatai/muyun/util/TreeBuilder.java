@@ -29,6 +29,9 @@ public class TreeBuilder {
         List<TreeNode> treeNodeList = buildChildren(groupedByParentKey, pkColumn, parentKeyColumn, rootID, labelColumn, 1, maxLevel);
 
         if (showMe) {
+            if (rootID.equals(NULL_PID)) {
+                throw new RuntimeException("showMe为true时，必须提供rootID");
+            }
             String finalRootID = rootID;
             Map rootNode = list.stream().filter(it -> finalRootID.equals(it.get(pkColumn))).findFirst().orElseThrow(() -> new RuntimeException("rootID not found"));
             return Collections.singletonList(new TreeNode()
