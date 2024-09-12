@@ -16,6 +16,8 @@ dependencies {
 
     implementation 'io.quarkus:quarkus-smallrye-openapi'
 
+    runtimeOnly 'ch.qos.logback:logback-classic:1.+'
+
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
 
