@@ -1,3 +1,5 @@
+package net.ximatai.muyun.test;
+
 import net.ximatai.muyun.database.std.argument.List2JsonArgumentFactory;
 import net.ximatai.muyun.database.std.argument.Map2JsonArgumentFactory;
 import net.ximatai.muyun.database.std.mapper.MyPgMapMapper;

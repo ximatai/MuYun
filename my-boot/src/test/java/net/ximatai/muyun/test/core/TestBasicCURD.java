@@ -1,4 +1,4 @@
-package net.ximatai.muyun.core;
+package net.ximatai.muyun.test.core;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -7,12 +7,13 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.model.PageResult;
-import net.ximatai.muyun.testcontainers.PostgresTestResource;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package net.ximatai.muyun;
+package net.ximatai.muyun.test;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 

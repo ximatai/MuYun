@@ -1,4 +1,4 @@
-package net.ximatai.muyun.testcontainers;
+package net.ximatai.muyun.test.testcontainers;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.testcontainers.containers.PostgreSQLContainer;

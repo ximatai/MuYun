@@ -1,6 +1,7 @@
-package net.ximatai.muyun.util;
+package net.ximatai.muyun.test.util;
 
 import net.ximatai.muyun.model.TreeNode;
+import net.ximatai.muyun.util.TreeBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -12,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TreeBuilderTest {
 
     static List list = List.of(
-        buildNode("A", null),
-        buildNode("B", null),
-        buildNode("C", null),
-        buildNode("A.a", "A"),
-        buildNode("A.b", "A"),
-        buildNode("A.a.1", "A.a"),
-        buildNode("C.a.1", "C.a"),
-        buildNode("B.a", "B")
+            buildNode("A", null),
+            buildNode("B", null),
+            buildNode("C", null),
+            buildNode("A.a", "A"),
+            buildNode("A.b", "A"),
+            buildNode("A.a.1", "A.a"),
+            buildNode("C.a.1", "C.a"),
+            buildNode("B.a", "B")
     );
 
     @Test

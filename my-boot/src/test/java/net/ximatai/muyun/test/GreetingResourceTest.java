@@ -1,8 +1,8 @@
-package net.ximatai.muyun;
+package net.ximatai.muyun.test;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import net.ximatai.muyun.testcontainers.PostgresTestResource;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;

@@ -1,12 +1,13 @@
-package net.ximatai.muyun.database;
+package net.ximatai.muyun.test.database;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.testcontainers.PostgresTestResource;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
