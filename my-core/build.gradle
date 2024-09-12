@@ -13,6 +13,7 @@ dependencies {
 
     api 'io.quarkus:quarkus-rest'
     api 'io.quarkus:quarkus-arc'
+    api 'io.quarkus:quarkus-scheduler'
     api 'io.quarkus:quarkus-rest-jackson'
 
     testImplementation 'io.quarkus:quarkus-junit5'
