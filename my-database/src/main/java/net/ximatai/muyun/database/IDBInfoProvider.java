@@ -18,6 +18,8 @@ public interface IDBInfoProvider {
 
     void setJdbi(Jdbi jdbi);
 
+    void resetDBInfo();
+
     default DBInfo getDBInfo() {
         return getJdbi().withHandle(handle -> {
             Connection connection = handle.getConnection();

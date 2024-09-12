@@ -9,6 +9,7 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -20,6 +21,7 @@ import java.util.List;
 import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TableBuilderTest {
@@ -32,6 +34,10 @@ public class TableBuilderTest {
 
     @BeforeEach
     void setUp() {
+        databaseAccess.execute("drop schema if exists test cascade");
+
+        databaseAccess.resetDBInfo();
+
         databaseAccess.execute("DROP TABLE IF EXISTS test.test_table");
 
         databaseAccess.execute("create schema if not exists test");

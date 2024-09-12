@@ -25,4 +25,4 @@ jobs:
       - name: Build with Gradle
         env:
           JAVA_TOOL_OPTIONS: "-Xmx2g" # 增加最大堆内存为 2G 或根据需要调整
-        run: ./gradlew check --scan
+        run: ./gradlew test

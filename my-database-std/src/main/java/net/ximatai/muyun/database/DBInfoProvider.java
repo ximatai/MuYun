@@ -21,6 +21,11 @@ public class DBInfoProvider implements IDBInfoProvider {
     }
 
     @Override
+    public void resetDBInfo() {
+        dbInfo = null;
+    }
+
+    @Override
     public DBInfo getDBInfo() {
         if (dbInfo == null) {
             dbInfo = IDBInfoProvider.super.getDBInfo();
