@@ -47,7 +47,11 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
         String condition = "";
         HashMap<String, Object> params = new HashMap<>();
 
-        if (parentId != null && this instanceof ITreeAbility treeAbility) { // tree结构，要支持 parentId 的设置
+        if (this instanceof ITreeAbility treeAbility) { // tree结构，要支持 parentId 的设置
+            if (parentId == null || parentId.isEmpty()) {
+                parentId = treeAbility.getParentKeyColumn().getDefaultValue().toString();
+            }
+
             String parentKey = treeAbility.getParentKeyColumn().getName();
             body.put(parentKey, parentId);
             condition = " and " + parentKey + " = :pid ";

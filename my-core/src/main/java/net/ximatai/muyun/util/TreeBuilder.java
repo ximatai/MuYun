@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 
 public class TreeBuilder {
 
-    private static final String NULL_PID = "__NULL__";
+    public static final String ROOT_PID = "__ROOT__";
 
     public static List<TreeNode> build(String pkColumn, String parentKeyColumn, List<Map<String, Object>> list, String rootID, boolean showMe, String labelColumn, Integer maxLevel) {
 
         list.forEach(item -> {
-            item.putIfAbsent(parentKeyColumn, NULL_PID);
+            item.putIfAbsent(parentKeyColumn, ROOT_PID);
         });
 
         if (rootID == null) {
-            rootID = NULL_PID;
+            rootID = ROOT_PID;
         }
 
         // 按父键列（`parentKeyColumn`）分组
@@ -29,7 +29,7 @@ public class TreeBuilder {
         List<TreeNode> treeNodeList = buildChildren(groupedByParentKey, pkColumn, parentKeyColumn, rootID, labelColumn, 1, maxLevel);
 
         if (showMe) {
-            if (rootID.equals(NULL_PID)) {
+            if (rootID.equals(ROOT_PID)) {
                 throw new RuntimeException("showMe为true时，必须提供rootID");
             }
             String finalRootID = rootID;

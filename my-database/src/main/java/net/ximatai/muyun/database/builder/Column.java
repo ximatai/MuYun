@@ -21,7 +21,8 @@ public class Column {
         .setDefaultValue("false");
 
     public static final Column TREE_PID = new Column("pid")
-        .setType("varchar").setIndexed();
+        .setType("varchar")
+        .setIndexed();
 
     public static final Column SORT = new Column("n_sort")
         .setSequence()

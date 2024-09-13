@@ -102,6 +102,10 @@ public class TableBuilder {
         DBColumn dbColumn = dbTable.getColumn(name);
 
         if (!dbColumn.isSequence() && !Objects.equals(dbColumn.getDefaultValue(), defaultValue)) {
+            if ("varchar".equals(type) && defaultValue instanceof String value && !value.contains("(") && !value.contains(")")) {
+                defaultValue = "'%s'".formatted(value);
+            }
+
             databaseAccess.execute("alter table %s.%s alter column %s set default %s".formatted(dbTable.getSchema(), dbTable.getName(), name, defaultValue));
         }
 

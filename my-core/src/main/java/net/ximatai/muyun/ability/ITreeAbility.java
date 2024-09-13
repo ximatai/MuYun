@@ -14,7 +14,7 @@ import java.util.Objects;
 public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbility {
 
     default Column getParentKeyColumn() {
-        return Column.TREE_PID;
+        return Column.TREE_PID.setDefaultValue(TreeBuilder.ROOT_PID);
     }
 
     default String getLabelColumn() {
