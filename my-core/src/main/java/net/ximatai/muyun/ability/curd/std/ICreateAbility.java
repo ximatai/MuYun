@@ -5,7 +5,6 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
-import net.ximatai.muyun.ability.ISoftDeleteAbility;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

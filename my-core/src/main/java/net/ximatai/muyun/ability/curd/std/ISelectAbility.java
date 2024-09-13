@@ -234,7 +234,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (noPage != null && noPage) {
             size = total;
             page = 0;
-        } else {// 添加分页参数
+        } else { // 添加分页参数
             querySql.append(" offset ? limit ? ");
             params.add((page - 1) * size);
             params.add(size);

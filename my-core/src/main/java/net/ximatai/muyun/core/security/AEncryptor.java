@@ -5,7 +5,6 @@ import net.ximatai.muyun.util.StringUtil;
 
 public abstract class AEncryptor {
 
-
     public void checkSign(String source, String sign) {
         if (StringUtil.isBlank(sign)) return;
         if (StringUtil.isBlank(source)) return;
