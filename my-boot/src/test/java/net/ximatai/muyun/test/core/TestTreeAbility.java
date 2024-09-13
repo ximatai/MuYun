@@ -66,7 +66,7 @@ class TestTreeAbility {
 
                 });
 
-        assertEquals(response.size(), 2);
+        assertEquals(response.size(), 3);
     }
 
     @Test

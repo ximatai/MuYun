@@ -225,7 +225,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         page = page == null ? 1 : page;
         size = size == null ? 10 : size;
 
-        if (noPage) {
+        if (noPage != null && noPage) {
             size = total;
             page = 0;
         } else {
