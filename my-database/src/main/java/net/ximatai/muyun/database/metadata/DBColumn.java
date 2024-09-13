@@ -37,7 +37,7 @@ public class DBColumn {
     }
 
     public String getDefaultValue() {
-        return defaultValue;
+        return extractDefaultContent(defaultValue);
     }
 
     public void setDefaultValue(String defaultValue) {
@@ -108,4 +108,20 @@ public class DBColumn {
         this.indexName = indexName;
     }
 
+    public static String extractDefaultContent(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        // 使用正则表达式来匹配单引号之间的内容
+        String regex = "'([^']*)'";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(input);
+
+        // 查找并返回匹配的内容
+        if (matcher.find()) {
+            return matcher.group(1);  // 返回第一个括号中的匹配结果
+        }
+        return input;  // 如果没有匹配的内容，返回 null
+    }
 }
