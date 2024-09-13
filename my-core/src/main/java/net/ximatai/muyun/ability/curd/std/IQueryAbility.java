@@ -24,7 +24,7 @@ public interface IQueryAbility extends ISelectAbility {
     @POST
     @Path("/view")
     default PageResult view(@QueryParam("page") Integer page,
-                            @QueryParam("size") Integer size,
+                            @QueryParam("size") Long size,
                             @QueryParam("noPage") Boolean noPage,
                             @QueryParam("sort") List<String> sort,
                             Map<String, Object> queryBody) {

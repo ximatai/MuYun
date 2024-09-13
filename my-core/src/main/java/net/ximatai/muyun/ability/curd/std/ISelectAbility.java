@@ -88,12 +88,12 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     @GET
     @Path("/view")
-    default PageResult view(@QueryParam("page") Integer page, @QueryParam("size") Integer size, @QueryParam("noPage") Boolean noPage, @QueryParam("sort") List<String> sort) {
+    default PageResult view(@QueryParam("page") Integer page, @QueryParam("size") Long size, @QueryParam("noPage") Boolean noPage, @QueryParam("sort") List<String> sort) {
         return view(page, size, noPage, sort, null, null);
     }
 
     default PageResult view(Integer page,
-                            Integer size,
+                            Long size,
                             Boolean noPage,
                             List<String> sort,
                             Map<String, Object> queryBody,
@@ -225,7 +225,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         page = page == null ? 1 : page;
         size = size == null ? 10 : size;
 
-        if (noPage == null || !noPage) {
+        if (noPage) {
+            size = total;
+            page = 0;
+        } else {
             // 添加分页参数
             querySql.append(" offset ? limit ? ");
             params.add((page - 1) * size);

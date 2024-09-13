@@ -21,10 +21,10 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
     @GET
     @Path("update/{id}/sort")
     @Transactional
-    default void sort(@PathParam("id") String id,
-                      @QueryParam("prevId") String prevId,
-                      @QueryParam("nextId") String nextId,
-                      @QueryParam("parentId") String parentId
+    default Integer sort(@PathParam("id") String id,
+                         @QueryParam("prevId") String prevId,
+                         @QueryParam("nextId") String nextId,
+                         @QueryParam("parentId") String parentId
     ) {
         String sortColumn = getSortColumn().getColumnName();
 
@@ -70,7 +70,9 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
             );
 
             getDatabase().update(sql, params);
+            return resCount;
         }
 
+        return 0;
     }
 }

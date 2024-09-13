@@ -5,13 +5,13 @@ import java.util.List;
 public class PageResult<T> {
     private List<T> list;
     private long total;
-    private int size;
+    private long size;
     private int page;
 
     public PageResult() {
     }
 
-    public PageResult(List<T> list, long total, int size, int page) {
+    public PageResult(List<T> list, long total, long size, int page) {
         this.list = list;
         this.total = total;
         this.size = size;
@@ -26,7 +26,7 @@ public class PageResult<T> {
         return total;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
@@ -42,7 +42,7 @@ public class PageResult<T> {
         this.total = total;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
