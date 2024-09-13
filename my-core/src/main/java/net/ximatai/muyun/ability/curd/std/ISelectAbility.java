@@ -30,10 +30,13 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof ISortAbility ability) {
             return ability.getSortColumn();
         }
-        if (getDBTable().contains(SortColumn.SORT.getColumnName())) {
+
+        DBTable dbTable = getDBTable();
+
+        if (dbTable.contains(SortColumn.SORT.getColumnName())) {
             return SortColumn.SORT;
         }
-        if (getDBTable().contains(SortColumn.CREATE.getColumnName())) {
+        if (dbTable.contains(SortColumn.CREATE.getColumnName())) {
             return SortColumn.CREATE;
         }
         return null;
@@ -96,7 +99,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             Map<String, Object> queryBody,
                             List<QueryItem> queryItemList
     ) {
-        DBTable dbTable = getDatabase().getDBInfo().getSchema(getSchemaName()).getTables().get(getMainTable());
+        DBTable dbTable = getDBTable();
         List<Object> params = new ArrayList<>();
 
         List<SortColumn> orderColumns = new ArrayList<>();

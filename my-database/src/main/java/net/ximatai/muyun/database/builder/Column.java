@@ -23,9 +23,8 @@ public class Column {
     public static final Column TREE_PID = new Column("pid")
         .setType("varchar").setIndexed();
 
-    public static final Column SORT = new Column("i_sort")
+    public static final Column SORT = new Column("n_sort")
         .setSequence()
-        .setType("int")
         .setIndexed();
 
     public static final Column CREATE = new Column("t_create")
