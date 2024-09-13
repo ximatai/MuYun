@@ -7,6 +7,7 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
+import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.core.exception.QueryException;
@@ -83,7 +84,12 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @GET
     @Path("/view/{id}")
     default Map<String, ?> view(@PathParam("id") String id) {
-        return getDatabase().row(getSelectOneRowSql(), Map.of("id", id));
+        Map<String, Object> row = getDatabase().row(getSelectOneRowSql(), Map.of("id", id));
+        if (this instanceof ISecurityAbility securityAbility) {
+            securityAbility.decrypt(row);
+            securityAbility.checkSign(row);
+        }
+        return row;
     }
 
     @GET
@@ -228,14 +234,18 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (noPage != null && noPage) {
             size = total;
             page = 0;
-        } else {
-            // 添加分页参数
+        } else {// 添加分页参数
             querySql.append(" offset ? limit ? ");
             params.add((page - 1) * size);
             params.add(size);
         }
 
-        List<?> list = getDatabase().query(querySql.toString(), params);
+        List<Map<String, Object>> list = getDatabase().query(querySql.toString(), params);
+
+        if (this instanceof ISecurityAbility securityAbility) {
+            list.forEach(securityAbility::decrypt);
+            list.forEach(securityAbility::checkSign);
+        }
 
         return new PageResult<>(list, total, size, page);
     }

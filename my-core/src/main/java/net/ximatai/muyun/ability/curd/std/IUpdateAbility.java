@@ -6,6 +6,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
+import net.ximatai.muyun.ability.ISecurityAbility;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,6 +21,9 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         HashMap map = new HashMap(body);
         map.put(getPK(), id);
         map.put("t_update", LocalDateTime.now());
+        if (this instanceof ISecurityAbility securityAbility) {
+            securityAbility.signAndEncrypt(map);
+        }
 
         return getDatabase().updateItem(getSchemaName(), getMainTable(), map);
     }

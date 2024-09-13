@@ -24,6 +24,9 @@ public interface ITableCreateAbility {
         if (this instanceof ISortAbility sortAbility) {
             wrapper.addColumn(sortAbility.getSortColumn().getColumn());
         }
+        if (this instanceof ISecurityAbility securityAbility) {
+            securityAbility.getSignColumns().forEach(wrapper::addColumn);
+        }
         new TableBuilder(databaseAccess).build(wrapper);
     }
 }
