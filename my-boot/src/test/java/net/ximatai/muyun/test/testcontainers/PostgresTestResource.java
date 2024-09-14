@@ -7,24 +7,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PostgresTestResource implements QuarkusTestResourceLifecycleManager {
-    PostgreSQLContainer<?> postgres;
+    private static final String POSTGRES_IMAGE = "postgres:16-alpine";
+
+    private PostgreSQLContainer<?> postgres;
 
     @Override
     public Map<String, String> start() {
-        postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+        if (postgres == null) {
+            postgres = new PostgreSQLContainer<>(POSTGRES_IMAGE);
+        }
         postgres.start();
 
         Map<String, String> conf = new HashMap<>();
         conf.put("quarkus.datasource.jdbc.url", postgres.getJdbcUrl());
         conf.put("quarkus.datasource.username", postgres.getUsername());
         conf.put("quarkus.datasource.password", postgres.getPassword());
-        conf.put("quarkus.hibernate-orm.database.generation", "create");
 
         return conf;
     }
 
     @Override
     public void stop() {
-        postgres.stop();
+        if (postgres != null && postgres.isRunning()) {
+            postgres.stop();
+        }
     }
 }

@@ -9,9 +9,9 @@ import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -22,8 +22,9 @@ import java.util.List;
 import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
+//@Disabled
 @QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TableBuilderTest {
 
@@ -33,13 +34,9 @@ public class TableBuilderTest {
     @Inject
     IDatabaseAccess databaseAccess;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
-        databaseAccess.execute("drop schema if exists test cascade");
-
-        databaseAccess.resetDBInfo();
-
-        databaseAccess.execute("DROP TABLE IF EXISTS test.test_table");
+        databaseAccess.execute("DROP TABLE IF EXISTS test.test_table_x");
 
         databaseAccess.execute("create schema if not exists test");
 
@@ -47,15 +44,15 @@ public class TableBuilderTest {
             create table test.%s
             (
                 id       varchar   default gen_random_uuid() not null
-                    constraint test_table_pk
+                    constraint test_table_x_pk
                         primary key,
                 name     varchar,
                 t_create timestamp default now()
             )
-            """.formatted("test_table"));
+            """.formatted("test_table_x"));
 
         databaseAccess.execute("""
-            comment on column test.test_table.name is '名称';
+            comment on column test.test_table_x.name is '名称';
             """);
     }
 
@@ -71,7 +68,7 @@ public class TableBuilderTest {
     @Test
     void testTableBuilder() {
         TableBuilder tableBuilder = new TableBuilder(databaseAccess);
-        TableWrapper wrapper = TableWrapper.withName("test_table2")
+        TableWrapper wrapper = TableWrapper.withName("test_table_x2")
             .setSchema("test")
             .setComment("a demo")
             .setPrimaryKey(ID_POSTGRES)
@@ -82,11 +79,11 @@ public class TableBuilderTest {
             .addIndex(List.of("v_test", "v_test2"));
         tableBuilder.build(wrapper);
 
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").containsTable("test_table2"));
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table2").getColumn("id").isPrimaryKey());
-        assertFalse(databaseAccess.getDBInfo().getSchema("test").getTable("test_table2").getColumn("v_test").isUnique());
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table2").getColumn("v_test").isIndexed());
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table2").getColumn("v_test2").isUnique());
+        assertTrue(databaseAccess.getDBInfo().getSchema("test").containsTable("test_table_x2"));
+        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("id").isPrimaryKey());
+        assertFalse(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isUnique());
+        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isIndexed());
+        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test2").isUnique());
     }
 
     @Test
@@ -94,7 +91,7 @@ public class TableBuilderTest {
         var info = databaseAccess.getDBInfo();
         var schema = info.getSchema("test");
         assertNotNull(schema);
-        var table = schema.getTable("test_table");
+        var table = schema.getTable("test_table_x");
         assertNotNull(table);
         assertFalse(table.getColumnMap().isEmpty());
         assertNotNull(table.getColumnMap().get("id"));
@@ -108,7 +105,7 @@ public class TableBuilderTest {
         jdbi.useHandle(h -> {
             Connection conn = h.getConnection();
             DatabaseMetaData metaData = conn.getMetaData();
-            try (ResultSet rs = metaData.getIndexInfo(null, "test", "test_table2", false, false)) {
+            try (ResultSet rs = metaData.getIndexInfo(null, "test", "test_table_x2", false, false)) {
                 while (rs.next()) {
                     System.out.println(rs.getString("COLUMN_NAME"));
                     System.out.println(rs.getString("INDEX_NAME"));
