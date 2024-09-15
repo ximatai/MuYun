@@ -5,6 +5,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
+import net.ximatai.muyun.ability.IDesensitizationAbility;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
@@ -88,6 +89,9 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof ISecurityAbility securityAbility) {
             securityAbility.decrypt(row);
             securityAbility.checkSign(row);
+        }
+        if (this instanceof IDesensitizationAbility desensitizationAbility) {
+            desensitizationAbility.desensitize(row);
         }
         return row;
     }
@@ -245,6 +249,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof ISecurityAbility securityAbility) {
             list.forEach(securityAbility::decrypt);
             list.forEach(securityAbility::checkSign);
+        }
+
+        if (this instanceof IDesensitizationAbility desensitizationAbility) {
+            list.forEach(desensitizationAbility::desensitize);
         }
 
         return new PageResult<>(list, total, size, page);
