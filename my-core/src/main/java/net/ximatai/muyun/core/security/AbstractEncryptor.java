@@ -3,7 +3,7 @@ package net.ximatai.muyun.core.security;
 import net.ximatai.muyun.core.exception.InvalidSignatureException;
 import net.ximatai.muyun.util.StringUtil;
 
-public abstract class AEncryptor {
+public abstract class AbstractEncryptor {
 
     public void checkSign(String source, String sign) {
         if (StringUtil.isBlank(sign)) return;

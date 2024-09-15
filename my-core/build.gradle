@@ -16,6 +16,8 @@ dependencies {
     api 'io.quarkus:quarkus-scheduler'
     api 'io.quarkus:quarkus-rest-jackson'
 
+    api libs.bcprov
+
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
 }

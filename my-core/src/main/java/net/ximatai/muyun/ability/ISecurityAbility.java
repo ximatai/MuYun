@@ -1,6 +1,6 @@
 package net.ximatai.muyun.ability;
 
-import net.ximatai.muyun.core.security.AEncryptor;
+import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.database.builder.Column;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface ISecurityAbility {
 
     List<String> getColumnsForEncryption();
 
-    AEncryptor getAEncryptor();
+    AbstractEncryptor getAEncryptor();
 
     default String column2SignColumn(String column) {
         return column + SIGN_SUFFIX;
@@ -41,7 +41,7 @@ public interface ISecurityAbility {
      * @param map
      */
     default void signAndEncrypt(Map map) {
-        AEncryptor encryptor = getAEncryptor();
+        AbstractEncryptor encryptor = getAEncryptor();
         if (encryptor == null) return;
 
         getColumnsForSigning().forEach(s -> {
@@ -58,7 +58,7 @@ public interface ISecurityAbility {
     }
 
     default void decrypt(Map map) {
-        AEncryptor encryptor = getAEncryptor();
+        AbstractEncryptor encryptor = getAEncryptor();
         if (encryptor == null) return;
 
         getColumnsForEncryption().forEach(s -> {
@@ -69,7 +69,7 @@ public interface ISecurityAbility {
     }
 
     default void checkSign(Map map) {
-        AEncryptor encryptor = getAEncryptor();
+        AbstractEncryptor encryptor = getAEncryptor();
         if (encryptor == null) return;
 
         getColumnsForSigning().forEach(s -> {
