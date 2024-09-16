@@ -79,7 +79,6 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
     }
 
-
     @Override
     public Desensitizer getDesensitizer() {
         return new Desensitizer().registerAlgorithm("v_name", new MaskMiddleAlgorithm());

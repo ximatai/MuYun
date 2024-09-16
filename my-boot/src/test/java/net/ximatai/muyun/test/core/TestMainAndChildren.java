@@ -49,8 +49,13 @@ class TestMainAndChildren {
 
     @BeforeEach
     void setUp() {
-        idMain = testMain.create(Map.of("v_name", "main"));
-        idChild = testChildren.create(Map.of("v_name", "child1", "id_at_testmain", idMain));
+        idMain = testMain.create(Map.of("v_name", "main", testChildren.getChildAlias(), List.of(
+            Map.of("v_name", "child1")
+        )));
+
+        List<Map> childTableList = testMain.getChildTableList(idMain, testChildren.getChildAlias(), null);
+
+        idChild = (String) childTableList.get(0).get("id");
     }
 
     @Test
@@ -88,7 +93,7 @@ class TestMainAndChildren {
     void testGetChildTableList() {
         List<Map> response = given()
             .queryParam("noPage", true)
-            .get("%s/view/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .get("%s/view/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
             .then()
             .statusCode(200)
             .extract()
@@ -104,7 +109,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(Map.of("v_name", "child2"))
             .when()
-            .post("%s/update/%s/child/%s/create".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .post("%s/update/%s/child/%s/create".formatted(mainPath, idMain, testChildren.getChildAlias()))
             .then()
             .statusCode(200)
             .extract()
@@ -113,7 +118,7 @@ class TestMainAndChildren {
         assertNotNull(child2);
 
         Map child2Map = given()
-            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -127,7 +132,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(Map.of("v_name", "child22"))
             .when()
-            .post("%s/update/%s/child/%s/update/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .post("%s/update/%s/child/%s/update/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -136,7 +141,7 @@ class TestMainAndChildren {
         assertEquals("1", editCount);
 
         Map child2Map2 = given()
-            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -147,7 +152,7 @@ class TestMainAndChildren {
         assertEquals("child22", child2Map2.get("v_name"));
 
         String delCount = given()
-            .get("%s/update/%s/child/%s/delete/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/update/%s/child/%s/delete/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
             .then()
             .statusCode(200)
             .extract()
@@ -156,7 +161,7 @@ class TestMainAndChildren {
         assertEquals("1", delCount);
 
         given()
-            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getMainTable(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
             .then()
             .statusCode(404);
 
@@ -177,7 +182,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(children)
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
             .then()
             .statusCode(200)
             .extract()
@@ -196,7 +201,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(children2)
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
             .then()
             .statusCode(200)
             .extract()
@@ -212,7 +217,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(List.of())
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getMainTable()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
             .then()
             .statusCode(200)
             .extract()
@@ -236,7 +241,7 @@ class TestMainAndChildren {
                 Map.of("v_name", "child3")
             ))
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, mainID, testChildren.getMainTable()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, mainID, testChildren.getChildAlias()))
             .then()
             .statusCode(200)
             .extract()
