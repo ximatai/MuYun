@@ -21,9 +21,15 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     default String create(Map body) {
         HashMap map = new HashMap<>(body);
         fitOutDefaultValue(map);
+
+        if (this instanceof IDataCheckAbility dataCheckAbility) {
+            dataCheckAbility.check(body, true);
+        }
+
         if (this instanceof ISecurityAbility securityAbility) {
             securityAbility.signAndEncrypt(map);
         }
+
         String main = getDatabase().insertItem(getSchemaName(), getMainTable(), map);
 
         if (this instanceof IChildrenAbility childrenAbility) {

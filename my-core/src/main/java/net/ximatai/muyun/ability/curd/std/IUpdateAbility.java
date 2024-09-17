@@ -23,6 +23,11 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         HashMap map = new HashMap(body);
         map.put(getPK(), id);
         map.put("t_update", LocalDateTime.now());
+
+        if (this instanceof IDataCheckAbility dataCheckAbility) {
+            dataCheckAbility.check(body, true);
+        }
+
         if (this instanceof ISecurityAbility securityAbility) {
             securityAbility.signAndEncrypt(map);
         }
