@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -87,6 +88,31 @@ class TestMainAndChildren {
 
         assertEquals(idChild, responseChild.get("id"));
         assertEquals(idMain, responseChild.get("id_at_testmain"));
+    }
+
+    @Test
+    void testUpdateMainAndChildren() {
+        Map main = Map.of(
+            "v_name", "main2",
+            testChildren.getChildAlias(), List.of(
+                Map.of("v_name", "child2")
+            )
+        );
+
+        given()
+            .contentType("application/json")
+            .body(main)
+            .when()
+            .post("%s/update/%s".formatted(mainPath, idMain))
+            .then()
+            .statusCode(200)
+            .body(is("1"));
+
+        Map<String, ?> map = testMain.view(idMain);
+        assertEquals("main2", map.get("v_name"));
+
+        List<Map> childTableList = testMain.getChildTableList(idMain, testChildren.getChildAlias(), null);
+        assertEquals("child2", childTableList.get(0).get("v_name"));
     }
 
     @Test
@@ -286,7 +312,7 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("name").setType("varchar"))
+            .addColumn(Column.of("v_name").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
     }
@@ -295,7 +321,7 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
     public List<QueryItem> queryItemList() {
         return List.of(
             QueryItem.of("id"),
-            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE)
+            QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE)
         );
     }
 
