@@ -4,9 +4,11 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
+import net.ximatai.muyun.model.DataChangeChannel;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -39,6 +41,10 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
                     childrenAbility.putChildTableList(main, childAlias, list);
                 }
             });
+        }
+
+        if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
+            dataBroadcastAbility.broadcast(DataChangeChannel.Type.CREATE, main);
         }
 
         return main;

@@ -5,10 +5,12 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.model.DataChangeChannel;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -37,6 +39,10 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
             result = getDatabase().updateItem(getSchemaName(), getMainTable(), map);
         } else {
             result = getDatabase().deleteItem(getSchemaName(), getMainTable(), id);
+        }
+
+        if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
+            dataBroadcastAbility.broadcast(DataChangeChannel.Type.DELETE, id);
         }
 
         return result;
