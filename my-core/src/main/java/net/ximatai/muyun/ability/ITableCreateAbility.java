@@ -2,7 +2,7 @@ package net.ximatai.muyun.ability;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
@@ -12,7 +12,7 @@ public interface ITableCreateAbility {
 
     @Transactional
     @PostConstruct
-    default void create(IDatabaseAccess databaseAccess) {
+    default void create(IDatabaseOperations db) {
         TableWrapper wrapper = fitOutTable();
         if (this instanceof ICommonBusinessAbility ability) {
             ability.getCommonColumns().forEach(wrapper::addColumn);
@@ -30,7 +30,7 @@ public interface ITableCreateAbility {
             ability.getSignColumns().forEach(wrapper::addColumn);
         }
 
-        new TableBuilder(databaseAccess).build(wrapper);
+        new TableBuilder(db).build(wrapper);
     }
 }
 

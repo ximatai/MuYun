@@ -9,7 +9,7 @@ import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
@@ -30,7 +30,7 @@ class TestSortAbility {
     private String path = "/TestSortAbility";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestSortAbilityController testController;
@@ -39,7 +39,7 @@ class TestSortAbility {
 
     @BeforeEach
     void setUp() {
-        databaseAccess.execute("TRUNCATE TABLE test.%s".formatted(testController.getMainTable()));
+        databaseOperations.execute("TRUNCATE TABLE test.%s".formatted(testController.getMainTable()));
     }
 
     @Test

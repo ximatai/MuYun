@@ -9,7 +9,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
@@ -31,7 +31,7 @@ class TestQuery {
     private String path = "/test_query";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestQueryController testController;
@@ -41,7 +41,7 @@ class TestQuery {
     @BeforeEach
     void setUp() {
         tableName = testController.getMainTable();
-        databaseAccess.execute("TRUNCATE TABLE %s".formatted(tableName));
+        databaseOperations.execute("TRUNCATE TABLE %s".formatted(tableName));
 
         testController.create(Map.of("id", "1", "name", "test1", "t_create", "2024-01-01 12:00:00"));
         testController.create(Map.of("id", "2", "name", "test2", "t_create", "2024-01-02 12:00:00"));

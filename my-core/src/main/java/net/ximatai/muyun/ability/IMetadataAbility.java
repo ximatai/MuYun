@@ -13,7 +13,7 @@ public interface IMetadataAbility extends IDatabaseAbility {
     }
 
     default DBTable getDBTable() {
-        return getDatabaseAccess().getDBInfo().getSchema(getSchemaName()).getTable(getMainTable());
+        return getDatabaseOperations().getDBInfo().getSchema(getSchemaName()).getTable(getMainTable());
     }
 
 }

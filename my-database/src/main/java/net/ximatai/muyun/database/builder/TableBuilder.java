@@ -1,6 +1,6 @@
 package net.ximatai.muyun.database.builder;
 
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBInfo;
@@ -13,11 +13,11 @@ import java.util.Objects;
 public class TableBuilder {
 
     DBInfo info;
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations db;
 
-    public TableBuilder(IDatabaseAccess databaseAccess) {
-        this.databaseAccess = databaseAccess;
-        this.info = databaseAccess.getDBInfo();
+    public TableBuilder(IDatabaseOperations db) {
+        this.db = db;
+        this.info = db.getDBInfo();
     }
 
     public boolean build(TableWrapper wrapper) {
@@ -26,7 +26,7 @@ public class TableBuilder {
         String name = wrapper.getName();
 
         if (info.getSchema(schema) == null) {
-            databaseAccess.execute("create schema if not exists " + wrapper.getSchema());
+            db.execute("create schema if not exists " + wrapper.getSchema());
             info.addSchema(new DBSchema(wrapper.getSchema()));
         }
 
@@ -41,7 +41,7 @@ public class TableBuilder {
         }
 
         if (!info.getSchema(wrapper.getSchema()).containsTable(wrapper.getName())) {
-            databaseAccess.execute("""
+            db.execute("""
                 create table %s.%s
                 (
                     a_temp_column int
@@ -49,13 +49,13 @@ public class TableBuilder {
                 """.formatted(schema, name, inheritSQL(inherits)));
 
             result = true;
-            info.getSchema(schema).addTable(new DBTable(databaseAccess.getJdbi()).setName(name).setSchema(schema));
+            info.getSchema(schema).addTable(new DBTable(db.getJdbi()).setName(name).setSchema(schema));
         }
 
         DBTable dbTable = info.getSchema(schema).getTable(wrapper.getName());
 
         if (wrapper.getComment() != null) {
-            databaseAccess.execute("COMMENT ON table %s.%s is '%s'".formatted(schema, name, wrapper.getComment()));
+            db.execute("COMMENT ON table %s.%s is '%s'".formatted(schema, name, wrapper.getComment()));
         }
 
         if (wrapper.getPrimaryKey() != null) {
@@ -68,7 +68,7 @@ public class TableBuilder {
         });
 
         if (result) {
-            databaseAccess.execute("alter table %s.%s drop column a_temp_column;".formatted(schema, name));
+            db.execute("alter table %s.%s drop column a_temp_column;".formatted(schema, name));
         }
 
         dbTable.resetColumns();
@@ -94,7 +94,7 @@ public class TableBuilder {
         boolean primaryKey = column.isPrimaryKey();
 
         if (!dbTable.contains(name)) {
-            databaseAccess.execute("alter table %s.%s add %s %s".formatted(dbTable.getSchema(), dbTable.getName(), name, type));
+            db.execute("alter table %s.%s add %s %s".formatted(dbTable.getSchema(), dbTable.getName(), name, type));
             dbTable.resetColumns();
             result = true;
         }
@@ -106,32 +106,32 @@ public class TableBuilder {
                 defaultValue = "'%s'".formatted(value);
             }
 
-            databaseAccess.execute("alter table %s.%s alter column %s set default %s".formatted(dbTable.getSchema(), dbTable.getName(), name, defaultValue));
+            db.execute("alter table %s.%s alter column %s set default %s".formatted(dbTable.getSchema(), dbTable.getName(), name, defaultValue));
         }
 
         if (!Objects.equals(dbColumn.getDescription(), comment)) {
-            databaseAccess.execute("comment on column %s.%s.%s is '%s'".formatted(dbTable.getSchema(), dbTable.getName(), name, comment));
+            db.execute("comment on column %s.%s.%s is '%s'".formatted(dbTable.getSchema(), dbTable.getName(), name, comment));
         }
 
         if (dbColumn.isNullable() != nullable) {
             String flag = nullable ? "drop" : "set";
-            databaseAccess.execute("alter table %s.%s alter column %s %s not null".formatted(dbTable.getSchema(), dbTable.getName(), name, flag));
+            db.execute("alter table %s.%s alter column %s %s not null".formatted(dbTable.getSchema(), dbTable.getName(), name, flag));
         }
 
         if (dbColumn.isSequence() != sequence) {
             var seq = "%s_%s_seq".formatted(dbTable.getName(), name);
             if (sequence) {
-                databaseAccess.execute("create sequence if not exists %s.%s;".formatted(dbTable.getSchema(), seq));
-                databaseAccess.execute("alter table %s.%s alter column %s set default nextval('%s.%s')"
+                db.execute("create sequence if not exists %s.%s;".formatted(dbTable.getSchema(), seq));
+                db.execute("alter table %s.%s alter column %s set default nextval('%s.%s')"
                     .formatted(dbTable.getSchema(), dbTable.getName(), name, dbTable.getSchema(), seq));
             } else {
-                databaseAccess.execute("alter table %s.%s alter column %s drop default".formatted(dbTable.getSchema(), dbTable.getName(), name));
-                databaseAccess.execute("drop sequence if exists %s.%s;".formatted(dbTable.getSchema(), seq));
+                db.execute("alter table %s.%s alter column %s drop default".formatted(dbTable.getSchema(), dbTable.getName(), name));
+                db.execute("drop sequence if exists %s.%s;".formatted(dbTable.getSchema(), seq));
             }
         }
 
         if (primaryKey && !dbColumn.isPrimaryKey()) {
-            databaseAccess.execute("""
+            db.execute("""
                 alter table %s.%s add primary key (%s)
                 """.formatted(dbTable.getSchema(), dbTable.getName(), name));
         }
@@ -149,21 +149,21 @@ public class TableBuilder {
             DBColumn dbColumn = dbTable.getColumn(col);
             if (index.isUnique() && !dbColumn.isUnique()) { //之前不是唯一索引
                 String indexName = "%s_%s_uindex".formatted(dbTable.getName(), col);
-                databaseAccess.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
+                db.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
                 result = true;
             } else if (!index.isUnique() && !dbColumn.isIndexed()) { //之前没有索引
                 String indexName = "%s_%s_index".formatted(dbTable.getName(), col);
-                databaseAccess.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
+                db.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
                 result = true;
             }
         } else if (size > 0) {
             if (index.isUnique()) {
                 String indexName = "%s_%s_uindex".formatted(dbTable.getName(), String.join("_", columns));
-                databaseAccess.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
+                db.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
                 result = true;
             } else {
                 String indexName = "%s_%s_index".formatted(dbTable.getName(), String.join("_", columns));
-                databaseAccess.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
+                db.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
                 result = true;
             }
 

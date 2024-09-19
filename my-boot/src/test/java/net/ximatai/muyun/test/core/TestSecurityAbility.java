@@ -10,7 +10,7 @@ import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.core.security.SMEncryptor;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -33,7 +33,7 @@ class TestSecurityAbility {
     SMEncryptor smEncryptor;
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestSecurityAbilityController testController;
@@ -48,7 +48,7 @@ class TestSecurityAbility {
         assertEquals("test", response.get("v_for_sign"));
         assertEquals("test2", response.get("v_for_encrypt"));
 
-        Map row = (Map) databaseAccess.row("select * from test.testsecurityability where id = ?", id);
+        Map row = (Map) databaseOperations.row("select * from test.testsecurityability where id = ?", id);
         assertEquals("test2", smEncryptor.decrypt((String) row.get("v_for_encrypt")));
         assertEquals(smEncryptor.sign("test"), row.get(testController.column2SignColumn("v_for_sign")));
     }

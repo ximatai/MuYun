@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public interface IDatabaseAccess extends IDBInfoProvider {
+public interface IDatabaseOperations extends IDBInfoProvider {
 
     default Map<String, ?> transformDataForDB(DBTable dbTable, Map<String, ?> data) {
         return data;

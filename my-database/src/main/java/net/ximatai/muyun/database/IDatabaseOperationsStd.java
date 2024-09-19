@@ -6,14 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public interface IDatabaseAccessStd extends IDatabaseAccess {
+public interface IDatabaseOperationsStd extends IDatabaseOperations {
 
     default String insertItem(String schema, String tableName, Map<String, ?> params) {
-        return (String) IDatabaseAccess.super.insertItem(schema, tableName, params);
+        return (String) IDatabaseOperations.super.insertItem(schema, tableName, params);
     }
 
     default Integer updateItem(String schema, String tableName, Map<String, ?> params) {
-        Integer num = (Integer) IDatabaseAccess.super.updateItem(schema, tableName, params);
+        Integer num = (Integer) IDatabaseOperations.super.updateItem(schema, tableName, params);
         if (num == 0) {
             throw new MyDatabaseException(MyDatabaseException.Type.DATA_NOT_FOUND);
         }
@@ -21,7 +21,7 @@ public interface IDatabaseAccessStd extends IDatabaseAccess {
     }
 
     default Integer deleteItem(String schema, String tableName, String id) {
-        Integer num = (Integer) IDatabaseAccess.super.deleteItem(schema, tableName, id);
+        Integer num = (Integer) IDatabaseOperations.super.deleteItem(schema, tableName, id);
         if (num == 0) {
             throw new MyDatabaseException(MyDatabaseException.Type.DATA_NOT_FOUND);
         }

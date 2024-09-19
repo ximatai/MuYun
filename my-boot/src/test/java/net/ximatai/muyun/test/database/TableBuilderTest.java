@@ -3,7 +3,7 @@ package net.ximatai.muyun.test.database;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -32,15 +32,15 @@ public class TableBuilderTest {
     Jdbi jdbi;
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations db;
 
     @BeforeAll
     void setUp() {
-        databaseAccess.execute("DROP TABLE IF EXISTS test.test_table_x");
+        db.execute("DROP TABLE IF EXISTS test.test_table_x");
 
-        databaseAccess.execute("create schema if not exists test");
+        db.execute("create schema if not exists test");
 
-        databaseAccess.execute("""
+        db.execute("""
             create table test.%s
             (
                 id       varchar   default gen_random_uuid() not null
@@ -51,7 +51,7 @@ public class TableBuilderTest {
             )
             """.formatted("test_table_x"));
 
-        databaseAccess.execute("""
+        db.execute("""
             comment on column test.test_table_x.name is '名称';
             """);
     }
@@ -67,7 +67,7 @@ public class TableBuilderTest {
 
     @Test
     void testTableBuilder() {
-        TableBuilder tableBuilder = new TableBuilder(databaseAccess);
+        TableBuilder tableBuilder = new TableBuilder(db);
         TableWrapper wrapper = TableWrapper.withName("test_table_x2")
             .setSchema("test")
             .setComment("a demo")
@@ -79,16 +79,16 @@ public class TableBuilderTest {
             .addIndex(List.of("v_test", "v_test2"));
         tableBuilder.build(wrapper);
 
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").containsTable("test_table_x2"));
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("id").isPrimaryKey());
-        assertFalse(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isUnique());
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isIndexed());
-        assertTrue(databaseAccess.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test2").isUnique());
+        assertTrue(db.getDBInfo().getSchema("test").containsTable("test_table_x2"));
+        assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("id").isPrimaryKey());
+        assertFalse(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isUnique());
+        assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isIndexed());
+        assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test2").isUnique());
     }
 
     @Test
     void testMetadata() {
-        var info = databaseAccess.getDBInfo();
+        var info = db.getDBInfo();
         var schema = info.getSchema("test");
         assertNotNull(schema);
         var table = schema.getTable("test_table_x");

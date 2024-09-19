@@ -88,7 +88,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Path("/view/{id}")
     @Operation(summary = "查看指定的数据")
     default Map<String, ?> view(@PathParam("id") String id) {
-        Map<String, Object> row = getDatabase().row(getSelectOneRowSql(), Map.of("id", id));
+        Map<String, Object> row = getDB().row(getSelectOneRowSql(), Map.of("id", id));
         if (this instanceof ISecurityAbility securityAbility) {
             securityAbility.decrypt(row);
             securityAbility.checkSign(row);
@@ -224,7 +224,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         String baseSql = "select * from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition);
 
         // 计算总数
-        long total = (long) getDatabase().row("select count(*) as num from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition), params).get("num");
+        long total = (long) getDB().row("select count(*) as num from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition), params).get("num");
 
         // 构建查询 SQL
         StringBuilder querySql = new StringBuilder(baseSql);
@@ -251,7 +251,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             params.add(size);
         }
 
-        List<Map<String, Object>> list = getDatabase().query(querySql.toString(), params);
+        List<Map<String, Object>> list = getDB().query(querySql.toString(), params);
 
         if (this instanceof ISecurityAbility securityAbility) {
             list.forEach(securityAbility::decrypt);

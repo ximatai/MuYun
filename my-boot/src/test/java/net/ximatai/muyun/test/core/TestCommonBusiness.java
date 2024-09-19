@@ -10,7 +10,7 @@ import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -30,7 +30,7 @@ class TestCommonBusiness {
     private String path = "/TestCommonBusiness";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Test
     void testDelete() {

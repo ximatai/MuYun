@@ -9,7 +9,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.database.metadata.DBTable;
@@ -32,7 +32,7 @@ class TestTreeAbility {
     private String path = "/TestTreeAbility";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestTreeAbilityController testController;
@@ -41,10 +41,10 @@ class TestTreeAbility {
 
     @BeforeEach
     void setUp() {
-        DBTable dbTable = databaseAccess.getDBInfo().getSchema("test").getTable(testController.getMainTable());
+        DBTable dbTable = databaseOperations.getDBInfo().getSchema("test").getTable(testController.getMainTable());
         assertEquals(dbTable.getColumn("pid").getDefaultValue(), TreeBuilder.ROOT_PID);
 
-        databaseAccess.execute("TRUNCATE TABLE test.%s".formatted(testController.getMainTable()));
+        databaseOperations.execute("TRUNCATE TABLE test.%s".formatted(testController.getMainTable()));
 
         aID = testController.create(Map.of("v_name", "A"));
         bID = testController.create(Map.of("v_name", "B"));

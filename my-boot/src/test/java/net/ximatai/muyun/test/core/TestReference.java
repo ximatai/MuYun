@@ -11,7 +11,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
@@ -35,7 +35,7 @@ class TestReference {
     private String path = "/test_reference";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestReferenceController testController;
@@ -45,7 +45,7 @@ class TestReference {
 
     @BeforeEach
     void setUp() {
-        databaseAccess.execute("TRUNCATE TABLE %s".formatted(testController.getMainTable()));
+        databaseOperations.execute("TRUNCATE TABLE %s".formatted(testController.getMainTable()));
 
         String id1 = testReferableController.create(Map.of("v_name", "test1"));
         String id2 = testReferableController.create(Map.of("v_name", "test2"));

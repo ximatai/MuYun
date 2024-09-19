@@ -76,7 +76,7 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
                 getMainTable(), getPK(), getPK()
             );
 
-            getDatabase().update(sql, params);
+            getDB().update(sql, params);
             return resCount;
         }
 

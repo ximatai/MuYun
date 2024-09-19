@@ -8,7 +8,7 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestBasicCURD {
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestBasicCURDController testController;
@@ -42,7 +42,7 @@ class TestBasicCURD {
     @BeforeEach
     void setUp() {
         tableName = testController.getMainTable();
-        databaseAccess.execute("TRUNCATE TABLE %s".formatted(tableName));
+        databaseOperations.execute("TRUNCATE TABLE %s".formatted(tableName));
 
         var id1 = testController.create(Map.of("id", "1", "name", "test1"));
         var id2 = testController.create(Map.of("id", "2", "name", "test2"));
@@ -50,9 +50,9 @@ class TestBasicCURD {
 
         ids = List.of(id1, id2, id3);
 
-//        var id1 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test1"));
-//        var id2 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test2"));
-//        var id3 = databaseAccess.insert("insert into test_table (name) values (:name) ", Map.of("name", "test3"));
+//        var id1 = databaseOperations.insert("insert into test_table (name) values (:name) ", Map.of("name", "test1"));
+//        var id2 = databaseOperations.insert("insert into test_table (name) values (:name) ", Map.of("name", "test2"));
+//        var id3 = databaseOperations.insert("insert into test_table (name) values (:name) ", Map.of("name", "test3"));
 
     }
 
@@ -121,7 +121,7 @@ class TestBasicCURD {
             .statusCode(200)
             .body(is(id));
 
-        Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+        Map e = (Map) databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
 
         assertEquals(request.get("id"), e.get("id"));
         assertEquals(request.get("name"), e.get("name"));
@@ -143,7 +143,7 @@ class TestBasicCURD {
             .statusCode(200)
             .body(is("1"));
 
-        Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+        Map e = (Map) databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
 
         assertNotNull(e.get("t_update"));
         assertEquals(request.get("name"), e.get("name"));
@@ -187,7 +187,7 @@ class TestBasicCURD {
 
             });
 
-        Map e = (Map) databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+        Map e = (Map) databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
 
         assertEquals(e.get("name"), response.get("name"));
         assertEquals(e.get("id"), response.get("id"));
@@ -211,7 +211,7 @@ class TestBasicCURD {
             .statusCode(200);
 
         assertThrows(MyDatabaseException.class, () -> {
-            databaseAccess.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+            databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
         });
     }
 

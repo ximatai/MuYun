@@ -9,7 +9,7 @@ import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
@@ -30,7 +30,7 @@ class TestSoftDelete {
     private String path = "/TestSoftDelete";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Test
     void testDelete() {
@@ -63,7 +63,7 @@ class TestSoftDelete {
 
         given().get("/test/view/" + id).then().statusCode(404);
 
-        Map row = (Map) databaseAccess.row("select * from testsoftdelete where id = ?", id);
+        Map row = (Map) databaseOperations.row("select * from testsoftdelete where id = ?", id);
 
         assertEquals(true, row.get("b_delete"));
 

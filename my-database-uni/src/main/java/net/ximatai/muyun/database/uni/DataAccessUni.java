@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
-public class DataAccessUni extends DBInfoProvider implements IDatabaseAccessUni {
+public class DataAccessUni extends DBInfoProvider implements IDatabaseOperationsUni {
 
     @Inject
     Mutiny.SessionFactory sessionFactory;

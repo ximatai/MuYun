@@ -38,9 +38,9 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
             map.put(ability.getSoftDeleteColumn().getName(), true);
             map.put("t_delete", LocalDateTime.now());
 
-            result = getDatabase().updateItem(getSchemaName(), getMainTable(), map);
+            result = getDB().updateItem(getSchemaName(), getMainTable(), map);
         } else {
-            result = getDatabase().deleteItem(getSchemaName(), getMainTable(), id);
+            result = getDB().deleteItem(getSchemaName(), getMainTable(), id);
         }
 
         if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {

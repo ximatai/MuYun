@@ -1,9 +1,9 @@
 package net.ximatai.muyun.ability;
 
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 
 public interface IDatabaseAbility {
 
-    IDatabaseAccess getDatabaseAccess();
+    IDatabaseOperations getDatabaseOperations();
 
 }

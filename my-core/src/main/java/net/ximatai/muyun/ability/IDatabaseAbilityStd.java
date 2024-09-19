@@ -1,13 +1,13 @@
 package net.ximatai.muyun.ability;
 
-import net.ximatai.muyun.database.IDatabaseAccess;
-import net.ximatai.muyun.database.IDatabaseAccessStd;
+import net.ximatai.muyun.database.IDatabaseOperations;
+import net.ximatai.muyun.database.IDatabaseOperationsStd;
 
 public interface IDatabaseAbilityStd extends IDatabaseAbility {
 
-    IDatabaseAccess getDatabaseAccess();
+    IDatabaseOperations getDatabaseOperations();
 
-    default IDatabaseAccessStd getDatabase() {
-        return (IDatabaseAccessStd) getDatabaseAccess();
+    default IDatabaseOperationsStd getDB() {
+        return (IDatabaseOperationsStd) getDatabaseOperations();
     }
 }

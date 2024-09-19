@@ -45,7 +45,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             });
         }
 
-        int result = getDatabase().updateItem(getSchemaName(), getMainTable(), map);
+        int result = getDB().updateItem(getSchemaName(), getMainTable(), map);
 
         if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
             dataBroadcastAbility.broadcast(DataChangeChannel.Type.UPDATE, id);

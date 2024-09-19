@@ -34,7 +34,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             securityAbility.signAndEncrypt(map);
         }
 
-        String main = getDatabase().insertItem(getSchemaName(), getMainTable(), map);
+        String main = getDB().insertItem(getSchemaName(), getMainTable(), map);
 
         if (this instanceof IChildrenAbility childrenAbility) {
             childrenAbility.getChildren().forEach(childTableInfo -> {

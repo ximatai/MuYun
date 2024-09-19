@@ -11,7 +11,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.BatchResult;
@@ -37,7 +37,7 @@ class TestMainAndChildren {
     private String childPath = "/testchildren";
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestMain testMain;
@@ -276,7 +276,7 @@ class TestMainAndChildren {
 
         assertEquals(3, result.getCreate());
 
-        List rows = (List) databaseAccess.query("select * from test.testchildren where id_at_testmain = ? ", mainID);
+        List rows = (List) databaseOperations.query("select * from test.testchildren where id_at_testmain = ? ", mainID);
 
         assertEquals(3, rows.size());
 
@@ -285,7 +285,7 @@ class TestMainAndChildren {
             .then()
             .statusCode(200);
 
-        List rows2 = (List) databaseAccess.query("select * from test.testchildren where id_at_testmain = ? ", mainID);
+        List rows2 = (List) databaseOperations.query("select * from test.testchildren where id_at_testmain = ? ", mainID);
 
         assertEquals(0, rows2.size());
     }

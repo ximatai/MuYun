@@ -1,20 +1,20 @@
 package net.ximatai.muyun.database.uni;
 
 import io.smallrye.mutiny.Uni;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IDatabaseAccessUni extends IDatabaseAccess {
+public interface IDatabaseOperationsUni extends IDatabaseOperations {
 
     @Override
     default Uni<String> insertItem(String schema, String tableName, Map<String, ?> params) {
-        return (Uni<String>) IDatabaseAccess.super.insertItem(schema, tableName, params);
+        return (Uni<String>) IDatabaseOperations.super.insertItem(schema, tableName, params);
     }
 
     default Uni<Boolean> updateItem(String schema, String tableName, Map<String, ?> params) {
-        Uni<Integer> updated = (Uni<Integer>) IDatabaseAccess.super.updateItem(schema, tableName, params);
+        Uni<Integer> updated = (Uni<Integer>) IDatabaseOperations.super.updateItem(schema, tableName, params);
         return updated.onItem().transform(rowsUpdated -> rowsUpdated == 1);
     }
 

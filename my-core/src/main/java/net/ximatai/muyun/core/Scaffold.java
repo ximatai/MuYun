@@ -3,17 +3,18 @@ package net.ximatai.muyun.core;
 import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.ability.IDatabaseAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 
-public class Scaffold {
+public class Scaffold implements IDatabaseAbility {
 
-    private IDatabaseAccess databaseAccess;
+    private IDatabaseOperations databaseOperations;
     private EventBus eventBus;
 
     @Inject
-    public void setDatabaseAccess(IDatabaseAccess databaseAccess) {
-        this.databaseAccess = databaseAccess;
+    public void setDatabaseOperations(IDatabaseOperations databaseOperations) {
+        this.databaseOperations = databaseOperations;
     }
 
     @Inject
@@ -21,8 +22,8 @@ public class Scaffold {
         this.eventBus = eventBus;
     }
 
-    public IDatabaseAccess getDatabaseAccess() {
-        return databaseAccess;
+    public IDatabaseOperations getDatabaseOperations() {
+        return databaseOperations;
     }
 
     public EventBus getEventBus() {
@@ -32,7 +33,7 @@ public class Scaffold {
     @PostConstruct
     void init() {
         if (this instanceof ITableCreateAbility tableCreateAbility) {
-            tableCreateAbility.create(getDatabaseAccess());
+            tableCreateAbility.create(getDatabaseOperations());
         }
     }
 

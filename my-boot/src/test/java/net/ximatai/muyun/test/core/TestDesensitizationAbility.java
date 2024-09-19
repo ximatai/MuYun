@@ -11,7 +11,7 @@ import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.desensitization.Desensitizer;
 import net.ximatai.muyun.core.desensitization.MaskMiddleAlgorithm;
 import net.ximatai.muyun.core.security.SMEncryptor;
-import net.ximatai.muyun.database.IDatabaseAccess;
+import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -31,7 +31,7 @@ class TestDesensitizationAbility {
     SMEncryptor smEncryptor;
 
     @Inject
-    IDatabaseAccess databaseAccess;
+    IDatabaseOperations databaseOperations;
 
     @Inject
     TestDesensitizationAbilityController testController;
