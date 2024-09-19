@@ -9,6 +9,8 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.model.BatchResult;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,8 @@ public interface IChildrenAbility {
 
     @GET
     @Path("/view/{id}/child/{childAlias}")
-    default List<Map> getChildTableList(@PathParam("id") String id, @PathParam("childAlias") String childAlias, @QueryParam("sort") List<String> sort) {
+    @Operation(summary = "查询指定子表的数据列表")
+    default List<Map> getChildTableList(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @QueryParam("sort") List<String> sort) {
         ChildTableInfo ct = getChildTable(childAlias);
         String foreignKey = ct.getForeignKey();
         return ct.getCtrl().view(null, null, true, sort, Map.of(foreignKey, id), List.of(QueryItem.of(foreignKey))).getList();
@@ -29,7 +32,8 @@ public interface IChildrenAbility {
 
     @GET
     @Path("/view/{id}/child/{childAlias}/view/{childId}")
-    default Map<String, ?> getChild(@PathParam("id") String id, @PathParam("childAlias") String childAlias, @PathParam("childId") String childId) {
+    @Operation(summary = "查询指定子表的一条数据")
+    default Map<String, ?> getChild(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @Parameter(description = "子表id") @PathParam("childId") String childId) {
         ChildTableInfo ct = getChildTable(childAlias);
         Map<String, ?> child = ct.getCtrl().view(childId);
         if (!child.get(ct.getForeignKey()).equals(id)) {
@@ -41,7 +45,8 @@ public interface IChildrenAbility {
     @POST
     @Path("/update/{id}/child/{childAlias}")
     @Transactional
-    default BatchResult putChildTableList(@PathParam("id") String id, @PathParam("childAlias") String childAlias, List body) {
+    @Operation(summary = "覆盖式更新对应子表数据")
+    default BatchResult putChildTableList(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, List body) {
         ChildTableInfo ct = getChildTable(childAlias);
         String childPK = ct.getCtrl().getPK();
 
@@ -89,7 +94,8 @@ public interface IChildrenAbility {
 
     @POST
     @Path("/update/{id}/child/{childAlias}/create")
-    default String createChild(@PathParam("id") String id, @PathParam("childAlias") String childAlias, Map body) {
+    @Operation(summary = "新增一条对应子表的数据")
+    default String createChild(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, Map body) {
         ChildTableInfo ct = getChildTable(childAlias);
         String foreignKey = ct.getForeignKey();
         Map map = new HashMap(body);
@@ -99,7 +105,8 @@ public interface IChildrenAbility {
 
     @POST
     @Path("/update/{id}/child/{childAlias}/update/{childId}")
-    default Integer updateChild(@PathParam("id") String id, @PathParam("childAlias") String childAlias, @PathParam("childId") String childId, Map body) {
+    @Operation(summary = "修改一条对应子表的数据")
+    default Integer updateChild(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @Parameter(description = "子表id") @PathParam("childId") String childId, Map body) {
         getChild(id, childAlias, childId);
         ChildTableInfo ct = getChildTable(childAlias);
         return ct.getCtrl().update(childId, body);
@@ -107,7 +114,8 @@ public interface IChildrenAbility {
 
     @GET
     @Path("/update/{id}/child/{childAlias}/delete/{childId}")
-    default Integer deleteChild(@PathParam("id") String id, @PathParam("childAlias") String childAlias, @PathParam("childId") String childId) {
+    @Operation(summary = "删除一条对应子表的数据")
+    default Integer deleteChild(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @Parameter(description = "子表id") @PathParam("childId") String childId) {
         getChild(id, childAlias, childId);
         ChildTableInfo ct = getChildTable(childAlias);
         return ct.getCtrl().delete(childId);

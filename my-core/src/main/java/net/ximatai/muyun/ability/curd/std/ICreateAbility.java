@@ -9,6 +9,7 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.model.DataChangeChannel;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @POST
     @Path("/create")
     @Transactional
+    @Operation(summary = "新增数据", description = "返回新增数据ID")
     default String create(Map body) {
         HashMap map = new HashMap<>(body);
         fitOutDefaultValue(map);

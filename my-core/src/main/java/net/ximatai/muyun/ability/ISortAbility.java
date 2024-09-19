@@ -8,6 +8,8 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.ability.curd.std.IUpdateAbility;
 import net.ximatai.muyun.model.SortColumn;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -21,10 +23,11 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
     @GET
     @Path("update/{id}/sort")
     @Transactional
+    @Operation(summary = "调整数据顺序")
     default Integer sort(@PathParam("id") String id,
-                         @QueryParam("prevId") String prevId,
-                         @QueryParam("nextId") String nextId,
-                         @QueryParam("parentId") String parentId
+                         @Parameter(description = "新位置之前数据的id") @QueryParam("prevId") String prevId,
+                         @Parameter(description = "新位置之后数据的id") @QueryParam("nextId") String nextId,
+                         @Parameter(description = "新位置的父节点id（仅Tree模式有效）") @QueryParam("parentId") String parentId
     ) {
         String sortColumn = getSortColumn().getColumnName();
 

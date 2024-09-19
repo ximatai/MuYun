@@ -10,6 +10,7 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.model.DataChangeChannel;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @POST
     @Path("/update/{id}")
     @Transactional
+    @Operation(summary = "修改数据", description = "返回被修改数据的数量，正常为1")
     default Integer update(@PathParam("id") String id, Map body) {
         HashMap map = new HashMap(body);
         map.put(getPK(), id);

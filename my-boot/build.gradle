@@ -14,8 +14,6 @@ dependencies {
     implementation project(':my-database-std')
 //    implementation project(":my-msg")
 
-    implementation 'io.quarkus:quarkus-smallrye-openapi'
-
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
 
     testImplementation 'io.quarkus:quarkus-junit5'

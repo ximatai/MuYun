@@ -11,6 +11,7 @@ import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.DataChangeChannel;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @GET
     @Path("/delete/{id}")
     @Transactional
+    @Operation(summary = "删除数据", description = "返回被删除数据的数量，正常为1")
     default Integer delete(@PathParam("id") String id) {
         int result;
 

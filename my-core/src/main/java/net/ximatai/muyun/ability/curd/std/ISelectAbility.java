@@ -17,6 +17,8 @@ import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.SortColumn;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,6 +86,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     @GET
     @Path("/view/{id}")
+    @Operation(summary = "查看指定的数据")
     default Map<String, ?> view(@PathParam("id") String id) {
         Map<String, Object> row = getDatabase().row(getSelectOneRowSql(), Map.of("id", id));
         if (this instanceof ISecurityAbility securityAbility) {
@@ -98,7 +101,11 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     @GET
     @Path("/view")
-    default PageResult view(@QueryParam("page") Integer page, @QueryParam("size") Long size, @QueryParam("noPage") Boolean noPage, @QueryParam("sort") List<String> sort) {
+    @Operation(summary = "分页查询")
+    default PageResult view(@Parameter(description = "页码") @QueryParam("page") Integer page,
+                            @Parameter(description = "分页大小") @QueryParam("size") Long size,
+                            @Parameter(description = "是否分页") @QueryParam("noPage") Boolean noPage,
+                            @Parameter(description = "排序", example = "t_create,desc") @QueryParam("sort") List<String> sort) {
         return view(page, size, noPage, sort, null, null);
     }
 
