@@ -3,33 +3,29 @@ package net.ximatai.muyun.test.testcontainers;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PostgresTestResource implements QuarkusTestResourceLifecycleManager {
+
     private static final String POSTGRES_IMAGE = "postgres:16-alpine";
 
-    private PostgreSQLContainer<?> postgres;
+    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(POSTGRES_IMAGE);
 
     @Override
     public Map<String, String> start() {
-        if (postgres == null) {
-            postgres = new PostgreSQLContainer<>(POSTGRES_IMAGE);
-        }
-        postgres.start();
+        POSTGRES.start();
 
-        Map<String, String> conf = new HashMap<>();
-        conf.put("quarkus.datasource.jdbc.url", postgres.getJdbcUrl());
-        conf.put("quarkus.datasource.username", postgres.getUsername());
-        conf.put("quarkus.datasource.password", postgres.getPassword());
-
-        return conf;
+        return Map.of(
+            "quarkus.datasource.jdbc.url", POSTGRES.getJdbcUrl(),
+            "quarkus.datasource.username", POSTGRES.getUsername(),
+            "quarkus.datasource.password", POSTGRES.getPassword()
+        );
     }
 
     @Override
     public void stop() {
-        if (postgres != null && postgres.isRunning()) {
-            postgres.stop();
+        if (POSTGRES.isRunning()) {
+            POSTGRES.stop();
         }
     }
 }
