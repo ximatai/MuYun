@@ -1,11 +1,17 @@
 package net.ximatai.muyun.model;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+@Schema(description = "可以被查询的列")
 public class QueryItem {
 
-    private String field;
+    @Schema(description = "列名")
+    private String column;
+    @Schema(description = "标题")
     private String label;
+    @Schema(description = "别名")
     private String alias;
-
+    @Schema(description = "比较类型")
     private SymbolType symbolType;
 
     private boolean isMain = true; //ui
@@ -19,29 +25,30 @@ public class QueryItem {
 
     private Object defaultValue; //ui
 
-    public static QueryItem of(String field) {
+    public static QueryItem of(String column) {
         QueryItem item = new QueryItem();
-        item.field = field;
-        item.alias = field;
+        item.column = column;
+        item.alias = column;
         item.symbolType = SymbolType.EQUAL;
 
-        if (field.startsWith("t_")) {
+        if (column.startsWith("t_")) {
             item.isDatetime = true;
-        } else if (field.startsWith("d_")) {
+        } else if (column.startsWith("d_")) {
             item.isDate = true;
-        } else if (field.startsWith("b_")) {
+        } else if (column.startsWith("b_")) {
             item.isBoolean = true;
         }
 
         return item;
     }
 
+    @Schema(description = "比较类型")
     public enum SymbolType {
         EQUAL, NOT_EQUAL, LIKE, IN, NOT_IN, RANGE
     }
 
-    public QueryItem setField(String field) {
-        this.field = field;
+    public QueryItem setColumn(String column) {
+        this.column = column;
         return this;
     }
 
@@ -105,8 +112,8 @@ public class QueryItem {
         return this;
     }
 
-    public String getField() {
-        return field;
+    public String getColumn() {
+        return column;
     }
 
     public String getLabel() {

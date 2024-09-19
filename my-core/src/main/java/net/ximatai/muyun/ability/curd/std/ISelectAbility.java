@@ -149,7 +149,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                     throw new QueryException("查询条件%s未配置，查询失败".formatted(k));
                 }
 
-                condition.append(" and %s ".formatted(qi.getField()));
+                condition.append(" and %s ".formatted(qi.getColumn()));
 
                 if (v == null) {
                     condition.append(" isnull ");
@@ -201,14 +201,14 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                         Object b = list.get(1);
 
                         if (a == null) {
-                            condition.append(" = %s ".formatted(qi.getField()));
+                            condition.append(" = %s ".formatted(qi.getColumn()));
                         } else {
                             condition.append(" >= ? ");
                             params.add(a);
                         }
 
                         if (b != null) {
-                            condition.append(" and %s ".formatted(qi.getField()));
+                            condition.append(" and %s ".formatted(qi.getColumn()));
                             condition.append(" <= ? ");
                             params.add(b);
                         }

@@ -1,8 +1,14 @@
 package net.ximatai.muyun.model;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+@Schema(description = "数据变更结果")
 public class BatchResult {
+    @Schema(description = "新增数量")
     private int create;
+    @Schema(description = "修改数量")
     private int update;
+    @Schema(description = "删除数量")
     private int delete;
 
     public BatchResult() {

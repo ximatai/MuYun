@@ -1,11 +1,18 @@
 package net.ximatai.muyun.model;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import java.util.List;
 
+@Schema(description = "分页结果")
 public class PageResult<T> {
+    @Schema(description = "数据列表")
     private List<T> list;
+    @Schema(description = "总数")
     private long total;
+    @Schema(description = "分页大小")
     private long size;
+    @Schema(description = "页码")
     private int page;
 
     public PageResult() {
