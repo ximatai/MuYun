@@ -1,6 +1,7 @@
 package net.ximatai.muyun.ability;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseAccess;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -9,24 +10,26 @@ public interface ITableCreateAbility {
 
     TableWrapper fitOutTable();
 
+    @Transactional
     @PostConstruct
     default void create(IDatabaseAccess databaseAccess) {
         TableWrapper wrapper = fitOutTable();
-        if (this instanceof ICommonBusinessAbility commonBusinessAbility) {
-            commonBusinessAbility.getCommonColumns().forEach(wrapper::addColumn);
+        if (this instanceof ICommonBusinessAbility ability) {
+            ability.getCommonColumns().forEach(wrapper::addColumn);
         }
-        if (this instanceof ISoftDeleteAbility softDeleteAbility) {
-            wrapper.addColumn(softDeleteAbility.getSoftDeleteColumn());
+        if (this instanceof ISoftDeleteAbility ability) {
+            wrapper.addColumn(ability.getSoftDeleteColumn());
         }
-        if (this instanceof ITreeAbility treeAbility) {
-            wrapper.addColumn(treeAbility.getParentKeyColumn());
+        if (this instanceof ITreeAbility ability) {
+            wrapper.addColumn(ability.getParentKeyColumn());
         }
-        if (this instanceof ISortAbility sortAbility) {
-            wrapper.addColumn(sortAbility.getSortColumn().getColumn());
+        if (this instanceof ISortAbility ability) {
+            wrapper.addColumn(ability.getSortColumn().getColumn());
         }
-        if (this instanceof ISecurityAbility securityAbility) {
-            securityAbility.getSignColumns().forEach(wrapper::addColumn);
+        if (this instanceof ISecurityAbility ability) {
+            ability.getSignColumns().forEach(wrapper::addColumn);
         }
+
         new TableBuilder(databaseAccess).build(wrapper);
     }
 }
