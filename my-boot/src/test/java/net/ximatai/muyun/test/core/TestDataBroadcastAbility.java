@@ -110,4 +110,9 @@ class TestDataBroadcastAbilityController extends Scaffold implements ICURDAbilit
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
     }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 }
