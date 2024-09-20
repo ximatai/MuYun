@@ -1,8 +1,6 @@
 package net.ximatai.muyun.database.metadata;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class DBInfo {
@@ -24,20 +22,6 @@ public class DBInfo {
             .filter(schema -> schemaName.equals(schema.getName()))
             .findFirst()
             .orElse(null);
-    }
-
-    public Map<String, DBTable> getTables() {
-        Map<String, DBTable> tables = new HashMap<>();
-        schemas.forEach(
-            schema -> {
-                tables.putAll(schema.getTables());
-            }
-        );
-        return tables;
-    }
-
-    public boolean containsTable(String tableName) {
-        return getTables().containsKey(tableName);
     }
 
     public String getName() {

@@ -30,11 +30,11 @@ public class TableBuilder {
             info.addSchema(new DBSchema(wrapper.getSchema()));
         }
 
-        List<String> inherits = wrapper.getInherits();
+        List<TableBase> inherits = wrapper.getInherits();
 
         if (inherits != null && !inherits.isEmpty()) {
             inherits.forEach(inherit -> {
-                if (!info.containsTable(inherit)) {
+                if (!info.getSchema(inherit.getSchema()).containsTable(inherit.getName())) {
                     throw new MyDatabaseException("Table " + inherit + " does not exist");
                 }
             });
@@ -171,12 +171,17 @@ public class TableBuilder {
         return result;
     }
 
-    private String inheritSQL(List<String> inherits) {
+    private String inheritSQL(List<TableBase> inherits) {
         if (inherits == null || inherits.isEmpty()) {
             return "";
         }
 
-        return "inherits " + String.join(",", inherits);
+        StringBuilder builder = new StringBuilder("inherits (");
+        inherits.forEach(inherit -> {
+            builder.append("%s.%s".formatted(inherit.getSchema(), inherit.getName()));
+        });
+        builder.append(")");
+        return builder.toString();
     }
 
 }

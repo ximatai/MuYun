@@ -1,5 +1,6 @@
 package net.ximatai.muyun.database.metadata;
 
+import net.ximatai.muyun.database.builder.TableBase;
 import org.jdbi.v3.core.Jdbi;
 
 import java.sql.Connection;
@@ -9,11 +10,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DBTable {
+public class DBTable extends TableBase {
     private Jdbi jdbi;
 
-    private String name;
-    private String schema;
     private Map<String, DBColumn> columnMap;
 
     public DBTable(Jdbi jdbi) {
@@ -28,14 +27,6 @@ public class DBTable {
     public DBTable setSchema(String schema) {
         this.schema = schema;
         return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSchema() {
-        return schema;
     }
 
     public Map<String, DBColumn> getColumnMap() {

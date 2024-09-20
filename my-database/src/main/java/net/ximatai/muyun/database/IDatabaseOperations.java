@@ -15,7 +15,7 @@ public interface IDatabaseOperations extends IDBInfoProvider {
     }
 
     default String buildInsertSql(String schema, String tableName, Map<String, ?> params) {
-        DBTable dbTable = getDBInfo().getTables().get(tableName);
+        DBTable dbTable = getDBInfo().getSchema(schema).getTable(tableName);
         Objects.requireNonNull(dbTable);
 
         Map<String, DBColumn> columnMap = dbTable.getColumnMap();
@@ -33,7 +33,7 @@ public interface IDatabaseOperations extends IDBInfoProvider {
     }
 
     default String buildUpdateSql(String schema, String tableName, Map<String, ?> params, String pk) {
-        DBTable dbTable = getDBInfo().getTables().get(tableName);
+        DBTable dbTable = getDBInfo().getSchema(schema).getTable(tableName);
         Objects.requireNonNull(dbTable);
 
         Map<String, DBColumn> columnMap = dbTable.getColumnMap();
@@ -61,7 +61,7 @@ public interface IDatabaseOperations extends IDBInfoProvider {
     }
 
     default Object deleteItem(String schema, String tableName, String id) {
-        DBTable dbTable = getDBInfo().getTables().get(tableName);
+        DBTable dbTable = getDBInfo().getSchema(schema).getTable(tableName);
         Objects.requireNonNull(dbTable);
 
         return this.delete("DELETE FROM %s.%s WHERE id=:id".formatted(schema, tableName), Map.of("id", id));

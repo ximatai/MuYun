@@ -7,6 +7,7 @@ import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.metadata.DBSchema;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +19,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,7 +99,6 @@ public class TableBuilderTest {
         assertNotNull(table.getColumnMap().get("id"));
         assertNotNull(table.getColumnMap().get("name"));
         assertEquals(table.getColumnMap().get("name").getDescription(), "名称");
-
     }
 
     @Test
@@ -112,6 +113,39 @@ public class TableBuilderTest {
                 }
             }
         });
+    }
 
+    @Test
+    void testInherits() {
+        TableWrapper basic = TableWrapper.withName("basic")
+            .setSchema("public")
+            .setPrimaryKey(ID_POSTGRES)
+            .addColumn("v_name");
+
+        new TableBuilder(db).build(basic);
+
+        TableWrapper child = TableWrapper.withName("child")
+            .setSchema("public")
+            .setPrimaryKey(ID_POSTGRES)
+            .addColumn("v_test")
+            .setInherits(List.of(basic));
+
+        new TableBuilder(db).build(child);
+
+        String id = (String) db.insertItem("public", "child", Map.of("v_test", "test", "v_name", "name"));
+
+        assertNotNull(id);
+
+        Map childRow = (Map) db.row("select * from public.child where id = ?", id);
+        assertEquals("test", childRow.get("v_test"));
+        assertEquals("name", childRow.get("v_name"));
+
+        Map mainRow = (Map) db.row("select * from public.basic where id = ?", id);
+        assertNull(mainRow.get("v_test"));
+        assertEquals("name", mainRow.get("v_name"));
+
+        DBSchema dbSchema = db.getDBInfo().getSchema("public");
+        assertTrue(dbSchema.getTable("basic").getColumn("id").isPrimaryKey());
+        assertTrue(dbSchema.getTable("child").getColumn("id").isPrimaryKey());
     }
 }

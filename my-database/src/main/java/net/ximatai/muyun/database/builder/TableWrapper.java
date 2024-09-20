@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TableWrapper {
+public class TableWrapper extends TableBase {
 
-    private String name;
-    private String schema;
     private String comment;
 
-    private List<String> inherits = new ArrayList<>();
+    private List<TableBase> inherits = new ArrayList<>();
     private List<Column> columns = new ArrayList<>();
     private List<Index> indexes = new ArrayList<>();
 
@@ -30,7 +28,7 @@ public class TableWrapper {
         return this;
     }
 
-    public TableWrapper setInherits(List<String> inherits) {
+    public TableWrapper setInherits(List<TableBase> inherits) {
         this.inherits = inherits;
         return this;
     }
@@ -98,19 +96,11 @@ public class TableWrapper {
         return this;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getSchema() {
-        return schema;
-    }
-
     public String getComment() {
         return comment;
     }
 
-    public List<String> getInherits() {
+    public List<TableBase> getInherits() {
         return inherits;
     }
 
