@@ -60,6 +60,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     }
 
     default String getSelectSql() {
+        if (this instanceof ICustomSelectSqlAbility ability) {
+            return ability.getSelectSql();
+        }
+
         StringBuilder starSql = new StringBuilder("%s.*".formatted(getMainTable()));
         StringBuilder joinSql = new StringBuilder();
         String softDeleteSql = "";
