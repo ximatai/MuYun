@@ -11,17 +11,21 @@ public class Column {
     private boolean sequence = false;
     private boolean indexed = false;
 
+    public enum Type {
+        VARCHAR, INT, BOOL
+    }
+
     public static final Column ID_POSTGRES = new Column("id")
         .setPrimaryKey()
-        .setType("varchar")
+        .setType(Type.VARCHAR)
         .setDefaultValue("gen_random_uuid()");
 
     public static final Column DELETE_FLAG = new Column("b_delete")
-        .setType("boolean")
+        .setType(Type.BOOL)
         .setDefaultValue("false");
 
     public static final Column TREE_PID = new Column("pid")
-        .setType("varchar")
+        .setType(Type.VARCHAR)
         .setIndexed();
 
     public static final Column SORT = new Column("n_sort")
@@ -47,6 +51,11 @@ public class Column {
 
     public Column setType(String type) {
         this.type = type;
+        return this;
+    }
+
+    public Column setType(Type type) {
+        this.type = type.toString();
         return this;
     }
 

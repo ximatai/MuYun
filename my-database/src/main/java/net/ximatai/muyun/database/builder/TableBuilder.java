@@ -102,7 +102,7 @@ public class TableBuilder {
         DBColumn dbColumn = dbTable.getColumn(name);
 
         if (!dbColumn.isSequence() && !Objects.equals(dbColumn.getDefaultValue(), defaultValue)) {
-            if ("varchar".equals(type) && defaultValue instanceof String value && !value.contains("(") && !value.contains(")")) {
+            if ("varchar".equalsIgnoreCase(type) && defaultValue instanceof String value && !value.contains("(") && !value.contains(")")) {
                 defaultValue = "'%s'".formatted(value);
             }
 
