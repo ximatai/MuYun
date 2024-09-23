@@ -8,12 +8,12 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 
 public interface ITableCreateAbility {
 
-    TableWrapper fitOutTable();
+    TableWrapper getTableWrapper();
 
     @Transactional
     @PostConstruct
     default void create(IDatabaseOperations db) {
-        TableWrapper wrapper = fitOutTable();
+        TableWrapper wrapper = getTableWrapper();
         if (this instanceof ICommonBusinessAbility ability) {
             ability.getCommonColumns().forEach(wrapper::addColumn);
         }

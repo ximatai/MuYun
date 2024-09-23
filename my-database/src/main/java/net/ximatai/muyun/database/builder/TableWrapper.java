@@ -33,6 +33,11 @@ public class TableWrapper extends TableBase {
         return this;
     }
 
+    public TableWrapper setInherit(TableBase inherit) {
+        this.inherits = List.of(inherit);
+        return this;
+    }
+
     public TableWrapper setPrimaryKey(String name) {
         primaryKey = Column.of(name).setPrimaryKey().setType("varchar").setNullable(false);
         return this;

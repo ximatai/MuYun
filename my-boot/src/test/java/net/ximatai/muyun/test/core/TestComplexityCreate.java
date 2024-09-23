@@ -187,7 +187,7 @@ class TestComplexityCreateController extends Scaffold implements ICURDAbility, I
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)

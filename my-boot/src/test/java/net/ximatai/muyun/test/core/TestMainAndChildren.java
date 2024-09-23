@@ -308,7 +308,7 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
@@ -347,7 +347,7 @@ class TestChildren extends Scaffold implements ICURDAbility, ITableCreateAbility
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)

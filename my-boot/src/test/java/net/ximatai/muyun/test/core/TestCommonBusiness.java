@@ -81,7 +81,7 @@ class TestCommonBusinessCtrl extends Scaffold implements ICURDAbility, ITableCre
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)

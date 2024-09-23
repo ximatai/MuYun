@@ -70,7 +70,7 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)

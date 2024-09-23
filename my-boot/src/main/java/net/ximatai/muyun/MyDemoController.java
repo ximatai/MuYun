@@ -18,7 +18,7 @@ import java.util.List;
 @Path("/demo")
 public class MyDemoController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, ISortAbility, ITreeAbility, IChildrenAbility {
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)

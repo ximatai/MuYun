@@ -79,7 +79,7 @@ class TestCustomSqlQueryController extends Scaffold implements ICURDAbility, ITa
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)

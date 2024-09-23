@@ -7,7 +7,7 @@ import net.ximatai.muyun.ability.IDatabaseAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.database.IDatabaseOperations;
 
-public class Scaffold implements IDatabaseAbility {
+public abstract class Scaffold implements IDatabaseAbility {
 
     private IDatabaseOperations databaseOperations;
     private EventBus eventBus;

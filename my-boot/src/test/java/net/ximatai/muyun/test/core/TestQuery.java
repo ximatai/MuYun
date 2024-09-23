@@ -261,7 +261,7 @@ class TestQueryController extends Scaffold implements ICURDAbility, ITableCreate
     }
 
     @Override
-    public TableWrapper fitOutTable() {
+    public TableWrapper getTableWrapper() {
         return TableWrapper.withName(getMainTable())
             .setSchema(getSchemaName())
             .setPrimaryKey(Column.ID_POSTGRES)
