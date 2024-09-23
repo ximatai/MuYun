@@ -46,7 +46,6 @@ public class TestDictController {
             .statusCode(200)
             .body(is("root2"));
 
-
         given()
             .contentType("application/json")
             .body(List.of(

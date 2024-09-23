@@ -5,7 +5,6 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.core.database.MyTableWrapper;
-import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 
