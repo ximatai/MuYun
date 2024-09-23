@@ -8,6 +8,8 @@ import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.TreeNode;
+import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.basic.BasicBusinessTable;
 
 import java.util.HashMap;
 import java.util.List;

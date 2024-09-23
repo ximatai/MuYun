@@ -1,4 +1,4 @@
-package net.ximatai.muyun.platform.controller;
+package net.ximatai.muyun.platform.basic;
 
 import jakarta.inject.Singleton;
 import net.ximatai.muyun.ability.IMetadataAbility;

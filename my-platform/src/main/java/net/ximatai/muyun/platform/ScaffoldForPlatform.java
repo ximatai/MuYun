@@ -1,4 +1,4 @@
-package net.ximatai.muyun.platform.controller;
+package net.ximatai.muyun.platform;
 
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;

@@ -7,6 +7,8 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.basic.BasicBusinessTable;
 
 import java.util.List;
 
