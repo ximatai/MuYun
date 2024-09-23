@@ -20,11 +20,11 @@ public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbi
     }
 
     default String getLabelColumn() {
-        if (getDBTable().contains("v_name")) {
+        if (checkColumn("v_name")) {
             return "v_name";
         }
 
-        if (getDBTable().contains("v_label")) {
+        if (checkColumn("v_label")) {
             return "v_label";
         }
         return null;

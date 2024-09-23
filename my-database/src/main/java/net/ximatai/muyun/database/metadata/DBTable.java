@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class DBTable extends TableBase {
     private Jdbi jdbi;
@@ -94,11 +95,15 @@ public class DBTable extends TableBase {
     }
 
     public boolean contains(String column) {
-        return getColumn(column) != null;
+        if (column == null) {
+            return false;
+        }
+        return getColumn(column.toLowerCase()) != null;
     }
 
     public DBColumn getColumn(String column) {
-        return getColumnMap().get(column);
+        Objects.requireNonNull(column);
+        return getColumnMap().get(column.toLowerCase());
     }
 
     public void resetColumns() {

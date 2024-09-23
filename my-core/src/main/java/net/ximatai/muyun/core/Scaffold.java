@@ -32,8 +32,8 @@ public class Scaffold implements IDatabaseAbility {
 
     @PostConstruct
     void init() {
-        if (this instanceof ITableCreateAbility tableCreateAbility) {
-            tableCreateAbility.create(getDatabaseOperations());
+        if (this instanceof ITableCreateAbility ability) {
+            ability.create(getDatabaseOperations());
         }
     }
 

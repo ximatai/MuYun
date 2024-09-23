@@ -19,7 +19,7 @@ public interface IReferableAbility extends IMetadataAbility {
     }
 
     default boolean checkColumnExist(String column) {
-        if (!getDBTable().contains(column)) {
+        if (!checkColumn(column)) {
             throw new MyDatabaseException("根据引用关系，要求 %s 必须含有 %s 字段".formatted(getMainTable(), column));
         }
         return true;

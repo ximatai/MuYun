@@ -16,4 +16,8 @@ public interface IMetadataAbility extends IDatabaseAbility {
         return getDatabaseOperations().getDBInfo().getSchema(getSchemaName()).getTable(getMainTable());
     }
 
+    default boolean checkColumn(String column) {
+        return getDBTable().contains(column);
+    }
+
 }

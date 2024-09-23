@@ -12,7 +12,6 @@ import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.core.exception.QueryException;
-import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
@@ -35,12 +34,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             return ability.getSortColumn();
         }
 
-        DBTable dbTable = getDBTable();
-
-        if (dbTable.contains(SortColumn.SORT.getColumnName())) {
+        if (checkColumn(SortColumn.SORT.getColumnName())) {
             return SortColumn.SORT;
         }
-        if (dbTable.contains(SortColumn.CREATE.getColumnName())) {
+        if (checkColumn(SortColumn.CREATE.getColumnName())) {
             return SortColumn.CREATE;
         }
         return null;
@@ -61,7 +58,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default String getSelectSql() {
         if (this instanceof ICustomSelectSqlAbility ability) {
-            return ability.getSelectSql();
+            return ability.getCustomSql();
         }
 
         StringBuilder starSql = new StringBuilder("%s.*".formatted(getMainTable()));
@@ -120,7 +117,6 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             Map<String, Object> queryBody,
                             List<QueryItem> queryItemList
     ) {
-        DBTable dbTable = getDBTable();
         List<Object> params = new ArrayList<>();
 
         List<SortColumn> orderColumns = new ArrayList<>();
@@ -237,7 +233,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (!orderColumns.isEmpty()) {
             querySql.append(" order by ");
             querySql.append(orderColumns.stream()
-                .filter(oc -> dbTable.contains(oc.getColumnName()))
+                .filter(oc -> checkColumn(oc.getColumnName()))
                 .map(oc -> "%s %s".formatted(oc.getColumnName(), oc.getType().isASC() ? " asc" : " desc"))
                 .collect(Collectors.joining(","))
             );
