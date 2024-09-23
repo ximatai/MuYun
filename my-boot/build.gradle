@@ -12,6 +12,7 @@ dependencies {
     implementation enforcedPlatform(libs.quarkus.platform.bom)
     implementation project(":my-core")
     implementation project(':my-database-std')
+    implementation project(":my-platform")
 //    implementation project(":my-msg")
 
     runtimeOnly 'ch.qos.logback:logback-classic:1.+'
