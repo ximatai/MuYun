@@ -88,8 +88,7 @@ class TestDataBroadcastAbility {
 @Path("/TestDataBroadcastAbility")
 class TestDataBroadcastAbilityController extends Scaffold implements ICURDAbility, ITableCreateAbility, IDataBroadcastAbility {
 
-    @Inject
-    EventBus eventBus;
+    DataChangeChannel dataChangeChannel = new DataChangeChannel(this);
 
     @Override
     public String getSchemaName() {
@@ -109,5 +108,10 @@ class TestDataBroadcastAbilityController extends Scaffold implements ICURDAbilit
             .addColumn(Column.of("name").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
+    }
+
+    @Override
+    public DataChangeChannel getDataChangeChannel() {
+        return dataChangeChannel;
     }
 }
