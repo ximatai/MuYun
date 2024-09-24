@@ -28,7 +28,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
         // 默认的响应状态是内部服务器错误
         Response.Status responseStatus = Response.Status.INTERNAL_SERVER_ERROR;
         String requestPath = uriInfo.getRequestUri().toString();
-        logger.error("{}@{}", e.getMessage(), requestPath, e);
+        logger.error("{} @{}", e.getMessage(), requestPath, e);
 
         String message = config.debug() ? e.getMessage() : "服务器错误，请检查。";
 
