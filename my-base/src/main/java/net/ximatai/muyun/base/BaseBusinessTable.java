@@ -1,4 +1,4 @@
-package net.ximatai.muyun.platform.basic;
+package net.ximatai.muyun.base;
 
 import jakarta.inject.Singleton;
 import net.ximatai.muyun.ability.IMetadataAbility;
@@ -8,16 +8,16 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
 @Singleton
-public class BasicBusinessTable extends Scaffold implements IMetadataAbility, ITableCreateAbility {
+public class BaseBusinessTable extends Scaffold implements IMetadataAbility, ITableCreateAbility {
 
     @Override
     public String getSchemaName() {
-        return "basic";
+        return "base";
     }
 
     @Override
     public String getMainTable() {
-        return "basic_business";
+        return "base_business";
     }
 
     @Override

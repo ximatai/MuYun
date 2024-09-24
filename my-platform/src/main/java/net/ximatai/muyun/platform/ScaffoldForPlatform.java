@@ -1,14 +1,13 @@
 package net.ximatai.muyun.platform;
 
-import net.ximatai.muyun.ability.IMetadataAbility;
-import net.ximatai.muyun.ability.ITableCreateAbility;
-import net.ximatai.muyun.ability.curd.std.ICURDAbility;
-import net.ximatai.muyun.core.Scaffold;
+import net.ximatai.muyun.base.BaseScaffold;
 
-public abstract class ScaffoldForPlatform extends Scaffold implements IMetadataAbility, ICURDAbility, ITableCreateAbility {
+import static net.ximatai.muyun.platform.PlatformConst.DB_SCHEMA;
+
+public abstract class ScaffoldForPlatform extends BaseScaffold {
 
     @Override
     public String getSchemaName() {
-        return "platform";
+        return DB_SCHEMA;
     }
 }

@@ -4,23 +4,25 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
-import net.ximatai.muyun.platform.basic.BasicBusinessTable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Path("/platform/dict")
+import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
+
+@Path(BASE_PATH + "/dict")
 public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility {
 
     @Inject
-    BasicBusinessTable basic;
+    BaseBusinessTable base;
 
     @Override
     public String getMainTable() {
@@ -31,7 +33,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
     public TableWrapper getTableWrapper() {
         return new MyTableWrapper(this)
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(basic.getTableWrapper())
+            .setInherit(base.getTableWrapper())
             .addColumn("id_at_app_dictcategory")
             .addColumn("v_value")
             .addColumn("v_name")

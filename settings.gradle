@@ -9,11 +9,13 @@ assert JavaVersion.current() >= JavaVersion.VERSION_21:
 
 include 'my-core'
 //include 'my-core-uni'
-include 'my-platform'
 include 'my-database'
 include 'my-database-std'
 //include 'my-database-uni'
 //include 'my-msg'
+include 'my-base'
+include 'my-platform'
+
 include 'my-boot'
 
 develocity {

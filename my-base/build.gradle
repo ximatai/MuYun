@@ -8,8 +8,4 @@ plugins {
 
 dependencies {
     api project(':my-core')
-    api project(':my-base')
-    //TODO 测试同时依赖的情况
-    api project(':my-database-std')
-//    api project(':my-database-uni')
 }

@@ -4,22 +4,24 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
-import net.ximatai.muyun.platform.basic.BasicBusinessTable;
 
 import java.util.List;
 
-@Path("/platform/dictcategory")
+import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
+
+@Path(BASE_PATH + "/dictcategory")
 public class DictCategoryController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility {
 
     @Inject
     DictController dictController;
 
     @Inject
-    BasicBusinessTable basic;
+    BaseBusinessTable base;
 
     @Override
     public String getMainTable() {
@@ -30,7 +32,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     public TableWrapper getTableWrapper() {
         return new MyTableWrapper(this)
             .setPrimaryKey("id")
-            .setInherit(basic.getTableWrapper())
+            .setInherit(base.getTableWrapper())
             .addColumn("v_name")
             .addColumn("v_remark");
     }
