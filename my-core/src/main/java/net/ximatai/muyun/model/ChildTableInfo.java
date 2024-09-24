@@ -8,9 +8,9 @@ public class ChildTableInfo {
     private boolean isAutoDelete = false;
     private final String childAlias;
 
-    public ChildTableInfo(IChildAbility ctrl, String foreignKey) {
-        this.ctrl = ctrl;
+    public ChildTableInfo(String foreignKey, IChildAbility ctrl) {
         this.foreignKey = foreignKey;
+        this.ctrl = ctrl;
         this.childAlias = ctrl.getChildAlias();
     }
 

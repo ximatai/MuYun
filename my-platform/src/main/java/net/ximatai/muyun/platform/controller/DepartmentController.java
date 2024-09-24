@@ -48,7 +48,9 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
 
     @Override
     public List<ReferenceInfo> getReferenceList() {
-        return List.of(new ReferenceInfo("id_at_org_organization", organizationProvider.get()).autoPackage());
+        return List.of(
+            organizationProvider.get().toReferenceInfo("id_at_org_organization").autoPackage()
+        );
     }
 
     @Override

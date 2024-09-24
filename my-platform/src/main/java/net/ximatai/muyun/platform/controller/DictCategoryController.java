@@ -7,6 +7,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.core.exception.MyException;
@@ -16,11 +17,13 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/dict")
-public class DictCategoryController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility {
+public class DictCategoryController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IDataCheckAbility {
 
     @Inject
     DictController dictController;
@@ -67,4 +70,12 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         return node.getData().get("v_name").toString();
     }
 
+    @Override
+    public void check(Map body, boolean isUpdate) {
+        String id = (String) Objects.requireNonNull(body.get("id"), "数据字典类目必须提供ID");
+
+        if (!id.equals(id.toUpperCase())) {
+            throw new MyException("数据字典类目ID必须为全大写字母");
+        }
+    }
 }
