@@ -74,8 +74,8 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     public void check(Map body, boolean isUpdate) {
         String id = (String) Objects.requireNonNull(body.get("id"), "数据字典类目必须提供ID");
 
-        if (!id.equals(id.toUpperCase())) {
-            throw new MyException("数据字典类目ID必须为全大写字母");
+        if (!id.equals(id.toLowerCase())) {
+            throw new MyException("数据字典类目ID不能包含大写字母");
         }
     }
 }

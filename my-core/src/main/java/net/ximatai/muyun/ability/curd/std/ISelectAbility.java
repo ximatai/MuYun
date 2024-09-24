@@ -77,8 +77,15 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                 info.getTranslates().forEach((column, alias) -> {
                     starSql.append(",%s.%s as %s ".formatted(referenceTableTempName, column, alias));
                 });
+                StringBuilder other = new StringBuilder();
+                info.getOtherConditions().forEach((s1, s2) -> {
+                    other.append(" and %s.%s = %s ".formatted(referenceTableTempName, s1, s2));
+                });
 
-                joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s ".formatted(referenceTable.getSchema(), referenceTable.getName(), referenceTableTempName, getMainTable(), info.getRelationColumn(), referenceTableTempName, info.getHitField()));
+                joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s %s "
+                    .formatted(referenceTable.getSchema(), referenceTable.getName(),
+                        referenceTableTempName, getMainTable(), info.getRelationColumn(),
+                        referenceTableTempName, info.getHitField(), other));
             });
 
         }

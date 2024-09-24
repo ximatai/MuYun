@@ -23,11 +23,7 @@ public interface IReferableAbility extends IMetadataAbility, ILabelAbility {
     }
 
     default ReferenceInfo toReferenceInfo(String foreignKey) {
-        if (checkColumnExist(foreignKey)) {
-            return new ReferenceInfo(foreignKey, this);
-        } else {
-            throw new RuntimeException("foreignKey not found");
-        }
+        return new ReferenceInfo(foreignKey, this);
     }
 
 }

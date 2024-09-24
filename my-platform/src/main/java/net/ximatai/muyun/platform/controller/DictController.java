@@ -3,11 +3,13 @@ package net.ximatai.muyun.platform.controller;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IChildAbility;
+import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
@@ -18,7 +20,7 @@ import java.util.Objects;
 
 //@Path(BASE_PATH + "/dict")
 @ApplicationScoped
-public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility {
+public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility {
 
     @Inject
     BaseBusinessTable base;
@@ -26,6 +28,30 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
     @Override
     public String getMainTable() {
         return "app_dict";
+    }
+
+    @Override
+    public String getKeyColumn() {
+        return "v_value";
+    }
+
+    @Override
+    public ReferenceInfo toReferenceInfo(String foreignKey) {
+        String category;
+        if (foreignKey.startsWith("dict_")) {
+            category = foreignKey.substring("dict_".length());
+        } else {
+            throw new IllegalArgumentException("foreignKey must start with 'dict_'");
+        }
+
+        return this.toReferenceInfo(foreignKey, category).add("v_name", "v_name_at_" + category);
+    }
+
+    public ReferenceInfo toReferenceInfo(String foreignKey, String category) {
+        category = category.toLowerCase();
+        ReferenceInfo referenceInfo = IReferableAbility.super.toReferenceInfo(foreignKey);
+        referenceInfo.addOtherCondition("id_at_app_dictcategory", "'%s'".formatted(category));
+        return referenceInfo;
     }
 
     @Override

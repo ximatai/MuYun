@@ -27,7 +27,7 @@ public class TestDictController {
         given()
             .contentType("application/json")
             .body(Map.of(
-                "id", "ROOT1",
+                "id", "root1",
                 "v_name", "根",
                 "v_remark", "备注"
             ))
@@ -35,12 +35,12 @@ public class TestDictController {
             .post("%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
-            .body(is("ROOT1"));
+            .body(is("root1"));
 
         given()
             .contentType("application/json")
             .body(Map.of(
-                "id", "ROOT2",
+                "id", "root2",
                 "v_name", "根2",
                 "v_remark", "备注"
             ))
@@ -48,22 +48,22 @@ public class TestDictController {
             .post("%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
-            .body(is("ROOT2"));
+            .body(is("root2"));
 
         given()
             .contentType("application/json")
             .body(List.of(
-                Map.of("id_at_app_dictcategory", "ROOT1",
+                Map.of("id_at_app_dictcategory", "root1",
                     "v_value", "01",
                     "v_name", "name1"
                 ),
-                Map.of("id_at_app_dictcategory", "ROOT1",
+                Map.of("id_at_app_dictcategory", "root1",
                     "v_value", "02",
                     "v_name", "name2"
                 )
             ))
             .when()
-            .post("%s/dict/update/%s/child/app_dict".formatted(base, "ROOT1"))
+            .post("%s/dict/update/%s/child/app_dict".formatted(base, "root1"))
             .then()
             .statusCode(200);
 
@@ -76,7 +76,7 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "ROOT1"))
+            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
             .then()
             .statusCode(200);
 
@@ -85,19 +85,19 @@ public class TestDictController {
             .body(
                 List.of(
                     Map.of(
-                        "id_at_app_dictcategory", "ROOT2",
+                        "id_at_app_dictcategory", "root2",
                         "v_value", "03",
                         "v_name", "name3"
                     )
                 )
             )
             .when()
-            .post("%s/dict/update/%s/child/app_dict".formatted(base, "ROOT2"))
+            .post("%s/dict/update/%s/child/app_dict".formatted(base, "root2"))
             .then()
             .statusCode(200);
 
         List<TreeNode> response = given()
-            .get("%s/dict/tree/%s".formatted(base, "ROOT1"))
+            .get("%s/dict/tree/%s".formatted(base, "root1"))
             .then()
             .statusCode(200)
             .extract()
@@ -107,7 +107,7 @@ public class TestDictController {
         assertEquals(response.size(), 3);
 
         List<TreeNode> response2 = given()
-            .get("%s/dict/tree/%s".formatted(base, "ROOT2"))
+            .get("%s/dict/tree/%s".formatted(base, "root2"))
             .then()
             .statusCode(200)
             .extract()
@@ -118,7 +118,7 @@ public class TestDictController {
 
         String translateRes = given()
             .param("source", "01")
-            .get("%s/dict/translate/%s".formatted(base, "ROOT1"))
+            .get("%s/dict/translate/%s".formatted(base, "root1"))
             .then()
             .statusCode(200)
             .extract()
@@ -128,7 +128,7 @@ public class TestDictController {
 
         String res = given()
             .param("source", "02")
-            .get("%s/dict/translate/%s".formatted(base, "ROOT2"))
+            .get("%s/dict/translate/%s".formatted(base, "root2"))
             .then()
             .statusCode(500)
             .extract()

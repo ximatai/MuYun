@@ -12,6 +12,7 @@ public class ReferenceInfo {
     private final IReferableAbility ctrl;
 
     private Map<String, String> translates = new HashMap<>();
+    private Map<String, String> otherConditions = new HashMap<>();
 
     public ReferenceInfo(String relationColumn, IReferableAbility ctrl) {
         this.relationColumn = relationColumn;
@@ -66,5 +67,14 @@ public class ReferenceInfo {
 
     public Map<String, String> getTranslates() {
         return translates;
+    }
+
+    public ReferenceInfo addOtherCondition(String column, String condition) {
+        otherConditions.put(column, condition);
+        return this;
+    }
+
+    public Map<String, String> getOtherConditions() {
+        return otherConditions;
     }
 }
