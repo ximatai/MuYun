@@ -1,20 +1,25 @@
 package net.ximatai.muyun.platform.controller;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
 import java.util.List;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Path(BASE_PATH + "/dictcategory")
+@Path(BASE_PATH + "/dict")
 public class DictCategoryController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility {
 
     @Inject
@@ -43,4 +48,23 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
             dictController.toChildTable("id_at_app_dictcategory")
         );
     }
+
+    @GET
+    @Path("/tree/{id}")
+    public List<TreeNode> tree(@PathParam("id") String id) {
+        return dictController.tree(id, false, null, null);
+    }
+
+    @GET
+    @Path("/translate/{category}")
+    public String translate(@PathParam("category") String category, @QueryParam("source") String source) {
+
+        TreeNode node = tree(category).stream().filter(treeNode -> treeNode.getData().get("v_value").equals(source)).findFirst().orElse(null);
+        if (node == null) {
+            throw new MyException("字典值 %s 在 %s 类型中不存在".formatted(source, category));
+        }
+
+        return node.getData().get("v_name").toString();
+    }
+
 }

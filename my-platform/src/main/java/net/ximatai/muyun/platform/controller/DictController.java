@@ -1,7 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
@@ -16,9 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
-
-@Path(BASE_PATH + "/dict")
+//@Path(BASE_PATH + "/dict")
+@ApplicationScoped
 public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility {
 
     @Inject
@@ -54,6 +53,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
 
     @Override
     public List<TreeNode> tree(String rootID, Boolean showMe, String labelColumn, Integer maxLevel) {
+        Objects.requireNonNull(rootID);
         if (showMe == null) {
             showMe = false;
         }

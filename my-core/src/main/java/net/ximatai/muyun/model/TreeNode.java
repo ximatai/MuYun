@@ -3,6 +3,7 @@ package net.ximatai.muyun.model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
+import java.util.Map;
 
 @Schema(description = "树节点")
 public class TreeNode {
@@ -11,7 +12,7 @@ public class TreeNode {
     @Schema(description = "数据标题")
     private String label;
     @Schema(description = "数据内容")
-    private Object data;
+    private Map<String, Object> data;
     @Schema(description = "子节点")
     private List<TreeNode> children;
 
@@ -26,7 +27,7 @@ public class TreeNode {
         return label;
     }
 
-    public Object getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
@@ -44,7 +45,7 @@ public class TreeNode {
         return this;
     }
 
-    public TreeNode setData(Object data) {
+    public TreeNode setData(Map<String, Object> data) {
         this.data = data;
         return this;
     }
