@@ -14,6 +14,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
@@ -126,13 +127,15 @@ public class TestDictController {
 
         assertEquals("name1", translateRes);
 
-        given()
+        String res = given()
             .param("source", "02")
             .get("%s/dict/translate/%s".formatted(base, "root2"))
             .then()
             .statusCode(500)
             .extract()
             .asString();
+
+        assertTrue(res.contains("类型中不存在"));
     }
 
 }
