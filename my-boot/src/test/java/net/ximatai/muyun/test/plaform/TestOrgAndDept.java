@@ -20,7 +20,7 @@ public class TestOrgAndDept {
 
     @Test
     void test() {
-        String org_id = given()
+        String orgId = given()
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "机构"
@@ -32,11 +32,11 @@ public class TestOrgAndDept {
             .extract()
             .asString();
 
-        String dept_id = given()
+        String deptId = given()
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "部门",
-                "id_at_org_organization", org_id
+                "id_at_org_organization", orgId
             ))
             .when()
             .post("%s/department/create".formatted(base))
@@ -45,11 +45,11 @@ public class TestOrgAndDept {
             .extract()
             .asString();
 
-        assertNotNull(org_id);
-        assertNotNull(dept_id);
+        assertNotNull(orgId);
+        assertNotNull(deptId);
 
         Map row = given()
-            .get("%s/department/view/%s".formatted(base, dept_id))
+            .get("%s/department/view/%s".formatted(base, deptId))
             .then()
             .statusCode(200)
             .extract()

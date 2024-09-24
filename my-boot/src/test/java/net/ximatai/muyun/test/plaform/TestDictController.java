@@ -96,7 +96,6 @@ public class TestDictController {
             .then()
             .statusCode(200);
 
-
         List<TreeNode> response = given()
             .get("%s/dict/tree/%s".formatted(base, "root1"))
             .then()
