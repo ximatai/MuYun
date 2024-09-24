@@ -31,7 +31,7 @@ public class BaseBusinessTable extends Scaffold implements IMetadataAbility, ITa
             .addColumn("id_at_auth_user__create")
             .addColumn("id_at_auth_user__update")
             .addColumn("id_at_auth_user__delete")
-            .addColumn("id_at_orga_department__create")
-            .addColumn("id_at_orga_organization__create");
+            .addColumn("id_at_org_department__create")
+            .addColumn("id_at_org_organization__create");
     }
 }

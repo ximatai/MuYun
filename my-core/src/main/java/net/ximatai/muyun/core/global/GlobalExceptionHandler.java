@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.core.ServerConfig;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,11 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
         // 默认的响应状态是内部服务器错误
         Response.Status responseStatus = Response.Status.INTERNAL_SERVER_ERROR;
 
-        if (e instanceof MyDatabaseException myDatabaseException) {
+        String message = config.debug() ? e.getMessage() : "服务器错误，请检查。";
+
+        if (e instanceof MyException exception) {
+            message = exception.getMessage();
+        } else if (e instanceof MyDatabaseException myDatabaseException) {
             switch (myDatabaseException.getType()) {
                 case DATA_NOT_FOUND -> responseStatus = Response.Status.NOT_FOUND;
                 case DEFAULT -> responseStatus = Response.Status.BAD_REQUEST;
@@ -42,7 +47,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
 
         return Response
             .status(responseStatus)
-            .entity(config.debug() ? e.getMessage() : "服务器错误，请检查。")
+            .entity(message)
             .build();
     }
 }

@@ -13,21 +13,10 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import java.util.List;
 import java.util.Objects;
 
-public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbility {
+public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbility, ILabelAbility {
 
     default Column getParentKeyColumn() {
         return Column.TREE_PID.setDefaultValue(TreeBuilder.ROOT_PID);
-    }
-
-    default String getLabelColumn() {
-        if (checkColumn("v_name")) {
-            return "v_name";
-        }
-
-        if (checkColumn("v_label")) {
-            return "v_label";
-        }
-        return null;
     }
 
     @GET

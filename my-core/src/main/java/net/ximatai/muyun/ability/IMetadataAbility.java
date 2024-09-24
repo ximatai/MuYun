@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.metadata.DBTable;
 
 public interface IMetadataAbility extends IDatabaseAbility {
@@ -7,6 +8,10 @@ public interface IMetadataAbility extends IDatabaseAbility {
     String getSchemaName();
 
     String getMainTable();
+
+    default TableBase getTableBase() {
+        return new TableBase().setName(getMainTable()).setSchema(getSchemaName());
+    }
 
     default String getPK() {
         return "id";

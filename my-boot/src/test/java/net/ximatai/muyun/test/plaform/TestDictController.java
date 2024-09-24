@@ -4,6 +4,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import net.ximatai.muyun.model.TreeNode;
+import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestDictController {
 
+    String base = PlatformConst.BASE_PATH;
+
     @Test
     void testDictCategoryAdd() {
         given()
@@ -28,7 +31,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("/platform/dictcategory/create")
+            .post("%s/dictcategory/create".formatted(base))
             .then()
             .statusCode(200)
             .body(is("root1"));
@@ -41,7 +44,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("/platform/dictcategory/create")
+            .post("%s/dictcategory/create".formatted(base))
             .then()
             .statusCode(200)
             .body(is("root2"));
@@ -59,7 +62,7 @@ public class TestDictController {
                 )
             ))
             .when()
-            .post("/platform/dictcategory/update/%s/child/app_dict".formatted("root1"))
+            .post("%s/dictcategory/update/%s/child/app_dict".formatted(base, "root1"))
             .then()
             .statusCode(200);
 
@@ -72,7 +75,7 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("/platform/dict/create/")
+            .post("%s/dict/create/".formatted(base))
             .then()
             .statusCode(200);
 
@@ -85,13 +88,13 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("/platform/dict/create/")
+            .post("%s/dict/create/".formatted(base))
             .then()
             .statusCode(200);
 
         List<TreeNode> response = given()
             .queryParam("rootID", "root1")
-            .get("/platform/dict/tree")
+            .get("%s/dict/tree".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -102,7 +105,7 @@ public class TestDictController {
 
         List<TreeNode> response2 = given()
             .queryParam("rootID", "root2")
-            .get("/platform/dict/tree")
+            .get("%s/dict/tree".formatted(base))
             .then()
             .statusCode(200)
             .extract()

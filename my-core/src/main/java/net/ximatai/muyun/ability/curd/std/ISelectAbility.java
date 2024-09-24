@@ -12,6 +12,7 @@ import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.core.exception.QueryException;
+import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
@@ -71,13 +72,13 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof IReferenceAbility referenceAbility) {
 
             referenceAbility.getReferenceList().forEach(info -> {
-                String referenceTable = info.getReferenceTable();
-                String referenceTableTempName = "%s_%s".formatted(referenceTable, UUID.randomUUID().toString().substring(25));
+                TableBase referenceTable = info.getReferenceTable();
+                String referenceTableTempName = "%s_%s".formatted(referenceTable.getName(), UUID.randomUUID().toString().substring(25));
                 info.getTranslates().forEach((column, alias) -> {
                     starSql.append(",%s.%s as %s ".formatted(referenceTableTempName, column, alias));
                 });
 
-                joinSql.append("\n left join %s as %s on %s.%s = %s.%s ".formatted(referenceTable, referenceTableTempName, getMainTable(), info.getRelationColumn(), referenceTableTempName, info.getHitField()));
+                joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s ".formatted(referenceTable.getSchema(), referenceTable.getName(), referenceTableTempName, getMainTable(), info.getRelationColumn(), referenceTableTempName, info.getHitField()));
             });
 
         }

@@ -4,14 +4,10 @@ import net.ximatai.muyun.database.exception.MyDatabaseException;
 
 import java.util.List;
 
-public interface IReferableAbility extends IMetadataAbility {
+public interface IReferableAbility extends IMetadataAbility, ILabelAbility {
 
     default String getKeyColumn() {
         return getPK();
-    }
-
-    default String getLabelColumn() {
-        return "v_name";
     }
 
     default List<String> getOpenColumns() {

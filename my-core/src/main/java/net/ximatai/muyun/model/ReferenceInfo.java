@@ -1,6 +1,7 @@
 package net.ximatai.muyun.model;
 
 import net.ximatai.muyun.ability.IReferableAbility;
+import net.ximatai.muyun.database.builder.TableBase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +18,8 @@ public class ReferenceInfo {
         this.ctrl = ctrl;
     }
 
-    public String getReferenceTable() {
-        return ctrl.getMainTable();
+    public TableBase getReferenceTable() {
+        return ctrl.getTableBase();
     }
 
     public String getHitField() {
@@ -45,7 +46,7 @@ public class ReferenceInfo {
     }
 
     private String getColumnAlias(String column) {
-        return column + "_at_" + getReferenceTable();
+        return column + "_at_" + getReferenceTable().getName();
     }
 
     private void putTranslate(String column) {
