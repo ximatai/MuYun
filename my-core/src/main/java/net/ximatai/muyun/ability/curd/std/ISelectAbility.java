@@ -35,8 +35,8 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             return ability.getSortColumn();
         }
 
-        if (checkColumn(SortColumn.SORT.getColumnName())) {
-            return SortColumn.SORT;
+        if (checkColumn(SortColumn.ORDER.getColumnName())) {
+            return SortColumn.ORDER;
         }
         if (checkColumn(SortColumn.CREATE.getColumnName())) {
             return SortColumn.CREATE;
@@ -78,8 +78,8 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                     starSql.append(",%s.%s as %s ".formatted(referenceTableTempName, column, alias));
                 });
                 StringBuilder other = new StringBuilder();
-                info.getOtherConditions().forEach((s1, s2) -> {
-                    other.append(" and %s.%s = %s ".formatted(referenceTableTempName, s1, s2));
+                info.getOtherConditions().forEach((column, value) -> {
+                    other.append(" and %s.%s = %s ".formatted(referenceTableTempName, column, value));
                 });
 
                 joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s %s "

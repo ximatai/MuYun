@@ -61,7 +61,7 @@ class TestSortAbility {
             });
 
         assertEquals(4, response.getSize());
-        assertEquals(3, response.getList().get(2).get("n_sort"));
+        assertEquals(3, response.getList().get(2).get("n_order"));
 
         //把C移动到AB之间
         String sortRes = given()
@@ -78,8 +78,8 @@ class TestSortAbility {
         Map<String, ?> c = testController.view(idC);
         Map<String, ?> b = testController.view(idB);
 
-        assertEquals(new BigDecimal(2), c.get("n_sort"));
-        assertEquals(new BigDecimal(3), b.get("n_sort"));
+        assertEquals(new BigDecimal(2), c.get("n_order"));
+        assertEquals(new BigDecimal(3), b.get("n_order"));
 
         given()
             .queryParam("prevId", idD)
@@ -90,8 +90,8 @@ class TestSortAbility {
             .extract()
             .asString();
 
-        assertEquals(new BigDecimal(3), testController.view(idD).get("n_sort"));
-        assertEquals(new BigDecimal(4), testController.view(idA).get("n_sort"));
+        assertEquals(new BigDecimal(3), testController.view(idD).get("n_order"));
+        assertEquals(new BigDecimal(4), testController.view(idA).get("n_order"));
     }
 
 }

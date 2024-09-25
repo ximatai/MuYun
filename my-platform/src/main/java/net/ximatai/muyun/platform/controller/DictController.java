@@ -62,7 +62,8 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
             .addColumn("id_at_app_dictcategory")
             .addColumn("v_value")
             .addColumn("v_name")
-            .addColumn("v_remark");
+            .addColumn("v_remark")
+            .addIndex(List.of("id_at_app_dictcategory", "v_value"), true);
     }
 
     @Override

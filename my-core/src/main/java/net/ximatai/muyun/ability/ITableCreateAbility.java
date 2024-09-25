@@ -10,6 +10,9 @@ public interface ITableCreateAbility {
 
     TableWrapper getTableWrapper();
 
+    default void onTableCreated(boolean isFirst) {
+    }
+
     @Transactional
     @PostConstruct
     default void create(IDatabaseOperations db) {
@@ -30,8 +33,10 @@ public interface ITableCreateAbility {
             ability.getSignColumns().forEach(wrapper::addColumn);
         }
 
-        new TableBuilder(db).build(wrapper);
+        boolean build = new TableBuilder(db).build(wrapper);
+        this.onTableCreated(build);
     }
+
 }
 
 

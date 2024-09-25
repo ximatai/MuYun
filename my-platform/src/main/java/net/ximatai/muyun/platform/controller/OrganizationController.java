@@ -13,6 +13,8 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.model.Dict;
+import net.ximatai.muyun.platform.model.DictCategory;
 
 import java.util.List;
 
@@ -28,7 +30,19 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     DictController dictController;
 
     @Inject
+    DictCategoryController dictCategoryController;
+
+    @Inject
     DepartmentController departmentController;
+
+    @Override
+    protected void afterInit() {
+        dictCategoryController.putDictCategory(
+            new DictCategory("org_type", "PLATFORM_DIR", "机构类型", 0).setDictList(List.of(
+                new Dict("jituan", "集团公司"),
+                new Dict("erjigongsi", "二级公司")
+            )), true);
+    }
 
     @Override
     public String getMainTable() {
@@ -45,7 +59,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
             .addColumn("v_shortname", "简称")
             .addColumn("v_code", "编码")
             .addColumn("v_address", "地址")
-            .addColumn("dict_orga_type", "机构类型")
+            .addColumn("dict_org_type", "机构类型")
             .addColumn("v_introduction", "简介")
             .addColumn("v_contact_person", "联系人")
             .addColumn("v_contact_phone", "联系电话");
@@ -59,7 +73,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Override
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
-            dictController.toReferenceInfo("dict_orga_type")
+            dictController.toReferenceInfo("dict_org_type")
         );
     }
 }

@@ -103,8 +103,8 @@ class TestTreeAbility {
         assertEquals("A.b", response.getLast().getLabel());
 
         //修改顺序
-        testController.update(response.getFirst().getId(), Map.of("n_sort", 2));
-        testController.update(response.getLast().getId(), Map.of("n_sort", 1));
+        testController.update(response.getFirst().getId(), Map.of("n_order", 2));
+        testController.update(response.getLast().getId(), Map.of("n_order", 1));
 
         List<TreeNode> response2 = given()
             .queryParam("rootID", aID)

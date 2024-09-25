@@ -29,9 +29,6 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Inject
     Provider<OrganizationController> organizationProvider;
 
-    @Inject
-    DictController dictController;
-
     @Override
     public String getMainTable() {
         return "org_department";
@@ -45,15 +42,13 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
             .addColumn("v_name", "名称")
             .addColumn("v_remark", "备注")
             .addColumn(Column.of("id_at_org_organization").setComment("所属机构").setNullable(false))
-            .addColumn("dict_dept_type", "部门类型")
             .addColumn("id_at_auth_user__leader", "部门主管");
     }
 
     @Override
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
-            organizationProvider.get().toReferenceInfo("id_at_org_organization"),
-            dictController.toReferenceInfo("dict_dept_type")
+            organizationProvider.get().toReferenceInfo("id_at_org_organization")
         );
     }
 

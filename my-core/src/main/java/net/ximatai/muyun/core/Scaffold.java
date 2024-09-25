@@ -31,10 +31,15 @@ public abstract class Scaffold implements IDatabaseAbility {
     }
 
     @PostConstruct
-    void init() {
+    protected void init() {
         if (this instanceof ITableCreateAbility ability) {
             ability.create(getDatabaseOperations());
         }
+        afterInit();
+    }
+
+    protected void afterInit() {
+
     }
 
 }

@@ -28,7 +28,7 @@ public class Column {
         .setType(Type.VARCHAR)
         .setIndexed();
 
-    public static final Column SORT = new Column("n_sort")
+    public static final Column ORDER = new Column("n_order")
         .setSequence()
         .setIndexed();
 

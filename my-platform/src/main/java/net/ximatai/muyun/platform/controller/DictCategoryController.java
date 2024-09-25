@@ -15,6 +15,7 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.model.DictCategory;
 
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,31 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
 
         if (!id.equals(id.toLowerCase())) {
             throw new MyException("数据字典类目ID不能包含大写字母");
+        }
+    }
+
+    @Override
+    public void onTableCreated(boolean isFirst) {
+        List.of(
+            new DictCategory("muyun_dir", "平台自用", 0),
+            new DictCategory("platform_dir", "平台业务", 1)
+        ).forEach(dictCategory -> {
+            this.putDictCategory(dictCategory, true);
+        });
+    }
+
+    public void putDictCategory(DictCategory dictCategory, boolean isLock) {
+        Map<String, ?> category = null;
+        try {
+            category = this.view(dictCategory.getId());
+        } catch (Exception ignored) {
+
+        }
+
+        if (category == null) {
+            this.create(dictCategory.toMap());
+        } else if (isLock) {
+            this.update(dictCategory.getId(), dictCategory.toMap());
         }
     }
 }

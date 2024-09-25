@@ -17,7 +17,7 @@ import java.util.HashMap;
 public interface ISortAbility extends ISelectAbility, IUpdateAbility {
 
     default SortColumn getSortColumn() {
-        return SortColumn.SORT;
+        return SortColumn.ORDER;
     }
 
     @GET

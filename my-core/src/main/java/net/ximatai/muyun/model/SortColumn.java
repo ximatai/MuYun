@@ -5,7 +5,7 @@ import net.ximatai.muyun.database.builder.Column;
 public class SortColumn {
 
     public static final SortColumn CREATE = new SortColumn(Column.CREATE, Type.DESC);
-    public static final SortColumn SORT = new SortColumn(Column.SORT, Type.ASC);
+    public static final SortColumn ORDER = new SortColumn(Column.ORDER, Type.ASC);
 
     private Column column;
     private final String columnName;

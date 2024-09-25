@@ -23,6 +23,19 @@ public class TestDictController {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    void testPlaform() {
+        List<TreeNode> response = given()
+            .get("%s/dict/tree".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertTrue(!response.isEmpty());
+    }
+
+    @Test
     void testDictCategoryAdd() {
         given()
             .contentType("application/json")
