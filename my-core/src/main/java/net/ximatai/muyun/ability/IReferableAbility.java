@@ -23,7 +23,7 @@ public interface IReferableAbility extends IMetadataAbility, ILabelAbility {
     }
 
     default ReferenceInfo toReferenceInfo(String foreignKey) {
-        return new ReferenceInfo(foreignKey, this);
+        return new ReferenceInfo(foreignKey, this).autoPackage();
     }
 
 }

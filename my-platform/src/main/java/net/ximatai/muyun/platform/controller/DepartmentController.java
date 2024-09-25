@@ -52,7 +52,7 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Override
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
-            organizationProvider.get().toReferenceInfo("id_at_org_organization").autoPackage(),
+            organizationProvider.get().toReferenceInfo("id_at_org_organization"),
             dictController.toReferenceInfo("dict_dept_type")
         );
     }

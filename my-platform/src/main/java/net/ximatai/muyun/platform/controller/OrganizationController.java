@@ -4,12 +4,14 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
+import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
 import java.util.List;
@@ -17,10 +19,13 @@ import java.util.List;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/organization")
-public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility {
+public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility {
 
     @Inject
     BaseBusinessTable base;
+
+    @Inject
+    DictController dictController;
 
     @Inject
     DepartmentController departmentController;
@@ -51,4 +56,10 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
         return List.of(departmentController.toChildTable("id_at_org_organization"));
     }
 
+    @Override
+    public List<ReferenceInfo> getReferenceList() {
+        return List.of(
+            dictController.toReferenceInfo("dict_orga_type")
+        );
+    }
 }

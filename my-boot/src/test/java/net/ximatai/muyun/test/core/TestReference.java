@@ -127,7 +127,7 @@ class TestReferenceController extends Scaffold implements ICURDAbility, ITableCr
     @Override
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
-            new ReferenceInfo("id_at_test_table_referable", testReferableController).autoPackage()
+            testReferableController.toReferenceInfo("id_at_test_table_referable")
         );
     }
 }
