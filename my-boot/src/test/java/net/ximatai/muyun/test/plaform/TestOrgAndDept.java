@@ -3,10 +3,12 @@ package net.ximatai.muyun.test.plaform;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
+import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -23,7 +25,8 @@ public class TestOrgAndDept {
         String orgId = given()
             .contentType("application/json")
             .body(Map.of(
-                "v_name", "机构"
+                "v_name", "机构",
+                "dict_org_type", "jituan"
             ))
             .when()
             .post("%s/organization/create".formatted(base))
@@ -31,6 +34,27 @@ public class TestOrgAndDept {
             .statusCode(200)
             .extract()
             .asString();
+
+        Map orgRow = given()
+            .get("%s/organization/view/%s".formatted(base, orgId))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertEquals("集团公司", orgRow.get("v_name_at_dict_org_type"));
+
+        List<TreeNode> dictTree = given()
+            .get("%s/dict/tree/%s".formatted(base, "org_type"))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(2, dictTree.size());
 
         String deptId = given()
             .contentType("application/json")

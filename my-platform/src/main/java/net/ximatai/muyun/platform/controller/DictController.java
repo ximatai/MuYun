@@ -44,7 +44,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
             throw new IllegalArgumentException("foreignKey must start with 'dict_'");
         }
 
-        return this.toReferenceInfo(foreignKey, category).add("v_name", "v_name_at_" + category);
+        return this.toReferenceInfo(foreignKey, category).add("v_name", "v_name_at_" + foreignKey);
     }
 
     public ReferenceInfo toReferenceInfo(String foreignKey, String category) {
