@@ -3,6 +3,7 @@ package net.ximatai.muyun.platform.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
@@ -11,6 +12,7 @@ import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.Dict;
@@ -21,7 +23,7 @@ import java.util.List;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/organization")
-public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility {
+public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility, IDataBroadcastAbility {
 
     @Inject
     BaseBusinessTable base;
@@ -41,7 +43,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
             new DictCategory("org_type", "platform_dir", "机构类型", 0).setDictList(List.of(
                 new Dict("jituan", "集团公司"),
                 new Dict("erjigongsi", "二级公司")
-            )), true);
+            )), false);
     }
 
     @Override
@@ -75,5 +77,10 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
         return List.of(
             dictController.toReferenceInfo("dict_org_type")
         );
+    }
+
+    @Override
+    public DataChangeChannel getDataChangeChannel() {
+        return new DataChangeChannel(this);
     }
 }
