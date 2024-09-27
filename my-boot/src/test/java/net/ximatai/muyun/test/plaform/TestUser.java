@@ -3,7 +3,9 @@ package net.ximatai.muyun.test.plaform;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.Response;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +74,7 @@ public class TestUser {
         assertTrue((Boolean) row2.get("b_user"));
 
         // 登录
-        Map loginUser = given()
+        Response response = given()
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
@@ -83,12 +85,23 @@ public class TestUser {
             .then()
             .statusCode(200)
             .extract()
+            .response();
+
+        RuntimeUser loginUser = response.getBody().as(RuntimeUser.class);
+        response.getCookies();
+
+        assertEquals("test", loginUser.getUsername());
+        assertEquals("测试", loginUser.getName());
+
+        given()
+            .cookies(response.getCookies())
+            .get("%s/runtime/whoami".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
             .as(new TypeRef<>() {
 
             });
-
-        assertEquals("test", loginUser.get("v_username_at_auth_user"));
-        assertEquals("测试", loginUser.get("v_name"));
 
         // 停用用户
         given()
