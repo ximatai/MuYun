@@ -13,7 +13,7 @@ dependencies {
     implementation project(":my-core")
     implementation project(':my-database-std')
     implementation project(":my-authorization")
-    testImplementation project(":my-platform")
+    implementation project(":my-platform")
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'

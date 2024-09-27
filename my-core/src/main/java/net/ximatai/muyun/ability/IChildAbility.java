@@ -13,8 +13,4 @@ public interface IChildAbility extends ICURDAbility, IMetadataAbility {
         }
     }
 
-    default String getChildAlias() {
-        return getMainTable();
-    }
-
 }

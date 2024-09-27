@@ -42,19 +42,18 @@ class TestMainAndChildren {
     @Inject
     TestMain testMain;
 
-    @Inject
-    TestChildren testChildren;
-
     String idMain;
     String idChild;
 
+    String childAlias = "child";
+
     @BeforeEach
     void setUp() {
-        idMain = testMain.create(Map.of("v_name", "main", testChildren.getChildAlias(), List.of(
+        idMain = testMain.create(Map.of("v_name", "main", childAlias, List.of(
             Map.of("v_name", "child1")
         )));
 
-        List<Map> childTableList = testMain.getChildTableList(idMain, testChildren.getChildAlias(), null);
+        List<Map> childTableList = testMain.getChildTableList(idMain, childAlias, null);
 
         idChild = (String) childTableList.get(0).get("id");
     }
@@ -94,7 +93,7 @@ class TestMainAndChildren {
     void testUpdateMainAndChildren() {
         Map main = Map.of(
             "v_name", "main2",
-            testChildren.getChildAlias(), List.of(
+            childAlias, List.of(
                 Map.of("v_name", "child2")
             )
         );
@@ -111,7 +110,7 @@ class TestMainAndChildren {
         Map<String, ?> map = testMain.view(idMain);
         assertEquals("main2", map.get("v_name"));
 
-        List<Map> childTableList = testMain.getChildTableList(idMain, testChildren.getChildAlias(), null);
+        List<Map> childTableList = testMain.getChildTableList(idMain, childAlias, null);
         assertEquals("child2", childTableList.get(0).get("v_name"));
     }
 
@@ -119,7 +118,7 @@ class TestMainAndChildren {
     void testGetChildTableList() {
         List<Map> response = given()
             .queryParam("noPage", true)
-            .get("%s/view/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
+            .get("%s/view/%s/child/%s".formatted(mainPath, idMain, childAlias))
             .then()
             .statusCode(200)
             .extract()
@@ -135,7 +134,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(Map.of("v_name", "child2"))
             .when()
-            .post("%s/update/%s/child/%s/create".formatted(mainPath, idMain, testChildren.getChildAlias()))
+            .post("%s/update/%s/child/%s/create".formatted(mainPath, idMain, childAlias))
             .then()
             .statusCode(200)
             .extract()
@@ -144,7 +143,7 @@ class TestMainAndChildren {
         assertNotNull(child2);
 
         Map child2Map = given()
-            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, childAlias, child2))
             .then()
             .statusCode(200)
             .extract()
@@ -158,7 +157,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(Map.of("v_name", "child22"))
             .when()
-            .post("%s/update/%s/child/%s/update/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
+            .post("%s/update/%s/child/%s/update/%s".formatted(mainPath, idMain, childAlias, child2))
             .then()
             .statusCode(200)
             .extract()
@@ -167,7 +166,7 @@ class TestMainAndChildren {
         assertEquals("1", editCount);
 
         Map child2Map2 = given()
-            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, childAlias, child2))
             .then()
             .statusCode(200)
             .extract()
@@ -178,7 +177,7 @@ class TestMainAndChildren {
         assertEquals("child22", child2Map2.get("v_name"));
 
         String delCount = given()
-            .get("%s/update/%s/child/%s/delete/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
+            .get("%s/update/%s/child/%s/delete/%s".formatted(mainPath, idMain, childAlias, child2))
             .then()
             .statusCode(200)
             .extract()
@@ -187,7 +186,7 @@ class TestMainAndChildren {
         assertEquals("1", delCount);
 
         given()
-            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, testChildren.getChildAlias(), child2))
+            .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, childAlias, child2))
             .then()
             .statusCode(404);
 
@@ -208,7 +207,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(children)
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, childAlias))
             .then()
             .statusCode(200)
             .extract()
@@ -227,7 +226,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(children2)
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, childAlias))
             .then()
             .statusCode(200)
             .extract()
@@ -243,7 +242,7 @@ class TestMainAndChildren {
             .contentType("application/json")
             .body(List.of())
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, testChildren.getChildAlias()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, idMain, childAlias))
             .then()
             .statusCode(200)
             .extract()
@@ -267,7 +266,7 @@ class TestMainAndChildren {
                 Map.of("v_name", "child3")
             ))
             .when()
-            .post("%s/update/%s/child/%s".formatted(mainPath, mainID, testChildren.getChildAlias()))
+            .post("%s/update/%s/child/%s".formatted(mainPath, mainID, childAlias))
             .then()
             .statusCode(200)
             .extract()
@@ -328,7 +327,7 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
     @Override
     public List<ChildTableInfo> getChildren() {
         return List.of(
-            testChildren.toChildTable("id_at_testmain").setAutoDelete()
+            testChildren.toChildTable("id_at_testmain").setAutoDelete().setChildAlias("child")
         );
     }
 }
