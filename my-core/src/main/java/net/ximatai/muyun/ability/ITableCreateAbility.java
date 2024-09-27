@@ -1,6 +1,5 @@
 package net.ximatai.muyun.ability;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.TableBuilder;
@@ -14,7 +13,6 @@ public interface ITableCreateAbility {
     }
 
     @Transactional
-    @PostConstruct
     default void create(IDatabaseOperations db) {
         TableWrapper wrapper = getTableWrapper();
         if (this instanceof ICommonBusinessAbility ability) {

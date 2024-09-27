@@ -136,7 +136,9 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                 if (strings.length > 1) {
                     order = strings[1];
                 }
-                orderColumns.add(new SortColumn(strings[0], order));
+                if (checkColumn(strings[0])) {
+                    orderColumns.add(new SortColumn(strings[0], order));
+                }
             });
         }
 
