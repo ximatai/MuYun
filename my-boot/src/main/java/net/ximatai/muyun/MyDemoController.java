@@ -1,6 +1,6 @@
 package net.ximatai.muyun;
 
-import jakarta.ws.rs.Path;
+//import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
@@ -15,7 +15,7 @@ import net.ximatai.muyun.model.QueryItem;
 
 import java.util.List;
 
-@Path("/demo")
+//@Path("/demo")
 public class MyDemoController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, ISortAbility, ITreeAbility, IChildrenAbility {
     @Override
     public TableWrapper getTableWrapper() {

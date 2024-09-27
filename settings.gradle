@@ -15,6 +15,7 @@ include 'my-database-std'
 //include 'my-msg'
 include 'my-base'
 include 'my-platform'
+include 'my-authorization'
 
 include 'my-boot'
 

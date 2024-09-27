@@ -1,6 +1,7 @@
 package net.ximatai.muyun.ability;
 
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.Session;
 import net.ximatai.muyun.model.IRuntimeUser;
 
 public interface IRuntimeAbility {
@@ -10,7 +11,12 @@ public interface IRuntimeAbility {
     RoutingContext getRoutingContext();
 
     default IRuntimeUser getUser() {
-        return getRoutingContext().session().get(SESSION_USER_KEY);
+        Session session = getRoutingContext().session();
+        if (session != null) {
+            return session.get(SESSION_USER_KEY);
+        } else {
+            return null;
+        }
     }
 
     default void setUser(IRuntimeUser user) {

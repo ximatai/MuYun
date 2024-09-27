@@ -1,12 +1,10 @@
-package net.ximatai.muyun.server;
+package net.ximatai.muyun.http;
 
-import io.quarkus.vertx.web.Route;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.sockjs.SockJSBridgeOptions;
 import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSHandlerOptions;
@@ -39,12 +37,4 @@ public class SockJsBridgeServer {
         return options;
     }
 
-    // 处理 POST 请求，向 EventBus 发布消息
-    @Route(path = "/test", methods = Route.HttpMethod.GET)
-    public void sendMessage(RoutingContext context) {
-        // 异步发送消息到 "news-feed" 地址
-        eventBus.publish("data.change.test", "hello world");
-
-        context.response().end("hello world");
-    }
 }

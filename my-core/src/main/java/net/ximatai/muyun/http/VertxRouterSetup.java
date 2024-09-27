@@ -1,4 +1,4 @@
-package net.ximatai.muyun.server;
+package net.ximatai.muyun.http;
 
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.Vertx;
