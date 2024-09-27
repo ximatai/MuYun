@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildAbility;
+import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
@@ -21,7 +22,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/department")
-public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferenceAbility, IDataCheckAbility {
+public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility {
 
     @Inject
     BaseBusinessTable base;

@@ -36,4 +36,8 @@ public interface IQueryAbility extends ISelectAbility {
         return ISelectAbility.super.view(page, size, noPage, sort, queryBody, queryItemList());
     }
 
+    default PageResult query(Map<String, Object> queryBody) {
+        return ISelectAbility.super.view(null, null, true, null, queryBody, queryItemList());
+    }
+
 }

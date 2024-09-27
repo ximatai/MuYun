@@ -25,6 +25,9 @@ public class QueryItem {
 
     private Object defaultValue; //ui
 
+    private QueryItem() {
+    }
+
     public static QueryItem of(String column) {
         QueryItem item = new QueryItem();
         item.column = column;

@@ -7,12 +7,14 @@ import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.DataChangeChannel;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.Dict;
@@ -23,7 +25,7 @@ import java.util.List;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/organization")
-public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility, IDataBroadcastAbility {
+public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility, IDataBroadcastAbility, IQueryAbility {
 
     @Inject
     BaseBusinessTable base;
@@ -40,10 +42,10 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Override
     protected void afterInit() {
         dictCategoryController.putDictCategory(
-            new DictCategory("org_type", "platform_dir", "机构类型", 0).setDictList(List.of(
+            new DictCategory("org_type", "platform_dir", "机构类型", 0).setDictList(
                 new Dict("jituan", "集团公司"),
                 new Dict("erjigongsi", "二级公司")
-            )), false);
+            ), false);
     }
 
     @Override
@@ -82,5 +84,14 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Override
     public DataChangeChannel getDataChangeChannel() {
         return new DataChangeChannel(this);
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("id"),
+            QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("v_code").setSymbolType(QueryItem.SymbolType.LIKE)
+        );
     }
 }
