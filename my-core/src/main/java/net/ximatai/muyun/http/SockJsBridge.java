@@ -1,7 +1,6 @@
 package net.ximatai.muyun.http;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
@@ -10,18 +9,11 @@ import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 import io.vertx.ext.web.handler.sockjs.SockJSHandlerOptions;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
 
 @ApplicationScoped
-public class SockJsBridgeServer {
+public class SockJsBridge {
 
-    @Inject
-    Vertx vertx;
-
-    @Inject
-    EventBus eventBus;
-
-    void init(@Observes Router router) {
+    void init(@Observes Router router, Vertx vertx) {
         SockJSHandlerOptions options = new SockJSHandlerOptions();
         SockJSHandler sockJSHandler = SockJSHandler.create(vertx, options);
 

@@ -11,7 +11,7 @@ import net.ximatai.muyun.service.IAuthorizationService;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
-public class IAuthorizationFilter implements IRuntimeAbility {
+public class AuthorizationFilter implements IRuntimeAbility {
 
     @ConfigProperty(name = "quarkus.rest.path")
     String restPath;
@@ -22,7 +22,7 @@ public class IAuthorizationFilter implements IRuntimeAbility {
     @Inject
     Instance<IAuthorizationService> authorizationService;
 
-    @RouteFilter(1)
+    @RouteFilter(99)
     void filter(RoutingContext context) {
         String path = context.request().path();
         IRuntimeUser runtimeUser = this.getUser();
