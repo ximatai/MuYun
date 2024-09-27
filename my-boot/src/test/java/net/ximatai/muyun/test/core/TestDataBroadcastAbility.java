@@ -110,8 +110,4 @@ class TestDataBroadcastAbilityController extends Scaffold implements ICURDAbilit
 
     }
 
-    @Override
-    public DataChangeChannel getDataChangeChannel() {
-        return dataChangeChannel;
-    }
 }

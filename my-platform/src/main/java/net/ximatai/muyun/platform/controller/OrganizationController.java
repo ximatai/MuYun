@@ -82,11 +82,6 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     }
 
     @Override
-    public DataChangeChannel getDataChangeChannel() {
-        return new DataChangeChannel(this);
-    }
-
-    @Override
     public List<QueryItem> queryItemList() {
         return List.of(
             QueryItem.of("id"),

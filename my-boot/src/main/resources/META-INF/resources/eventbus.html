@@ -31,8 +31,9 @@
             } else {
                 console.log("Received message from server: ", message.body);
 
+                var str = message.body.id + "[" +  message.body.type +"]"
                 // 将消息显示到页面中
-                document.getElementById('messageLog').innerText += message.body + '\n';
+                document.getElementById('messageLog').innerText += str + '\n';
             }
         });
     };

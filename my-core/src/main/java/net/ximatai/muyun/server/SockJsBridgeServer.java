@@ -3,6 +3,7 @@ package net.ximatai.muyun.server;
 import io.quarkus.vertx.web.Route;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -32,8 +33,9 @@ public class SockJsBridgeServer {
 
     private SockJSBridgeOptions createBridgeOptions() {
         SockJSBridgeOptions options = new SockJSBridgeOptions();
-        options.addInboundPermitted(new PermittedOptions().setAddress("web\\..+")); // 允许客户端发送到该地址
-        options.addOutboundPermitted(new PermittedOptions().setAddressRegex("data.change\\..+")); // 允许从服务器发往客户端
+        options.addInboundPermitted(new PermittedOptions().setAddress("web\\..+"));
+        options.addOutboundPermitted(new PermittedOptions().setAddress("web\\..+"));
+        options.addOutboundPermitted(new PermittedOptions().setAddressRegex("data.change\\..+").setMatch(new JsonObject().put("toFrontEnd", true)));
         return options;
     }
 
