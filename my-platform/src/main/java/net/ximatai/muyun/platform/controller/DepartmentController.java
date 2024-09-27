@@ -8,11 +8,13 @@ import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
@@ -22,7 +24,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/department")
-public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility {
+public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility, IQueryAbility {
 
     @Inject
     BaseBusinessTable base;
@@ -58,5 +60,13 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
         if (body.get("id_at_org_organization") == null) {
             throw new MyException("部门必须归属具体机构，须包含 id_at_org_organization 数据");
         }
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("id_at_org_organization")
+        );
     }
 }

@@ -78,7 +78,7 @@ public class SsoController implements IRuntimeAbility {
 
     private IRuntimeUser mapToUser(Map user) {
         return new RuntimeUser()
-            .setUsername((String) user.get("v_username_at_auth_user"))
+            .setUsername((String) user.get("v_username"))
             .setId((String) user.get("id"))
             .setName((String) user.get("v_name"))
             .setDepartmentId((String) user.get("id_at_org_department"))

@@ -9,11 +9,13 @@ import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.Dict;
@@ -26,7 +28,7 @@ import java.util.Objects;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/userinfo")
-public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility {
+public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility {
 
     @Inject
     BaseBusinessTable base;
@@ -86,7 +88,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             organizationController.toReferenceInfo("id_at_org_organization"),
             departmentController.toReferenceInfo("id_at_org_department"),
             dictController.toReferenceInfo("dict_user_gender"),
-            userController.toReferenceInfo("id").autoPackage().add("b_enabled")
+            userController.toReferenceInfo("id").add("b_enabled").add("v_username", "v_username")
         );
     }
 
@@ -149,5 +151,14 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         ));
 
         return id;
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("v_phone").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("v_username").setSymbolType(QueryItem.SymbolType.LIKE)
+        );
     }
 }
