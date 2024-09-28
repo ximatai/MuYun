@@ -1,0 +1,6 @@
+server:
+  debug: true
+
+quarkus:
+  rest:
+    path: /

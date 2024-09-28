@@ -10,6 +10,7 @@ tasks.named('compileJava').configure {
 
 dependencies {
     implementation enforcedPlatform(libs.quarkus.platform.bom)
+    implementation "io.quarkus:quarkus-config-yaml"
     implementation project(":my-core")
     implementation project(':my-database-std')
     implementation project(":my-authorization")

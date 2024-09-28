@@ -1,0 +1,44 @@
+server:
+  debug: false
+
+quarkus:
+  http:
+    port: 8080
+    # root-path: /api
+  rest:
+    path: /api
+
+  datasource:
+    db-kind: postgresql
+    username: postgres
+    password: muyun2024
+    jdbc:
+      url: jdbc:postgresql://localhost:54324/muyun
+      enabled: true
+    # reactive:
+    #   url: vertx-reactive:postgresql://localhost:54324/muyun
+
+  banner:
+    path: banner.txt
+
+  management:
+    enable-compression: true
+
+  log:
+    category:
+      "org.jdbi":
+        level: DEBUG
+
+    level: INFO
+    console:
+      enable: true
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"
+    file:
+      enable: false
+      path: logs/muyun.log
+      level: DEBUG
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"
+      rotation:
+        max-file-count: 7
+        file-suffix: .yyyy-MM-dd
+        rotate-on-boot: true
