@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: 'postgres:16'
+    image: 'postgres:17-alpine'
     environment:
       - 'POSTGRES_DB=muyun'
       - 'POSTGRES_USER=postgres'

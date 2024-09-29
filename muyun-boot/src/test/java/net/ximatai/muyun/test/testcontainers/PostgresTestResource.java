@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class PostgresTestResource implements QuarkusTestResourceLifecycleManager {
 
-    private static final String POSTGRES_IMAGE = "postgres:16-alpine";
+    private static final String POSTGRES_IMAGE = "postgres:17-alpine";
 
     private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(POSTGRES_IMAGE);
 
