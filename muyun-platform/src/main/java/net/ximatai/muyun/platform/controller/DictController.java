@@ -1,7 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
@@ -20,8 +19,6 @@ import java.util.Objects;
 //@Path(BASE_PATH + "/dict")
 @ApplicationScoped
 public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility {
-
-
 
     @Override
     public String getMainTable() {

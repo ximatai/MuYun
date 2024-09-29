@@ -37,7 +37,6 @@ public class TestBaseColumns {
             .extract()
             .asString();
 
-
         Map row = given()
             .get("%s/view/%s".formatted(path, id))
             .then()
