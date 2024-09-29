@@ -62,9 +62,8 @@ class Demo implements IDatabaseAbility, IMetadataAbility, ITableCreateAbility, I
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName("demo")
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn("v_name")
             .addColumn("i_age");

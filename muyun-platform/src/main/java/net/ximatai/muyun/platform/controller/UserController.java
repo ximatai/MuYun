@@ -6,7 +6,6 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.core.security.SMEncryptor;
 import net.ximatai.muyun.database.builder.Column;
@@ -14,7 +13,6 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
-import net.ximatai.muyun.service.IAuthorizationService;
 
 import java.util.List;
 
@@ -32,12 +30,9 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
     @Inject
     UserRoleController userRoleController;
 
-    @Inject
-    IAuthorizationService authorizationService;
-
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn("v_username")
             .addColumn("v_password")

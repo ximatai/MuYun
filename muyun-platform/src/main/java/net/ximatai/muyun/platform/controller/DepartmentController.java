@@ -10,7 +10,6 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -38,10 +37,10 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.getTableWrapper())
+            .setInherit(base.TABLE)
             .addColumn("v_name", "名称")
             .addColumn("v_remark", "备注")
             .addColumn(Column.of("id_at_org_organization").setComment("所属机构").setNullable(false))

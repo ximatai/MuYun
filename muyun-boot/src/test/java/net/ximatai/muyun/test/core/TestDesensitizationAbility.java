@@ -56,9 +56,6 @@ class TestDesensitizationAbility {
 @Path("/TestDesensitizationAbility")
 class TestDesensitizationAbilityController extends Scaffold implements ICURDAbility, ITableCreateAbility, IDesensitizationAbility {
 
-    @Inject
-    SMEncryptor smEncryptor;
-
     @Override
     public String getSchemaName() {
         return "test";
@@ -70,9 +67,8 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType("varchar"))
             .addColumn(Column.of("v_name2").setType("varchar"))

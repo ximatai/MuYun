@@ -6,7 +6,6 @@ import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ReferenceInfo;
@@ -55,10 +54,10 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.getTableWrapper())
+            .setInherit(base.TABLE)
             .addColumn("id_at_app_dictcategory")
             .addColumn("v_value")
             .addColumn("v_name")

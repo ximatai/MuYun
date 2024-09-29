@@ -11,7 +11,6 @@ import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -61,10 +60,10 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.getTableWrapper())
+            .setInherit(base.TABLE)
             .addColumn("v_name")
             .addColumn("v_work_code")
             .addColumn("d_birth")

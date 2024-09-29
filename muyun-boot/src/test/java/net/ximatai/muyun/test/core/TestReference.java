@@ -106,9 +106,8 @@ class TestReferenceController extends Scaffold implements ICURDAbility, ITableCr
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("name").setType("varchar"))
             .addColumn(Column.of("id_at_test_table_referable").setType("varchar"))
@@ -146,9 +145,8 @@ class TestReferableController extends Scaffold implements ICURDAbility, ITableCr
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType("varchar"))
             .addColumn(Column.of("t_create"));

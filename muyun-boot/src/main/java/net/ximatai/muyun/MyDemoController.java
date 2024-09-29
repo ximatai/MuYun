@@ -1,6 +1,7 @@
 package net.ximatai.muyun;
 
 //import jakarta.ws.rs.Path;
+
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
@@ -18,9 +19,8 @@ import java.util.List;
 //@Path("/demo")
 public class MyDemoController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, ISortAbility, ITreeAbility, IChildrenAbility {
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));

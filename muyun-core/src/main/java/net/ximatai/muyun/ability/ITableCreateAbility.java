@@ -1,25 +1,36 @@
 package net.ximatai.muyun.ability;
 
 import jakarta.transaction.Transactional;
+import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
-public interface ITableCreateAbility {
+public interface ITableCreateAbility extends IMetadataAbility {
 
-    TableWrapper getTableWrapper();
+    /**
+     * 装配表信息
+     *
+     * @param wrapper
+     */
+    void fitOut(TableWrapper wrapper);
 
     default void onTableCreated(boolean isFirst) {
     }
 
     @Transactional
     default void create(IDatabaseOperations db) {
-        TableWrapper wrapper = getTableWrapper();
-        if (this instanceof ICommonBusinessAbility ability) {
-            ability.getCommonColumns().forEach(wrapper::addColumn);
-        }
+        TableWrapper wrapper = TableWrapper.withName(getMainTable())
+            .setSchema(getSchemaName());
+
+        fitOut(wrapper);
+
         if (this instanceof ISoftDeleteAbility ability) {
             wrapper.addColumn(ability.getSoftDeleteColumn());
+            if (wrapper.getInherits().contains(BaseBusinessTable.TABLE)) {
+                wrapper.addColumn("t_delete");
+                wrapper.addColumn("id_at_auth_user__delete");
+            }
         }
         if (this instanceof ITreeAbility ability) {
             wrapper.addColumn(ability.getParentKeyColumn());

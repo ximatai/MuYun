@@ -307,13 +307,11 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
-
     }
 
     @Override
@@ -346,13 +344,11 @@ class TestChildren extends Scaffold implements ICURDAbility, ITableCreateAbility
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType("varchar"))
             .addColumn(Column.of("id_at_testmain"));
-
     }
 
     @Override

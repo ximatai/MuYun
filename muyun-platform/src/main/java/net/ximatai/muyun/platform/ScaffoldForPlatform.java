@@ -10,4 +10,5 @@ public abstract class ScaffoldForPlatform extends BaseScaffold {
     public String getSchemaName() {
         return DB_SCHEMA;
     }
+
 }

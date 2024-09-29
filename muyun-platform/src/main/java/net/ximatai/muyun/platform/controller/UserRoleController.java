@@ -3,7 +3,6 @@ package net.ximatai.muyun.platform.controller;
 import jakarta.enterprise.context.ApplicationScoped;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
@@ -20,8 +19,8 @@ public class UserRoleController extends ScaffoldForPlatform implements IChildAbi
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("id_at_auth_user").setNullable(false))
             .addColumn(Column.of("id_at_auth_role").setNullable(false))

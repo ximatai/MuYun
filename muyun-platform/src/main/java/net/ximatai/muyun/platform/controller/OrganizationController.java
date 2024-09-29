@@ -9,7 +9,6 @@ import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
@@ -53,10 +52,10 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.getTableWrapper())
+            .setInherit(base.TABLE)
             .addColumn("v_remark", "备注")
             .addColumn("v_name", "名称")
             .addColumn("v_shortname", "简称")

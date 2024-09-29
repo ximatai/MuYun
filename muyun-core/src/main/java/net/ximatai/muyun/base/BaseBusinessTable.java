@@ -1,37 +1,39 @@
 package net.ximatai.muyun.base;
 
 import jakarta.inject.Singleton;
-import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
 @Singleton
-public class BaseBusinessTable extends Scaffold implements IMetadataAbility, ITableCreateAbility {
+public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
+
+    public final static String SCHEMA_NAME = "base";
+    public final static String TABLE_NAME = "base_business";
+    public final static TableBase TABLE = new TableBase(SCHEMA_NAME, TABLE_NAME);
 
     @Override
     public String getSchemaName() {
-        return "base";
+        return SCHEMA_NAME;
     }
 
     @Override
     public String getMainTable() {
-        return "base_business";
+        return TABLE_NAME;
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn("t_create")
             .addColumn("t_update")
-            .addColumn("t_delete")
             .addColumn("id_at_auth_user__create")
             .addColumn("id_at_auth_user__update")
-            .addColumn("id_at_auth_user__delete")
             .addColumn("id_at_org_department__create")
             .addColumn("id_at_org_organization__create");
     }
+
 }

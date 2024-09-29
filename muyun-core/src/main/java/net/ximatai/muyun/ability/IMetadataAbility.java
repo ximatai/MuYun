@@ -10,7 +10,7 @@ public interface IMetadataAbility extends IDatabaseAbility {
     String getMainTable();
 
     default TableBase getTableBase() {
-        return new TableBase().setName(getMainTable()).setSchema(getSchemaName());
+        return new TableBase(getSchemaName(), getMainTable());
     }
 
     default String getPK() {

@@ -97,9 +97,8 @@ class TestSoftDeleteController extends Scaffold implements ICURDAbility, ITableC
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("name").setType("varchar"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));

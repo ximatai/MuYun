@@ -80,9 +80,8 @@ class TestSecurityAbilityController extends Scaffold implements ICURDAbility, IT
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return TableWrapper.withName(getMainTable())
-            .setSchema(getSchemaName())
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_for_sign").setType("varchar"))
             .addColumn(Column.of("v_for_encrypt").setType("varchar"))

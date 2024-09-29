@@ -7,7 +7,6 @@ import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.database.MyTableWrapper;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
@@ -41,10 +40,10 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     }
 
     @Override
-    public TableWrapper getTableWrapper() {
-        return new MyTableWrapper(this)
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.getTableWrapper())
+            .setInherit(base.TABLE)
             .addColumn("v_name")
             .addColumn("v_remark");
 

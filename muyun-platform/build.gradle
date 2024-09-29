@@ -8,7 +8,6 @@ plugins {
 
 dependencies {
     api project(':muyun-core')
-    api project(':muyun-base')
     //TODO 测试同时依赖的情况
     api project(':muyun-database-std')
     api project(':muyun-authorization')

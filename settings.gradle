@@ -13,7 +13,6 @@ include 'muyun-database'
 include 'muyun-database-std'
 //include 'muyun-database-uni'
 //include 'muyun-msg'
-include 'muyun-base'
 include 'muyun-platform'
 include 'muyun-authorization'
 
