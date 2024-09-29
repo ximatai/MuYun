@@ -22,9 +22,6 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 public class RoleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility {
 
     @Inject
-    BaseBusinessTable base;
-
-    @Inject
     UserRoleController userRoleController;
 
     private ChildTableInfo userRoleChild;
@@ -43,10 +40,9 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.TABLE)
+            .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name")
             .addColumn("v_remark");
-
     }
 
     @Override

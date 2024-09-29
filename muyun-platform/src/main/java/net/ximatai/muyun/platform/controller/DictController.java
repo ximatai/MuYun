@@ -21,8 +21,7 @@ import java.util.Objects;
 @ApplicationScoped
 public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility {
 
-    @Inject
-    BaseBusinessTable base;
+
 
     @Override
     public String getMainTable() {
@@ -57,7 +56,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.TABLE)
+            .setInherit(BaseBusinessTable.TABLE)
             .addColumn("id_at_app_dictcategory")
             .addColumn("v_value")
             .addColumn("v_name")

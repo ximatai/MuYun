@@ -31,9 +31,6 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility {
 
     @Inject
-    BaseBusinessTable base;
-
-    @Inject
     UserController userController;
 
     @Inject
@@ -51,9 +48,6 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Inject
     IAuthorizationService authorizationService;
 
-    @Inject
-    UserRoleController userRoleController;
-
     @Override
     public String getMainTable() {
         return "auth_userinfo";
@@ -63,7 +57,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.TABLE)
+            .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name")
             .addColumn("v_work_code")
             .addColumn("d_birth")

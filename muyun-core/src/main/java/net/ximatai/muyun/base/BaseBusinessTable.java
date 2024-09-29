@@ -1,5 +1,6 @@
 package net.ximatai.muyun.base;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Singleton;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.core.Scaffold;
@@ -7,6 +8,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
+@Startup
 @Singleton
 public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
 

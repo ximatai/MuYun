@@ -26,9 +26,6 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility, IQueryAbility {
 
     @Inject
-    BaseBusinessTable base;
-
-    @Inject
     Provider<OrganizationController> organizationProvider;
 
     @Override
@@ -40,7 +37,7 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(base.TABLE)
+            .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name", "名称")
             .addColumn("v_remark", "备注")
             .addColumn(Column.of("id_at_org_organization").setComment("所属机构").setNullable(false))

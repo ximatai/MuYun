@@ -28,9 +28,6 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     @Inject
     DictController dictController;
 
-    @Inject
-    BaseBusinessTable base;
-
     @Override
     public String getMainTable() {
         return "app_dictcategory";
@@ -40,7 +37,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey("id")
-            .setInherit(base.TABLE)
+            .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name")
             .addColumn("v_remark");
     }
