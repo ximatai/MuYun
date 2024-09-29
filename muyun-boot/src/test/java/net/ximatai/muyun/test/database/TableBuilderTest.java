@@ -56,6 +56,11 @@ public class TableBuilderTest {
         db.execute("""
             comment on column test.test_table_x.name is '名称';
             """);
+
+        db.resetDBInfo();
+
+        DBSchema test = db.getDBInfo().getSchema("test");
+        assertNotNull(test);
     }
 
     @Test
