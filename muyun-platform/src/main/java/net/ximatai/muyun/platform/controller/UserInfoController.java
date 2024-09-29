@@ -20,6 +20,7 @@ import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
+import net.ximatai.muyun.service.IAuthorizationService;
 
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,12 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @Inject
     DictCategoryController dictCategoryController;
+
+    @Inject
+    IAuthorizationService authorizationService;
+
+    @Inject
+    UserRoleController userRoleController;
 
     @Override
     public String getMainTable() {
@@ -160,5 +167,20 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             QueryItem.of("v_phone").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("v_username").setSymbolType(QueryItem.SymbolType.LIKE)
         );
+    }
+
+    @GET
+    @Path("/roles/{userID}")
+    public List<String> roles(@PathParam("userID") String userID) {
+        return authorizationService.getUserAvailableRoles(userID);
+    }
+
+    @POST
+    @Path("/roles/{userID}")
+    public Integer roles(@PathParam("userID") String userID, List<String> roles) {
+        userController.putChildTableList(userID, "auth_user_role", List.of());
+        return userController.putChildTableList(userID, "auth_user_role", roles.stream().map(it -> Map.of(
+            "id_at_auth_role", it
+        )).toList()).getCreate();
     }
 }

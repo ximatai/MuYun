@@ -27,7 +27,7 @@ public class AuthorizationFilter implements IRuntimeAbility {
         String path = context.request().path();
         IRuntimeUser runtimeUser = this.getUser();
         if (authorizationService.isResolvable()) {
-            authorizationService.get().isAuthorized(runtimeUser, null, null);
+            authorizationService.get().isAuthorized(runtimeUser.getId(), null, null);
         }
         context.next();
     }

@@ -2,6 +2,7 @@ package net.ximatai.muyun.platform.controller;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
@@ -10,13 +11,15 @@ import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.core.security.SMEncryptor;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.service.IAuthorizationService;
 
 import java.util.List;
 
 @ApplicationScoped
-public class UserController extends ScaffoldForPlatform implements IQueryAbility, ISecurityAbility, IReferableAbility {
+public class UserController extends ScaffoldForPlatform implements IQueryAbility, ISecurityAbility, IReferableAbility, IChildrenAbility {
 
     @Override
     public String getMainTable() {
@@ -25,6 +28,12 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
 
     @Inject
     SMEncryptor smEncryptor;
+
+    @Inject
+    UserRoleController userRoleController;
+
+    @Inject
+    IAuthorizationService authorizationService;
 
     @Override
     public TableWrapper getTableWrapper() {
@@ -67,4 +76,12 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
     public String getLabelColumn() {
         return "v_username";
     }
+
+    @Override
+    public List<ChildTableInfo> getChildren() {
+        return List.of(
+            userRoleController.toChildTable("id_at_auth_user").setAutoDelete()
+        );
+    }
+
 }

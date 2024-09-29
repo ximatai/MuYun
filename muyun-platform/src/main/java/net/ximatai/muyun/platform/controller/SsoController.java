@@ -33,8 +33,8 @@ public class SsoController implements IRuntimeAbility {
     @POST
     @Path("/login")
     public IRuntimeUser login(Map body) {
-        String username = (String) body.get("username");
-        String password = (String) body.get("password");
+        java.lang.String username = (java.lang.String) body.get("username");
+        java.lang.String password = (java.lang.String) body.get("password");
 
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
@@ -50,7 +50,7 @@ public class SsoController implements IRuntimeAbility {
 
         if (password.equals(userInDB.get("v_password").toString())) {
             if ((boolean) userInDB.get("b_enabled")) {
-                Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
+                Map<java.lang.String, ?> user = userInfoController.view((java.lang.String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
                 setUser(runtimeUser);
                 return runtimeUser;
@@ -78,10 +78,10 @@ public class SsoController implements IRuntimeAbility {
 
     private IRuntimeUser mapToUser(Map user) {
         return new RuntimeUser()
-            .setUsername((String) user.get("v_username"))
-            .setId((String) user.get("id"))
-            .setName((String) user.get("v_name"))
-            .setDepartmentId((String) user.get("id_at_org_department"))
-            .setOrganizationId((String) user.get("id_at_organization"));
+            .setUsername((java.lang.String) user.get("v_username"))
+            .setId((java.lang.String) user.get("id"))
+            .setName((java.lang.String) user.get("v_name"))
+            .setDepartmentId((java.lang.String) user.get("id_at_org_department"))
+            .setOrganizationId((java.lang.String) user.get("id_at_organization"));
     }
 }

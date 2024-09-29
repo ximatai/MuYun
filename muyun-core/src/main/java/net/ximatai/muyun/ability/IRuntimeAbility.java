@@ -12,10 +12,10 @@ public interface IRuntimeAbility {
 
     default IRuntimeUser getUser() {
         Session session = getRoutingContext().session();
-        if (session != null) {
+        if (session != null && session.get(SESSION_USER_KEY) != null) {
             return session.get(SESSION_USER_KEY);
         } else {
-            return null;
+            return IRuntimeUser.WHITE;
         }
     }
 
