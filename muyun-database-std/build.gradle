@@ -8,7 +8,7 @@ plugins {
 
 dependencies {
     api enforcedPlatform(libs.quarkus.platform.bom)
-    api project(':my-database')
+    api project(':muyun-database')
 
     api libs.yasson
     api "io.quarkus:quarkus-agroal"

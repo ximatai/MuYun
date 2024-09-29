@@ -7,6 +7,6 @@ plugins {
 
 
 dependencies {
-    api project(':my-core')
-    api project(':my-database-uni')
+    api project(':muyun-core')
+    api project(':muyun-database-std')
 }

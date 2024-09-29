@@ -7,5 +7,5 @@ plugins {
 
 
 dependencies {
-    api project(':my-core')
+    api project(':muyun-core')
 }

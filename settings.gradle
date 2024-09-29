@@ -7,17 +7,17 @@ rootProject.name = 'muyun'
 assert JavaVersion.current() >= JavaVersion.VERSION_21:
     "You must use at least Java 21 to build the project, you're currently using ${System.getProperty("java.version")}"
 
-include 'my-core'
-//include 'my-core-uni'
-include 'my-database'
-include 'my-database-std'
-//include 'my-database-uni'
-//include 'my-msg'
-include 'my-base'
-include 'my-platform'
-include 'my-authorization'
+include 'muyun-core'
+//include 'muyun-core-uni'
+include 'muyun-database'
+include 'muyun-database-std'
+//include 'muyun-database-uni'
+//include 'muyun-msg'
+include 'muyun-base'
+include 'muyun-platform'
+include 'muyun-authorization'
 
-include 'my-boot'
+include 'muyun-boot'
 
 develocity {
     buildScan {

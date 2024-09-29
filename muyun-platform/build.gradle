@@ -7,9 +7,9 @@ plugins {
 
 
 dependencies {
-    api project(':my-core')
-    api project(':my-base')
+    api project(':muyun-core')
+    api project(':muyun-base')
     //TODO 测试同时依赖的情况
-    api project(':my-database-std')
-//    api project(':my-database-uni')
+    api project(':muyun-database-std')
+//    api project(':muyun-database-uni')
 }

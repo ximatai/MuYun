@@ -11,10 +11,10 @@ tasks.named('compileJava').configure {
 dependencies {
     implementation enforcedPlatform(libs.quarkus.platform.bom)
     implementation "io.quarkus:quarkus-config-yaml"
-    implementation project(":my-core")
-    implementation project(':my-database-std')
-    implementation project(":my-authorization")
-    implementation project(":my-platform")
+    implementation project(":muyun-core")
+    implementation project(':muyun-database-std')
+    implementation project(":muyun-authorization")
+    implementation project(":muyun-platform")
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
