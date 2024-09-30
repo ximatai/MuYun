@@ -15,6 +15,8 @@ import org.postgresql.util.PGobject;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Array;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -131,10 +133,6 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
             return query.map(new MyPgMapMapper()).findOne().orElse(null);
         });
 
-        if (row == null) {
-            throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
-        }
-
         return row;
     }
 
@@ -188,6 +186,18 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
     public Object execute(String sql) {
         getJdbi().withHandle(handle -> handle.execute(sql));
         return null;
+    }
+
+    public Array toArray(List list, String type) {
+        try {
+            return getJdbi().withHandle(handle -> {
+                Connection connection = handle.getConnection();
+                return connection.createArrayOf(type, list.toArray());
+
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private BigInteger convertToBigInteger(Object value) {

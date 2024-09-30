@@ -3,6 +3,7 @@ package net.ximatai.muyun.database;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
 
+import java.sql.Array;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,4 +91,6 @@ public interface IDatabaseOperations extends IDBInfoProvider {
     Object delete(String sql, Map<String, ?> params);
 
     Object execute(String sql);
+
+    Array toArray(List list, String type);
 }

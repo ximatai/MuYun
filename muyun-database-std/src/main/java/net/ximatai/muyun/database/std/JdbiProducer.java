@@ -6,6 +6,7 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.database.std.argument.List2JsonArgumentFactory;
 import net.ximatai.muyun.database.std.argument.Map2JsonArgumentFactory;
+import net.ximatai.muyun.database.std.argument.PgArrayArgumentFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
 
@@ -20,6 +21,7 @@ public class JdbiProducer {
     public Jdbi createJdbi() {
         return Jdbi.create(dataSource)
             .setSqlLogger(new Slf4JSqlLogger())
+            .registerArgument(new PgArrayArgumentFactory())
             .registerArgument(new Map2JsonArgumentFactory())
             .registerArgument(new List2JsonArgumentFactory());
 //            .installPlugin(new PostgresPlugin())
