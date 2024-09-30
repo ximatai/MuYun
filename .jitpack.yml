@@ -1,10 +1,8 @@
 # JitPack configuration file
 
-jdk:
-  - openjdk21
-
 before_install:
-  - echo "Running custom before install steps..."
+  - sdk install java 21-open
+  - sdk use java 21-open
 
 install:
   - ./gradlew clean
