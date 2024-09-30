@@ -1,4 +1,6 @@
 # JitPack configuration file
+jdk:
+  - openjdk21
 
 before_install:
   - sdk install java 21-open
