@@ -1,12 +1,18 @@
 plugins {
     id 'java'
     id 'checkstyle'
+    id 'maven-publish'
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 allprojects {
     group 'net.ximatai'
-    version '0.0.1'
-
+    version '0.0.9'
 
     repositories {
         maven { url "https://mirrors.cloud.tencent.com/repository/maven" }
