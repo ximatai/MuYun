@@ -6,7 +6,6 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.database.std.argument.List2JsonArgumentFactory;
 import net.ximatai.muyun.database.std.argument.Map2JsonArgumentFactory;
-import net.ximatai.muyun.database.std.argument.StringArrayArgumentFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
 
