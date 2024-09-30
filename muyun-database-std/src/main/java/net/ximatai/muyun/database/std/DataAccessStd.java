@@ -193,7 +193,6 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
             return getJdbi().withHandle(handle -> {
                 Connection connection = handle.getConnection();
                 return connection.createArrayOf(type, list.toArray());
-
             });
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -3,7 +3,6 @@ plugins {
     id 'checkstyle'
 }
 
-
 allprojects {
     group 'net.ximatai'
     version '1.0.0-SNAPSHOT'

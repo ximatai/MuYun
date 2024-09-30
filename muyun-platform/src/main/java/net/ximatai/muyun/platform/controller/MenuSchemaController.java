@@ -88,7 +88,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
             where ? = any(dicts_terminal_type)
             and ids_at_auth_role && ?
             order by n_order limit 1
-            """, terminalType, getDB().toArray(roles, "VARCHAR"));
+            """, terminalType, roles.toArray(new String[0]));
 
         if (row != null) {
             return row.get("id").toString();
