@@ -12,6 +12,9 @@ public class TreeBuilder {
     public static final String ROOT_PID = "__ROOT__";
 
     public static List<TreeNode> build(String pkColumn, String parentKeyColumn, List<Map<String, Object>> list, String rootID, boolean showMe, String labelColumn, Integer maxLevel) {
+        if (maxLevel == null) {
+            maxLevel = Integer.MAX_VALUE;
+        }
 
         list.forEach(item -> {
             item.putIfAbsent(parentKeyColumn, ROOT_PID);

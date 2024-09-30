@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.builder.Column;
@@ -17,7 +18,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Path(BASE_PATH + "/module")
-public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility {
+public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility {
 
     @Inject
     ModuleActionController moduleActionController;
@@ -36,7 +37,6 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             .addColumn("v_alias", "模块别名，同后端Controller拦截入口名")
             .addColumn("v_url", "前端路径")
             .addColumn("v_remark")
-            .addColumn(Column.of("b_enable").setDefaultValue(true))
             .addColumn("b_isolation");
     }
 
