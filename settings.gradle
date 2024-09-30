@@ -1,3 +1,11 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://mirrors.cloud.tencent.com/repository/gradle-plugins/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        gradlePluginPortal()  // 保留官方 Gradle 插件门户
+    }
+}
+
 plugins {
     id "com.gradle.develocity" version "3.17.5"
 }
