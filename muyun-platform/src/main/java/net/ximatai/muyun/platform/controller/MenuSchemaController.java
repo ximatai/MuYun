@@ -84,7 +84,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         List<String> roles = authorizationService.getUserAvailableRoles(userID);
 
         Map row = getDB().row("""
-            select * from platform.app_menu_schema 
+            select * from platform.app_menu_schema
             where ? = any(dicts_terminal_type)
             and ids_at_auth_role && ?
             order by n_order limit 1
@@ -95,7 +95,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         }
 
         row = getDB().row("""
-            select * from platform.app_menu_schema 
+            select * from platform.app_menu_schema
             where ? = any(dicts_terminal_type)
             and (select id_at_org_organization from platform.auth_userinfo where id = ?) = any(ids_at_orga_organization)
             order by n_order limit 1
