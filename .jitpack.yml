@@ -1,2 +1,19 @@
+# JitPack configuration file
+
 jdk:
   - openjdk21
+
+before_install:
+  - echo "Running custom before install steps..."
+
+install:
+  - ./gradlew clean
+
+before_script:
+  - echo "Running custom before script steps..."
+
+script:
+  - ./gradlew quarkusBuild
+
+after_success:
+  - echo "Build finished successfully!"
