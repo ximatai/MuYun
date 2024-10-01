@@ -8,6 +8,10 @@ tasks.named<JavaCompile>("compileJava") {
     dependsOn(tasks.named("compileQuarkusGeneratedSourcesJava"))
 }
 
+tasks.named("quarkusDependenciesBuild") {
+    mustRunAfter(tasks.named("jandex"))
+}
+
 dependencies {
     implementation(enforcedPlatform(libs.quarkus.platform.bom))
     implementation("io.quarkus:quarkus-config-yaml")

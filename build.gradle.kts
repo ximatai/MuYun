@@ -27,12 +27,8 @@ allprojects {
     publishing {
         publications {
             create<MavenPublication>("mavenJava") {
-//            groupId = "net.ximatai.muyun"
-//            artifactId = "muyun"
-//            version = "0.1.0"
                 from(components["java"])
                 pom {
-//                name = "MuYun"
                     description =
                         "A cloud-native, asynchronous, developer-first, frontend-backend decoupled, and plug-and-play light-code platform."
                     url = "https://github.com/ximatai/MuYun"
@@ -69,8 +65,6 @@ allprojects {
         repositoryPath = layout.buildDirectory.dir("repo").get().asFile.path
         tokenName = findProperty("sonatype.token").toString()
         tokenPasswd = findProperty("sonatype.password").toString()
-//    tokenName = System.getenv("SONATYPE_USERNAME")
-//    tokenPasswd = System.getenv("SONATYPE_PASSWORD")
     }
 
     signing {
