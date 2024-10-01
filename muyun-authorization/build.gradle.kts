@@ -1,8 +1,6 @@
 plugins {
     java
     `java-library`
-    checkstyle
-    `configure-jandex`
 }
 
 dependencies {

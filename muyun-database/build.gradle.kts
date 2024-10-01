@@ -1,7 +1,6 @@
 plugins {
     java
     `java-library`
-    checkstyle
 }
 
 dependencies {
