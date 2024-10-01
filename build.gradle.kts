@@ -1,6 +1,8 @@
 plugins {
     java
     checkstyle
+    signing
+    id("io.github.jeadyx.sonatype-uploader") version "2.8"
 }
 
 java {
@@ -10,10 +12,12 @@ java {
 }
 
 allprojects {
-    apply { plugin("java") }
+    apply {
+        plugin("java")
+    }
 
     group = "net.ximatai"
-    version = "0.0.10"
+    version = "0.1.0"
 
     repositories {
         maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven") }
