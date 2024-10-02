@@ -1,6 +1,7 @@
-package net.ximatai.muyun.database;
+package net.ximatai.muyun.database.std;
 
 import jakarta.inject.Inject;
+import net.ximatai.muyun.database.IDBInfoProvider;
 import net.ximatai.muyun.database.metadata.DBInfo;
 import org.jdbi.v3.core.Jdbi;
 

@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.transaction.Transactional;
-import net.ximatai.muyun.database.DBInfoProvider;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;

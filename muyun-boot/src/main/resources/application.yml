@@ -14,7 +14,7 @@ quarkus:
     password: muyun2024
     jdbc:
       url: jdbc:postgresql://localhost:54324/muyun
-      enabled: true
+#      enabled: true
     # reactive:
     #   url: vertx-reactive:postgresql://localhost:54324/muyun
 
@@ -39,6 +39,6 @@ quarkus:
       level: DEBUG
       format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"
       rotation:
-        max-file-count: 7
+#        max-file-count: 7
         file-suffix: .yyyy-MM-dd
         rotate-on-boot: true
