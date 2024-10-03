@@ -26,6 +26,7 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
     protected void afterInit() {
         dictCategoryController.putDictCategory(
             new DictCategory("data_auth", "platform_dir", "系统数据权限", 1).setDictList(
+                new Dict("open", "不限制"),
                 new Dict("organization", "本机构"),
                 new Dict("organization_and_subordinates", "本机构及下级"),
                 new Dict("department", "本部门"),
@@ -47,7 +48,9 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("id_at_auth_role")
             .addColumn("id_at_app_module")
+            .addColumn("v_alias_at_app_module", "冗余：模块别名")
             .addColumn("id_at_app_module_action")
+            .addColumn("v_alias_at_app_module_action", "冗余：功能别名")
             .addColumn("dict_data_auth")
             .addColumn("v_custom_condition")
             .addIndex("id_at_auth_role")
