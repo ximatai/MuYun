@@ -24,6 +24,9 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     @Inject
     UserRoleController userRoleController;
 
+    @Inject
+    RoleActionController roleActionController;
+
     private ChildTableInfo userRoleChild;
 
     @Override
@@ -49,7 +52,8 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     public List<ChildTableInfo> getChildren() {
 
         return List.of(
-            userRoleChild.setAutoDelete()
+            userRoleChild.setAutoDelete(),
+            roleActionController.toChildTable("id_at_auth_role").setAutoDelete()
         );
     }
 

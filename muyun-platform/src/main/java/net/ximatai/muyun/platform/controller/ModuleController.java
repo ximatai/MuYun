@@ -23,6 +23,9 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Inject
     ModuleActionController moduleActionController;
 
+    @Inject
+    RoleActionController roleActionController;
+
     @Override
     public String getMainTable() {
         return "app_module";
@@ -61,7 +64,8 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Override
     public List<ChildTableInfo> getChildren() {
         return List.of(
-            moduleActionController.toChildTable("id_at_app_module").setAutoDelete()
+            moduleActionController.toChildTable("id_at_app_module").setAutoDelete(),
+            roleActionController.toChildTable("id_at_app_module").setAutoDelete()
         );
     }
 }
