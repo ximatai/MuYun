@@ -88,7 +88,13 @@ public interface IDatabaseOperations extends IDBInfoProvider {
 
     Object update(String sql, Map<String, ?> params);
 
+    Object update(String sql, Object... params);
+
     Object delete(String sql, Map<String, ?> params);
+
+    Object delete(String sql, Object... params);
+
+    Object delete(String sql, List<?> params);
 
     Object execute(String sql);
 

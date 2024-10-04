@@ -52,6 +52,22 @@ public interface IDatabaseOperationsStd extends IDatabaseOperations {
 
     Integer update(String sql, Map<String, ?> params);
 
-    Integer delete(String sql, Map<String, ?> params);
+    default Integer update(String sql, Object... params) {
+        return this.update(sql, Arrays.stream(params).toList());
+    }
+
+    Integer update(String sql, List<?> params);
+
+    default Integer delete(String sql, Map<String, ?> params) {
+        return this.update(sql, params);
+    }
+
+    default Integer delete(String sql, Object... params) {
+        return this.update(sql, params);
+    }
+
+    default Integer delete(String sql, List<?> params) {
+        return this.update(sql, params);
+    }
 
 }
