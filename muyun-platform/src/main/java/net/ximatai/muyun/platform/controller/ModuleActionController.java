@@ -47,4 +47,15 @@ public class ModuleActionController extends ScaffoldForPlatform implements IChil
             roleActionController.toChildTable("id_at_app_module_action").setAutoDelete()
         );
     }
+
+    @Override
+    public void afterUpdate(String id) {
+        getDB().update("""
+            UPDATE platform.auth_role_action
+            JOIN platform.app_module_action
+              ON platform.app_module_action.id = platform.auth_role_action.id_at_app_module_action
+            SET platform.auth_role_action.v_alias_at_app_module_action = platform.app_module_action.v_alias
+            WHERE platform.auth_role_action.id_at_app_module_action = ?
+            """, id);
+    }
 }
