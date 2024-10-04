@@ -19,6 +19,10 @@ import java.util.Map;
 
 public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    default void afterUpdate(String id) {
+
+    }
+
     @POST
     @Path("/update/{id}")
     @Transactional
@@ -50,6 +54,8 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
             dataBroadcastAbility.broadcast(DataChangeChannel.Type.UPDATE, id);
         }
+
+        afterUpdate(id);
 
         return result;
     }

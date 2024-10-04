@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
@@ -59,6 +60,17 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         ));
 
         return id;
+    }
+
+    @Override
+    public void afterUpdate(String id) {
+        getDB().update("""
+            UPDATE platform.auth_role_action
+            JOIN platform.app_module
+              ON platform.app_module.id = platform.auth_role_action.id_at_app_module
+            SET platform.auth_role_action.v_alias_at_app_module = platform.app_module.v_alias
+            WHERE platform.auth_role_action.id_at_app_module = ?;
+            """, id);
     }
 
     @Override

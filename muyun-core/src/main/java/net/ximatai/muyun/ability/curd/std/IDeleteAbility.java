@@ -19,6 +19,10 @@ import java.util.List;
 
 public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    default void afterDelete(String id) {
+
+    }
+
     @GET
     @Path("/delete/{id}")
     @Transactional
@@ -46,6 +50,8 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
             dataBroadcastAbility.broadcast(DataChangeChannel.Type.DELETE, id);
         }
+
+        afterDelete(id);
 
         return result;
     }

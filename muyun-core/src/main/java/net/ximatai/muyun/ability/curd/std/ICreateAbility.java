@@ -18,6 +18,10 @@ import java.util.Map;
 
 public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    default void afterCreate(String id) {
+
+    }
+
     @POST
     @Path("/create")
     @Transactional
@@ -49,6 +53,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             dataBroadcastAbility.broadcast(DataChangeChannel.Type.CREATE, main);
         }
 
+        afterCreate(main);
         return main;
     }
 
