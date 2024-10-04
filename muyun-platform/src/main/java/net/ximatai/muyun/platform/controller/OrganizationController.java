@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Startup
 @Path(BASE_PATH + "/organization")
 public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility, IDataBroadcastAbility, IQueryAbility {
 

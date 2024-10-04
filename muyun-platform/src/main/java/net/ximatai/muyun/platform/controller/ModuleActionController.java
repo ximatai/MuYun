@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IChildAbility;
@@ -12,6 +13,7 @@ import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
 import java.util.List;
 
+@Startup
 @ApplicationScoped
 public class ModuleActionController extends ScaffoldForPlatform implements IChildAbility, IChildrenAbility {
 

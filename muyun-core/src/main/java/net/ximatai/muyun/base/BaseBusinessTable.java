@@ -8,7 +8,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
-@Startup
+@Startup(1000)
 @Singleton
 public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
 

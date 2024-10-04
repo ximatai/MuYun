@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildAbility;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Startup
 @Path(BASE_PATH + "/roleAction")
 public class RoleActionController extends ScaffoldForPlatform implements IChildAbility, IQueryAbility {
 
