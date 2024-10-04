@@ -177,8 +177,19 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
     }
 
     @Override
-    public Integer delete(String sql, Map<String, ?> params) {
-        return update(sql, params);
+    @Transactional
+    public Integer update(String sql, List<?> params) {
+        return getJdbi().withHandle(handle -> {
+            var query = handle.createUpdate(sql);
+
+            if (params != null && !params.isEmpty()) {
+                for (int i = 0; i < params.size(); i++) {
+                    query.bind(i, params.get(i));  // 通过索引绑定参数
+                }
+            }
+
+            return query.execute();
+        });
     }
 
     @Override
