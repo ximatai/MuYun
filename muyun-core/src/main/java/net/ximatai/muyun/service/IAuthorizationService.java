@@ -3,6 +3,7 @@ package net.ximatai.muyun.service;
 import net.ximatai.muyun.model.AuthorizedResource;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IAuthorizationService {
 
@@ -50,10 +51,9 @@ public interface IAuthorizationService {
      * 获取可访问的全量资源列表
      *
      * @param userID
-     * @param module
      * @return
      */
-    List<AuthorizedResource> getAuthorizedResources(String userID, String module);
+    Set<AuthorizedResource> getAuthorizedResources(String userID);
 
     /**
      * 获取用户拥有的角色信息

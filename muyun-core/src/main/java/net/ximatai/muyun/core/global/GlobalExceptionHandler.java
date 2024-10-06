@@ -6,7 +6,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import net.ximatai.muyun.core.ServerConfig;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception> {
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @Inject
-    ServerConfig config;
+    MuYunConfig config;
 
     @Inject
     UriInfo uriInfo;

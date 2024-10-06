@@ -1,5 +1,6 @@
-server:
+muyun:
   debug: false
+  super-user-id: 1
 
 quarkus:
   http:

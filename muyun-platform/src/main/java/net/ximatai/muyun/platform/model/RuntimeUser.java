@@ -7,7 +7,6 @@ public class RuntimeUser implements IRuntimeUser {
     private String id;
     private String name;
     private String username;
-    private boolean isAdmin;
     private String organizationId;
     private String departmentId;
 
@@ -35,15 +34,6 @@ public class RuntimeUser implements IRuntimeUser {
 
     public RuntimeUser setUsername(String username) {
         this.username = username;
-        return this;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public RuntimeUser setAdmin(boolean admin) {
-        isAdmin = admin;
         return this;
     }
 
