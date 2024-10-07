@@ -34,8 +34,10 @@ public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
             .addColumn("t_update")
             .addColumn("id_at_auth_user__create")
             .addColumn("id_at_auth_user__update")
-            .addColumn("id_at_org_department__create")
-            .addColumn("id_at_org_organization__create");
+            .addColumn("id_at_auth_user__perms") //权限所有人
+            .addColumn("id_at_org_department__perms") //权限所有部门
+            .addColumn("id_at_org_organization__perms") //权限所有机构
+            .addColumn("id_at_app_module__perms"); //权限所有模块（对应：权限隔离）
     }
 
 }

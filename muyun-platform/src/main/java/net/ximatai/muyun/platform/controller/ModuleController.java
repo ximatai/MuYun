@@ -42,7 +42,8 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             .addColumn("v_alias", "模块别名，同后端Controller拦截入口名")
             .addColumn("v_url", "前端路径")
             .addColumn("v_remark")
-            .addColumn("b_isolation");
+            .addColumn("v_table")
+            .addColumn(Column.of("b_isolation").setComment("是否启用数据隔离").setDefaultValue(false));
     }
 
     @Override
