@@ -66,6 +66,7 @@ public class AuthorizationService implements IAuthorizationService {
                 select v_alias
                 from platform.app_module_action
                 where id_at_app_module = (select id from platform.app_module where app_module.v_alias = ?)
+                order by i_order
                 """, module);
 
             return result.stream().map(it -> it.get("v_alias").toString()).collect(Collectors.toList());

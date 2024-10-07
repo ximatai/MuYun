@@ -77,13 +77,13 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
         super.fitOutDefaultValue(body);
 
         Objects.requireNonNull(body.get("id_at_auth_role"));
-        Objects.requireNonNull(body.get("id_at_app_module"));
         Objects.requireNonNull(body.get("id_at_app_module_action"));
+
+        Map<String, Object> action = getDB().row("select v_alias,id_at_app_module from platform.app_module_action where id = ?", body.get("id_at_app_module_action"));
+        body.put("v_alias_at_app_module_action", action.get("v_alias"));
+        body.put("id_at_app_module", action.get("id_at_app_module"));
 
         Map<String, Object> module = getDB().row("select v_alias from platform.app_module where id = ?", body.get("id_at_app_module"));
         body.put("v_alias_at_app_module", module.get("v_alias"));
-
-        Map<String, Object> action = getDB().row("select v_alias from platform.app_module_action where id = ?", body.get("id_at_app_module_action"));
-        body.put("v_alias_at_app_module_action", action.get("v_alias"));
     }
 }
