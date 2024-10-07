@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -7,6 +8,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ISortAbility;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -23,6 +25,7 @@ import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Startup
 @Path(BASE_PATH + "/menuSchema")
 public class MenuSchemaController extends ScaffoldForPlatform implements IChildrenAbility, ISortAbility {
 
@@ -34,6 +37,9 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
 
     @Inject
     IAuthorizationService authorizationService;
+
+    @Inject
+    MuYunConfig config;
 
     @Override
     protected void afterInit() {

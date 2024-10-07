@@ -24,7 +24,7 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Override
     public boolean isAuthorized(String userID, String module, String action) {
-        if (userID.equals(config.superUserId())) {
+        if (config.isSuperUser(userID)) {
             return true;
         }
 
@@ -47,7 +47,7 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Override
     public boolean isDataAuthorized(String userID, String module, String action, String dataID) {
-        if (userID.equals(config.superUserId())) {
+        if (config.isSuperUser(userID)) {
             return true;
         }
 
@@ -61,7 +61,7 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Override
     public List<String> getAllowedActions(String userID, String module) {
-        if (userID.equals(config.superUserId())) {
+        if (config.isSuperUser(userID)) {
             List<Map<String, Object>> result = db.query("""
                 select v_alias
                 from platform.app_module_action
@@ -94,7 +94,7 @@ public class AuthorizationService implements IAuthorizationService {
         String query;
         Object[] params;
 
-        if (userID.equals(config.superUserId())) {
+        if (config.isSuperUser(userID)) {
             query = """
                 select app_module.v_alias as v_alias_at_app_module,
                        app_module_action.v_alias as v_alias_at_app_module_action

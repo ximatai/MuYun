@@ -165,7 +165,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
 
     @Override
     public List<Map<String, Object>> query(String sql) {
-        return List.of();
+        return this.query(sql, Collections.emptyList());
     }
 
     @Override

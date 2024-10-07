@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 public class TreeBuilder {
 
+    private TreeBuilder() {
+    }
+
     public static final String ROOT_PID = "__ROOT__";
 
     public static List<TreeNode> build(String pkColumn, String parentKeyColumn, List<Map<String, Object>> list, String rootID, boolean showMe, String labelColumn, Integer maxLevel) {
@@ -68,6 +71,10 @@ public class TreeBuilder {
 
             return treeNode;
         }).collect(Collectors.toList());
+
+        if (children.isEmpty()) {
+            return null;
+        }
 
         return children;
     }
