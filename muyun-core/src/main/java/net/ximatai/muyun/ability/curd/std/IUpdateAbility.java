@@ -33,7 +33,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         map.put("t_update", LocalDateTime.now());
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
-            dataCheckAbility.check(body, true);
+            dataCheckAbility.check(map, true);
         }
 
         if (this instanceof ISecurityAbility securityAbility) {
