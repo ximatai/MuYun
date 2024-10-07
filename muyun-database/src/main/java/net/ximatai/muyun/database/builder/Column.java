@@ -22,7 +22,7 @@ public class Column {
 
     public static final Column DELETE_FLAG = new Column("b_delete")
         .setType(Type.BOOL)
-        .setDefaultValue("false");
+        .setDefaultValue(false);
 
     public static final Column TREE_PID = new Column("pid")
         .setType(Type.VARCHAR)

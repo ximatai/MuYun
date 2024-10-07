@@ -1,5 +1,8 @@
 package net.ximatai.muyun.database.metadata;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class DBColumn {
     private String name;
     private String description;
@@ -11,6 +14,10 @@ public class DBColumn {
     private boolean unique;
     private boolean indexed;
     private boolean sequence;
+
+    // 使用正则表达式来匹配单引号之间的内容
+    private static String regex = "'([^']*)'";
+    private static Pattern pattern = Pattern.compile(regex);
 
     public String getName() {
         return name;
@@ -36,7 +43,7 @@ public class DBColumn {
         this.type = type;
     }
 
-    public String getDefaultValue() {
+    public Object getDefaultValue() {
         return extractDefaultContent(defaultValue);
     }
 
@@ -108,16 +115,16 @@ public class DBColumn {
         this.indexName = indexName;
     }
 
-    public static String extractDefaultContent(String input) {
+    public Object extractDefaultContent(String input) {
         if (input == null) {
             return null;
         }
 
-        // 使用正则表达式来匹配单引号之间的内容
-        String regex = "'([^']*)'";
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-        java.util.regex.Matcher matcher = pattern.matcher(input);
+        if (this.getType().equalsIgnoreCase("bool")) {
+            return Boolean.parseBoolean(input);
+        }
 
+        Matcher matcher = pattern.matcher(input);
         // 查找并返回匹配的内容
         if (matcher.find()) {
             return matcher.group(1);  // 返回第一个括号中的匹配结果

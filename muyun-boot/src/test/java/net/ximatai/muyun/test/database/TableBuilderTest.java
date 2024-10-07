@@ -81,6 +81,7 @@ public class TableBuilderTest {
             .setPrimaryKey(ID_POSTGRES)
             .addColumn(Column.of("v_test").setType("varchar"))
             .addColumn(Column.of("v_test2").setType("varchar"))
+            .addColumn(Column.of("b_test").setDefaultValue(true))
             .addIndex("v_test")
             .addIndex("v_test2", true)
             .addIndex(List.of("v_test", "v_test2"));
@@ -91,6 +92,21 @@ public class TableBuilderTest {
         assertFalse(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isUnique());
         assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isIndexed());
         assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test2").isUnique());
+        Object boolDefaultValue = db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("b_test").getDefaultValue();
+        assertEquals(true, boolDefaultValue);
+    }
+
+    @Test
+    void testBuildTwice() {
+        TableBuilder tableBuilder = new TableBuilder(db);
+        TableWrapper wrapper = TableWrapper.withName("test_table_x3")
+            .setSchema("test")
+            .setPrimaryKey(ID_POSTGRES)
+            .addColumn(Column.of("b_test").setDefaultValue(false));
+        tableBuilder.build(wrapper);
+
+        assertFalse((Boolean) db.getDBInfo().getSchema("test").getTable("test_table_x3")
+            .getColumn("b_test").getDefaultValue());
     }
 
     @Test
