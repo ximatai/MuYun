@@ -16,6 +16,7 @@ import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.util.StringUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,9 +47,21 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             .addColumn("v_url", "前端路径")
             .addColumn("v_remark")
             .addColumn("v_table")
+            .addColumn(Column.of("b_system").setDefaultValue(false))
             .addColumn(Column.of("b_isolation").setComment("是否启用数据隔离").setDefaultValue(false))
             .addIndex("v_alias");
+    }
 
+    /**
+     * 创建表成功后初始化相应数据
+     *
+     * @param isFirst
+     */
+    @Override
+    public void onTableCreated(boolean isFirst) {
+        if (isFirst) {
+            initData();
+        }
     }
 
     @Override
@@ -103,5 +116,40 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
                 throw new MyException("模块标识[%s]已被使用，请勿再用".formatted(alias));
             }
         }
+    }
+
+    private void initData() {
+        String root1 = this.createModule(null, "机构用户", "void", null, null);
+        this.createModule(root1, "机构管理", "organization", "org_organization", "/just_a_demo");
+        this.createModule(root1, "部门管理", "department", "org_department", "/just_a_demo");
+        this.createModule(root1, "用户管理", "userinfo", "auth_userinfo", "/just_a_demo");
+
+        String root2 = this.createModule(null, "平台管理", "void", null, null);
+
+        String root21 = this.createModule(root2, "模块菜单", "void", null, null);
+        this.createModule(root21, "模块管理", "module", "app_module", "/just_a_demo");
+        this.createModule(root21, "菜单方案", "menuSchema", "app_menu_schema", "/just_a_demo");
+        this.createModule(root21, "菜单管理", "menu", "app_menu", "/just_a_demo");
+
+        String root22 = this.createModule(root2, "权限管理", "void", null, null);
+        this.createModule(root22, "角色管理", "role", "app_module", "/just_a_demo");
+        this.createModule(root22, "权限管理", "void", null, "/just_a_demo");
+
+        String root23 = this.createModule(root2, "基础数据", "void", null, null);
+        this.createModule(root23, "字典管理", "dict", "app_dictcategory", "/just_a_demo");
+    }
+
+    public String createModule(String pid, String name, String alias, String table, String url) {
+        HashMap map = new HashMap();
+        if (pid != null) {
+            map.put("pid", pid);
+        }
+
+        map.put("v_name", name);
+        map.put("v_alias", alias);
+        map.put("v_table", table);
+        map.put("v_url", url);
+        map.put("b_system", true);
+        return this.create(map);
     }
 }
