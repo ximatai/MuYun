@@ -43,7 +43,7 @@ public class RuntimeController implements IRuntimeAbility {
     public List<TreeNode> menu(@QueryParam("terminalType") String terminalType) {
 //        if (config.isSuperUser(whoami().getId())) {
         List<Map<String, Object>> list = db.query("""
-            select id,pid,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
+            select id,pid,id as id_at_app_module,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
             where b_system = true;
             """);
 
