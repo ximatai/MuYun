@@ -55,15 +55,15 @@ public class SsoController implements IRuntimeAbility {
     @Path("/login")
     public IRuntimeUser login(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("code") String code) {
         if (StringUtil.isBlank(username)) {
-            throw new MyException("轻输入用户名");
+            throw new MyException("请输入用户名");
         }
 
         if (StringUtil.isBlank(password)) {
-            throw new MyException("轻输入密码");
+            throw new MyException("请输入密码");
         }
 
         if (StringUtil.isBlank(code)) {
-            throw new MyException("轻输入验证码");
+            throw new MyException("请输入验证码");
         }
 
         verificationCode(code);
