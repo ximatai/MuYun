@@ -16,7 +16,6 @@ public class ApiRequest {
 
     private RuntimeException error;
 
-
     public ApiRequest(IRuntimeUser user, String path) {
         this.user = user;
         this.path = path;
