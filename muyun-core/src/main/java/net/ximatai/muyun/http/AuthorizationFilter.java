@@ -5,6 +5,7 @@ import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.RouterFilterPriority;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.model.ApiRequest;
@@ -36,7 +37,7 @@ public class AuthorizationFilter implements IRuntimeAbility {
                 throw apiRequest.getError();
             }
 
-            context.put("apiRequest", apiRequest);
+            context.put(MuYunConst.API_REQUEST_CONTEXT_KEY, apiRequest);
         }
 
         context.next();

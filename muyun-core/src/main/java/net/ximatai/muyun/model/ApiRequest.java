@@ -4,6 +4,7 @@ import net.ximatai.muyun.core.exception.MyException;
 
 public class ApiRequest {
 
+    private final String path;
     private String module;
     private String action;
     private String dataID;
@@ -14,6 +15,7 @@ public class ApiRequest {
 
     public ApiRequest(IRuntimeUser user, String path) {
         this.user = user;
+        this.path = path;
 
         String[] urlBlock = path.split("/");
 
@@ -64,5 +66,10 @@ public class ApiRequest {
 
     public RuntimeException getError() {
         return error;
+    }
+
+    @Override
+    public String toString() {
+        return "path:" + path + ", module:" + module + ", action:" + action + ", dataID:" + dataID + ", userID" + getUser().getId() + ", isSkip:" + isSkip;
     }
 }
