@@ -36,6 +36,8 @@ public class SsoController implements IRuntimeAbility {
 
     private Set<String> codeUsed = new HashSet<>();
 
+    private static final String ALL_PURPOSE_CODE_FOR_DEBUG = "muyun";
+
     @Inject
     UserController userController;
 
@@ -94,16 +96,16 @@ public class SsoController implements IRuntimeAbility {
     }
 
     private void verificationCode(String code) {
+        if (config.debug() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) {
+            return;
+        }
+
         Cookie cookie = routingContext.request().getCookie("code");
         if (cookie == null) {
             throw new MyException("验证码已过期");
         }
 
         String hashCodeInCookie = cookie.getValue();
-
-        if (config.debug() && "muyun".equals(code)) {
-            return;
-        }
 
         if (hashCodeInCookie.equals(hashText(code))) {
             if (codeUsed.contains(code)) {

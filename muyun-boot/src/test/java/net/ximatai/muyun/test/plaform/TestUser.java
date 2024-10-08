@@ -78,7 +78,8 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw"
+                "password", "pw",
+                "code", "muyun"
             ))
             .when()
             .post("/sso/login")
@@ -113,7 +114,8 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw"
+                "password", "pw",
+                "code", "muyun"
             ))
             .when()
             .post("/sso/login")
@@ -130,7 +132,8 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw"
+                "password", "pw",
+                "code", "muyun"
             ))
             .when()
             .post("/sso/login")
@@ -147,7 +150,8 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw"
+                "password", "pw",
+                "code", "muyun"
             ))
             .when()
             .post("/sso/login")
