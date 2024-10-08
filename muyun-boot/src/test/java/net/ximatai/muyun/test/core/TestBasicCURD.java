@@ -11,7 +11,6 @@ import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
@@ -210,9 +209,9 @@ class TestBasicCURD {
             .then()
             .statusCode(200);
 
-        assertThrows(MyDatabaseException.class, () -> {
-            databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
-        });
+        assertNull(
+            databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id))
+        );
     }
 
     @Test

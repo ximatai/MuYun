@@ -107,16 +107,10 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
 
     @Override
     public Map<String, Object> row(String sql, Map<String, ?> params) {
-        var row = getJdbi().withHandle(handle -> handle.createQuery(sql)
+        return getJdbi().withHandle(handle -> handle.createQuery(sql)
             .bindMap(params)
             .map(new MyPgMapMapper())
             .findOne().orElse(null));
-
-        if (row == null) {
-            throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
-        }
-
-        return row;
     }
 
     @Override

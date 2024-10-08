@@ -13,6 +13,7 @@ import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.builder.TableBase;
+import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
@@ -98,6 +99,11 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Operation(summary = "查看指定的数据")
     default Map<String, ?> view(@PathParam("id") String id) {
         Map<String, Object> row = getDB().row(getSelectOneRowSql(), Map.of("id", id));
+
+        if (row == null) {
+            throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
+        }
+
         if (this instanceof ISecurityAbility securityAbility) {
             securityAbility.decrypt(row);
             securityAbility.checkSign(row);

@@ -12,9 +12,11 @@ import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -50,6 +52,9 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Inject
     IAuthorizationService authorizationService;
 
+    @Inject
+    MuYunConfig config;
+
     @Override
     public String getMainTable() {
         return "auth_userinfo";
@@ -82,6 +87,22 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
                 new Dict("1", "男"),
                 new Dict("2", "女")
             ), false);
+
+        String superUserId = config.superUserId();
+
+        try {
+            this.view(superUserId);
+        } catch (MyDatabaseException e) {
+            this.create(Map.of(
+                "id", superUserId,
+                "v_name", "超级管理员"
+            ));
+            this.setUser(superUserId, Map.of(
+                "v_username", "admin",
+                "v_password", "admin@bsy",
+                "v_password2", "admin@bsy"
+            ));
+        }
     }
 
     @Override
