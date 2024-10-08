@@ -7,8 +7,10 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
+import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.model.DataChangeChannel;
+import net.ximatai.muyun.model.IRuntimeUser;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
@@ -60,6 +62,16 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     default void fitOutDefaultValue(Map body) {
         if (!body.containsKey("t_create")) {
             body.put("t_create", LocalDateTime.now());
+        }
+
+        if (this instanceof IRuntimeAbility runtimeAbility) {
+            String moduleID = runtimeAbility.getApiRequest().getModuleID();
+            IRuntimeUser user = runtimeAbility.getApiRequest().getUser();
+            body.put("id_at_auth_user__create", user.getId());
+            body.put("id_at_auth_user__perms", user.getId());
+            body.put("id_at_org_department__perms", user.getDepartmentId());
+            body.put("id_at_org_organization__perms", user.getOrganizationId());
+            body.put("id_at_app_module__perms", moduleID);
         }
     }
 

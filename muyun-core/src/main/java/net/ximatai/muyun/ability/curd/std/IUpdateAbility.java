@@ -8,6 +8,7 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
+import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.model.DataChangeChannel;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -31,6 +32,11 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         HashMap map = new HashMap(body);
         map.put(getPK(), id);
         map.put("t_update", LocalDateTime.now());
+
+        if (this instanceof IRuntimeAbility runtimeAbility) {
+            String userID = runtimeAbility.getUser().getId();
+            map.put("id_at_auth_user__update", userID);
+        }
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
             dataCheckAbility.check(map, true);

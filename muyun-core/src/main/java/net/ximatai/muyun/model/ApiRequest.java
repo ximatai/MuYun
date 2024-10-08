@@ -4,6 +4,8 @@ import net.ximatai.muyun.core.exception.MyException;
 
 public class ApiRequest {
 
+    public static final ApiRequest BLANK = new ApiRequest(IRuntimeUser.WHITE, "");
+
     private final String path;
     private String module;
     private String action;
@@ -13,6 +15,7 @@ public class ApiRequest {
     private String moduleID;
 
     private RuntimeException error;
+
 
     public ApiRequest(IRuntimeUser user, String path) {
         this.user = user;

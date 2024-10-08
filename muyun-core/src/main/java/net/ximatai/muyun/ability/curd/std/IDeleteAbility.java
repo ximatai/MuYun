@@ -8,6 +8,7 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
+import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.DataChangeChannel;
@@ -41,6 +42,11 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
             map.put(getPK(), id);
             map.put(ability.getSoftDeleteColumn().getName(), true);
             map.put("t_delete", LocalDateTime.now());
+
+            if (this instanceof IRuntimeAbility runtimeAbility) {
+                String userID = runtimeAbility.getUser().getId();
+                map.put("id_at_auth_user__delete", userID);
+            }
 
             result = getDB().updateItem(getSchemaName(), getMainTable(), map);
         } else {
