@@ -12,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import net.ximatai.muyun.ability.IRuntimeAbility;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
@@ -46,6 +47,9 @@ public class SsoController implements IRuntimeAbility {
 
     @Inject
     Vertx vertx;
+
+    @Inject
+    MuYunConfig config;
 
     @GET
     @Path("/login")
@@ -97,7 +101,7 @@ public class SsoController implements IRuntimeAbility {
 
         String hashCodeInCookie = cookie.getValue();
 
-        if ("boson".equals(code)) {
+        if (config.debug() && "muyun".equals(code)) {
             return;
         }
 
