@@ -10,6 +10,7 @@ public class ApiRequest {
     private String dataID;
     private boolean isSkip = false;
     private final IRuntimeUser user;
+    private String moduleID;
 
     private RuntimeException error;
 
@@ -66,6 +67,15 @@ public class ApiRequest {
 
     public RuntimeException getError() {
         return error;
+    }
+
+    public String getModuleID() {
+        return moduleID;
+    }
+
+    public ApiRequest setModuleID(String moduleID) {
+        this.moduleID = moduleID;
+        return this;
     }
 
     @Override

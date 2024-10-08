@@ -3,11 +3,16 @@ package net.ximatai.muyun.ability;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import net.ximatai.muyun.MuYunConst;
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 
 public interface IRuntimeAbility {
 
     RoutingContext getRoutingContext();
+
+    default ApiRequest getApiRequest() {
+        return getRoutingContext().get(MuYunConst.API_REQUEST_CONTEXT_KEY);
+    }
 
     default IRuntimeUser getUser() {
         Session session = getRoutingContext().session();

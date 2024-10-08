@@ -29,11 +29,11 @@ public class AuthorizationFilter implements IRuntimeAbility {
     void filter(RoutingContext context) {
         String path = context.request().path();
 
-        if (path.startsWith(restPath) && authorizationService.isResolvable()) { //仅对 /api开头的请求做权限拦截
+        if (path.startsWith(restPath)) { //仅对 /api开头的请求做权限拦截
             IRuntimeUser runtimeUser = this.getUser();
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
 
-            if (!authorizationService.get().isAuthorized(apiRequest)) {
+            if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
                 throw apiRequest.getError();
             }
 

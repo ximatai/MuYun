@@ -37,6 +37,8 @@ public class AuthorizationService implements IAuthorizationService {
             return true;
         }
 
+        request.setModuleID(moduleRow.get("id").toString());
+
         Map<String, Object> actionRow = db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleRow.get("id"), request.getAction());
 
         if (actionRow == null || (boolean) actionRow.get("b_white")) { // 功能未配置，或者是白名单功能，不参与权限
