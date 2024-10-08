@@ -35,6 +35,8 @@ public class AuthorizationFilter implements IRuntimeAbility {
             if (!authorizationService.get().isAuthorized(apiRequest)) {
                 throw apiRequest.getError();
             }
+
+            context.put("apiRequest", apiRequest);
         }
 
         context.next();
