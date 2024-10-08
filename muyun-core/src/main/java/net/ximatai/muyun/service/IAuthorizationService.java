@@ -1,11 +1,20 @@
 package net.ximatai.muyun.service;
 
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.AuthorizedResource;
 
 import java.util.List;
 import java.util.Set;
 
 public interface IAuthorizationService {
+
+    /**
+     * 校验权限
+     *
+     * @param request
+     * @return
+     */
+    boolean isAuthorized(ApiRequest request);
 
     /**
      * 校验功能权限

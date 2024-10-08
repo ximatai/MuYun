@@ -8,6 +8,7 @@ import io.vertx.ext.web.handler.SessionHandler;
 import io.vertx.ext.web.sstore.LocalSessionStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import net.ximatai.muyun.RouterFilterPriority;
 
 @ApplicationScoped
 public class SessionFilter {
@@ -18,7 +19,7 @@ public class SessionFilter {
         sessionHandler = SessionHandler.create(LocalSessionStore.create(vertx));
     }
 
-    @RouteFilter(100)
+    @RouteFilter(RouterFilterPriority.SESSION_BUILDER)
     void filter(RoutingContext context) {
         sessionHandler.handle(context);
     }

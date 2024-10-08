@@ -5,7 +5,9 @@ import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.RouterFilterPriority;
 import net.ximatai.muyun.ability.IRuntimeAbility;
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.service.IAuthorizationService;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -22,13 +24,19 @@ public class AuthorizationFilter implements IRuntimeAbility {
     @Inject
     Instance<IAuthorizationService> authorizationService;
 
-    @RouteFilter(99)
+    @RouteFilter(RouterFilterPriority.AUTHORIZATION)
     void filter(RoutingContext context) {
         String path = context.request().path();
-        IRuntimeUser runtimeUser = this.getUser();
-        if (authorizationService.isResolvable()) {
-            authorizationService.get().isAuthorized(runtimeUser.getId(), null, null);
+
+        if (path.startsWith(restPath) && authorizationService.isResolvable()) { //仅对 /api开头的请求做权限拦截
+            IRuntimeUser runtimeUser = this.getUser();
+            ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
+
+            if (!authorizationService.get().isAuthorized(apiRequest)) {
+                throw apiRequest.getError();
+            }
         }
+
         context.next();
     }
 

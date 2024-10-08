@@ -8,11 +8,13 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.util.StringUtil;
 
@@ -24,7 +26,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
 @Path(BASE_PATH + "/module")
-public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IDataCheckAbility {
+public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IDataCheckAbility, IQueryAbility {
 
     @Inject
     ModuleActionController moduleActionController;
@@ -151,5 +153,12 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         map.put("v_url", url);
         map.put("b_system", true);
         return this.create(map);
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("v_alias")
+        );
     }
 }

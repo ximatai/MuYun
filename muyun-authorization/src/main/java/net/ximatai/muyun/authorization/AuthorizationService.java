@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.AuthorizedResource;
 import net.ximatai.muyun.service.IAuthorizationService;
 
@@ -21,6 +22,45 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Inject
     MuYunConfig config;
+
+    @Override
+    public boolean isAuthorized(ApiRequest request) {
+        String userID = request.getUser().getId();
+        if (request.isSkip() || config.isSuperUser(userID)) {
+            return true;
+        }
+
+        Map<String, Object> moduleRow = db.row("select * from platform.app_module where v_alias = ?", request.getModule());
+
+        if (moduleRow == null) { // 模块未配置，不参与权限
+            request.setSkip();
+            return true;
+        }
+
+        Map<String, Object> actionRow = db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleRow.get("id"), request.getAction());
+
+        if (actionRow == null || (boolean) actionRow.get("b_white")) { // 功能未配置，或者是白名单功能，不参与权限
+            request.setSkip();
+            return true;
+        }
+
+        boolean authorized = isAuthorized(userID, request.getModule(), request.getAction());
+
+        if (!authorized) { // 功能权限验证失败
+            request.setError((String) moduleRow.get("v_name"), (String) actionRow.get("v_name"));
+            return false;
+        }
+
+        if (request.getDataID() != null) {
+            boolean dataAuthorized = isDataAuthorized(userID, request.getModule(), request.getAction(), request.getDataID());
+            if (!dataAuthorized) {
+                request.setError((String) moduleRow.get("v_name"), (String) actionRow.get("v_name"), request.getDataID());
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     @Override
     public boolean isAuthorized(String userID, String module, String action) {
