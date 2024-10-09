@@ -55,8 +55,8 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
             .setPrimaryKey(Column.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("id_at_app_dictcategory")
-            .addColumn("v_value")
-            .addColumn("v_name")
+            .addColumn("v_value","字典值")
+            .addColumn("v_name","字典标题")
             .addColumn("v_remark")
             .addIndex(List.of("id_at_app_dictcategory", "v_value"), true);
     }
