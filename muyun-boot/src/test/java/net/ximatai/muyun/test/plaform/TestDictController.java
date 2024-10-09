@@ -14,6 +14,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
@@ -32,7 +33,7 @@ public class TestDictController {
             .as(new TypeRef<>() {
             });
 
-        assertTrue(!response.isEmpty());
+        assertFalse(response.isEmpty());
     }
 
     @Test
