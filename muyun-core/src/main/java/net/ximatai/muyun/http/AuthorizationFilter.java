@@ -42,9 +42,14 @@ public class AuthorizationFilter implements IRuntimeAbility {
                 headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, OPTIONS");
                 headers.add("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
                 headers.add("Access-Control-Expose-Headers", "Content-Disposition");
+
+                routingContext.put("debug", true);
             }
 
             IRuntimeUser runtimeUser = this.getUser();
+            if ("/".equals(restPath)) { // api 根路径不是 /api 而是 / ，会影响后续url拆分，所以要前面补充一个 /api
+                path = "/api" + path;
+            }
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
 
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
