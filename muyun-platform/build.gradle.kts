@@ -9,6 +9,8 @@ dependencies {
     api(project(":muyun-database-std"))
     api(project(":muyun-authorization"))
 
+    api(libs.commons.codes)
     api(libs.easyCaptcha)
+    api(libs.caffeine)
 //    api(project(":muyun-database-uni"))
 }

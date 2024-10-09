@@ -4,6 +4,8 @@ quarkus = "3.15.1"
 jdbi = "3.45.4"
 yasson = "3.0.4"
 bcprov = "1.78.1"
+caffeine = "3.1.8"
+codec = "1.17.1"
 
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
@@ -12,6 +14,8 @@ jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
 jdbi-postgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbi" }
 yasson = { module = "org.eclipse:yasson", version.ref = "yasson" }
 bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
+commons-codes = { module = "commons-codec:commons-codec", version.ref = "codec" }
 easyCaptcha = { module = "com.github.whvcse:easy-captcha", version = "1.6.2" }
 
 [plugins]

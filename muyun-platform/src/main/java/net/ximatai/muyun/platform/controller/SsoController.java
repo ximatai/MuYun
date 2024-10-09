@@ -1,8 +1,9 @@
 package net.ximatai.muyun.platform.controller;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
-import io.vertx.core.Vertx;
 import io.vertx.core.http.Cookie;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.inject.Inject;
@@ -18,25 +19,26 @@ import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.util.StringUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Path("/sso")
 public class SsoController implements IRuntimeAbility {
 
     private final Logger logger = LoggerFactory.getLogger(SsoController.class);
 
-    private Set<String> codeUsed = new HashSet<>();
-
     private static final String ALL_PURPOSE_CODE_FOR_DEBUG = "muyun";
+
+    Cache<String, String> codeCache = Caffeine.newBuilder()
+        .expireAfterWrite(1, TimeUnit.MINUTES)
+        .maximumSize(100)
+        .build();
 
     @Inject
     UserController userController;
@@ -46,9 +48,6 @@ public class SsoController implements IRuntimeAbility {
 
     @Inject
     RoutingContext routingContext;
-
-    @Inject
-    Vertx vertx;
 
     @Inject
     MuYunConfig config;
@@ -108,16 +107,11 @@ public class SsoController implements IRuntimeAbility {
         String hashCodeInCookie = cookie.getValue();
 
         if (hashCodeInCookie.equals(hashText(code))) {
-            if (codeUsed.contains(code)) {
+            if (codeCache.getIfPresent(code) != null) {
                 throw new MyException("验证码已过期");
             }
 
-            codeUsed.add(code);
-
-            vertx.setTimer(60 * 1000, h -> {
-                codeUsed.remove(code);
-            });
-
+            codeCache.put(code, code);
         } else {
             throw new MyException("验证码不正确");
         }
@@ -173,22 +167,7 @@ public class SsoController implements IRuntimeAbility {
     }
 
     private String hashText(String text) {
-        return md5(text + "mace");
-    }
-
-    // MD5 生成方法
-    private String md5(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : messageDigest) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        return DigestUtils.sha256Hex(text + "mace").substring(0, 16);
     }
 
     @Override
