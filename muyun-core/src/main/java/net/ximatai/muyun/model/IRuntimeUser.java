@@ -39,4 +39,33 @@ public interface IRuntimeUser {
 
     String getDepartmentId();
 
+    static IRuntimeUser build(String id) {
+        return new IRuntimeUser() {
+
+            @Override
+            public String getId() {
+                return id;
+            }
+
+            @Override
+            public String getName() {
+                return "";
+            }
+
+            @Override
+            public String getUsername() {
+                return "";
+            }
+
+            @Override
+            public String getOrganizationId() {
+                return "";
+            }
+
+            @Override
+            public String getDepartmentId() {
+                return "";
+            }
+        };
+    }
 }
