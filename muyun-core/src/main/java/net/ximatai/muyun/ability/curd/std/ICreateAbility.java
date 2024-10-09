@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 创建数据的能力
+ */
 public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default void afterCreate(String id) {

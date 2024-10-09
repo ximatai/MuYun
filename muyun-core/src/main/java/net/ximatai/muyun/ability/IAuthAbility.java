@@ -6,6 +6,9 @@ import net.ximatai.muyun.service.IAuthorizationService;
 
 import java.util.List;
 
+/**
+ * 参与权限管理的能力
+ */
 public interface IAuthAbility extends IRuntimeAbility {
 
     IAuthorizationService getAuthorizationService();

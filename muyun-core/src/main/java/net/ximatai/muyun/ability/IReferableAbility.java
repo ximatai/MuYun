@@ -5,6 +5,9 @@ import net.ximatai.muyun.model.ReferenceInfo;
 
 import java.util.List;
 
+/**
+ * 可以被关联的能力
+ */
 public interface IReferableAbility extends IMetadataAbility, ILabelAbility {
 
     default String getKeyColumn() {

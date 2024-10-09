@@ -4,6 +4,9 @@ import net.ximatai.muyun.core.desensitization.Desensitizer;
 
 import java.util.Map;
 
+/**
+ * 数据脱敏的能力
+ */
 public interface IDesensitizationAbility {
 
     Desensitizer getDesensitizer();

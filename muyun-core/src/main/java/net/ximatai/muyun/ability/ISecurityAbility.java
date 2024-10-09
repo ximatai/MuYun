@@ -6,6 +6,9 @@ import net.ximatai.muyun.database.builder.Column;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 安全能力（数据加密、数据签名验证完整性）
+ */
 public interface ISecurityAbility {
 
     String SIGN_SUFFIX = "_sign_";

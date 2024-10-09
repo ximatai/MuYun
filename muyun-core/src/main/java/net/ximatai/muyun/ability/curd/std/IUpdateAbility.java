@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 修改数据的能力
+ */
 public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default void afterUpdate(String id) {

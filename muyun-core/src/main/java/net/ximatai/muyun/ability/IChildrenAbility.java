@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 关联子表的能力
+ */
 public interface IChildrenAbility {
 
     List<ChildTableInfo> getChildren();

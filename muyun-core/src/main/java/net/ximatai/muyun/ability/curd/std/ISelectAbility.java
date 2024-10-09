@@ -29,6 +29,9 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * 查询数据的能力（单条+多条分页）
+ */
 public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default SortColumn getDefatultSortColumn() {

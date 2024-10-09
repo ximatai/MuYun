@@ -6,6 +6,9 @@ import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 
+/**
+ * 获取运行时上下文的能力
+ */
 public interface IRuntimeAbility {
 
     RoutingContext getRoutingContext();

@@ -14,6 +14,9 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
+/**
+ * 数据排序的能力
+ */
 public interface ISortAbility extends ISelectAbility, IUpdateAbility {
 
     default SortColumn getSortColumn() {

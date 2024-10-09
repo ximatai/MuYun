@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 删除数据的能力
+ */
 public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default void afterDelete(String id) {

@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 根据条件对数据进行复杂查询的能力
+ */
 public interface IQueryAbility extends ISelectAbility {
 
     List<QueryItem> queryItemList();

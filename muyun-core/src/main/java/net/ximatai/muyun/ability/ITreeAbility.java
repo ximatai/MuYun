@@ -13,6 +13,9 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 树型数据能力
+ */
 public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbility, ILabelAbility {
 
     default Column getParentKeyColumn() {

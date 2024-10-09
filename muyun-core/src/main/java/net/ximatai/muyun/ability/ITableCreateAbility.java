@@ -6,6 +6,9 @@ import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
 
+/**
+ * 创建表能力
+ */
 public interface ITableCreateAbility extends IMetadataAbility {
 
     /**

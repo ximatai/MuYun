@@ -4,6 +4,9 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import net.ximatai.muyun.model.DataChangeChannel;
 
+/**
+ * 数据变动时通过 EventBus 向外广播的能力
+ */
 public interface IDataBroadcastAbility extends IMetadataAbility {
 
     EventBus getEventBus();
