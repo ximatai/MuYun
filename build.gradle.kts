@@ -22,7 +22,8 @@ allprojects {
     }
 
     group = "net.ximatai.muyun"
-    version = "0.1.0"
+//    version = "0.1.0"
+    version = "1.0.0-SNAPSHOT"
 
     publishing {
         publications {
@@ -54,8 +55,17 @@ allprojects {
             }
         }
         repositories {
+//            maven {
+//                url = uri(layout.buildDirectory.dir("repo"))
+//            }
+
             maven {
-                url = uri(layout.buildDirectory.dir("repo"))
+                url = uri("http://192.168.3.19:8081/repository/maven-snapshots/")
+                isAllowInsecureProtocol = true
+                credentials {
+                    username = findProperty("office.maven.username").toString()
+                    password = findProperty("office.maven.password").toString()
+                }
             }
         }
     }
