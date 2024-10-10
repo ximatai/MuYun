@@ -24,6 +24,7 @@ include("muyun-database-std")
 //include("muyun-msg")
 include("muyun-platform")
 include("muyun-authorization")
+include("muyun-proxy")
 
 include("muyun-boot")
 
