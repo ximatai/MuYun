@@ -1,6 +1,5 @@
 package net.ximatai.muyun.platform.controller;
 
-import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IChildrenAbility;
@@ -17,7 +16,6 @@ import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
 import java.util.List;
 
-@Startup
 @ApplicationScoped
 public class UserController extends ScaffoldForPlatform implements IQueryAbility, ISecurityAbility, IReferableAbility, IChildrenAbility {
 

@@ -1,6 +1,5 @@
 package net.ximatai.muyun.platform.controller;
 
-import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
@@ -30,7 +29,6 @@ import java.util.Objects;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Startup
 @Path(BASE_PATH + "/userinfo")
 public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility {
 

@@ -8,6 +8,8 @@ import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.AuthorizedResource;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
+import net.ximatai.muyun.platform.controller.RoleController;
+import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,12 @@ public class TestAuth {
 
     @Inject
     RoleActionController roleActionController;
+
+    @Inject
+    UserInfoController userInfoController;
+
+    @Inject
+    RoleController roleController;
 
     String userID;
     String role1, role2;

@@ -1,6 +1,5 @@
 package net.ximatai.muyun.platform.controller;
 
-import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.ws.rs.Path;
@@ -23,7 +22,6 @@ import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Startup
 @Path(BASE_PATH + "/department")
 public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility, IQueryAbility {
 
