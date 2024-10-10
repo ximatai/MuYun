@@ -3,6 +3,8 @@ package net.ximatai.muyun.test.plaform;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -19,11 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestMenu {
 
+    @Inject
+    MuYunConfig config;
+
     String base = PlatformConst.BASE_PATH;
 
     @Test
     void test() {
         String schemaID = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "默认方案",
@@ -39,6 +45,7 @@ public class TestMenu {
         assertNotNull(schemaID);
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(
                 List.of(
@@ -54,6 +61,7 @@ public class TestMenu {
             .asString();
 
         List<TreeNode> menus = given()
+            .header("userID", config.superUserId())
             .get("%s/menuSchema/tree/%s".formatted(base, schemaID))
             .then()
             .statusCode(200)
@@ -67,6 +75,7 @@ public class TestMenu {
         String root2ID = (String) menus.stream().filter(it -> it.getData().get("v_name").equals("root2")).findFirst().get().getData().get("id");
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(
                 Map.of("v_name", "1-1", "pid", root1ID, "id_at_app_menu_schema", schemaID)
@@ -79,6 +88,7 @@ public class TestMenu {
             .asString();
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(
                 Map.of("v_name", "1-2", "pid", root1ID, "id_at_app_menu_schema", schemaID)
@@ -91,6 +101,7 @@ public class TestMenu {
             .asString();
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(
                 Map.of("v_name", "2-1", "pid", root2ID, "id_at_app_menu_schema", schemaID)
@@ -103,6 +114,7 @@ public class TestMenu {
             .asString();
 
         List<TreeNode> menus2 = given()
+            .header("userID", config.superUserId())
             .get("%s/menuSchema/tree/%s".formatted(base, schemaID))
             .then()
             .statusCode(200)

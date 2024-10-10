@@ -6,6 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.base.BaseScaffold;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.controller.ModuleController;
@@ -26,6 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class TestAuthAbility {
 
     @Inject
+    MuYunConfig config;
+
+    @Inject
     ModuleController moduleController;
 
     @BeforeAll
@@ -36,7 +40,7 @@ public class TestAuthAbility {
     @Test
     void testActions() {
         List<String> actions = given()
-            .header("userID", "1")
+            .header("userID", config.superUserId())
             .get("/platform/test/actions")
             .then()
             .statusCode(200)
@@ -51,6 +55,7 @@ public class TestAuthAbility {
     @Test
     void testActionsForOne() {
         String id = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试"

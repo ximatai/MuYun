@@ -4,6 +4,8 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
+import jakarta.inject.Inject;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -17,12 +19,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestUser {
+    @Inject
+    MuYunConfig config;
+
     String base = PlatformConst.BASE_PATH;
 
     @Test
     void test() {
         // 新增人员信息
         String id = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
@@ -36,6 +42,7 @@ public class TestUser {
             .asString();
 
         Map row = given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/view/%s".formatted(base, id))
             .then()
             .statusCode(200)
@@ -49,6 +56,7 @@ public class TestUser {
 
         // 设置用户
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_username", "test",
@@ -63,6 +71,7 @@ public class TestUser {
             .asString();
 
         Map row2 = given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/view/%s".formatted(base, id))
             .then()
             .statusCode(200)
@@ -106,6 +115,7 @@ public class TestUser {
 
         // 停用用户
         given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/disableUser/%s".formatted(base, id))
             .then()
             .statusCode(200);
@@ -124,6 +134,7 @@ public class TestUser {
 
         // 启用用户
         given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/enableUser/%s".formatted(base, id))
             .then()
             .statusCode(200);
@@ -142,6 +153,7 @@ public class TestUser {
 
         // 删除用户
         given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/delete/%s".formatted(base, id))
             .then()
             .statusCode(200);

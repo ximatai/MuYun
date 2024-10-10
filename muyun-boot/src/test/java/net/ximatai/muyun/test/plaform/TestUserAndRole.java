@@ -3,6 +3,8 @@ package net.ximatai.muyun.test.plaform;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
@@ -19,11 +21,15 @@ import static org.wildfly.common.Assert.assertTrue;
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestUserAndRole {
 
+    @Inject
+    MuYunConfig config;
+
     String base = PlatformConst.BASE_PATH;
 
     @Test
     void test() {
         String userID = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试xx",
@@ -38,6 +44,7 @@ public class TestUserAndRole {
 
         // 设置用户
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_username", "test",
@@ -52,6 +59,7 @@ public class TestUserAndRole {
             .asString();
 
         String roleID = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试"
@@ -64,12 +72,14 @@ public class TestUserAndRole {
             .asString();
 
         given()
+            .header("userID", config.superUserId())
             .get("%s/role/assign/%s/to/%s".formatted(base, roleID, userID))
             .then()
             .statusCode(200)
             .extract();
 
         List<String> roles = given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/roles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
@@ -81,11 +91,13 @@ public class TestUserAndRole {
         assertTrue(roles.contains(roleID));
 
         given()
+            .header("userID", config.superUserId())
             .get("%s/role/delete/%s".formatted(base, roleID))
             .then()
             .statusCode(200);
 
         List<String> roles2 = given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/roles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
@@ -97,6 +109,7 @@ public class TestUserAndRole {
         assertFalse(roles2.contains(roleID));
 
         String role1 = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试"
@@ -109,6 +122,7 @@ public class TestUserAndRole {
             .asString();
 
         String role2 = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试"
@@ -121,6 +135,7 @@ public class TestUserAndRole {
             .asString();
 
         String count = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(List.of(role1, role2))
             .post("%s/userinfo/roles/%s".formatted(base, userID))
@@ -132,6 +147,7 @@ public class TestUserAndRole {
         Assertions.assertEquals("2", count);
 
         List<String> roles3 = given()
+            .header("userID", config.superUserId())
             .get("%s/userinfo/roles/%s".formatted(base, userID))
             .then()
             .statusCode(200)

@@ -3,6 +3,8 @@ package net.ximatai.muyun.test.plaform;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -20,12 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestDictController {
+    @Inject
+    MuYunConfig config;
 
     String base = PlatformConst.BASE_PATH;
 
     @Test
     void testPlaform() {
         List<TreeNode> response = given()
+            .header("userID", config.superUserId())
             .get("%s/dict/tree".formatted(base))
             .then()
             .statusCode(200)
@@ -39,6 +44,7 @@ public class TestDictController {
     @Test
     void testDictCategoryAdd() {
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "id", "root1",
@@ -52,6 +58,7 @@ public class TestDictController {
             .body(is("root1"));
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "id", "root2",
@@ -65,6 +72,7 @@ public class TestDictController {
             .body(is("root2"));
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(List.of(
                 Map.of("id_at_app_dictcategory", "root1",
@@ -82,6 +90,7 @@ public class TestDictController {
             .statusCode(200);
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(
                 Map.of(
@@ -95,6 +104,7 @@ public class TestDictController {
             .statusCode(200);
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(
                 List.of(
@@ -111,6 +121,7 @@ public class TestDictController {
             .statusCode(200);
 
         List<TreeNode> response = given()
+            .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root1"))
             .then()
             .statusCode(200)
@@ -121,6 +132,7 @@ public class TestDictController {
         assertEquals(response.size(), 3);
 
         List<TreeNode> response2 = given()
+            .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root2"))
             .then()
             .statusCode(200)
@@ -131,6 +143,7 @@ public class TestDictController {
         assertEquals(response2.size(), 1);
 
         String translateRes = given()
+            .header("userID", config.superUserId())
             .param("source", "01")
             .get("%s/dict/translate/%s".formatted(base, "root1"))
             .then()
@@ -141,6 +154,7 @@ public class TestDictController {
         assertEquals("name1", translateRes);
 
         String res = given()
+            .header("userID", config.superUserId())
             .param("source", "02")
             .get("%s/dict/translate/%s".formatted(base, "root2"))
             .then()

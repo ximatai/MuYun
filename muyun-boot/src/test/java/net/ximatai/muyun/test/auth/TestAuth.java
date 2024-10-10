@@ -123,10 +123,10 @@ public class TestAuth {
     @Test
     void testGetAllowedActionsForSuper() {
         List<String> actions = authService.getAllowedActions("1", "module1");
-        assertEquals(6, actions.size());
+        assertEquals(7, actions.size());
 
         List<String> actions2 = authService.getAllowedActions("1", "module2");
-        assertEquals(6, actions2.size());
+        assertEquals(7, actions2.size());
     }
 
     @Test
