@@ -8,6 +8,7 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.ability.curd.std.IUpdateAbility;
 import net.ximatai.muyun.model.SortColumn;
+import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
@@ -37,11 +38,11 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
         BigDecimal prev = BigDecimal.ZERO;
         BigDecimal next = BigDecimal.ZERO;
 
-        if (prevId != null) {
+        if (StringUtil.isNotBlank(prevId)) {
             prev = (BigDecimal) this.view(prevId).get(sortColumn);
         }
 
-        if (nextId != null) {
+        if (StringUtil.isNotBlank(nextId)) {
             next = (BigDecimal) this.view(nextId).get(sortColumn);
         }
 

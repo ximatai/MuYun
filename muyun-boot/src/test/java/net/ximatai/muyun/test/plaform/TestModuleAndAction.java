@@ -49,7 +49,7 @@ public class TestModuleAndAction {
             .as(new TypeRef<>() {
             });
 
-        assertEquals(7, response.size());
+        assertEquals(8, response.size());
     }
 
     @Test
