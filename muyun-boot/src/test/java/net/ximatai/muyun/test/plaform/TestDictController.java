@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
@@ -163,6 +164,122 @@ public class TestDictController {
             .asString();
 
         assertTrue(res.contains("类型中不存在"));
+    }
+
+    @Test
+    void testDictCategoryAddDuplicateID() {
+
+        String id = UUID.randomUUID().toString();
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", id,
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(200);
+
+        String result = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", id,
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertTrue(result.contains("存在重复的数据字典类目编码"));
+    }
+
+    @Test
+    void testDictCategoryAddDuplicateName() {
+        String name = UUID.randomUUID().toString();
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", UUID.randomUUID().toString(),
+                "v_name", name,
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(200);
+
+        String result = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", UUID.randomUUID().toString(),
+                "v_name", name,
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertTrue(result.contains("存在重复的数据字典类目名称"));
+    }
+
+    @Test
+    void testCategoryIdUpdate() {
+        String id = UUID.randomUUID().toString();
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", id,
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .body(is(id));
+
+        String newID = UUID.randomUUID().toString();
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", newID,
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/update/%s".formatted(base, id))
+            .then()
+            .statusCode(200);
+
+        given()
+            .header("userID", config.superUserId())
+            .get("%s/dict/view/%s".formatted(base, id))
+            .then()
+            .statusCode(404);
+
+        given()
+            .header("userID", config.superUserId())
+            .get("%s/dict/view/%s".formatted(base, newID))
+            .then()
+            .statusCode(200);
     }
 
 }

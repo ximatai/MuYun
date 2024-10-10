@@ -36,7 +36,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         fitOutDefaultValue(map);
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
-            dataCheckAbility.check(body, true);
+            dataCheckAbility.check(body, false);
         }
 
         if (this instanceof ISecurityAbility securityAbility) {
