@@ -4,10 +4,9 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.database.IDatabaseOperationsStd;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,20 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestModuleAndAction {
-    String base = PlatformConst.BASE_PATH;
-
     @Inject
-    IDatabaseOperationsStd databaseOperations;
+    MuYunConfig config;
 
-    @BeforeEach
-    void before() {
-        databaseOperations.execute("truncate table platform.app_module");
-        databaseOperations.execute("truncate table platform.app_module_action");
-    }
+    String base = PlatformConst.BASE_PATH;
 
     @Test
     void testModuleAndAction() {
         String moduleID = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
@@ -47,6 +41,7 @@ public class TestModuleAndAction {
             .asString();
 
         List<Map> response = given()
+            .header("userID", config.superUserId())
             .get("%s/module/view/%s/child/app_module_action".formatted(base, moduleID))
             .then()
             .statusCode(200)
@@ -60,10 +55,11 @@ public class TestModuleAndAction {
     @Test
     void testModuleAliasRepeat() {
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
-                "v_alias", "test"
+                "v_alias", "test2"
             ))
             .when()
             .post("%s/module/create".formatted(base))
@@ -73,10 +69,11 @@ public class TestModuleAndAction {
             .asString();
 
         String result = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
-                "v_alias", "test"
+                "v_alias", "test2"
             ))
             .when()
             .post("%s/module/create".formatted(base))
@@ -91,6 +88,7 @@ public class TestModuleAndAction {
     @Test
     void testModuleAliasRepeatForVoid() {
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
@@ -105,6 +103,7 @@ public class TestModuleAndAction {
 
         // void 作为空标识关键字，允许重复
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
@@ -122,10 +121,11 @@ public class TestModuleAndAction {
     @Test
     void testModuleCreateAndUpdate() {
         String moduleID = given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
-                "v_alias", "test"
+                "v_alias", "test3"
             ))
             .when()
             .post("%s/module/create".formatted(base))
@@ -135,10 +135,11 @@ public class TestModuleAndAction {
             .asString();
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试2",
-                "v_alias", "test"
+                "v_alias", "test3"
             ))
             .when()
             .post("%s/module/update/%s".formatted(base, moduleID))
@@ -148,10 +149,11 @@ public class TestModuleAndAction {
             .asString();
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试",
-                "v_alias", "test2"
+                "v_alias", "test4"
             ))
             .when()
             .post("%s/module/create".formatted(base))
@@ -161,10 +163,11 @@ public class TestModuleAndAction {
             .asString();
 
         given()
+            .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
                 "v_name", "测试2",
-                "v_alias", "test2"
+                "v_alias", "test4"
             ))
             .when()
             .post("%s/module/update/%s".formatted(base, moduleID))

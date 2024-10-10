@@ -53,7 +53,9 @@ public class AuthorizationFilter implements IRuntimeAbility {
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
 
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
-                throw apiRequest.getError();
+//                context.fail(apiRequest.getError());
+                context.response().setStatusCode(401).end(apiRequest.getError().getMessage());
+                return;
             }
 
             context.put(MuYunConst.API_REQUEST_CONTEXT_KEY, apiRequest);

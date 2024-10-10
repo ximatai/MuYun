@@ -1,6 +1,6 @@
 package net.ximatai.muyun.model;
 
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.PermsException;
 
 public class ApiRequest {
 
@@ -14,7 +14,7 @@ public class ApiRequest {
     private final IRuntimeUser user;
     private String moduleID;
 
-    private RuntimeException error;
+    private PermsException error;
 
     public ApiRequest(IRuntimeUser user, String path) {
         this.user = user;
@@ -40,11 +40,11 @@ public class ApiRequest {
     }
 
     public void setError(String moduleName, String actionName) {
-        this.error = new MyException("您没有[%s]的[%s]功能权限".formatted(moduleName, actionName));
+        this.error = new PermsException("您没有[%s]的[%s]功能权限".formatted(moduleName, actionName));
     }
 
     public void setError(String moduleName, String actionName, String dataID) {
-        this.error = new MyException("您没有[%s]中[%S]数据[%s]的权限".formatted(moduleName, actionName, dataID));
+        this.error = new PermsException("您没有[%s]中[%S]数据[%s]的权限".formatted(moduleName, actionName, dataID));
     }
 
     public String getModule() {
@@ -67,7 +67,7 @@ public class ApiRequest {
         return isSkip;
     }
 
-    public RuntimeException getError() {
+    public PermsException getError() {
         return error;
     }
 
