@@ -80,6 +80,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             Map.of("v_alias", "create", "v_name", "新增", "i_order", 20),
             Map.of("v_alias", "import", "v_name", "导入", "i_order", 25),
 
+            Map.of("v_alias", "sort", "v_name", "排序", "i_order", 29),
             Map.of("v_alias", "update", "v_name", "修改", "i_order", 30),
             Map.of("v_alias", "delete", "v_name", "删除", "i_order", 40)
         ));

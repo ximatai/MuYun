@@ -127,7 +127,7 @@ class TestTreeAbility {
         String sortRes = given()
             .queryParam("prevId", aID)
             .queryParam("nextId", bID)
-            .get("%s/update/%s/sort".formatted(path, cID))
+            .get("%s/sort/%s".formatted(path, cID))
             .then()
             .statusCode(200)
             .extract()
@@ -154,7 +154,7 @@ class TestTreeAbility {
             .queryParam("prevId", aID)
             .queryParam("nextId", bID)
             .queryParam("parentId", "") // 说明移动到根节点
-            .get("%s/update/%s/sort".formatted(path, aa1ID))
+            .get("%s/sort/%s".formatted(path, aa1ID))
             .then()
             .statusCode(200)
             .extract()
@@ -180,7 +180,7 @@ class TestTreeAbility {
             .queryParam("prevId", aaID)
             .queryParam("nextId", abID)
             .queryParam("parentId", aID) // 说明移动到根节点
-            .get("%s/update/%s/sort".formatted(path, cID))
+            .get("%s/sort/%s".formatted(path, cID))
             .then()
             .statusCode(200)
             .extract()

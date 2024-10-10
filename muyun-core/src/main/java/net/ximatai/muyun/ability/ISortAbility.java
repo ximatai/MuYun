@@ -24,7 +24,7 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
     }
 
     @GET
-    @Path("update/{id}/sort")
+    @Path("sort/{id}")
     @Transactional
     @Operation(summary = "调整数据顺序")
     default Integer sort(@PathParam("id") String id,
@@ -49,6 +49,7 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
 
         HashMap<String, Object> body = new HashMap<>();
         body.put(sortColumn, now);
+        body.put(getPK(), id);
 
         String condition = "";
         HashMap<String, Object> params = new HashMap<>();
@@ -64,18 +65,18 @@ public interface ISortAbility extends ISelectAbility, IUpdateAbility {
             params.put("pid", parentId);
         }
 
-        int resCount = this.update(id, body);
+        int resCount = this.getDB().updateItem(getSchemaName(), getMainTable(), body);
 
         if (resCount == 1) { // 说明更新命中数据成功
             String sql = """
                 with cte as (select %s, row_number() over (order by %s) as n_order
-                             from %s where 1=1 %s
+                             from %s.%s where 1=1 %s
                 )
-                update %s set %s = (select n_order from cte where cte.%s = %s.%s)
+                update %s.%s set %s = (select n_order from cte where cte.%s = %s.%s)
                 where %s.%s in (select %s from cte)
                 """.formatted(getPK(), sortColumn,
-                getMainTable(), condition,
-                getMainTable(), sortColumn, getPK(), getMainTable(), getPK(),
+                getSchemaName(), getMainTable(), condition,
+                getSchemaName(), getMainTable(), sortColumn, getPK(), getMainTable(), getPK(),
                 getMainTable(), getPK(), getPK()
             );
 

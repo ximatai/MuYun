@@ -237,6 +237,66 @@ public class TestDictController {
     }
 
     @Test
+    void testDictCategorySort() {
+        String id1 = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", UUID.randomUUID().toString(),
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        String id2 = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", UUID.randomUUID().toString(),
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        String id3 = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "id", UUID.randomUUID().toString(),
+                "v_name", UUID.randomUUID().toString(),
+                "v_remark", "备注"
+            ))
+            .when()
+            .post("%s/dict/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        given()
+            .header("userID", config.superUserId())
+            .queryParam("prevId", id1)
+            .queryParam("nextId", id2)
+            .when()
+            .get("%s/dict/sort/%s".formatted(base, id3))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+    }
+
+    @Test
     void testCategoryIdUpdate() {
         String id = UUID.randomUUID().toString();
 
