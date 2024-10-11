@@ -129,23 +129,23 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     private void initData() {
         String root1 = this.createModule(null, "机构用户", "void", null, null);
-        this.createModule(root1, "机构管理", "organization", "org_organization", "/just_a_demo");
-        this.createModule(root1, "部门管理", "department", "org_department", "/just_a_demo");
-        this.createModule(root1, "用户管理", "userinfo", "auth_userinfo", "/just_a_demo");
+        this.createModule(root1, "机构管理", "organization", "org_organization", "platform/organization/index");
+        this.createModule(root1, "部门管理", "department", "org_department", "platform/department/index");
+        this.createModule(root1, "用户管理", "userinfo", "auth_userinfo", "platform/userinfo/index");
 
         String root2 = this.createModule(null, "平台管理", "void", null, null);
 
         String root21 = this.createModule(root2, "模块菜单", "void", null, null);
-        this.createModule(root21, "模块管理", "module", "app_module", "/just_a_demo");
-        this.createModule(root21, "菜单方案", "menuSchema", "app_menu_schema", "/just_a_demo");
-        this.createModule(root21, "菜单管理", "menu", "app_menu", "/just_a_demo");
+        this.createModule(root21, "模块管理", "module", "app_module", "platform/module/index");
+        this.createModule(root21, "菜单方案", "menuSchema", "app_menu_schema", "platform/menuSchema/index");
+        this.createModule(root21, "菜单管理", "menu", "app_menu", "platform/menu/index");
 
         String root22 = this.createModule(root2, "权限管理", "void", null, null);
-        this.createModule(root22, "角色管理", "role", "app_module", "/just_a_demo");
-        this.createModule(root22, "权限管理", "void", null, "/just_a_demo");
+        this.createModule(root22, "角色管理", "role", "app_module", "platform/role/index");
+        this.createModule(root22, "权限管理", "void", null, "platform/auth/index");
 
         String root23 = this.createModule(root2, "基础数据", "void", null, null);
-        this.createModule(root23, "字典管理", "dict", "app_dictcategory", "/just_a_demo");
+        this.createModule(root23, "字典管理", "dict", "app_dictcategory", "platform/dict/index");
     }
 
     public String createModule(String pid, String name, String alias, String table, String url) {
