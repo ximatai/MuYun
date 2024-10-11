@@ -46,11 +46,17 @@ public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbi
 
         List list = this.view(null, null, true, null).getList();
 
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             return List.of();
         }
 
-        return TreeBuilder.build(getPK(), getParentKeyColumn().getName(), list, rootID, showMe, labelColumn, maxLevel);
+        List<TreeNode> tree = TreeBuilder.build(getPK(), getParentKeyColumn().getName(), list, rootID, showMe, labelColumn, maxLevel);
+
+        if (tree == null) {
+            return List.of();
+        } else {
+            return tree;
+        }
     }
 
 }
