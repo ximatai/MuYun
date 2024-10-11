@@ -121,6 +121,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         if (category == null) {
             this.create(dictCategory.toMap());
         } else if (isLock) {
+            this.putChildTableList(dictCategory.getId(), "app_dict", List.of());
             this.update(dictCategory.getId(), dictCategory.toMap());
         }
     }

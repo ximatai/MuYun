@@ -1,6 +1,5 @@
 package net.ximatai.muyun.proxy;
 
-import io.quarkus.runtime.Startup;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -18,7 +17,6 @@ import net.ximatai.muyun.proxy.model.UpstreamItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Startup
 @ApplicationScoped
 public class MuYunProxy {
 
