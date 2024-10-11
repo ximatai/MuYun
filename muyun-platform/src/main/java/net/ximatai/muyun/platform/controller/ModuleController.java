@@ -34,6 +34,20 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Inject
     RoleActionController roleActionController;
 
+    public static final List ACTIONS = List.of(
+        Map.of("v_alias", "menu", "v_name", "菜单", "i_order", 0),
+
+        Map.of("v_alias", "view", "v_name", "浏览", "i_order", 10),
+        Map.of("v_alias", "export", "v_name", "导出", "i_order", 15),
+
+        Map.of("v_alias", "create", "v_name", "新增", "i_order", 20),
+//        Map.of("v_alias", "import", "v_name", "导入", "i_order", 25),
+
+        Map.of("v_alias", "sort", "v_name", "排序", "i_order", 29),
+        Map.of("v_alias", "update", "v_name", "修改", "i_order", 30),
+        Map.of("v_alias", "delete", "v_name", "删除", "i_order", 40)
+    );
+
     @Override
     public String getMainTable() {
         return "app_module";
@@ -71,19 +85,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     public String create(Map body) {
         String id = super.create(body);
 
-        this.putChildTableList(id, "app_module_action", List.of(
-            Map.of("v_alias", "menu", "v_name", "菜单", "i_order", 0),
-
-            Map.of("v_alias", "view", "v_name", "浏览", "i_order", 10),
-            Map.of("v_alias", "export", "v_name", "导出", "i_order", 15),
-
-            Map.of("v_alias", "create", "v_name", "新增", "i_order", 20),
-            Map.of("v_alias", "import", "v_name", "导入", "i_order", 25),
-
-            Map.of("v_alias", "sort", "v_name", "排序", "i_order", 29),
-            Map.of("v_alias", "update", "v_name", "修改", "i_order", 30),
-            Map.of("v_alias", "delete", "v_name", "删除", "i_order", 40)
-        ));
+        this.putChildTableList(id, "app_module_action", ACTIONS);
 
         return id;
     }

@@ -6,6 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +50,7 @@ public class TestModuleAndAction {
             .as(new TypeRef<>() {
             });
 
-        assertEquals(8, response.size());
+        assertEquals(ModuleController.ACTIONS.size(), response.size());
     }
 
     @Test
