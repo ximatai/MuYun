@@ -118,6 +118,24 @@ public class TestDictController {
             .then()
             .statusCode(200);
 
+        String result = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(
+                Map.of(
+                    "v_value", "03",
+                    "v_name", "name3"
+                )
+            )
+            .when()
+            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertTrue(result.contains("该类目下存在相同的字典值"));
+
         given()
             .header("userID", config.superUserId())
             .contentType("application/json")
