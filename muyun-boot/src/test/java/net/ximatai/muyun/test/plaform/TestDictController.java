@@ -43,6 +43,20 @@ public class TestDictController {
     }
 
     @Test
+    void testVoidDictCategory() {
+        List<TreeNode> response = given()
+            .header("userID", config.superUserId())
+            .get("%s/dict/tree/%s".formatted(base, UUID.randomUUID().toString()))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
     void testDictCategoryAdd() {
         given()
             .header("userID", config.superUserId())
