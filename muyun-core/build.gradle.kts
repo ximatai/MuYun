@@ -18,6 +18,7 @@ dependencies {
     api("io.quarkus:quarkus-smallrye-openapi")
 
     api(libs.bcprov)
+    api(libs.caffeine)
 
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")

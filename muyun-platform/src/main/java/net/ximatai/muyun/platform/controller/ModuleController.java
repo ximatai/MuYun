@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
@@ -26,7 +27,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
 @Path(BASE_PATH + "/module")
-public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IDataCheckAbility, IQueryAbility {
+public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IDataCheckAbility, IQueryAbility, IDataBroadcastAbility {
 
     @Inject
     ModuleActionController moduleActionController;
@@ -41,7 +42,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         Map.of("v_alias", "export", "v_name", "导出", "i_order", 15),
 
         Map.of("v_alias", "create", "v_name", "新增", "i_order", 20),
-//        Map.of("v_alias", "import", "v_name", "导入", "i_order", 25),
+        Map.of("v_alias", "import", "v_name", "导入", "i_order", 25),
 
         Map.of("v_alias", "sort", "v_name", "排序", "i_order", 29),
         Map.of("v_alias", "update", "v_name", "修改", "i_order", 30),

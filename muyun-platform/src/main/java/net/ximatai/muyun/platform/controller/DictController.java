@@ -4,9 +4,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -18,7 +23,7 @@ import java.util.Objects;
 
 //@Path(BASE_PATH + "/dict")
 @ApplicationScoped
-public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility {
+public class DictController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IDataCheckAbility, IQueryAbility {
 
     @Override
     public String getMainTable() {
@@ -75,10 +80,36 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
 
     @Override
     public List<TreeNode> tree(String rootID, Boolean showMe, String labelColumn, Integer maxLevel) {
-        Objects.requireNonNull(rootID);
+        Objects.requireNonNull(rootID, "必须提供根节点id，正常为类目id");
         if (showMe == null) {
             showMe = false;
         }
         return ITreeAbility.super.tree(rootID, showMe, labelColumn, maxLevel);
+    }
+
+    @Override
+    public void check(Map body, boolean isUpdate) {
+        Objects.requireNonNull(body.get("id_at_app_dictcategory"), "必须提供类目id");
+        Objects.requireNonNull(body.get("v_value"), "必须提供字典值");
+
+        PageResult<Map> query = this.query(Map.of(
+            "id_at_app_dictcategory", body.get("id_at_app_dictcategory"),
+            "v_value", body.get("v_value")
+        ));
+
+        if (query.getTotal() > 0) {
+            String dictID = (String) query.getList().getFirst().get("id");
+            if (!dictID.equals(body.get("id"))) {
+                throw new MyException("该类目下存在相同的字典值");
+            }
+        }
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("id_at_app_dictcategory"),
+            QueryItem.of("v_value")
+        );
     }
 }
