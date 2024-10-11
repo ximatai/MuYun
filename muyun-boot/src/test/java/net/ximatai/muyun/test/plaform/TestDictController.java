@@ -29,7 +29,7 @@ public class TestDictController {
     String base = PlatformConst.BASE_PATH;
 
     @Test
-    void testPlaform() {
+    void testDictCategoryTree() {
         List<TreeNode> response = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree".formatted(base))
