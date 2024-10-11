@@ -17,6 +17,7 @@ quarkus:
     db-kind: postgresql
     username: postgres
     password: muyun2024
+#    password: Muyun20&24
     jdbc:
       url: jdbc:postgresql://localhost:54324/muyun
     #      enabled: true

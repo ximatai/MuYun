@@ -2,16 +2,18 @@ package net.ximatai.muyun.authorization;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.AuthorizedResource;
 import net.ximatai.muyun.service.IAuthorizationService;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,10 +30,14 @@ public class AuthorizationService implements IAuthorizationService {
     @Inject
     MuYunConfig config;
 
-    @Inject
-    EventBus eventBus;
+    LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
+        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .build(this::loadModule);
 
-    LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder().build(this::loadModule);
+    LoadingCache<String, Map<String, Object>> userinfoCache = Caffeine.newBuilder()
+        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .build(this::loadUserinfo);
+
     LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build(this::loadAction);
@@ -46,16 +52,14 @@ public class AuthorizationService implements IAuthorizationService {
         list.forEach(map -> {
             moduleCache.put(map.get("v_alias").toString(), map);
         });
-
-        // 当模块数据发生变化时，清空所有缓存
-        eventBus.consumer("data.change.platform.app_module")
-            .handler(message -> {
-                moduleCache.invalidateAll();
-            });
     }
 
     private Map<String, Object> loadModule(String moduleAlias) {
         return db.row("select * from platform.app_module where v_alias = ?", moduleAlias);
+    }
+
+    private Map<String, Object> loadUserinfo(String userID) {
+        return db.row("select * from platform.auth_userinfo where id = ?", userID);
     }
 
     private Map<String, Object> loadAction(String actionAtModule) { // 形如  view@xxxxxx-xxx-xxx
@@ -151,12 +155,177 @@ public class AuthorizationService implements IAuthorizationService {
             return true;
         }
 
-        return false;
+        List<String> roles = getUserAvailableRoles(userID);
+
+        if (roles.isEmpty()) {
+            return false;
+        }
+
+        String authCondition = getAuthCondition(userID, module, action);
+
+        Map<String, Object> moduleRow = moduleCache.get(module);
+
+        String tableName = moduleRow.get("v_table").toString();
+
+        Map<String, Object> hit = db.row("select 1 from %s where 1=1 and id = ? %s".formatted(tableName, authCondition), dataID);
+
+        if (hit != null) {
+            return true;
+        } else {
+            hit = db.row("select 1 from %s where 1=1 and id = ? ".formatted(tableName), dataID);
+            if (hit != null) {
+                return false;
+            } else {
+                throw new MyException("请求的数据不存在");
+            }
+        }
     }
 
     @Override
     public String getAuthCondition(String userID, String module, String action) {
-        return "";
+        if (config.isSuperUser(userID)) {
+            return "1=1";
+        }
+
+        List<String> roles = getUserAvailableRoles(userID);
+
+        if (roles.isEmpty()) {
+            return "1=2";
+        }
+
+        List<Map<String, Object>> result = db.query("""
+                select auth_role_action.*, app_module_action.i_order
+                from platform.auth_role_action
+                         left join platform.app_module_action on auth_role_action.id_at_app_module_action = app_module_action.id
+                where auth_role_action.v_alias_at_app_module = ?
+                  and auth_role_action.id_at_auth_role in (%s)
+                order by app_module_action.i_order
+                """.formatted(roles.stream().map(n -> "?").collect(Collectors.joining(","))),
+            Stream.concat(Stream.of(module), roles.stream()).toArray());
+
+        List<Map<String, Object>> hitList = result.stream().filter(it -> it.get("v_alias_at_app_module_action").equals(action)).toList();
+
+        if (hitList.isEmpty()) { // 说明未对此 Action 授权，正常不会发生，因为前面还有功能权限校验：isAuthorized
+            return "and 1=2";
+        }
+
+        int iOrder = (int) hitList.getFirst().get("i_order");
+
+        // 按角色分组
+        Map<String, List<Map<String, Object>>> roleGroup = result.stream().collect(Collectors.groupingBy(it -> it.get("id_at_auth_role").toString()));
+
+        List<String> eachRoleCondition = new ArrayList<>();
+
+        roleGroup.forEach((k, v) -> {
+            // 角色内部的权限关系是 and
+            String condition = v.stream().filter(it -> {
+                    int order = (int) it.get("i_order");
+                    if (it.get("v_alias_at_app_module_action").equals(action)) { // 就是 当前功能这一行
+                        return true;
+                    }
+                    return order > 0 && order < iOrder; // order 大于0参与级联权限，同时权限order小于当前功能
+                })
+                .map(row -> {
+                    if ("custom".equals(row.get("dict_data_auth"))) {
+                        return row.get("v_custom_condition").toString();
+                    } else {
+                        return dictDataAuthToCondition(userID, module, (String) row.get("dict_data_auth"));
+                    }
+                })
+                .collect(Collectors.joining(" and "));
+
+            eachRoleCondition.add(condition);
+        });
+
+        // 角色之间的权限关系是 or
+        String joined = eachRoleCondition.stream().map("(%s)"::formatted).collect(Collectors.joining(" or "));
+
+        return "and (%s)".formatted(joined);
+    }
+
+    /**
+     * 数据权限配置转化成可以执行的SQL条件
+     *
+     * @param userID       用户id
+     * @param module       模块Alias
+     * @param dictDataAuth 权限配置
+     * @return 生成后的sql条件
+     */
+    private String dictDataAuthToCondition(String userID, String module, String dictDataAuth) {
+        Map<String, Object> userInfo = userinfoCache.get(userID);
+
+        String organizationID = (String) userInfo.get("id_at_org_organization");
+        String departmentID = (String) userInfo.get("id_at_org_department");
+
+        String organizationColumn = "id_at_org_organization__perms";
+        String departmentColumn = "id_at_org_department__perms";
+        String userColumn = "id_at_auth_user__perms";
+
+        //下面三个表的权限过滤字段比较特殊
+        if ("userinfo".equals(module)) {
+            organizationColumn = "id_at_org_organization";
+            departmentColumn = "id_at_org_department";
+            userColumn = "id";
+        }
+
+        if ("organization".equals(module)) {
+            organizationColumn = "id";
+        }
+
+        if ("department".equals(module)) {
+            organizationColumn = "id_at_org_organization";
+            departmentColumn = "id";
+        }
+
+        return switch (dictDataAuth) {
+            case "open" -> "1=1";
+            case "organization" -> "%s='%s'".formatted(organizationColumn, organizationID);
+            case "organization_and_subordinates" -> "%s in (%s)"
+                .formatted(organizationColumn, organizationAndSubordinates(organizationID)
+                    .stream().map("'%s'"::formatted)
+                    .collect(Collectors.joining(",")));
+            case "department" -> "%s='%s'".formatted(departmentColumn, departmentID);
+            case "department_and_subordinates" -> "%s in (%s)"
+                .formatted(departmentColumn, departmentAndSubordinates(organizationID)
+                    .stream().map("'%s'"::formatted)
+                    .collect(Collectors.joining(",")));
+            case "self" -> "%s='%s'".formatted(userColumn, userID);
+            default -> "1=2";
+        };
+    }
+
+    private Set<String> organizationAndSubordinates(String organizationID) {
+        List<Map<String, Object>> list = db.query("select id,pid from platform.org_organization");
+        return meAndChildren(organizationID, list);
+    }
+
+    private Set<String> departmentAndSubordinates(String departmentID) {
+        List<Map<String, Object>> list = db.query("select id,pid from platform.org_department");
+        return meAndChildren(departmentID, list);
+    }
+
+    private Set<String> meAndChildren(String me, List<Map<String, Object>> list) {
+        if (me == null) {
+            return Set.of("-1");
+        }
+
+        HashSet<String> all = new HashSet<>();
+        all.add(me);
+
+        List<String> children = new ArrayList<>();
+        for (Map<String, Object> dep : list) {
+            if (me.equals(dep.get("pid"))) {
+                children.add((String) dep.get("id"));
+            }
+        }
+
+        all.addAll(children);
+
+        for (String child : children) {
+            all.addAll(meAndChildren(child, list));
+        }
+
+        return all;
     }
 
     @Override

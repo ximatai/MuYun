@@ -171,7 +171,7 @@ public class TestAuth {
     }
 
     @Test
-    void testWhiteUser(){
+    void testWhiteUser() {
         given()
             .contentType("application/json")
             .body(Map.of(
