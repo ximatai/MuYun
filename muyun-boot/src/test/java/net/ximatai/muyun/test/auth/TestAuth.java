@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.authorization.AuthorizationService;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.AuthorizedResource;
+import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
 import net.ximatai.muyun.platform.controller.RoleController;
@@ -19,12 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestAuth {
+    String base = PlatformConst.BASE_PATH;
 
     @Inject
     IDatabaseOperationsStd db;
@@ -165,6 +168,22 @@ public class TestAuth {
         assertTrue(authService.isAuthorized("1", "module1", "export"));
         assertTrue(authService.isAuthorized("1", "module2", "menu"));
         assertTrue(authService.isAuthorized("1", "module2", "view"));
+    }
+
+    @Test
+    void testWhiteUser(){
+        given()
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "测试",
+                "v_alias", "test"
+            ))
+            .when()
+            .post("%s/module/create".formatted(base))
+            .then()
+            .statusCode(401)
+            .extract()
+            .asString();
     }
 
 }

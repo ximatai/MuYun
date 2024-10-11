@@ -58,11 +58,11 @@ public class AuthorizationService implements IAuthorizationService {
         return db.row("select * from platform.app_module where v_alias = ?", moduleAlias);
     }
 
-    private Map<String, Object> loadAction(String actionAtModule) { // 形如  view@user
+    private Map<String, Object> loadAction(String actionAtModule) { // 形如  view@xxxxxx-xxx-xxx
         String[] split = actionAtModule.split("@");
         String action = split[0];
-        String moduleAlias = split[1];
-        return db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleAlias, action);
+        String moduleID = split[1];
+        return db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleID, action);
     }
 
     public List<String> loadRoles(String userID) {
@@ -89,14 +89,15 @@ public class AuthorizationService implements IAuthorizationService {
             return true;
         }
 
-        request.setModuleID(moduleRow.get("id").toString());
+        String moduleID = moduleRow.get("id").toString();
+        request.setModuleID(moduleID);
 
         String action = request.getAction();
-        if("tree".equals(action)) {
+        if ("tree".equals(action)) {
             action = "view"; // tree 接口权限实际走 view 权限即可
         }
 
-        Map<String, Object> actionRow = actionCache.get("%s@%s".formatted(action, request.getModule()));
+        Map<String, Object> actionRow = actionCache.get("%s@%s".formatted(action, moduleID));
 
         if (actionRow == null || (boolean) actionRow.get("b_white")) { // 功能未配置，或者是白名单功能，不参与权限
             request.setSkip();

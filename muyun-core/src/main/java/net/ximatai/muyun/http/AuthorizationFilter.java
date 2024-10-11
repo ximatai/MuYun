@@ -53,8 +53,8 @@ public class AuthorizationFilter implements IRuntimeAbility {
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
 
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
-//                context.fail(apiRequest.getError());
-                context.response().setStatusCode(401).end(apiRequest.getError().getMessage());
+                int code = runtimeUser.getId().equals(IRuntimeUser.WHITE.getId()) ? 401 : 403; //说明是白名单用户，也就是登录过期情况
+                context.response().setStatusCode(code).end(apiRequest.getError().getMessage());
                 return;
             }
 

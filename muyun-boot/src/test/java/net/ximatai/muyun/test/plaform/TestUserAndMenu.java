@@ -4,6 +4,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.MenuController;
@@ -27,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestUserAndMenu {
     String base = PlatformConst.BASE_PATH;
+
+    @Inject
+    MuYunConfig config;
 
     @Inject
     UserInfoController userInfoController;
@@ -70,6 +74,7 @@ public class TestUserAndMenu {
     @Test
     void testSchemaInit() {
         List<TreeNode> menus = given()
+            .header("userID", config.superUserId())
             .get("%s/menuSchema/tree/%s".formatted(base, schemaID))
             .then()
             .statusCode(200)
