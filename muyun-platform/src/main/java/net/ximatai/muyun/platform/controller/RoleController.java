@@ -29,9 +29,22 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
 
     private ChildTableInfo userRoleChild;
 
+    private ChildTableInfo getUserRoleChild() {
+        if (userRoleChild == null) {
+            userRoleChild = userRoleController.toChildTable("id_at_auth_role");
+        }
+        return userRoleChild;
+    }
+
     @Override
-    protected void afterInit() {
-        userRoleChild = userRoleController.toChildTable("id_at_auth_role");
+    public void onTableCreated(boolean isFirst) {
+        if (isFirst) {
+            this.create(
+                Map.of("id", "0", "v_name", "白名单用户角色", "auth_user_role", List.of(
+                    Map.of("id_at_auth_user", "0")
+                ))
+            );
+        }
     }
 
     @Override
@@ -52,7 +65,7 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     public List<ChildTableInfo> getChildren() {
 
         return List.of(
-            userRoleChild.setAutoDelete(),
+            getUserRoleChild().setAutoDelete(),
             roleActionController.toChildTable("id_at_auth_role").setAutoDelete()
         );
     }
@@ -61,7 +74,7 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     @Path("/assign/{roleID}/to/{userID}")
     public String assign(@PathParam("roleID") String roleID, @PathParam("userID") String userID) {
         try {
-            return this.createChild(roleID, userRoleChild.getChildAlias(), Map.of(
+            return this.createChild(roleID, getUserRoleChild().getChildAlias(), Map.of(
                 "id_at_auth_user", userID
             ));
         } catch (Exception ignored) {
@@ -79,7 +92,7 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
 
         if (result.getSize() == 1) {
             String id = (String) result.getList().get(0).get("id");
-            return this.deleteChild(roleID, userRoleChild.getChildAlias(), id);
+            return this.deleteChild(roleID, getUserRoleChild().getChildAlias(), id);
         }
 
         return 1;

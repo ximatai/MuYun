@@ -19,6 +19,7 @@ import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -41,6 +42,15 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
                 new Dict("jituan", "集团公司"),
                 new Dict("erjigongsi", "二级公司")
             ), false);
+    }
+
+    @Override
+    public void onTableCreated(boolean isFirst) {
+        if (isFirst) {
+            this.create(
+                Map.of("v_name", "默认机构", "dict_org_type", "jituan")
+            );
+        }
     }
 
     @Override
