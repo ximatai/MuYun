@@ -91,14 +91,19 @@ public class AuthorizationService implements IAuthorizationService {
 
         request.setModuleID(moduleRow.get("id").toString());
 
-        Map<String, Object> actionRow = actionCache.get("%s@%s".formatted(request.getAction(), request.getModule()));
+        String action = request.getAction();
+        if("tree".equals(action)) {
+            action = "view"; // tree 接口权限实际走 view 权限即可
+        }
+
+        Map<String, Object> actionRow = actionCache.get("%s@%s".formatted(action, request.getModule()));
 
         if (actionRow == null || (boolean) actionRow.get("b_white")) { // 功能未配置，或者是白名单功能，不参与权限
             request.setSkip();
             return true;
         }
 
-        boolean authorized = isAuthorized(userID, request.getModule(), request.getAction());
+        boolean authorized = isAuthorized(userID, request.getModule(), action);
 
         if (!authorized) { // 功能权限验证失败
             request.setError((String) moduleRow.get("v_name"), (String) actionRow.get("v_name"));
@@ -106,7 +111,7 @@ public class AuthorizationService implements IAuthorizationService {
         }
 
         if (request.getDataID() != null) {
-            boolean dataAuthorized = isDataAuthorized(userID, request.getModule(), request.getAction(), request.getDataID());
+            boolean dataAuthorized = isDataAuthorized(userID, request.getModule(), action, request.getDataID());
             if (!dataAuthorized) {
                 request.setError((String) moduleRow.get("v_name"), (String) actionRow.get("v_name"), request.getDataID());
                 return false;
