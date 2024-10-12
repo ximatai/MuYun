@@ -114,6 +114,29 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         return id;
     }
 
+    @POST
+    @Path("/setPassword/{id}")
+    @Transactional
+    @Operation(summary = "设置用户密码")
+    public int setPassword(@PathParam("id") String id, Map<String, Object> params) {
+        String password = (String) params.get("v_password");
+        String password2 = (String) params.get("v_password2");
+
+        Objects.requireNonNull(password, "必须提供密码");
+        Objects.requireNonNull(password2, "必须提供二次输入密码");
+
+        if (!password.equals(password2)) {
+            throw new MyException("两次输入的密码不一致");
+        }
+
+        Map<String, ?> userInfo = this.view(id);
+        if ((boolean) userInfo.get("b_user")) {
+            return userController.update(id, Map.of("v_password", password));
+        } else {
+            throw new MyException("尚未创建对应的用户");
+        }
+    }
+
     @Override
     @Transactional
     public Integer delete(String id) {
@@ -127,7 +150,6 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Operation(summary = "禁用用户")
     public String disableUser(@PathParam("id") String id) {
         userController.update(id, Map.of("b_enabled", false));
-
         return id;
     }
 
@@ -136,7 +158,6 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Operation(summary = "启用用户")
     public String enableUser(@PathParam("id") String id) {
         userController.update(id, Map.of("b_enabled", true));
-
         return id;
     }
 

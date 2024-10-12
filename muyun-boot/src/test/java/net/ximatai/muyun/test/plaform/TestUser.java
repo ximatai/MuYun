@@ -163,11 +163,26 @@ public class TestUser {
             .then()
             .statusCode(200);
 
+        // 修改密码
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_password", "pw2",
+                "v_password2", "pw2"
+            ))
+            .when()
+            .post("%s/userinfo/setPassword/%s".formatted(base, id))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
         given()
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw",
+                "password", "pw2",
                 "code", "muyun"
             ))
             .when()
