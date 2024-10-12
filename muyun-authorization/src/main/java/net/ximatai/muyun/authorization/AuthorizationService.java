@@ -46,6 +46,10 @@ public class AuthorizationService implements IAuthorizationService {
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadRoles);
 
+    LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
+        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .build(this::loadOrgAndDept);
+
     @PostConstruct
     private void init() {
         List<Map<String, Object>> list = db.query("select * from platform.app_module ");
@@ -77,6 +81,14 @@ public class AuthorizationService implements IAuthorizationService {
             and exists(select * from platform.auth_role where auth_role.id = id_at_auth_role)
             """, userID);
         return rows.stream().map(it -> it.get("id_at_auth_role").toString()).toList();
+    }
+
+    public List<Map<String, Object>> loadOrgAndDept(String type) {
+        return switch (type) {
+            case "org" -> db.query("select id,pid from platform.org_organization");
+            case "dept" -> db.query("select id,pid from platform.org_department");
+            default -> List.of();
+        };
     }
 
     @Override
@@ -295,12 +307,12 @@ public class AuthorizationService implements IAuthorizationService {
     }
 
     private Set<String> organizationAndSubordinates(String organizationID) {
-        List<Map<String, Object>> list = db.query("select id,pid from platform.org_organization");
+        List<Map<String, Object>> list = allOrgAndDept.get("org");
         return meAndChildren(organizationID, list);
     }
 
     private Set<String> departmentAndSubordinates(String departmentID) {
-        List<Map<String, Object>> list = db.query("select id,pid from platform.org_department");
+        List<Map<String, Object>> list = allOrgAndDept.get("dept");
         return meAndChildren(departmentID, list);
     }
 
