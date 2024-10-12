@@ -7,14 +7,18 @@ import io.restassured.response.Response;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
@@ -24,8 +28,14 @@ public class TestUser {
 
     String base = PlatformConst.BASE_PATH;
 
+    @Inject
+    RoleController roleController;
+
     @Test
     void test() {
+        roleController.create(Map.of("id", "1"));
+        roleController.create(Map.of("id", "2"));
+
         // 新增人员信息
         String id = given()
             .header("userID", config.superUserId())
@@ -61,7 +71,8 @@ public class TestUser {
             .body(Map.of(
                 "v_username", "test",
                 "v_password", "pw",
-                "v_password2", "pw"
+                "v_password2", "pw",
+                "roles", List.of("1", "2")
             ))
             .when()
             .post("%s/userinfo/setUser/%s".formatted(base, id))
@@ -81,6 +92,19 @@ public class TestUser {
             });
 
         assertTrue((Boolean) row2.get("b_user"));
+
+        List<String> roles = given()
+            .header("userID", config.superUserId())
+            .get("%s/userinfo/roles/%s".formatted(base, id))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertTrue(roles.contains("1"));
+        assertTrue(roles.contains("2"));
 
         // 登录
         Response response = given()
