@@ -63,17 +63,17 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
-            .addColumn("v_name")
-            .addColumn("v_work_code")
-            .addColumn("d_birth")
-            .addColumn("v_phone")
-            .addColumn("v_email")
-            .addColumn("v_address")
+            .addColumn("v_name", "姓名")
+            .addColumn("v_work_code", "工号")
+            .addColumn("d_birth", "出生日期")
+            .addColumn("v_phone", "手机号")
+            .addColumn("v_email", "邮箱")
+            .addColumn("v_address", "通讯地址")
             .addColumn("id_at_org_department")
             .addColumn("id_at_org_organization")
-            .addColumn("file_photo")
+            .addColumn("file_photo", "头像")
             .addColumn(Column.of("b_user").setDefaultValue(false))
-            .addColumn("dict_user_gender")
+            .addColumn("dict_user_gender", "性别")
             .addColumn("j_conf", "用户个性化配置");
     }
 
