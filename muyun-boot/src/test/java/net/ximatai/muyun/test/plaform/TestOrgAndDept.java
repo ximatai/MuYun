@@ -107,6 +107,34 @@ public class TestOrgAndDept {
             .asString();
 
         assertTrue(res.contains("部门必须归属具体机构"));
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "部门2",
+                "id_at_org_organization", orgId,
+                "pid", deptId
+            ))
+            .when()
+            .post("%s/department/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        List<TreeNode> depTree = given()
+            .header("userID", config.superUserId())
+            .queryParam("rootID", orgId)
+            .get("%s/department/tree".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(1, depTree.size());
+        assertEquals(1, depTree.getFirst().getChildren().size());
     }
 
 }
