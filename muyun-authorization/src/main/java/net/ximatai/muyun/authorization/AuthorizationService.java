@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -30,25 +31,33 @@ public class AuthorizationService implements IAuthorizationService {
     @Inject
     MuYunConfig config;
 
-    LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
+    private LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadModule);
 
-    LoadingCache<String, Map<String, Object>> userinfoCache = Caffeine.newBuilder()
+    private LoadingCache<String, Map<String, Object>> userinfoCache = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadUserinfo);
 
-    LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
+    private LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build(this::loadAction);
 
-    LoadingCache<String, List<String>> userToRoles = Caffeine.newBuilder()
+    private LoadingCache<String, List<String>> userToRoles = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadRoles);
 
-    LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
+    private LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadOrgAndDept);
+
+    public void invalidateAll() {
+        moduleCache.invalidateAll();
+        userinfoCache.invalidateAll();
+        actionCache.invalidateAll();
+        userToRoles.invalidateAll();
+        allOrgAndDept.invalidateAll();
+    }
 
     @PostConstruct
     private void init() {
@@ -229,24 +238,27 @@ public class AuthorizationService implements IAuthorizationService {
         List<String> eachRoleCondition = new ArrayList<>();
 
         roleGroup.forEach((k, v) -> {
-            // 角色内部的权限关系是 and
-            String condition = v.stream().filter(it -> {
-                    int order = (int) it.get("i_order");
-                    if (it.get("v_alias_at_app_module_action").equals(action)) { // 就是 当前功能这一行
-                        return true;
-                    }
-                    return order > 0 && order < iOrder; // order 大于0参与级联权限，同时权限order小于当前功能
-                })
-                .map(row -> {
-                    if ("custom".equals(row.get("dict_data_auth"))) {
-                        return row.get("v_custom_condition").toString();
-                    } else {
-                        return dictDataAuthToCondition(userID, module, (String) row.get("dict_data_auth"));
-                    }
-                })
-                .collect(Collectors.joining(" and "));
+            Optional<Map<String, Object>> isHit = v.stream().filter(it -> it.get("v_alias_at_app_module_action").equals(action)).findFirst();
+            if (isHit.isPresent()) { // 如果为 false 说明当前角色就没有对目标 Action 授权，所以不参与拼接
+                // 角色内部的权限关系是 and
+                String condition = v.stream().filter(it -> {
+                        int order = (int) it.get("i_order");
+                        if (it.get("v_alias_at_app_module_action").equals(action)) { // 就是 当前功能这一行
+                            return true;
+                        }
+                        return order > 0 && order < iOrder; // order 大于0参与级联权限，同时权限order小于当前功能
+                    })
+                    .map(row -> {
+                        if ("custom".equals(row.get("dict_data_auth"))) {
+                            return row.get("v_custom_condition").toString();
+                        } else {
+                            return dictDataAuthToCondition(userID, module, (String) row.get("dict_data_auth"));
+                        }
+                    })
+                    .collect(Collectors.joining(" and "));
 
-            eachRoleCondition.add(condition);
+                eachRoleCondition.add(condition);
+            }
         });
 
         // 角色之间的权限关系是 or

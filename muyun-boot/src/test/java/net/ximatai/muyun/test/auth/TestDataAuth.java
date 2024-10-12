@@ -54,9 +54,7 @@ public class TestDataAuth {
     String role1, role2;
     String module1, module2;
 
-    Map view1, view2, update1, delete1, delete2;
-
-    String data1, data2;
+    String view1, view2, update1, delete1, delete2;
 
     @BeforeAll
     void setUp() {
@@ -85,20 +83,6 @@ public class TestDataAuth {
             "id", userID,
             "id_at_org_department", "1",
             "id_at_org_organization", "1"
-        ));
-
-        data1 = db.insertItem("public", "module1", Map.of(
-            "v_name", "test1",
-            "id_at_auth_user__perms", userID,
-            "id_at_org_department__perms", "1",
-            "id_at_org_organization__perms", "1"
-        ));
-
-        data2 = db.insertItem("public", "module1", Map.of(
-            "v_name", "test2",
-            "id_at_auth_user__perms", "2",
-            "id_at_org_department__perms", "2",
-            "id_at_org_organization__perms", "2"
         ));
 
         role1 = db.insertItem("platform", "auth_role", Map.of(
@@ -132,86 +116,158 @@ public class TestDataAuth {
 
         List<Map> actionList1 = moduleController.getChildTableList(module1, "app_module_action", null);
 
-        view1 = actionList1.stream().filter(it -> it.get("v_alias").equals("view")).findFirst().get();
-        update1 = actionList1.stream().filter(it -> it.get("v_alias").equals("update")).findFirst().get();
-        delete1 = actionList1.stream().filter(it -> it.get("v_alias").equals("delete")).findFirst().get();
+        view1 = (String) actionList1.stream().filter(it -> it.get("v_alias").equals("view")).findFirst().get().get("id");
+        update1 = (String) actionList1.stream().filter(it -> it.get("v_alias").equals("update")).findFirst().get().get("id");
+        delete1 = (String) actionList1.stream().filter(it -> it.get("v_alias").equals("delete")).findFirst().get().get("id");
 
         List<Map> actionList2 = moduleController.getChildTableList(module2, "app_module_action", null);
-        view2 = actionList2.stream().filter(it -> it.get("v_alias").equals("view")).findFirst().get();
-        delete2 = actionList2.stream().filter(it -> it.get("v_alias").equals("delete")).findFirst().get();
+        view2 = (String) actionList2.stream().filter(it -> it.get("v_alias").equals("view")).findFirst().get().get("id");
+        delete2 = (String) actionList2.stream().filter(it -> it.get("v_alias").equals("delete")).findFirst().get().get("id");
 
     }
 
     @BeforeEach
     void beforeEach() {
         db.execute("truncate table platform.auth_role_action");
+        db.execute("truncate table platform.org_department");
     }
 
+
     @Test
-    void testIsDataAuthorized() {
-
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role1,
-            "id_at_app_module_action", view1.get("id"),
-            "dict_data_auth", "organization"
+    void testIsDataAuthorized1() {
+        String data1 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test1",
+            "id_at_auth_user__perms", userID,
+            "id_at_org_department__perms", "1",
+            "id_at_org_organization__perms", "1"
         ));
 
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role1,
-            "id_at_app_module_action", update1.get("id"),
-            "dict_data_auth", "department"
-        ));
+        accredit(role1, view1, "organization_and_subordinates");
+        accredit(role1, update1, "department_and_subordinates");
+        accredit(role1, delete1, "self");
 
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role1,
-            "id_at_app_module_action", delete1.get("id"),
-            "dict_data_auth", "self"
-        ));
-
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role2,
-            "id_at_app_module_action", view1.get("id"),
-            "dict_data_auth", "organization"
-        ));
+        accredit(role2, view1, "organization");
 
         assertTrue(authService.isDataAuthorized(userID, "module1", "view", data1));
         assertTrue(authService.isDataAuthorized(userID, "module1", "update", data1));
         assertTrue(authService.isDataAuthorized(userID, "module1", "delete", data1));
-
-        assertFalse(authService.isDataAuthorized(userID, "module1", "view", data2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "update", data2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", data2));
     }
 
     @Test
     void testIsDataAuthorized2() {
 
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role1,
-            "id_at_app_module_action", view1.get("id"),
-            "dict_data_auth", "organization_and_subordinates"
+        String d1 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test1",
+            "id_at_auth_user__perms", userID,
+            "id_at_org_department__perms", "1",
+            "id_at_org_organization__perms", "1"
         ));
 
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role1,
-            "id_at_app_module_action", update1.get("id"),
-            "dict_data_auth", "department_and_subordinates"
+        String d2 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test2",
+            "id_at_auth_user__perms", "xxx",
+            "id_at_org_department__perms", "2",
+            "id_at_org_organization__perms", "1"
         ));
 
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role1,
-            "id_at_app_module_action", delete1.get("id"),
-            "dict_data_auth", "self"
+        accredit(role1, view1, "organization_and_subordinates");
+        accredit(role1, update1, "department_and_subordinates");
+        accredit(role1, delete1, "self");
+
+        accredit(role2, view1, "organization");
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module1", "update", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", d1));
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+    }
+
+    @Test
+    void testIsDataAuthorized3() {
+
+        String d1 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test1",
+            "id_at_auth_user__perms", userID,
+            "id_at_org_department__perms", "1",
+            "id_at_org_organization__perms", "1"
         ));
 
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role2,
-            "id_at_app_module_action", view1.get("id"),
-            "dict_data_auth", "organization"
+        String d2 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test2",
+            "id_at_auth_user__perms", "xxx",
+            "id_at_org_department__perms", "2",
+            "id_at_org_organization__perms", "1"
         ));
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", data1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "update", data1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", data1));
+        accredit(role1, view1, "department");
+        accredit(role1, update1, "department");
+        accredit(role1, delete1, "open"); // 即使 delete 给了更大范围权限，但是仍然不可以突破前面的 view 和 update 的范围。
+
+        accredit(role2, view1, "organization");
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module1", "update", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", d1));
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+    }
+
+    @Test
+    void testIsDataAuthorized4() {
+        db.insertItem("platform", "org_department", Map.of(
+            "id", "1",
+            "v_name", "root",
+            "id_at_org_organization", "1"
+        ));
+
+        db.insertItem("platform", "org_department", Map.of(
+            "id", "2",
+            "pid", "1",
+            "v_name", "root",
+            "id_at_org_organization", "1"
+        ));
+
+        String d1 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test1",
+            "id_at_auth_user__perms", userID,
+            "id_at_org_department__perms", "1",
+            "id_at_org_organization__perms", "1"
+        ));
+
+        String d2 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test2",
+            "id_at_auth_user__perms", "xxx",
+            "id_at_org_department__perms", "2",
+            "id_at_org_organization__perms", "1"
+        ));
+
+        authService.invalidateAll();
+
+        accredit(role1, view1, "department_and_subordinates");
+        accredit(role1, update1, "department");
+        accredit(role1, delete1, "open"); // 即使 delete 给了更大范围权限，但是仍然不可以突破前面的 view 和 update 的范围。
+
+        accredit(role2, view1, "self");
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module1", "update", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", d1));
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+    }
+
+    private void accredit(String role, String action, String dataAuth) {
+        roleActionController.create(Map.of(
+            "id_at_auth_role", role,
+            "id_at_app_module_action", action,
+            "dict_data_auth", dataAuth
+        ));
     }
 }
