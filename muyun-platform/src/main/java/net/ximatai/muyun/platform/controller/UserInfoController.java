@@ -72,7 +72,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             .addColumn("id_at_org_department")
             .addColumn("id_at_org_organization")
             .addColumn("file_photo", "头像")
-            .addColumn(Column.of("b_user").setDefaultValue(false))
+            .addColumn(Column.of("b_user").setDefaultValue(false).setComment("是否用户"))
             .addColumn("dict_user_gender", "性别")
             .addColumn("j_conf", "用户个性化配置");
     }
