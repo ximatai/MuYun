@@ -4,6 +4,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
+import net.ximatai.muyun.ability.IAuthAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IDesensitizationAbility;
 import net.ximatai.muyun.ability.IMetadataAbility;
@@ -15,6 +16,7 @@ import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.tool.DateTool;
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.SortColumn;
@@ -156,6 +158,18 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         }
 
         String authCondition = "and 1=1";
+        if (this instanceof IAuthAbility authAbility) {
+            ApiRequest apiRequest = authAbility.getApiRequest();
+            String module = apiRequest.getModule();
+            String action = apiRequest.getAction();
+            if (apiRequest.isNotBlank() // view 接口可能被程序内部调用，这种情况不应该拼装权限
+                && isModuleMatchingPath(module)
+                && action.equals("view")) {
+                String userID = authAbility.getUser().getId();
+                authCondition = authAbility.getAuthorizationService().getAuthCondition(userID, module, action);
+            }
+        }
+
         StringBuilder queryCondition = new StringBuilder();
 
         // 查询条件处理
@@ -282,6 +296,27 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         }
 
         return new PageResult<>(list, total, size, page);
+    }
+
+    default String getPath() {
+        Path annotation = this.getClass().getAnnotation(Path.class);
+        if (annotation != null) {
+            return annotation.value();
+        }
+        return null;
+    }
+
+    default boolean isModuleMatchingPath(String module) {
+        String alias = getPath();
+        if (alias == null) { // 说明本class不是HTTP Controller
+            return false;
+        }
+
+        if (alias.endsWith(module)) {
+            return true;
+        }
+
+        return false;
     }
 
 }

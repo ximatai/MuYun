@@ -184,13 +184,13 @@ public class AuthorizationService implements IAuthorizationService {
     @Override
     public String getAuthCondition(String userID, String module, String action) {
         if (config.isSuperUser(userID)) {
-            return "1=1";
+            return "and 1=1";
         }
 
         List<String> roles = getUserAvailableRoles(userID);
 
         if (roles.isEmpty()) {
-            return "1=2";
+            return "and 1=2";
         }
 
         List<Map<String, Object>> result = db.query("""

@@ -80,6 +80,10 @@ public class ApiRequest {
         return this;
     }
 
+    public boolean isNotBlank() {
+        return !this.equals(BLANK);
+    }
+
     @Override
     public String toString() {
         return "path:" + path + ", module:" + module + ", action:" + action + ", dataID:" + dataID + ", userID" + getUser().getId() + ", isSkip:" + isSkip;
