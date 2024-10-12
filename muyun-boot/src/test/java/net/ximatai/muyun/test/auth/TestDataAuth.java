@@ -132,7 +132,6 @@ public class TestDataAuth {
         db.execute("truncate table platform.org_department");
     }
 
-
     @Test
     void testIsDataAuthorized1() {
         String data1 = db.insertItem("public", "module1", Map.of(

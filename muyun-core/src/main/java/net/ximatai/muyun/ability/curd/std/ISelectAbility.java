@@ -164,7 +164,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             String action = apiRequest.getAction();
             if (apiRequest.isNotBlank() // view 接口可能被程序内部调用，这种情况不应该拼装权限
                 && isModuleMatchingPath(module)
-                && action.equals("view")) {
+                && "view".equals(action)) {
                 String userID = authAbility.getUser().getId();
                 authCondition = authAbility.getAuthorizationService().getAuthCondition(userID, module, action);
             }
