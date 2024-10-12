@@ -31,23 +31,23 @@ public class AuthorizationService implements IAuthorizationService {
     @Inject
     MuYunConfig config;
 
-    private LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
+    private final LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadModule);
 
-    private LoadingCache<String, Map<String, Object>> userinfoCache = Caffeine.newBuilder()
+    private final LoadingCache<String, Map<String, Object>> userinfoCache = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadUserinfo);
 
-    private LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
+    private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build(this::loadAction);
 
-    private LoadingCache<String, List<String>> userToRoles = Caffeine.newBuilder()
+    private final LoadingCache<String, List<String>> userToRoles = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadRoles);
 
-    private LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
+    private final LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadOrgAndDept);
 
