@@ -138,7 +138,7 @@ public class TestUserAndRole {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(List.of(role1, role2))
-            .post("%s/userinfo/roles/%s".formatted(base, userID))
+            .post("%s/userinfo/setRoles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()

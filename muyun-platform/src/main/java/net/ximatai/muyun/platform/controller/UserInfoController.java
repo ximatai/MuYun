@@ -18,8 +18,11 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
+import net.ximatai.muyun.platform.model.Module;
+import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.service.IAuthorizationService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -29,9 +32,12 @@ import java.util.Objects;
 import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
+import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_ALIAS;
 
-@Path(BASE_PATH + "/userinfo")
-public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility {
+@Path(BASE_PATH + "/" + MODULE_ALIAS)
+public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility, IModuleRegisterAbility {
+
+    public final static String MODULE_ALIAS = "userinfo";
 
     @Inject
     UserController userController;
@@ -85,7 +91,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @POST
     @Path("/setUser/{id}")
     @Transactional
-    @Operation(summary = "设置为可登录用户")
+    @Operation(summary = "设置为可登录账户")
     public String setUser(@PathParam("id") String id, Map<String, Object> params) {
         String username = (String) params.get("v_username");
         String password = (String) params.get("v_password");
@@ -107,7 +113,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         userController.create(Map.of("id", id, "v_username", username, "v_password", password));
 
         if (params.containsKey("roles") && params.get("roles") instanceof List roles) {
-            this.roles(id, roles);
+            this.setRoles(id, roles);
         }
 
         return id;
@@ -116,7 +122,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @POST
     @Path("/setPassword/{id}")
     @Transactional
-    @Operation(summary = "设置用户密码")
+    @Operation(summary = "设置账户密码")
     public int setPassword(@PathParam("id") String id, Map<String, Object> params) {
         String password = (String) params.get("v_password");
         String password2 = (String) params.get("v_password2");
@@ -149,7 +155,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @GET
     @Path("/disableUser/{id}")
-    @Operation(summary = "禁用用户")
+    @Operation(summary = "禁用账户")
     public String disableUser(@PathParam("id") String id) {
         userController.update(id, Map.of("b_enabled", false));
         return id;
@@ -157,7 +163,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @GET
     @Path("/enableUser/{id}")
-    @Operation(summary = "启用用户")
+    @Operation(summary = "启用账户")
     public String enableUser(@PathParam("id") String id) {
         userController.update(id, Map.of("b_enabled", true));
         return id;
@@ -170,16 +176,30 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @GET
     @Path("/roles/{userID}")
-    @Operation(summary = "获取用户拥有的角色")
+    @Operation(summary = "获取账户拥有的角色")
     public Set<String> roles(@PathParam("userID") String userID) {
         return authorizationService.getUserAvailableRoles(userID);
     }
 
     @POST
-    @Path("/roles/{userID}")
-    @Operation(summary = "设置用户拥有的角色")
-    public Integer roles(@PathParam("userID") String userID, List<String> roles) {
+    @Path("/setRoles/{userID}")
+    @Operation(summary = "设置账户拥有的角色")
+    public Integer setRoles(@PathParam("userID") String userID, List<String> roles) {
         userController.putChildTableList(userID, "auth_user_role", List.of());
         return userController.putChildTableList(userID, "auth_user_role", roles.stream().map(it -> Map.of("id_at_auth_role", it)).toList()).getCreate();
+    }
+
+    @Override
+    public Module getModuleConfig() {
+        return Module.ofName("用户管理")
+            .setAlias(MODULE_ALIAS)
+            .setTable(getMainTable())
+            .setUrl("platform/userinfo/index")
+            .addAction(new ModuleAction("setUser", "设置账户"))
+            .addAction(new ModuleAction("setPassword", "设置密码"))
+            .addAction(new ModuleAction("disableUser", "禁用账户"))
+            .addAction(new ModuleAction("enableUser", "启用账户"))
+            .addAction(new ModuleAction("roles", "获取角色"))
+            .addAction(new ModuleAction("setRoles", "设置角色"));
     }
 }
