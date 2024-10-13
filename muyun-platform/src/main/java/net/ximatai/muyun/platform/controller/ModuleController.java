@@ -11,6 +11,7 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -34,6 +35,9 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     @Inject
     RoleActionController roleActionController;
+
+    @Inject
+    MuYunConfig muYunConfig;
 
     public static final List ACTIONS = List.of(
         Map.of("v_alias", "menu", "v_name", "菜单", "i_order", 0),
@@ -69,14 +73,9 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             .addIndex("v_alias");
     }
 
-    /**
-     * 创建表成功后初始化相应数据
-     *
-     * @param isFirst
-     */
     @Override
-    public void onTableCreated(boolean isFirst) {
-        if (isFirst) {
+    protected void afterInit() {
+        if (muYunConfig.debug()) {
             initData();
         }
     }
@@ -149,17 +148,29 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     }
 
     public String createModule(String pid, String name, String alias, String table, String url) {
-        HashMap map = new HashMap();
-        if (pid != null) {
-            map.put("pid", pid);
+        List<Map<String, Object>> list;
+
+        if ("void".equals(alias)) { // 说明不是叶子节点
+            list = getDB().query("select id from platform.app_module where b_system = true and v_alias = 'void' and v_name = ?", name);
+        } else {
+            list = getDB().query("select id from platform.app_module where b_system = true and v_alias = ?", alias);
         }
 
-        map.put("v_name", name);
-        map.put("v_alias", alias);
-        map.put("v_table", table);
-        map.put("v_url", url);
-        map.put("b_system", true);
-        return this.create(map);
+        if (list.isEmpty()) {
+            HashMap map = new HashMap();
+            if (pid != null) {
+                map.put("pid", pid);
+            }
+
+            map.put("v_name", name);
+            map.put("v_alias", alias);
+            map.put("v_table", table);
+            map.put("v_url", url);
+            map.put("b_system", true);
+            return this.create(map);
+        } else {
+            return list.getFirst().get("id").toString();
+        }
     }
 
     @Override
