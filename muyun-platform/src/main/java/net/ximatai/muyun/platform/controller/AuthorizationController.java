@@ -9,6 +9,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.core.Scaffold;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
 
     @GET
     @Path("/view")
+    @Operation(summary = "查询某个角色针对某个功能的授权列表")
     public List view(@QueryParam("roleID") String roleID, @QueryParam("moduleID") String moduleID) {
         return this.getDB().query("""
             select
@@ -45,6 +47,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
 
     @GET
     @Path("/grant")
+    @Operation(summary = "授权")
     public String grant(@QueryParam("roleID") String roleID, @QueryParam("actionID") String actionID) {
         return roleActionController.create(Map.of(
             "id_at_auth_role", roleID,
@@ -54,12 +57,14 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
 
     @GET
     @Path("/revoke/{id}")
+    @Operation(summary = "撤回权限")
     public Integer revoke(@PathParam("id") String id) {
         return roleActionController.delete(id);
     }
 
     @POST
     @Path("/setDataAuth/{id}")
+    @Operation(summary = "对已授权的数据修改授权数据范围")
     public Integer setDataAuth(@PathParam("id") String id, Map body) {
         return roleActionController.update(id, Map.of(
             "dict_data_auth", body.get("dict_data_auth"),
