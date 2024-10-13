@@ -6,7 +6,6 @@ import jakarta.ws.rs.Path;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 public class TestWildcardPath {

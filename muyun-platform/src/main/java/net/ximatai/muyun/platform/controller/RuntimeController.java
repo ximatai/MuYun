@@ -41,14 +41,31 @@ public class RuntimeController implements IRuntimeAbility {
     @GET
     @Path("/menu")
     public List<TreeNode> menu(@QueryParam("terminalType") String terminalType) {
-//        if (config.isSuperUser(whoami().getId())) {
-        List<Map<String, Object>> list = db.query("""
-            select id,pid,id as id_at_app_module,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
-            where b_system = true;
-            """);
+        if (config.isSuperUser(whoami().getId())) {
+            List<Map<String, Object>> list = db.query("""
+                select id,pid,id as id_at_app_module,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
+                where b_system = true;
+                """);
 
-        return TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
-//        }
+            return TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
+        } else {
+            String schemaID = menuSchemaController.schemaForUser(whoami().getId(), terminalType);
+            List<Map<String, Object>> list = db.query("""
+                                    select app_menu.id,
+                                           app_menu.pid,
+                                           app_menu.id_at_app_module,
+                                           app_module.v_alias,
+                                           app_menu.v_name,
+                                           app_module.v_url,
+                                           app_menu.v_icon,
+                                           app_menu.dict_menu_opentype as opentype
+                                    from platform.app_menu
+                                             left join platform.app_module on app_menu.id_at_app_module = app_module.id
+                where app_menu.id_at_app_menu_schema = ?
+                """, schemaID);
+
+            return TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
+        }
     }
 
     @Override

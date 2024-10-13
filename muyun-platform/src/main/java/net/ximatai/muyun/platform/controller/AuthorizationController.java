@@ -29,7 +29,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     @Path("/view")
     @Operation(summary = "查询某个角色针对某个功能的授权列表")
     public List view(@QueryParam("roleID") String roleID, @QueryParam("moduleID") String moduleID) {
-        if(roleID == null){
+        if (roleID == null) {
             roleID = "";
         }
 
