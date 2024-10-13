@@ -72,6 +72,23 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     }
 
     @Override
+    public Integer sort(String id, String prevId, String nextId, String parentId) {
+
+        Map<String, ?> category = this.view(id);
+        Map<String, ?> dict = dictController.view(id);
+        if (category != null) { // 说明是给类目排序
+            return ITreeAbility.super.sort(id, prevId, nextId, parentId);
+        } else if (dict != null) { // 说明是给字典排序
+            if (parentId == null) {
+                parentId = dict.get("id_at_app_dictcategory").toString();
+            }
+            return dictController.sort(id, prevId, nextId, parentId);
+        }
+
+        return 0;
+    }
+
+    @Override
     public void check(Map body, boolean isUpdate) {
         String id = (String) Objects.requireNonNull(body.get("id"), "数据字典类目必须提供编码");
         String name = (String) Objects.requireNonNull(body.get("v_name"), "数据字典类目必须提供名称");
@@ -111,13 +128,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     }
 
     public void putDictCategory(DictCategory dictCategory, boolean isLock) {
-        Map<String, ?> category = null;
-        try {
-            category = this.view(dictCategory.getId());
-        } catch (Exception ignored) {
-
-        }
-
+        Map<String, ?> category = this.view(dictCategory.getId());
         if (category == null) {
             this.create(dictCategory.toMap());
         } else if (isLock) {
