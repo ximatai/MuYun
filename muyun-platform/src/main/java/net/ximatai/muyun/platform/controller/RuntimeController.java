@@ -70,7 +70,7 @@ public class RuntimeController implements IRuntimeAbility {
                                            app_menu.dict_menu_opentype as opentype
                                     from platform.app_menu
                                              left join platform.app_module on app_menu.id_at_app_module = app_module.id
-                where app_menu.b_enable = true && app_menu.id_at_app_menu_schema = ?
+                where app_menu.b_enable = true and app_menu.id_at_app_menu_schema = ?
                 """, schemaID);
 
             List<TreeNode> treeNodes = TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
