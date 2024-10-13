@@ -55,15 +55,20 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
 
     @GET
     @Path("/tree/{id}")
-    public List<TreeNode> tree(@PathParam("id") String id) {
-        return dictController.tree(id, false, null, null);
+    public List<Map> tree(@PathParam("id") String id) {
+        List<TreeNode> list = dictController.tree(id, false, null, null);
+        return list.stream().map(it -> {
+            Map map = it.toMap();
+            map.put("value", it.getData().get("v_value"));
+            return map;
+        }).toList();
     }
 
     @GET
     @Path("/translate/{category}")
     public String translate(@PathParam("category") String category, @QueryParam("source") String source) {
-
-        TreeNode node = tree(category).stream().filter(treeNode -> treeNode.getData().get("v_value").equals(source)).findFirst().orElse(null);
+        List<TreeNode> list = dictController.tree(category, false, null, null);
+        TreeNode node = list.stream().filter(treeNode -> treeNode.getData().get("v_value").equals(source)).findFirst().orElse(null);
         if (node == null) {
             throw new MyException("字典值 %s 在 %s 类型中不存在".formatted(source, category));
         }

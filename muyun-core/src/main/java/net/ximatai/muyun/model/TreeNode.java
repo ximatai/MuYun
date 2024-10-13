@@ -2,6 +2,7 @@ package net.ximatai.muyun.model;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,5 +54,14 @@ public class TreeNode {
     public TreeNode setChildren(List<TreeNode> children) {
         this.children = children;
         return this;
+    }
+
+    public Map toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("label", label);
+        map.put("data", data);
+        map.put("children", children);
+        return map;
     }
 }

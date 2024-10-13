@@ -44,7 +44,7 @@ public class TestDictController {
 
     @Test
     void testVoidDictCategory() {
-        List<TreeNode> response = given()
+        List<Map> response = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, UUID.randomUUID().toString()))
             .then()
@@ -153,7 +153,7 @@ public class TestDictController {
             .then()
             .statusCode(200);
 
-        List<TreeNode> response = given()
+        List<Map> response = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root1"))
             .then()
@@ -164,7 +164,7 @@ public class TestDictController {
 
         assertEquals(response.size(), 3);
 
-        List<TreeNode> response2 = given()
+        List<Map> response2 = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root2"))
             .then()
