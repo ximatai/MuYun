@@ -10,8 +10,8 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.controller.AuthorizationController;
 import net.ximatai.muyun.platform.controller.ModuleController;
-import net.ximatai.muyun.platform.controller.RoleActionController;
 import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -42,7 +42,7 @@ public class TestDataAuth {
     ModuleController moduleController;
 
     @Inject
-    RoleActionController roleActionController;
+    AuthorizationController authorizationController;
 
     @Inject
     UserInfoController userInfoController;
@@ -263,9 +263,8 @@ public class TestDataAuth {
     }
 
     private void accredit(String role, String action, String dataAuth) {
-        roleActionController.create(Map.of(
-            "id_at_auth_role", role,
-            "id_at_app_module_action", action,
+        String grant = authorizationController.grant(role, action);
+        authorizationController.setDataAuth(grant, Map.of(
             "dict_data_auth", dataAuth
         ));
     }

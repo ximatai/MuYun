@@ -14,7 +14,6 @@ import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.builder.TableBase;
-import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.PageResult;

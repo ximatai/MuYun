@@ -11,8 +11,10 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.core.Scaffold;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -27,6 +29,10 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     @Path("/view")
     @Operation(summary = "查询某个角色针对某个功能的授权列表")
     public List view(@QueryParam("roleID") String roleID, @QueryParam("moduleID") String moduleID) {
+        if(roleID == null){
+            roleID = "";
+        }
+
         return this.getDB().query("""
             select
                 auth_role_action.id,
@@ -66,10 +72,14 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     @Path("/setDataAuth/{id}")
     @Operation(summary = "对已授权的数据修改授权数据范围")
     public Integer setDataAuth(@PathParam("id") String id, Map body) {
-        return roleActionController.update(id, Map.of(
-            "dict_data_auth", body.get("dict_data_auth"),
-            "v_custom_condition", body.get("v_custom_condition")
-        ));
+        Objects.requireNonNull(body.get("dict_data_auth"), "必须提供数据授权范围字典内容");
+
+        HashMap map = new HashMap(body);
+        map.put("dict_data_auth", body.get("dict_data_auth"));
+        if (body.containsKey("v_custom_condition")) {
+            map.put("v_custom_condition", body.get("v_custom_condition"));
+        }
+        return roleActionController.update(id, map);
     }
 
 }
