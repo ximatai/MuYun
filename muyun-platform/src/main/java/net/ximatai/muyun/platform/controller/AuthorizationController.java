@@ -57,7 +57,8 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     public String grant(@QueryParam("roleID") String roleID, @QueryParam("actionID") String actionID) {
         return roleActionController.create(Map.of(
             "id_at_auth_role", roleID,
-            "id_at_app_module_action", actionID
+            "id_at_app_module_action", actionID,
+            "dict_data_auth", "open"
         ));
     }
 
