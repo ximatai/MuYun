@@ -26,6 +26,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -170,7 +171,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @GET
     @Path("/roles/{userID}")
     @Operation(summary = "获取用户拥有的角色")
-    public List<String> roles(@PathParam("userID") String userID) {
+    public Set<String> roles(@PathParam("userID") String userID) {
         return authorizationService.getUserAvailableRoles(userID);
     }
 

@@ -70,6 +70,6 @@ public interface IAuthorizationService {
      * @param userID
      * @return
      */
-    List<String> getUserAvailableRoles(String userID);
+    Set<String> getUserAvailableRoles(String userID);
 
 }

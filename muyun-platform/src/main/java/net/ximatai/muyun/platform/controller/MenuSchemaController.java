@@ -21,6 +21,7 @@ import net.ximatai.muyun.util.TreeBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -85,7 +86,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         if (terminalType == null) {
             terminalType = "web";
         }
-        List<String> roles = authorizationService.getUserAvailableRoles(userID);
+        Set<String> roles = authorizationService.getUserAvailableRoles(userID);
 
         Map row = getDB().row("""
             select * from platform.app_menu_schema

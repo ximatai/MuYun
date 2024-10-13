@@ -43,7 +43,7 @@ public class AuthorizationService implements IAuthorizationService {
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build(this::loadAction);
 
-    private final LoadingCache<String, List<String>> userToRoles = Caffeine.newBuilder()
+    private final LoadingCache<String, Set<String>> userToRoles = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadRoles);
 
@@ -82,14 +82,14 @@ public class AuthorizationService implements IAuthorizationService {
         return db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleID, action);
     }
 
-    public List<String> loadRoles(String userID) {
+    public Set<String> loadRoles(String userID) {
         List<Map<String, Object>> rows = db.query("""
             select id_at_auth_role
             from platform.auth_user_role
             where id_at_auth_user = ?
             and exists(select * from platform.auth_role where auth_role.id = id_at_auth_role)
             """, userID);
-        return rows.stream().map(it -> it.get("id_at_auth_role").toString()).toList();
+        return rows.stream().map(it -> it.get("id_at_auth_role").toString()).collect(Collectors.toSet());
     }
 
     public List<Map<String, Object>> loadOrgAndDept(String type) {
@@ -153,7 +153,7 @@ public class AuthorizationService implements IAuthorizationService {
             return true;
         }
 
-        List<String> roles = getUserAvailableRoles(userID);
+        Set<String> roles = getUserAvailableRoles(userID);
 
         if (roles.isEmpty()) {
             return false;
@@ -176,7 +176,7 @@ public class AuthorizationService implements IAuthorizationService {
             return true;
         }
 
-        List<String> roles = getUserAvailableRoles(userID);
+        Set<String> roles = getUserAvailableRoles(userID);
 
         if (roles.isEmpty()) {
             return false;
@@ -208,7 +208,7 @@ public class AuthorizationService implements IAuthorizationService {
             return "and 1=1";
         }
 
-        List<String> roles = getUserAvailableRoles(userID);
+        Set<String> roles = getUserAvailableRoles(userID);
 
         if (roles.isEmpty()) {
             return "and 1=2";
@@ -365,7 +365,7 @@ public class AuthorizationService implements IAuthorizationService {
             return result.stream().map(it -> it.get("v_alias").toString()).collect(Collectors.toList());
         }
 
-        List<String> roles = getUserAvailableRoles(userID);
+        Set<String> roles = getUserAvailableRoles(userID);
 
         if (roles.isEmpty()) {
             return List.of();
@@ -396,7 +396,7 @@ public class AuthorizationService implements IAuthorizationService {
                 """;
             params = new Object[]{}; // 超级用户不需要参数
         } else {
-            List<String> roles = getUserAvailableRoles(userID);
+            Set<String> roles = getUserAvailableRoles(userID);
 
             if (roles.isEmpty()) {
                 return Map.of();
@@ -424,7 +424,7 @@ public class AuthorizationService implements IAuthorizationService {
     }
 
     @Override
-    public List<String> getUserAvailableRoles(String userID) {
+    public Set<String> getUserAvailableRoles(String userID) {
         if (config.debug()) {
             return loadRoles(userID);
         } else {

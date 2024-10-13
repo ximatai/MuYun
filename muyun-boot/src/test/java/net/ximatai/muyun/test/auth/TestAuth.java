@@ -117,7 +117,7 @@ public class TestAuth {
 
     @Test
     void testGetUserAvailableRoles() {
-        List<String> roles = authService.getUserAvailableRoles(userID);
+        Set<String> roles = authService.getUserAvailableRoles(userID);
         assertEquals(2, roles.size());
         assertTrue(roles.contains(role1));
         assertTrue(roles.contains(role2));
