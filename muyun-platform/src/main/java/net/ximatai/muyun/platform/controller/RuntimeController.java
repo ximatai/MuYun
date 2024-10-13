@@ -48,7 +48,9 @@ public class RuntimeController implements IRuntimeAbility {
     @GET
     @Path("/menu")
     public List<TreeNode> menu(@QueryParam("terminalType") String terminalType) {
-        if (config.isSuperUser(whoami().getId())) {
+        String userID = whoami().getId();
+
+        if (config.isSuperUser(userID)) {
             List<Map<String, Object>> list = db.query("""
                 select id,pid,id as id_at_app_module,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
                 where b_system = true;
@@ -56,7 +58,7 @@ public class RuntimeController implements IRuntimeAbility {
 
             return TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
         } else {
-            String schemaID = menuSchemaController.schemaForUser(whoami().getId(), terminalType);
+            String schemaID = menuSchemaController.schemaForUser(userID, terminalType);
             List<Map<String, Object>> list = db.query("""
                                     select app_menu.id,
                                            app_menu.pid,
@@ -68,7 +70,7 @@ public class RuntimeController implements IRuntimeAbility {
                                            app_menu.dict_menu_opentype as opentype
                                     from platform.app_menu
                                              left join platform.app_module on app_menu.id_at_app_module = app_module.id
-                where app_menu.id_at_app_menu_schema = ?
+                where app_menu.b_enable = true && app_menu.id_at_app_menu_schema = ?
                 """, schemaID);
 
             List<TreeNode> treeNodes = TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
