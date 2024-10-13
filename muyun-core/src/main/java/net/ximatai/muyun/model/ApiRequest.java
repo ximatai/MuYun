@@ -20,19 +20,32 @@ public class ApiRequest {
         this.user = user;
         this.path = path;
 
+        // /api/platform/user/view/xxxx
         String[] urlBlock = path.split("/");
+        // ["", "api", "platform", "user", "view", "xxxx"]
 
-        if (urlBlock.length < 5) {
+        if (urlBlock.length < 5) { //说明不是平台标化接口
             isSkip = true;
             return;
         }
 
-        module = urlBlock[3];
-        action = urlBlock[4];
+        if ("wildcard".equals(urlBlock[4])) { //说明是通配接口，需要特殊处理
+            // /api/platform/commondoc/wildcard/wangpan/view/xxxx
+            module = urlBlock[3] + "/" + urlBlock[4] + "/" + urlBlock[5];
+            action = urlBlock[6];
+            if (urlBlock.length > 7) {
+                dataID = urlBlock[7];
+            }
+        } else {
+            module = urlBlock[3];
+            action = urlBlock[4];
 
-        if (urlBlock.length > 5) {
-            dataID = urlBlock[5];
+            if (urlBlock.length > 5) {
+                dataID = urlBlock[5];
+            }
         }
+
+
     }
 
     public void setSkip() {

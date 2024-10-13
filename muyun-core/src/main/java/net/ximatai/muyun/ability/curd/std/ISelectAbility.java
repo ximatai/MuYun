@@ -297,25 +297,4 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         return new PageResult<>(list, total, size, page);
     }
 
-    default String getPath() {
-        Path annotation = this.getClass().getAnnotation(Path.class);
-        if (annotation != null) {
-            return annotation.value();
-        }
-        return null;
-    }
-
-    default boolean isModuleMatchingPath(String module) {
-        String alias = getPath();
-        if (alias == null) { // 说明本class不是HTTP Controller
-            return false;
-        }
-
-        if (alias.endsWith(module)) {
-            return true;
-        }
-
-        return false;
-    }
-
 }

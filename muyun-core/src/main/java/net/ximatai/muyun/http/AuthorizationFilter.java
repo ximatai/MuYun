@@ -47,7 +47,9 @@ public class AuthorizationFilter implements IRuntimeAbility {
             }
 
             IRuntimeUser runtimeUser = this.getUser();
-            if ("/".equals(restPath)) { // api 根路径不是 /api 而是 / ，会影响后续url拆分，所以要前面补充一个 /api
+            if ("/".equals(restPath)) {
+                // api 根路径不是 /api 而是 / ，会影响后续url拆分，所以要前面补充一个 /api
+                // 主要是为了应对单元测试的存量代码
                 path = "/api" + path;
             }
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
