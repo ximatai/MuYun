@@ -142,7 +142,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
         String root22 = this.createModule(root2, "权限管理", "void", null, null);
         this.createModule(root22, "角色管理", "role", "app_module", "platform/role/index");
-        this.createModule(root22, "权限管理", "void", null, "platform/auth/index");
+        this.createModule(root22, "权限管理", "authorization", null, "platform/auth/index");
 
         String root23 = this.createModule(root2, "基础数据", "void", null, null);
         this.createModule(root23, "字典管理", "dict", "app_dictcategory", "platform/dict/index");

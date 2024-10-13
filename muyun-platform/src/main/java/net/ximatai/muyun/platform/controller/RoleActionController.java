@@ -1,7 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
-
-@Path(BASE_PATH + "/roleAction")
+@ApplicationScoped
 public class RoleActionController extends ScaffoldForPlatform implements IChildAbility, IQueryAbility {
 
     @Inject

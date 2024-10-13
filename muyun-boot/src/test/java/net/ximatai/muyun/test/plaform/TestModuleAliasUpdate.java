@@ -3,6 +3,7 @@ package net.ximatai.muyun.test.plaform;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.platform.controller.AuthorizationController;
 import net.ximatai.muyun.platform.controller.ModuleActionController;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
@@ -15,7 +16,9 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,6 +38,9 @@ public class TestModuleAliasUpdate {
     @Inject
     RoleActionController roleActionController;
 
+    @Inject
+    AuthorizationController authorizationController;
+
     @Test
     void test() {
         String moduleID = moduleController.create(Map.of("v_name", "test", "v_alias", "test_alias"));
@@ -47,11 +53,7 @@ public class TestModuleAliasUpdate {
 
         String roleID = roleController.create(Map.of("v_name", "test"));
 
-        String roleActionID = roleActionController.create(Map.of(
-            "id_at_auth_role", roleID,
-            "id_at_app_module", moduleID,
-            "id_at_app_module_action", viewAction.get("id")
-        ));
+        String roleActionID = authorizationController.grant(roleID, viewAction.get("id").toString());
 
         Map<String, ?> roleAction = roleActionController.view(roleActionID);
 
