@@ -5,7 +5,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.authorization.AuthorizationService;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
-import net.ximatai.muyun.model.AuthorizedResource;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
@@ -21,7 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -142,14 +143,17 @@ public class TestAuth {
 
     @Test
     void testGetAuthorizedResources() {
-        Set<AuthorizedResource> resources = authService.getAuthorizedResources(userID);
-        assertEquals(4, resources.size());
+        Map<String, Set<String>> authorizedResources = authService.getAuthorizedResources(userID);
+        assertEquals(2, authorizedResources.size());
+        assertEquals(3, authorizedResources.get("module1").size());
+        assertEquals(1, authorizedResources.get("module2").size());
     }
 
     @Test
     void testGetAuthorizedResourcesForSuper() {
-        Set<AuthorizedResource> resources = authService.getAuthorizedResources("1");
-        assertTrue(resources.size() > 11);
+        Map<String, Set<String>> authorizedResources = authService.getAuthorizedResources("1");
+        assertEquals(ModuleController.ACTIONS.size(), authorizedResources.get("module1").size());
+        assertEquals(ModuleController.ACTIONS.size(), authorizedResources.get("module2").size());
     }
 
     @Test

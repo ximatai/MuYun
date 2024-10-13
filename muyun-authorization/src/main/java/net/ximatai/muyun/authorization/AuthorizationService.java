@@ -9,10 +9,10 @@ import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.ApiRequest;
-import net.ximatai.muyun.model.AuthorizedResource;
 import net.ximatai.muyun.service.IAuthorizationService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -383,7 +383,7 @@ public class AuthorizationService implements IAuthorizationService {
     }
 
     @Override
-    public Set<AuthorizedResource> getAuthorizedResources(String userID) {
+    public Map<String, Set<String>> getAuthorizedResources(String userID) {
         String query;
         Object[] params;
 
@@ -399,7 +399,7 @@ public class AuthorizationService implements IAuthorizationService {
             List<String> roles = getUserAvailableRoles(userID);
 
             if (roles.isEmpty()) {
-                return Set.of();
+                return Map.of();
             }
 
             query = """
@@ -412,9 +412,15 @@ public class AuthorizationService implements IAuthorizationService {
 
         List<Map<String, Object>> result = db.query(query, params);
 
-        return result.stream().map(it ->
-            new AuthorizedResource(it.get("v_alias_at_app_module").toString(), it.get("v_alias_at_app_module_action").toString())
-        ).collect(Collectors.toSet());
+        Map<String, List<Map<String, Object>>> moduleGroup = result.stream().collect(Collectors.groupingBy(it -> it.get("v_alias_at_app_module").toString()));
+
+        HashMap<String, Set<String>> moduleGroupMap = new HashMap<>();
+
+        moduleGroup.forEach((k, v) -> {
+            moduleGroupMap.put(k, new HashSet<>(v.stream().map(it -> it.get("v_alias_at_app_module_action").toString()).toList()));
+        });
+
+        return moduleGroupMap;
     }
 
     @Override

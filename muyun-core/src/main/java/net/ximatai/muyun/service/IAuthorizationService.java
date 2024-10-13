@@ -1,9 +1,9 @@
 package net.ximatai.muyun.service;
 
 import net.ximatai.muyun.model.ApiRequest;
-import net.ximatai.muyun.model.AuthorizedResource;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IAuthorizationService {
@@ -62,7 +62,7 @@ public interface IAuthorizationService {
      * @param userID
      * @return
      */
-    Set<AuthorizedResource> getAuthorizedResources(String userID);
+    Map<String, Set<String>> getAuthorizedResources(String userID);
 
     /**
      * 获取用户拥有的角色信息
