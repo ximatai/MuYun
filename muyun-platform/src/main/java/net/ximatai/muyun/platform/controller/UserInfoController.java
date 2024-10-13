@@ -15,7 +15,6 @@ import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -70,9 +69,8 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
         String superUserId = config.superUserId();
 
-        try {
-            this.view(superUserId);
-        } catch (MyDatabaseException e) {
+        Map<String, ?> superUser = this.view(superUserId);
+        if (superUser == null) {
             this.create(Map.of("id", superUserId, "v_name", "超级管理员"));
             this.setUser(superUserId, Map.of("v_username", "admin", "v_password", "admin@bsy", "v_password2", "admin@bsy"));
         }
@@ -141,7 +139,10 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Transactional
     public Integer delete(String id) {
         Integer deleted = super.delete(id);
-        userController.delete(id);
+        Map<String, ?> user = userController.view(id);
+        if (user != null) {
+            userController.delete(id);
+        }
         return deleted;
     }
 
