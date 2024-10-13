@@ -106,7 +106,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         Map<String, Object> row = getDB().row(getSelectOneRowSql(), Map.of("id", id));
 
         if (row == null) {
-            throw new MyDatabaseException(null, MyDatabaseException.Type.DATA_NOT_FOUND);
+            return null;
         }
 
         if (this instanceof ISecurityAbility securityAbility) {

@@ -79,7 +79,7 @@ class TestDataBroadcastAbility {
 
         given().get("%s/delete/%s".formatted(path, id)).then().statusCode(200);
 
-        given().get("/test/view/" + id).then().statusCode(404);
+        given().get("/test/view/" + id).then().statusCode(204);
 
     }
 

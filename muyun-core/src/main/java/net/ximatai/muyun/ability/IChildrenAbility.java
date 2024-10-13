@@ -39,7 +39,7 @@ public interface IChildrenAbility {
     default Map<String, ?> getChild(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @Parameter(description = "子表id") @PathParam("childId") String childId) {
         ChildTableInfo ct = getChildTable(childAlias);
         Map<String, ?> child = ct.getCtrl().view(childId);
-        if (!child.get(ct.getForeignKey()).equals(id)) {
+        if (child != null && !child.get(ct.getForeignKey()).equals(id)) {
             throw new RuntimeException("子表数据匹配不到当前主表");
         }
         return child;

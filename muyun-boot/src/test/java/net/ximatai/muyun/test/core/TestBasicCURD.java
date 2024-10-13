@@ -198,7 +198,7 @@ class TestBasicCURD {
         given()
             .get("/test/view/" + id)
             .then()
-            .statusCode(404);
+            .statusCode(204);
     }
 
     @Test

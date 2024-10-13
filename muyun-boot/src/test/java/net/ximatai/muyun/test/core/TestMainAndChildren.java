@@ -188,7 +188,7 @@ class TestMainAndChildren {
         given()
             .get("%s/view/%s/child/%s/view/%s".formatted(mainPath, idMain, childAlias, child2))
             .then()
-            .statusCode(404);
+            .statusCode(204);
 
     }
 

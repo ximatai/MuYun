@@ -365,7 +365,7 @@ public class TestDictController {
             .header("userID", config.superUserId())
             .get("%s/dict/view/%s".formatted(base, id))
             .then()
-            .statusCode(404);
+            .statusCode(204);
 
         given()
             .header("userID", config.superUserId())
