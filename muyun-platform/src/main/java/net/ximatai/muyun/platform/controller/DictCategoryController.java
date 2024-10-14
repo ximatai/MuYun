@@ -18,6 +18,7 @@ import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.DictCategory;
+import net.ximatai.muyun.platform.model.DictTreeNode;
 
 import java.util.List;
 import java.util.Map;
@@ -55,20 +56,16 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
 
     @GET
     @Path("/tree/{id}")
-    public List<Map> tree(@PathParam("id") String id) {
+    public List<DictTreeNode> tree(@PathParam("id") String id) {
         List<TreeNode> list = dictController.tree(id, false, null, null);
-        return list.stream().map(it -> {
-            Map map = it.toMap();
-            map.put("value", it.getData().get("v_value"));
-            return map;
-        }).toList();
+        return list.stream().map(it -> DictTreeNode.from(it)
+            .setValue(it.getData().get("v_value").toString())).toList();
     }
 
     @GET
     @Path("/translate/{category}")
     public String translate(@PathParam("category") String category, @QueryParam("source") String source) {
-        List<TreeNode> list = dictController.tree(category, false, null, null);
-        TreeNode node = list.stream().filter(treeNode -> treeNode.getData().get("v_value").equals(source)).findFirst().orElse(null);
+        TreeNode node = tree(category).stream().filter(treeNode -> treeNode.getData().get("v_value").equals(source)).findFirst().orElse(null);
         if (node == null) {
             throw new MyException("字典值 %s 在 %s 类型中不存在".formatted(source, category));
         }

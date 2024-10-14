@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.model.DictTreeNode;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +54,7 @@ public class TestOrgAndDept {
 
         assertEquals("集团公司", orgRow.get("v_name_at_dict_org_type"));
 
-        List<TreeNode> dictTree = given()
+        List<DictTreeNode> dictTree = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "org_type"))
             .then()

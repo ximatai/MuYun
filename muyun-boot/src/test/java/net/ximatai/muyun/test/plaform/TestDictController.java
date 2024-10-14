@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.model.DictTreeNode;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +45,7 @@ public class TestDictController {
 
     @Test
     void testVoidDictCategory() {
-        List<Map> response = given()
+        List<DictTreeNode> response = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, UUID.randomUUID().toString()))
             .then()
@@ -153,7 +154,7 @@ public class TestDictController {
             .then()
             .statusCode(200);
 
-        List<Map> response = given()
+        List<DictTreeNode> response = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root1"))
             .then()
@@ -164,7 +165,7 @@ public class TestDictController {
 
         assertEquals(response.size(), 3);
 
-        List<Map> response2 = given()
+        List<DictTreeNode> response2 = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root2"))
             .then()
