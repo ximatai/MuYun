@@ -109,7 +109,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         if (row != null) {
             return row.get("id").toString();
         } else {
-            throw new MyException("未找到与用户[%s]匹配的菜单方案");
+            throw new MyException("未找到该用户匹配的菜单方案");
         }
     }
 }
