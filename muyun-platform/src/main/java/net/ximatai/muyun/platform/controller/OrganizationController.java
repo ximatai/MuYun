@@ -37,6 +37,9 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Inject
     DepartmentController departmentController;
 
+    @Inject
+    SupervisionRegionController supervisionRegionController;
+
     @Override
     protected void afterInit() {
         dictCategoryController.putDictCategory(
@@ -78,7 +81,10 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
 
     @Override
     public List<ChildTableInfo> getChildren() {
-        return List.of(departmentController.toChildTable("id_at_org_organization"));
+        return List.of(
+            departmentController.toChildTable("id_at_org_organization"),
+            supervisionRegionController.toChildTable("id_at_org_organization").setAutoDelete()
+        );
     }
 
     @Override
