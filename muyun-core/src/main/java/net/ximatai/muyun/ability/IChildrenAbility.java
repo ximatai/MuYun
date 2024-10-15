@@ -107,6 +107,21 @@ public interface IChildrenAbility {
     }
 
     @POST
+    @Path("/update/{id}/child/{childAlias}/batchCreate")
+    @Operation(summary = "新增多条对应子表的数据")
+    default List<String> batchCreate(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, List<Map> list) {
+        ChildTableInfo ct = getChildTable(childAlias);
+        String foreignKey = ct.getForeignKey();
+        List<Map> newList = list.stream().map(it -> {
+            Map map = new HashMap(it);
+            map.put(foreignKey, id);
+            return map;
+        }).toList();
+
+        return ct.getCtrl().batchCreate(newList);
+    }
+
+    @POST
     @Path("/update/{id}/child/{childAlias}/update/{childId}")
     @Operation(summary = "修改一条对应子表的数据")
     default Integer updateChild(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @Parameter(description = "子表id") @PathParam("childId") String childId, Map body) {
