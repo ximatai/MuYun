@@ -16,6 +16,7 @@ import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Tag(name = "部门管理")
 @Path(BASE_PATH + "/department")
 public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility, IQueryAbility {
 

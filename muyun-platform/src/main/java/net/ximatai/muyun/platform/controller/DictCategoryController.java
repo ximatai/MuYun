@@ -19,6 +19,7 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.DictCategory;
 import net.ximatai.muyun.platform.model.DictTreeNode;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import java.util.Objects;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
+@Tag(name = "数据字典管理")
 @Path(BASE_PATH + "/dict")
 public class DictCategoryController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IDataCheckAbility, IQueryAbility {
 

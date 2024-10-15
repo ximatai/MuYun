@@ -16,6 +16,7 @@ import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
+@Tag(name = "角色管理")
 @Path(BASE_PATH + "/role")
 public class RoleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IModuleRegisterAbility {
 

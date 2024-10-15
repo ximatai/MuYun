@@ -20,6 +20,8 @@ import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Path("/sso")
+@Tag(name = "登录相关")
 public class SsoController implements IRuntimeAbility {
 
     private final Logger logger = LoggerFactory.getLogger(SsoController.class);
@@ -54,6 +57,7 @@ public class SsoController implements IRuntimeAbility {
 
     @GET
     @Path("/login")
+    @Operation(summary = "登录")
     public IRuntimeUser login(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("code") String code) {
         if (StringUtil.isBlank(username)) {
             throw new MyException("请输入用户名");
@@ -120,6 +124,7 @@ public class SsoController implements IRuntimeAbility {
 
     @POST
     @Path("/login")
+    @Operation(summary = "登录")
     public IRuntimeUser login(Map body) {
         String username = (String) body.get("username");
         String password = (String) body.get("password");
@@ -130,13 +135,15 @@ public class SsoController implements IRuntimeAbility {
 
     @GET
     @Path("/logout")
+    @Operation(summary = "退出")
     public boolean logout() {
         this.destroy();
         return true;
     }
 
     @GET
-    @Path("/show")
+    @Path("/kaptcha")
+    @Operation(summary = "获取验证码")
     public Response kaptcha() {
         var response = routingContext.response();  // 这里改用 Inject 的 routingContext
 

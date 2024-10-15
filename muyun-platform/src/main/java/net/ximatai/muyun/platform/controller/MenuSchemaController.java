@@ -18,6 +18,7 @@ import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
 import net.ximatai.muyun.service.IAuthorizationService;
 import net.ximatai.muyun.util.TreeBuilder;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Tag(name = "菜单方案管理")
 @Path(BASE_PATH + "/menuSchema")
 public class MenuSchemaController extends ScaffoldForPlatform implements IChildrenAbility, ISortAbility {
 

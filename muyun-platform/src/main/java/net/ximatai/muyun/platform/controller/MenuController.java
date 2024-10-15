@@ -12,11 +12,13 @@ import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Tag(name = "菜单管理")
 @Path(BASE_PATH + "/menu")
 public class MenuController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferenceAbility {
 

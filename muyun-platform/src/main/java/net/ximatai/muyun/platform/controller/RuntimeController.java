@@ -14,6 +14,8 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.service.IAuthorizationService;
 import net.ximatai.muyun.util.StringUtil;
 import net.ximatai.muyun.util.TreeBuilder;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
+@Tag(name = "运行时查询")
 @Path(BASE_PATH + "/runtime")
 public class RuntimeController implements IRuntimeAbility {
 
@@ -42,6 +45,7 @@ public class RuntimeController implements IRuntimeAbility {
 
     @GET
     @Path("/whoami")
+    @Operation(summary = "查询当前登录用户信息")
     public IRuntimeUser whoami() {
         IRuntimeUser user = getUser();
         if (IRuntimeUser.WHITE.getId().equals(user.getId())) {
@@ -52,6 +56,7 @@ public class RuntimeController implements IRuntimeAbility {
 
     @GET
     @Path("/menu")
+    @Operation(summary = "查询当前用户菜单信息")
     public List<TreeNode> menu(@QueryParam("terminalType") String terminalType) {
         String userID = getUser().getId();
 

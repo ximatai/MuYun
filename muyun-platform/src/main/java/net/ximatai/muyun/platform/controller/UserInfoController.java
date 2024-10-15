@@ -26,6 +26,7 @@ import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.service.IAuthorizationService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_ALIAS;
 
 @Startup
+@Tag(name = "用户管理")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility, IModuleRegisterAbility {
 

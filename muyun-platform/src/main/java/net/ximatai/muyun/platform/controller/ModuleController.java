@@ -21,6 +21,7 @@ import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.util.StringUtil;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
+@Tag(name = "模块管理")
 @Path(BASE_PATH + "/module")
 public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IDataCheckAbility, IQueryAbility, IDataBroadcastAbility {
 

@@ -13,6 +13,7 @@ import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
+@Tag(name = "权限管理")
 @Path(BASE_PATH + "/authorization")
 public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility {
 
