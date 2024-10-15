@@ -136,6 +136,23 @@ public class TestUserAndMenu {
     }
 
     @Test
+    void testWhiteUserAccess() {
+        given()
+            .get("%s/runtime/menu".formatted(base))
+            .then()
+            .statusCode(401)
+            .extract()
+            .asString();
+
+        given()
+            .get("%s/runtime/whoami".formatted(base))
+            .then()
+            .statusCode(401)
+            .extract()
+            .asString();
+    }
+
+    @Test
     void testSchemaForUser() {
         String hitSchema = menuSchemaController.schemaForUser(userID, null);
         assertEquals(schemaID, hitSchema);

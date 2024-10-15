@@ -7,6 +7,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.exception.PermsException;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.TreeNode;
@@ -42,15 +43,21 @@ public class RuntimeController implements IRuntimeAbility {
     @GET
     @Path("/whoami")
     public IRuntimeUser whoami() {
-        return getUser();
+        IRuntimeUser user = getUser();
+        if (IRuntimeUser.WHITE.getId().equals(user.getId())) {
+            throw new PermsException("未登录用户没有查询 whomai 菜单的权限");
+        }
+        return user;
     }
 
     @GET
     @Path("/menu")
     public List<TreeNode> menu(@QueryParam("terminalType") String terminalType) {
-        String userID = whoami().getId();
+        String userID = getUser().getId();
 
-        if (config.isSuperUser(userID)) {
+        if (IRuntimeUser.WHITE.getId().equals(userID)) {
+            throw new PermsException("未登录用户没有查询菜单的权限");
+        } else if (config.isSuperUser(userID)) {
             List<Map<String, Object>> list = db.query("""
                 select id,pid,id as id_at_app_module,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
                 where b_system = true;
@@ -84,7 +91,7 @@ public class RuntimeController implements IRuntimeAbility {
     }
 
     private List<TreeNode> filterMenuByAuth(List<TreeNode> list) {
-        String userID = whoami().getId();
+        String userID = getUser().getId();
         Map<String, Set<String>> authorizedResources = authorizationService.getAuthorizedResources(userID);
 
         return filterMenuByAuth(list, authorizedResources);
