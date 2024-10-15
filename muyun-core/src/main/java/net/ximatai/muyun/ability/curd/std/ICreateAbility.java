@@ -9,11 +9,13 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.model.IRuntimeUser;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,61 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         afterCreate(main);
         return main;
+    }
+
+    @POST
+    @Path("/batchCreate")
+    @Transactional
+    @Operation(summary = "批量新增数据", description = "返回新增数据ID数组")
+    default List<String> batchCreate(List<Map> list) {
+
+        List<Map<String, ?>> dataList = new ArrayList<>();
+
+        list.forEach(body -> {
+                HashMap<String, ?> map = new HashMap<>(body);
+                fitOutDefaultValue(map);
+
+                if (this instanceof IDataCheckAbility dataCheckAbility) {
+                    dataCheckAbility.check(body, false);
+                }
+
+                if (this instanceof ISecurityAbility securityAbility) {
+                    securityAbility.signAndEncrypt(map);
+                }
+
+                dataList.add(map);
+            }
+        );
+
+        List<String> idList = getDB().insertList(getSchemaName(), getMainTable(), dataList);
+
+        if (idList.size() != list.size()) {
+            throw new MyException("数据插入不成功");
+        }
+
+        idList.forEach(id -> {
+            if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
+                dataBroadcastAbility.broadcast(DataChangeChannel.Type.CREATE, id);
+            }
+
+            afterCreate(id);
+        });
+
+        if (this instanceof IChildrenAbility childrenAbility) {
+            int i = 0;
+            for (Map body : list) {
+                int finalI = i;
+                childrenAbility.getChildren().forEach(childTableInfo -> {
+                    String childAlias = childTableInfo.getChildAlias();
+                    if (body.containsKey(childAlias) && body.get(childAlias) instanceof List<?> childrenList) {
+                        childrenAbility.putChildTableList(idList.get(finalI), childAlias, childrenList);
+                    }
+                });
+                i++;
+            }
+        }
+
+        return idList;
     }
 
     default void fitOutDefaultValue(Map body) {

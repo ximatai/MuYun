@@ -55,6 +55,18 @@ public interface IDatabaseOperations extends IDBInfoProvider {
         return this.insert(buildInsertSql(schema, tableName, transformed), transformed, "id", String.class);
     }
 
+    default Object insertList(String schema, String tableName, List<? extends Map<String, ?>> list) {
+        Objects.requireNonNull(list, "The list must not be null");
+        if (list.isEmpty()) {
+            throw new IllegalArgumentException("The list must not be empty");
+        }
+
+        DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
+        List<? extends Map<String, ?>> transformedList = list.stream().map(it -> transformDataForDB(table, it)).toList();
+
+        return this.batchInsert(buildInsertSql(schema, tableName, transformedList.getFirst()), transformedList, "id", String.class);
+    }
+
     default Object updateItem(String schema, String tableName, Map<String, ?> params) {
         DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
         Map<String, ?> transformed = transformDataForDB(table, params);
@@ -69,6 +81,8 @@ public interface IDatabaseOperations extends IDBInfoProvider {
     }
 
     <T> Object insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
+
+    <T> Object batchInsert(String sql, List<? extends Map<String, ?>> paramsList, String pk, Class<T> idType);
 
     Object row(String sql, Object... params);
 

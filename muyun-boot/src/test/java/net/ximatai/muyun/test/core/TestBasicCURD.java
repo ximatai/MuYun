@@ -130,6 +130,38 @@ class TestBasicCURD {
     }
 
     @Test
+    void testBatchCreate() {
+        List<String> ids = given()
+            .contentType("application/json")
+            .body(List.of(
+                Map.of("name", "test", "name2", "test2"),
+                Map.of("name", "test", "name2", "test2"),
+                Map.of("name", "test", "name2", "test2")
+            ))
+            .when()
+            .post("/test/batchCreate")
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(ids.size(), 3);
+
+        Map row1 = (Map) databaseOperations.row("select * from %s where id = ? ".formatted(tableName), ids.get(0));
+        Map row2 = (Map) databaseOperations.row("select * from %s where id = ? ".formatted(tableName), ids.get(1));
+        Map row3 = (Map) databaseOperations.row("select * from %s where id = ? ".formatted(tableName), ids.get(2));
+
+        assertNotNull(row1);
+        assertNotNull(row2);
+        assertNotNull(row3);
+
+        assertEquals("test", row1.get("name"));
+        assertEquals("test", row2.get("name"));
+        assertEquals("test", row3.get("name"));
+    }
+
+    @Test
     void testUpdate() {
         String id = ids.getFirst();
         Map<String, String> request = Map.of("name", "test");

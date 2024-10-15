@@ -10,6 +10,7 @@ import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.database.std.mapper.MyPgMapMapper;
 import net.ximatai.muyun.database.tool.DateTool;
+import org.jdbi.v3.core.statement.PreparedBatch;
 import org.postgresql.util.PGobject;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.math.BigInteger;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,6 +105,24 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
         return getJdbi().withHandle(handle -> handle.createUpdate(sql)
             .bindMap(params)
             .executeAndReturnGeneratedKeys(pk).mapTo(idType).one());
+    }
+
+    @Override
+    public <T> List<T> batchInsert(String sql, List<? extends Map<String, ?>> paramsList, String pk, Class<T> idType) {
+        return getJdbi().withHandle(handle -> {
+            List<T> generatedKeys = new ArrayList<>();
+            PreparedBatch batch = handle.prepareBatch(sql);
+
+            for (Map<String, ?> params : paramsList) {
+                batch.bindMap(params).add();
+            }
+
+            batch.executePreparedBatch(pk)
+                .mapTo(idType)
+                .forEach(generatedKeys::add);
+
+            return generatedKeys;
+        });
     }
 
     @Override
