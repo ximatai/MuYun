@@ -82,7 +82,7 @@ public class AuthorizationService implements IAuthorizationService {
         return db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleID, action);
     }
 
-    public Set<String> loadRoles(String userID) {
+    private Set<String> loadRoles(String userID) {
         List<Map<String, Object>> rows = db.query("""
             select id_at_auth_role
             from platform.auth_user_role
@@ -92,7 +92,7 @@ public class AuthorizationService implements IAuthorizationService {
         return rows.stream().map(it -> it.get("id_at_auth_role").toString()).collect(Collectors.toSet());
     }
 
-    public List<Map<String, Object>> loadOrgAndDept(String type) {
+    private List<Map<String, Object>> loadOrgAndDept(String type) {
         return switch (type) {
             case "org" -> db.query("select id,pid from platform.org_organization");
             case "dept" -> db.query("select id,pid from platform.org_department");

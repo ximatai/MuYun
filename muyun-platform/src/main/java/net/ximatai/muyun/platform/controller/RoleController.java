@@ -13,6 +13,9 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
+import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -21,13 +24,16 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
 @Path(BASE_PATH + "/role")
-public class RoleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility {
+public class RoleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IModuleRegisterAbility {
 
     @Inject
     UserRoleController userRoleController;
 
     @Inject
     RoleActionController roleActionController;
+
+    @Inject
+    ModuleController moduleController;
 
     private ChildTableInfo userRoleChild;
 
@@ -52,6 +58,12 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     @Override
     public String getMainTable() {
         return "auth_role";
+    }
+
+    @Override
+    protected void afterInit() {
+        super.afterInit();
+        this.registerModule();
     }
 
     @Override
@@ -98,5 +110,20 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
         }
 
         return 1;
+    }
+
+    @Override
+    public ModuleController getModuleController() {
+        return moduleController;
+    }
+
+    @Override
+    public ModuleConfig getModuleConfig() {
+        return ModuleConfig.ofName("角色管理")
+            .setTable("auth_role")
+            .setUrl("platform/role/index")
+            .setAlias("role")
+            .addAction(new ModuleAction("assign", "分配", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("revoke", "撤回", ModuleAction.TypeLike.UPDATE));
     }
 }

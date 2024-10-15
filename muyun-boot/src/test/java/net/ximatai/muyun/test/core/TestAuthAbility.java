@@ -10,6 +10,8 @@ import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.controller.ModuleController;
+import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,7 +36,12 @@ public class TestAuthAbility {
 
     @BeforeAll
     void setUp() {
-        moduleController.createModule(null, "test", "test", "test", null);
+        moduleController.register(
+            ModuleConfig.ofName("test")
+                .setAlias("test")
+                .setTable("test")
+                .addAction(ModuleAction.VIEW)
+        );
     }
 
     @Test

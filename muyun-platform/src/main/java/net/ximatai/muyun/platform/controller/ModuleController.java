@@ -18,11 +18,15 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -38,20 +42,6 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     @Inject
     MuYunConfig muYunConfig;
-
-    public static final List ACTIONS = List.of(
-        Map.of("v_alias", "menu", "v_name", "菜单", "i_order", 0),
-
-        Map.of("v_alias", "view", "v_name", "浏览", "i_order", 10),
-        Map.of("v_alias", "export", "v_name", "导出", "i_order", 15),
-
-        Map.of("v_alias", "create", "v_name", "新增", "i_order", 20),
-        Map.of("v_alias", "import", "v_name", "导入", "i_order", 25),
-
-        Map.of("v_alias", "sort", "v_name", "排序", "i_order", 29),
-        Map.of("v_alias", "update", "v_name", "修改", "i_order", 30),
-        Map.of("v_alias", "delete", "v_name", "删除", "i_order", 40)
-    );
 
     @Override
     public String getMainTable() {
@@ -84,9 +74,9 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Transactional
     public String create(Map body) {
         String id = super.create(body);
-
-        this.putChildTableList(id, "app_module_action", ACTIONS);
-
+        if (body.get("app_module_action") == null) { //未提供功能信息，就自动创建默认信息
+            this.putChildTableList(id, "app_module_action", ModuleAction.DEFAULT_ACTIONS.stream().map(ModuleAction::toMap).toList());
+        }
         return id;
     }
 
@@ -127,27 +117,37 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     }
 
     private void initData() {
-        String root1 = this.createModule(null, "机构用户", "void", null, null);
-        this.createModule(root1, "机构管理", "organization", "org_organization", "platform/organization/index");
-        this.createModule(root1, "部门管理", "department", "org_department", "platform/department/index");
-        this.createModule(root1, "用户管理", "userinfo", "auth_userinfo", "platform/userinfo/index");
+        String root1 = this.lockModule(null, "机构用户", "void", null, null, null);
+        this.lockModule(root1, "机构管理", "organization", "org_organization", "platform/organization/index", null);
+        this.lockModule(root1, "部门管理", "department", "org_department", "platform/department/index", null);
+        this.lockModule(root1, "用户管理", "userinfo", "auth_userinfo", "platform/userinfo/index", null);
 
-        String root2 = this.createModule(null, "平台管理", "void", null, null);
+        String root2 = this.lockModule(null, "平台管理", "void", null, null, null);
 
-        String root21 = this.createModule(root2, "模块菜单", "void", null, null);
-        this.createModule(root21, "模块管理", "module", "app_module", "platform/module/index");
-        this.createModule(root21, "菜单方案", "menuSchema", "app_menu_schema", "platform/menuSchema/index");
-        this.createModule(root21, "菜单管理", "menu", "app_menu", "platform/menu/index");
+        String root21 = this.lockModule(root2, "模块菜单", "void", null, null, null);
+        this.lockModule(root21, "模块管理", "module", "app_module", "platform/module/index", null);
+        this.lockModule(root21, "菜单方案", "menuSchema", "app_menu_schema", "platform/menuSchema/index", null);
+        this.lockModule(root21, "菜单管理", "menu", "app_menu", "platform/menu/index", null);
 
-        String root22 = this.createModule(root2, "权限管理", "void", null, null);
-        this.createModule(root22, "角色管理", "role", "app_module", "platform/role/index");
-        this.createModule(root22, "权限管理", "authorization", null, "platform/auth/index");
+        String root22 = this.lockModule(root2, "权限管理", "void", null, null, null);
+        this.lockModule(root22, "角色管理", "role", "app_module", "platform/role/index", null);
+        this.lockModule(root22, "权限管理", "authorization", null, "platform/auth/index", null);
 
-        String root23 = this.createModule(root2, "基础数据", "void", null, null);
-        this.createModule(root23, "字典管理", "dict", "app_dictcategory", "platform/dict/index");
+        String root23 = this.lockModule(root2, "基础数据", "void", null, null, null);
+        this.lockModule(root23, "字典管理", "dict", "app_dictcategory", "platform/dict/index", null);
     }
 
-    public String createModule(String pid, String name, String alias, String table, String url) {
+    /**
+     * 检查模块是否存在，不存在则创建
+     *
+     * @param pid
+     * @param name
+     * @param alias
+     * @param table
+     * @param url
+     * @return
+     */
+    private String lockModule(String pid, String name, String alias, String table, String url, List<ModuleAction> moduleActions) {
         List<Map<String, Object>> list;
 
         if ("void".equals(alias)) { // 说明不是叶子节点
@@ -156,7 +156,14 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             list = getDB().query("select id from platform.app_module where b_system = true and v_alias = ?", alias);
         }
 
-        if (list.isEmpty()) {
+        String moduleID;
+        List<Map> actions = null;
+
+        if (moduleActions != null) {
+            actions = moduleActions.stream().map(ModuleAction::toMap).toList();
+        }
+
+        if (list.isEmpty()) { // 新增模块
             HashMap map = new HashMap();
             if (pid != null) {
                 map.put("pid", pid);
@@ -166,11 +173,24 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             map.put("v_alias", alias);
             map.put("v_table", table);
             map.put("v_url", url);
+            map.put("app_module_action", actions);
             map.put("b_system", true);
-            return this.create(map);
+            moduleID = this.create(map);
         } else {
-            return list.getFirst().get("id").toString();
+            moduleID = list.getFirst().get("id").toString();
+
+            if (moduleActions != null) { // 修改时可以根据 moduleActions 进行增量补充
+                List<Map> actionList = this.getChildTableList(moduleID, "app_module_action", null);
+                Set<String> actionsInDB = actionList.stream().map(it -> it.get("v_alias").toString()).collect(Collectors.toSet());
+                moduleActions.forEach(action -> {
+                    if (!actionsInDB.contains(action.getAlias())) { // 说明对应功能并没有入库
+                        this.createChild(moduleID, "app_module_action", action.toMap());
+                    }
+                });
+            }
         }
+
+        return moduleID;
     }
 
     @Override
@@ -178,5 +198,9 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         return List.of(
             QueryItem.of("v_alias")
         );
+    }
+
+    public void register(ModuleConfig config) {
+        this.lockModule(null, config.getName(), config.getAlias(), config.getTable(), config.getUrl(), config.getActions());
     }
 }

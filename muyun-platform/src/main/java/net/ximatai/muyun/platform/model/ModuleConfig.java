@@ -3,7 +3,7 @@ package net.ximatai.muyun.platform.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Module {
+public class ModuleConfig {
     private String name;
     private String alias = "void";
     private String url;
@@ -12,18 +12,18 @@ public class Module {
     private boolean bSystem;
     private List<ModuleAction> actions = new ArrayList<>();
 
-    private Module() {
+    private ModuleConfig() {
     }
 
-    public static Module ofName(String name) {
-        return new Module().setName(name);
+    public static ModuleConfig ofName(String name) {
+        return new ModuleConfig().setName(name);
     }
 
     public String getName() {
         return name;
     }
 
-    public Module setName(String name) {
+    public ModuleConfig setName(String name) {
         this.name = name;
         return this;
     }
@@ -32,7 +32,7 @@ public class Module {
         return alias;
     }
 
-    public Module setAlias(String alias) {
+    public ModuleConfig setAlias(String alias) {
         this.alias = alias;
         return this;
     }
@@ -41,7 +41,7 @@ public class Module {
         return url;
     }
 
-    public Module setUrl(String url) {
+    public ModuleConfig setUrl(String url) {
         this.url = url;
         return this;
     }
@@ -50,7 +50,7 @@ public class Module {
         return table;
     }
 
-    public Module setTable(String table) {
+    public ModuleConfig setTable(String table) {
         this.table = table;
         return this;
     }
@@ -59,7 +59,7 @@ public class Module {
         return remark;
     }
 
-    public Module setRemark(String remark) {
+    public ModuleConfig setRemark(String remark) {
         this.remark = remark;
         return this;
     }
@@ -68,7 +68,7 @@ public class Module {
         return bSystem;
     }
 
-    public Module setbSystem(boolean bSystem) {
+    public ModuleConfig setbSystem(boolean bSystem) {
         this.bSystem = bSystem;
         return this;
     }
@@ -77,8 +77,13 @@ public class Module {
         return actions;
     }
 
-    public Module addAction(ModuleAction action) {
+    public ModuleConfig addAction(ModuleAction action) {
         this.actions.add(action);
+        return this;
+    }
+
+    public ModuleConfig addActions(List<ModuleAction> action) {
+        this.actions.addAll(action);
         return this;
     }
 }

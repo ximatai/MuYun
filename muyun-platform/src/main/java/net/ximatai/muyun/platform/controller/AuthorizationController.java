@@ -9,6 +9,9 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.core.Scaffold;
+import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
+import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.util.HashMap;
@@ -20,10 +23,19 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
 @Path(BASE_PATH + "/authorization")
-public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd {
+public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility {
 
     @Inject
     RoleActionController roleActionController;
+
+    @Inject
+    ModuleController moduleController;
+
+    @Override
+    protected void afterInit() {
+        super.afterInit();
+        this.registerModule();
+    }
 
     @GET
     @Path("/view")
@@ -83,4 +95,19 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
         return roleActionController.update(id, map);
     }
 
+    @Override
+    public ModuleController getModuleController() {
+        return moduleController;
+    }
+
+    @Override
+    public ModuleConfig getModuleConfig() {
+        return ModuleConfig.ofName("权限管理")
+            .setAlias("authorization")
+            .setUrl("platform/authorization/index")
+            .addAction(new ModuleAction("view", "浏览", ModuleAction.TypeLike.VIEW))
+            .addAction(new ModuleAction("grant", "授权", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("revoke", "撤回权限", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("setDataAuth", "设置数据范围", ModuleAction.TypeLike.UPDATE));
+    }
 }

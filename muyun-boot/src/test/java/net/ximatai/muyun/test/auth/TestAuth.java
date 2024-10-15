@@ -10,6 +10,7 @@ import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
 import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
+import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,9 @@ public class TestAuth {
 
     @Inject
     RoleController roleController;
+
+    @Inject
+    AuthorizationService authorizationService;
 
     String userID;
     String role1, role2;
@@ -135,10 +139,10 @@ public class TestAuth {
     @Test
     void testGetAllowedActionsForSuper() {
         List<String> actions = authService.getAllowedActions("1", "module1");
-        assertEquals(ModuleController.ACTIONS.size(), actions.size());
+        assertEquals(ModuleAction.DEFAULT_ACTIONS.size(), actions.size());
 
         List<String> actions2 = authService.getAllowedActions("1", "module2");
-        assertEquals(ModuleController.ACTIONS.size(), actions2.size());
+        assertEquals(ModuleAction.DEFAULT_ACTIONS.size(), actions2.size());
     }
 
     @Test
@@ -152,15 +156,14 @@ public class TestAuth {
     @Test
     void testGetAuthorizedResourcesForSuper() {
         Map<String, Set<String>> authorizedResources = authService.getAuthorizedResources("1");
-        assertEquals(ModuleController.ACTIONS.size(), authorizedResources.get("module1").size());
-        assertEquals(ModuleController.ACTIONS.size(), authorizedResources.get("module2").size());
+        assertEquals(ModuleAction.DEFAULT_ACTIONS.size(), authorizedResources.get("module1").size());
+        assertEquals(ModuleAction.DEFAULT_ACTIONS.size(), authorizedResources.get("module2").size());
     }
 
     @Test
     void testIsAuthorized() {
         assertTrue(authService.isAuthorized(userID, "module1", "view"));
         assertTrue(authService.isAuthorized(userID, "module1", "menu"));
-        assertTrue(authService.isAuthorized(userID, "module1", "export"));
         assertTrue(authService.isAuthorized(userID, "module2", "menu"));
         assertFalse(authService.isAuthorized(userID, "module2", "view"));
     }
@@ -169,7 +172,6 @@ public class TestAuth {
     void testIsAuthorizedForSuper() {
         assertTrue(authService.isAuthorized("1", "module1", "view"));
         assertTrue(authService.isAuthorized("1", "module1", "menu"));
-        assertTrue(authService.isAuthorized("1", "module1", "export"));
         assertTrue(authService.isAuthorized("1", "module2", "menu"));
         assertTrue(authService.isAuthorized("1", "module2", "view"));
     }

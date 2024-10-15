@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
@@ -21,8 +22,8 @@ import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
-import net.ximatai.muyun.platform.model.Module;
 import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.service.IAuthorizationService;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -34,6 +35,7 @@ import java.util.Set;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_ALIAS;
 
+@Startup
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility, IModuleRegisterAbility {
 
@@ -58,6 +60,9 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     IAuthorizationService authorizationService;
 
     @Inject
+    ModuleController moduleController;
+
+    @Inject
     MuYunConfig config;
 
     @Override
@@ -72,6 +77,8 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @Override
     protected void afterInit() {
+        super.afterInit();
+        this.registerModule();
         dictCategoryController.putDictCategory(new DictCategory("user_gender", "platform_dir", "人员性别", 1).setDictList(new Dict("0", "未知"), new Dict("1", "男"), new Dict("2", "女")), false);
 
         String superUserId = config.superUserId();
@@ -190,16 +197,21 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     @Override
-    public Module getModuleConfig() {
-        return Module.ofName("用户管理")
+    public ModuleController getModuleController() {
+        return moduleController;
+    }
+
+    @Override
+    public ModuleConfig getModuleConfig() {
+        return ModuleConfig.ofName("用户管理")
             .setAlias(MODULE_ALIAS)
             .setTable(getMainTable())
             .setUrl("platform/userinfo/index")
-            .addAction(new ModuleAction("setUser", "设置账户"))
-            .addAction(new ModuleAction("setPassword", "设置密码"))
-            .addAction(new ModuleAction("disableUser", "禁用账户"))
-            .addAction(new ModuleAction("enableUser", "启用账户"))
-            .addAction(new ModuleAction("roles", "获取角色"))
-            .addAction(new ModuleAction("setRoles", "设置角色"));
+            .addAction(new ModuleAction("setUser", "设置账户", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("setPassword", "设置密码", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("disableUser", "禁用账户", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("enableUser", "启用账户", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("roles", "获取角色", ModuleAction.TypeLike.VIEW))
+            .addAction(new ModuleAction("setRoles", "设置角色", ModuleAction.TypeLike.UPDATE));
     }
 }
