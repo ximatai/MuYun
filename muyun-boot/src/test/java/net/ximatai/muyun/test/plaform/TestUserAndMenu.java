@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -84,6 +85,54 @@ public class TestUserAndMenu {
             });
 
         assertEquals(1, menus.size());
+    }
+
+    @Test
+    void testMenuEmpty() {
+        String userID = userInfoController.create(Map.of(
+            "v_name", "test"
+        ));
+
+        userInfoController.setUser(userID, Map.of(
+            "v_username", "test",
+            "v_password", "test",
+            "v_password2", "test"
+        ));
+
+        String roleID = roleController.create(Map.of("v_name", "role1"));
+
+        roleController.putChildTableList(roleID, "auth_user_role", List.of(Map.of(
+            "id_at_auth_user", userID
+        )));
+
+        String schemaID = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "默认方案",
+                "dicts_terminal_type", List.of("web", "app"),
+                "ids_at_auth_role", List.of(roleID)
+            ))
+            .when()
+            .post("%s/menuSchema/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        assertNotNull(schemaID);
+
+        List<TreeNode> menus = given()
+            .header("userID", userID)
+            .get("%s/runtime/menu".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertEquals(0, menus.size());
     }
 
     @Test

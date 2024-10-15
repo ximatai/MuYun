@@ -19,6 +19,10 @@ public class TreeBuilder {
             maxLevel = Integer.MAX_VALUE;
         }
 
+        if (list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         list.forEach(item -> {
             item.putIfAbsent(parentKeyColumn, ROOT_PID);
         });
