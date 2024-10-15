@@ -75,6 +75,25 @@ class TestQuery {
     }
 
     @Test
+    void testEqualWithBlankString() {
+        Map<String, String> request = Map.of("id", "");
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(8, response.getTotal());
+    }
+
+    @Test
     void testNotEqual() {
         Map<String, String> request = Map.of("no_id", "1");
 
