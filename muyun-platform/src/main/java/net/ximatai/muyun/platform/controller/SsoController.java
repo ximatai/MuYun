@@ -142,7 +142,7 @@ public class SsoController implements IRuntimeAbility {
     }
 
     @GET
-    @Path("/code")
+    @Path("/kaptcha")
     @Operation(summary = "获取验证码")
     public Response kaptcha() {
         var response = routingContext.response();  // 这里改用 Inject 的 routingContext
