@@ -181,6 +181,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                     throw new QueryException("查询条件%s未配置，查询失败".formatted(k));
                 }
 
+                if (v instanceof String str && str.isBlank()) { // 字符串为空不参与查询
+                    return;
+                }
+
                 condition.append(" and %s ".formatted(qi.getColumn()));
 
                 if (v == null) {
