@@ -74,7 +74,20 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @Override
     public void fitOut(TableWrapper wrapper) {
-        wrapper.setPrimaryKey(Column.ID_POSTGRES).setInherit(BaseBusinessTable.TABLE).addColumn("v_name", "姓名").addColumn("v_work_code", "工号").addColumn("d_birth", "出生日期").addColumn("v_phone", "手机号").addColumn("v_email", "邮箱").addColumn("v_address", "通讯地址").addColumn("id_at_org_department").addColumn("id_at_org_organization").addColumn("file_photo", "头像").addColumn(Column.of("b_user").setDefaultValue(false).setComment("是否用户")).addColumn("dict_user_gender", "性别").addColumn("j_conf", "用户个性化配置");
+        wrapper.setPrimaryKey(Column.ID_POSTGRES)
+            .setInherit(BaseBusinessTable.TABLE)
+            .addColumn("v_name", "姓名")
+            .addColumn("v_work_code", "工号")
+            .addColumn("d_birth", "出生日期")
+            .addColumn("v_phone", "手机号")
+            .addColumn("v_email", "邮箱")
+            .addColumn("v_address", "通讯地址")
+            .addColumn("id_at_org_department")
+            .addColumn("id_at_org_organization")
+            .addColumn("file_photo", "头像")
+            .addColumn(Column.of("b_user").setDefaultValue(false).setComment("是否用户"))
+            .addColumn("dict_user_gender", "性别")
+            .addColumn("j_conf", "用户个性化配置");
     }
 
     @Override
@@ -133,6 +146,10 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Transactional
     @Operation(summary = "设置账户密码")
     public int setPassword(@PathParam("id") String id, Map<String, Object> params) {
+        if (!config.isSuperUser(getUser().getId())) {
+            throw new MyException("非管理员用户，禁止访问此功能");
+        }
+
         String password = (String) params.get("v_password");
         String password2 = (String) params.get("v_password2");
 
@@ -149,6 +166,28 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         } else {
             throw new MyException("尚未创建对应的用户");
         }
+    }
+
+    @POST
+    @Path("/setPasswordSelf/{id}")
+    @Transactional
+    @Operation(summary = "自助修改账户密码")
+    public int setPasswordSelf(@PathParam("id") String id, Map<String, Object> params) {
+        String oldPassword = (String) Objects.requireNonNull(params.get("v_old_password"), "必须提供原始密码");
+        String password = (String) Objects.requireNonNull(params.get("v_password"), "必须提供密码");
+        String password2 = (String) Objects.requireNonNull(params.get("v_password2"), "必须提供二次输入密码");
+
+        Map<String, ?> user = userController.view(id);
+
+        if (!user.get("v_password").equals(oldPassword)) {
+            throw new MyException("原密码不正确");
+        }
+
+        if (!password.equals(password2)) {
+            throw new MyException("两次输入的密码不一致");
+        }
+
+        return userController.update(id, Map.of("v_password", password));
     }
 
     @Override
@@ -211,6 +250,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             .setUrl("platform/userinfo/index")
             .addAction(new ModuleAction("setUser", "设置账户", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("setPassword", "设置密码", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("setPasswordSelf", "自助修改账户密码", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("disableUser", "禁用账户", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("enableUser", "启用账户", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("roles", "获取角色", ModuleAction.TypeLike.VIEW))

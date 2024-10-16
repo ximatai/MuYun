@@ -178,11 +178,27 @@ public class TestUser {
             .extract()
             .asString();
 
+        // 修改密码（自助）
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_old_password", "pw2",
+                "v_password", "pw3",
+                "v_password2", "pw3"
+            ))
+            .when()
+            .post("%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
         given()
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw2",
+                "password", "pw3",
                 "code", "muyun"
             ))
             .when()
