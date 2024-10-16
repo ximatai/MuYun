@@ -120,24 +120,24 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     private void initData() {
         String root1 = this.lockModule(null, "机构用户", "void", null, null, null);
-        this.lockModule(root1, "机构管理", "organization", "org_organization", "platform/organization/index", null);
-        this.lockModule(root1, "部门管理", "department", "org_department", "platform/department/index", null);
-        this.lockModule(root1, "用户管理", "userinfo", "auth_userinfo", "platform/userinfo/index", null);
+        this.lockModule(root1, "机构管理", "organization", "platform.org_organization", "platform/organization/index", null);
+        this.lockModule(root1, "部门管理", "department", "platform.org_department", "platform/department/index", null);
+        this.lockModule(root1, "用户管理", "userinfo", "platform.auth_userinfo", "platform/userinfo/index", null);
 
         String root2 = this.lockModule(null, "平台管理", "void", null, null, null);
 
         String root21 = this.lockModule(root2, "模块菜单", "void", null, null, null);
-        this.lockModule(root21, "模块管理", "module", "app_module", "platform/module/index", null);
-        this.lockModule(root21, "菜单方案", "menuSchema", "app_menu_schema", "platform/menuSchema/index", null);
-        this.lockModule(root21, "菜单管理", "menu", "app_menu", "platform/menu/index", null);
+        this.lockModule(root21, "模块管理", "module", "platform.app_module", "platform/module/index", null);
+        this.lockModule(root21, "菜单方案", "menuSchema", "platform.app_menu_schema", "platform/menuSchema/index", null);
+        this.lockModule(root21, "菜单管理", "menu", "platform.app_menu", "platform/menu/index", null);
 
         String root22 = this.lockModule(root2, "权限管理", "void", null, null, null);
-        this.lockModule(root22, "角色管理", "role", "app_module", "platform/role/index", null);
+        this.lockModule(root22, "角色管理", "role", "platform.app_module", "platform/role/index", null);
         this.lockModule(root22, "权限管理", "authorization", null, "platform/authorization/index", null);
 
         String root23 = this.lockModule(root2, "基础数据", "void", null, null, null);
-        this.lockModule(root23, "字典管理", "dict", "app_dictcategory", "platform/dict/index", null);
-        this.lockModule(root23, "行政区划", "region", "app_region", "platform/region/index", null);
+        this.lockModule(root23, "字典管理", "dict", "platform.app_dictcategory", "platform/dict/index", null);
+        this.lockModule(root23, "行政区划", "region", "platform.app_region", "platform/region/index", null);
     }
 
     /**
