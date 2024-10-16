@@ -32,6 +32,7 @@ public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn("t_create")
             .addColumn("t_update")
+            .addColumn("id_at_app_region") // 数据归属行政区划
             .addColumn("id_at_auth_user__create")
             .addColumn("id_at_auth_user__update")
             .addColumn("id_at_auth_user__perms") //权限所有人
