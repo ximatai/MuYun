@@ -295,11 +295,18 @@ public class AuthorizationService implements IAuthorizationService {
      * @param dictDataAuth 权限配置
      * @return 生成后的sql条件
      */
-    private String dictDataAuthToCondition(String userID, String module, String dictDataAuth) {
+    public String dictDataAuthToCondition(String userID, String module, String dictDataAuth) {
         Map<String, Object> userInfo = userinfoCache.get(userID);
 
         String organizationID = (String) userInfo.get("id_at_org_organization");
         String departmentID = (String) userInfo.get("id_at_org_department");
+
+        if (organizationID == null) {
+            organizationID = "0";
+        }
+        if (departmentID == null) {
+            departmentID = "0";
+        }
 
         String organizationColumn = "id_at_org_organization__perms";
         String departmentColumn = "id_at_org_department__perms";
@@ -343,7 +350,7 @@ public class AuthorizationService implements IAuthorizationService {
                     .stream().map("'%s'"::formatted)
                     .collect(Collectors.joining(",")));
             case "self" -> "%s='%s'".formatted(userColumn, userID);
-            default -> "1=2";
+            default -> throw new MyException("数据权限配置有误：" + dictDataAuth);
         };
     }
 
@@ -454,6 +461,10 @@ public class AuthorizationService implements IAuthorizationService {
         });
 
         return moduleGroupMap;
+    }
+
+    public Map getModuleByID(String moduleID) {
+        return moduleCache.get(moduleID);
     }
 
     @Override

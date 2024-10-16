@@ -43,7 +43,7 @@ public class TestModuleAliasUpdate {
 
     @Test
     void test() {
-        String moduleID = moduleController.create(Map.of("v_name", "test", "v_alias", "test_alias"));
+        String moduleID = moduleController.create(Map.of("v_name", "test", "v_alias", "test_alias", "v_table", "test_table"));
         List<Map> actions = moduleController.getChildTableList(moduleID, "app_module_action", null);
         assertTrue(!actions.isEmpty());
 

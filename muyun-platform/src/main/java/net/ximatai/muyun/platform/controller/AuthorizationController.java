@@ -10,11 +10,15 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
+import net.ximatai.muyun.authorization.AuthorizationService;
+import net.ximatai.muyun.core.MuYunConfig;
 import net.ximatai.muyun.core.Scaffold;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
+import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -30,12 +34,6 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 @Path(BASE_PATH + "/authorization")
 public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility {
 
-    @Inject
-    RoleActionController roleActionController;
-
-    @Inject
-    ModuleController moduleController;
-
     private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
         .build(this::loadAction);
 
@@ -49,6 +47,18 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
         new Dict("supervision_region", "监管区划"),
         new Dict("custom", "自定义")
     );
+
+    @Inject
+    RoleActionController roleActionController;
+
+    @Inject
+    ModuleController moduleController;
+
+    @Inject
+    AuthorizationService authorizationService;
+
+    @Inject
+    MuYunConfig muYunConfig;
 
     @Override
     protected void afterInit() {
@@ -89,7 +99,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
         return roleActionController.create(Map.of(
             "id_at_auth_role", roleID,
             "id_at_app_module_action", actionID,
-            "dict_data_auth", "open"
+            "dict_data_auth", getDefaultDataAuth(actionID)
         ));
     }
 
@@ -104,7 +114,22 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     @Path("/setDataAuth/{id}")
     @Operation(summary = "对已授权的数据修改授权数据范围")
     public Integer setDataAuth(@PathParam("id") String id, Map body) {
-        Objects.requireNonNull(body.get("dict_data_auth"), "必须提供数据授权范围字典内容");
+        String dataAuth = Objects.requireNonNull(body.get("dict_data_auth"), "必须提供数据授权范围字典内容").toString();
+
+        String customCondition = (String) body.get("v_custom_condition");
+
+        if ("custom".equals(dataAuth)) {
+            if (StringUtil.isBlank(customCondition)) {
+                throw new MyException("自定义数据权限必须提供自定义条件");
+            }
+        }
+
+        Map<String, ?> roleActionMap = roleActionController.view(id);
+        String actionID = (String) roleActionMap.get("id_at_app_module_action");
+
+        if (!testDataAuth(actionID, dataAuth, customCondition)) {
+            throw new MyException("数据权限不允许配置为：%s".formatted(dataAuth));
+        }
 
         HashMap map = new HashMap(body);
         map.put("dict_data_auth", body.get("dict_data_auth"));
@@ -115,17 +140,43 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     }
 
     private String getDefaultDataAuth(String actionID) {
+        Map<String, Object> actionMap = actionCache.get(actionID);
+        String action = actionMap.get("v_alias_at_app_module_action").toString();
 
-        return "";
+        if ("view".equals(action) && testDataAuth(actionID, "organization", null)) { // 默认查询
+            return "organization";
+        }
+
+        return "open";
     }
 
-    private boolean testDataAuth(String actionID, String dataAuth) {
-        return false;
+    private boolean testDataAuth(String actionID, String dataAuth, String customCondition) {
+        Map<String, Object> actionMap = actionCache.get(actionID);
+        String module = actionMap.get("v_alias_at_app_module").toString();
+        String tableName = actionMap.get("v_table").toString();
+
+        String authCondition = null;
+        if ("custom".equals(dataAuth)) {
+            authCondition = customCondition;
+        } else {
+            authCondition = authorizationService.dictDataAuthToCondition(muYunConfig.superUserId(), module, dataAuth);
+        }
+        try {
+            getDB().row("select 1 from %s where 1=1 and %s limit 1".formatted(tableName, authCondition));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    private Map<String, Object> loadAction(String actionAlias) {
-//        return db.row("select * from platform.app_module where v_alias = ?", moduleAlias);
-        return Map.of();
+    private Map<String, Object> loadAction(String actionID) {
+        return getDB().row("""
+            select app_module.v_table,
+                   app_module.v_alias        as v_alias_at_app_module,
+                   app_module_action.v_alias as v_alias_at_app_module_action
+            from platform.app_module_action
+                     join platform.app_module on app_module_action.id_at_app_module = app_module.id
+            where app_module_action.id = ?""", actionID);
     }
 
     @Override
