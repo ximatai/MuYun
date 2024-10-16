@@ -2,6 +2,7 @@ package net.ximatai.muyun.platform.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DictCategory {
@@ -54,6 +55,10 @@ public class DictCategory {
 
         this.dictList = dictList;
         return this;
+    }
+
+    public DictCategory setDictList(List<Dict> dictList) {
+        return this.setDictList(dictList.toArray(new Dict[0]));
     }
 
     public Map toMap() {

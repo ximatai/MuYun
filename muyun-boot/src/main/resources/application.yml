@@ -20,6 +20,7 @@ quarkus:
 #    password: Muyun20&24
     jdbc:
       url: jdbc:postgresql://localhost:54324/muyun
+#      url: jdbc:postgresql://192.168.6.205:32128/uni_antifraud
     #      enabled: true
     # reactive:
     #   url: vertx-reactive:postgresql://localhost:54324/muyun

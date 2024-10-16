@@ -274,7 +274,7 @@ public class TestDataAuth {
     void testIsDataAuthorizedRegion() {
         String regionID = regionController.create(Map.of(
             "v_name", "test",
-            "v_code", "test"
+            "id", "test"
         ));
 
         String d1 = db.insertItem("public", "module1", Map.of(

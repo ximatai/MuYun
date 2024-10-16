@@ -9,12 +9,13 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
-import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static net.ximatai.muyun.platform.controller.AuthorizationController.DATA_AUTH_DICT;
 
 @ApplicationScoped
 public class RoleActionController extends ScaffoldForPlatform implements IChildAbility, IQueryAbility {
@@ -24,17 +25,7 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
 
     @Override
     protected void afterInit() {
-        dictCategoryController.putDictCategory(
-            new DictCategory("data_auth", "platform_dir", "系统数据权限", 1).setDictList(
-                new Dict("open", "不限制"),
-                new Dict("organization", "本机构"),
-                new Dict("organization_and_subordinates", "本机构及下级"),
-                new Dict("department", "本部门"),
-                new Dict("department_and_subordinates", "本部门及下级"),
-                new Dict("self", "本人"),
-                new Dict("supervision_region", "监管区划"),
-                new Dict("custom", "自定义")
-            ), true);
+        dictCategoryController.putDictCategory(new DictCategory("data_auth", "platform_dir", "系统数据权限", 1).setDictList(DATA_AUTH_DICT), true);
     }
 
     @Override

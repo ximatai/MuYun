@@ -1,5 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -10,6 +12,7 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
+import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -32,6 +35,20 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
 
     @Inject
     ModuleController moduleController;
+
+    private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
+        .build(this::loadAction);
+
+    public static final List<Dict> DATA_AUTH_DICT = List.of(
+        new Dict("open", "不限制"),
+        new Dict("organization", "本机构"),
+        new Dict("organization_and_subordinates", "本机构及下级"),
+        new Dict("department", "本部门"),
+        new Dict("department_and_subordinates", "本部门及下级"),
+        new Dict("self", "本人"),
+        new Dict("supervision_region", "监管区划"),
+        new Dict("custom", "自定义")
+    );
 
     @Override
     protected void afterInit() {
@@ -95,6 +112,20 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
             map.put("v_custom_condition", body.get("v_custom_condition"));
         }
         return roleActionController.update(id, map);
+    }
+
+    private String getDefaultDataAuth(String actionID) {
+
+        return "";
+    }
+
+    private boolean testDataAuth(String actionID, String dataAuth) {
+        return false;
+    }
+
+    private Map<String, Object> loadAction(String actionAlias) {
+//        return db.row("select * from platform.app_module where v_alias = ?", moduleAlias);
+        return Map.of();
     }
 
     @Override
