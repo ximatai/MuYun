@@ -304,6 +304,7 @@ public class AuthorizationService implements IAuthorizationService {
         String organizationColumn = "id_at_org_organization__perms";
         String departmentColumn = "id_at_org_department__perms";
         String userColumn = "id_at_auth_user__perms";
+        String regionColumn = "id_at_app_region";
 
         //下面三个表的权限过滤字段比较特殊
         if ("userinfo".equals(module)) {
@@ -321,6 +322,10 @@ public class AuthorizationService implements IAuthorizationService {
             departmentColumn = "id";
         }
 
+        if ("region".equals(module)) {
+            regionColumn = "id";
+        }
+
         return switch (dictDataAuth) {
             case "open" -> "1=1";
             case "organization" -> "%s='%s'".formatted(organizationColumn, organizationID);
@@ -334,7 +339,7 @@ public class AuthorizationService implements IAuthorizationService {
                     .stream().map("'%s'"::formatted)
                     .collect(Collectors.joining(",")));
             case "supervision_region" -> "%s in (%s)"
-                .formatted("id_at_app_region", supervisionRegion(organizationID)
+                .formatted(regionColumn, supervisionRegion(organizationID)
                     .stream().map("'%s'"::formatted)
                     .collect(Collectors.joining(",")));
             case "self" -> "%s='%s'".formatted(userColumn, userID);
