@@ -12,7 +12,9 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.AuthorizationController;
 import net.ximatai.muyun.platform.controller.ModuleController;
+import net.ximatai.muyun.platform.controller.RegionController;
 import net.ximatai.muyun.platform.controller.RoleController;
+import net.ximatai.muyun.platform.controller.SupervisionRegionController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,6 +51,12 @@ public class TestDataAuth {
 
     @Inject
     RoleController roleController;
+
+    @Inject
+    RegionController regionController;
+
+    @Inject
+    SupervisionRegionController supervisionRegionController;
 
     String userID;
     String role1, role2;
@@ -260,6 +268,36 @@ public class TestDataAuth {
         assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
         assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
         assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+    }
+
+    @Test
+    void testIsDataAuthorizedRegion() {
+        String regionID = regionController.create(Map.of(
+            "v_name", "test",
+            "v_code", "test"
+        ));
+
+        String d1 = db.insertItem("public", "module1", Map.of(
+            "v_name", "test1",
+            "id_at_auth_user__perms", userID,
+            "id_at_org_department__perms", "1",
+            "id_at_app_region", regionID
+        ));
+
+        authService.invalidateAll();
+
+        accredit(role1, view1, "supervision_region");
+
+        assertFalse(authService.isDataAuthorized(userID, "module1", "view", d1));
+
+        supervisionRegionController.create(Map.of(
+            "id_at_org_organization", "1",
+            "id_at_app_region", regionID
+        ));
+
+        authService.invalidateAll();
+
+        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
     }
 
     private void accredit(String role, String action, String dataAuth) {

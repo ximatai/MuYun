@@ -32,8 +32,9 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
                 new Dict("department", "本部门"),
                 new Dict("department_and_subordinates", "本部门及下级"),
                 new Dict("self", "本人"),
+                new Dict("supervision_region", "监管区划"),
                 new Dict("custom", "自定义")
-            ), false);
+            ), true);
     }
 
     @Override

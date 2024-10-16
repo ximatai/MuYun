@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
@@ -7,6 +8,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
+@Startup
 @ApplicationScoped
 public class SupervisionRegionController extends ScaffoldForPlatform implements IChildAbility {
 

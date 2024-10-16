@@ -47,6 +47,10 @@ public class AuthorizationService implements IAuthorizationService {
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadRoles);
 
+    private final LoadingCache<String, Set<String>> organizationToRegions = Caffeine.newBuilder()
+        .expireAfterWrite(1, TimeUnit.MINUTES)
+        .build(this::loadRegions);
+
     private final LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
         .build(this::loadOrgAndDept);
@@ -56,6 +60,7 @@ public class AuthorizationService implements IAuthorizationService {
         userinfoCache.invalidateAll();
         actionCache.invalidateAll();
         userToRoles.invalidateAll();
+        organizationToRegions.invalidateAll();
         allOrgAndDept.invalidateAll();
     }
 
@@ -90,6 +95,21 @@ public class AuthorizationService implements IAuthorizationService {
             and exists(select * from platform.auth_role where auth_role.id = id_at_auth_role)
             """, userID);
         return rows.stream().map(it -> it.get("id_at_auth_role").toString()).collect(Collectors.toSet());
+    }
+
+    private Set<String> loadRegions(String organizationID) {
+        List<Map<String, Object>> rows = db.query("""
+            select id_at_app_region
+            from platform.org_organization_supervision
+            where id_at_org_organization = ?
+            """, organizationID);
+        Set<String> result = rows.stream().map(it -> it.get("id_at_app_region").toString()).collect(Collectors.toSet());
+
+        if (result.isEmpty()) {
+            return Set.of("NULL_DATA");
+        } else {
+            return result;
+        }
     }
 
     private List<Map<String, Object>> loadOrgAndDept(String type) {
@@ -313,6 +333,10 @@ public class AuthorizationService implements IAuthorizationService {
                 .formatted(departmentColumn, departmentAndSubordinates(organizationID)
                     .stream().map("'%s'"::formatted)
                     .collect(Collectors.joining(",")));
+            case "supervision_region" -> "%s in (%s)"
+                .formatted("id_at_app_region", supervisionRegion(organizationID)
+                    .stream().map("'%s'"::formatted)
+                    .collect(Collectors.joining(",")));
             case "self" -> "%s='%s'".formatted(userColumn, userID);
             default -> "1=2";
         };
@@ -350,6 +374,10 @@ public class AuthorizationService implements IAuthorizationService {
         }
 
         return all;
+    }
+
+    private Set<String> supervisionRegion(String organizationID) {
+        return organizationToRegions.get(organizationID);
     }
 
     @Override
