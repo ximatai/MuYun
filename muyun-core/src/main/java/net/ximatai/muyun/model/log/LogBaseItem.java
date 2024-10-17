@@ -114,5 +114,4 @@ public class LogBaseItem {
         return this;
     }
 
-
 }

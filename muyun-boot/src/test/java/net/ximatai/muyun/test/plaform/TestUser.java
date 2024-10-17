@@ -5,7 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.model.RuntimeUser;

@@ -1,4 +1,4 @@
-package net.ximatai.muyun.model;
+package net.ximatai.muyun.core.config;
 
 import io.smallrye.config.ConfigMapping;
 

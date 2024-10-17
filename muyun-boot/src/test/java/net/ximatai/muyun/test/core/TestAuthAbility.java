@@ -6,7 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.base.BaseScaffold;
-import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.controller.ModuleController;

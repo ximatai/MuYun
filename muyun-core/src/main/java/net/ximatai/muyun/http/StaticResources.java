@@ -6,7 +6,7 @@ import io.vertx.ext.web.handler.FileSystemAccess;
 import io.vertx.ext.web.handler.StaticHandler;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.model.FrontendConfig;
+import net.ximatai.muyun.core.config.FrontendConfig;
 
 public class StaticResources {
 

@@ -6,7 +6,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.PermsException;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.IRuntimeUser;

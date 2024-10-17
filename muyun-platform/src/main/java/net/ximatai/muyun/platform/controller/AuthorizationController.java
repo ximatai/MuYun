@@ -11,7 +11,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.authorization.AuthorizationService;
-import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;

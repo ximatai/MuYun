@@ -1,11 +1,18 @@
 muyun:
   debug: true
   super-user-id: 1
+web:
+  redirects:
+    - from: /
+      to: /web/
+frontend:
+  resources:
+    - prefix: /web/
+      path: /Users/liurui/develop/workspace-bsy/unicom_xinan_project/dist
 proxy:
   upstreams:
-    - prefix: /web/
+    - prefix: /web1/
       url: http://localhost:3000/
-
 quarkus:
   http:
     port: 8080
@@ -17,10 +24,10 @@ quarkus:
     db-kind: postgresql
     username: postgres
     password: muyun2024
-#    password: Muyun20&24
+    #    password: Muyun20&24
     jdbc:
       url: jdbc:postgresql://localhost:54324/muyun
-#      url: jdbc:postgresql://192.168.6.205:32128/uni_antifraud
+    #      url: jdbc:postgresql://192.168.6.205:32128/uni_antifraud
     #      enabled: true
     # reactive:
     #   url: vertx-reactive:postgresql://localhost:54324/muyun
