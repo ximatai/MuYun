@@ -40,13 +40,13 @@ public class MuYunProxy {
     private void mount(UpstreamItem item) {
         Upstream upstream = new Upstream(item.url(), 1, vertx);
 
-        String path = item.prefix();
+        String prefix = item.prefix();
 
         if (item.prefix().endsWith("/")) {
-            path = item.prefix() + "*";
+            prefix = item.prefix() + "*";
         }
 
-        router.route(path)
+        router.route(prefix)
             .handler(routingContext -> {
 
                 HttpServerRequest req = routingContext.request();
