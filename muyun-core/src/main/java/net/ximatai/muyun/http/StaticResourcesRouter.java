@@ -8,7 +8,7 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.FrontendConfig;
 
-public class StaticResources {
+public class StaticResourcesRouter {
 
     @Inject
     FrontendConfig frontendConfig;

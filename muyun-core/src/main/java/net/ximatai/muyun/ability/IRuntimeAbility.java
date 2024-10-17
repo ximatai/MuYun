@@ -6,6 +6,8 @@ import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 
+import static net.ximatai.muyun.MuYunConst.DEBUG_MODE_CONTEXT_KEY;
+
 /**
  * 获取运行时上下文的能力
  */
@@ -26,7 +28,7 @@ public interface IRuntimeAbility {
             Session session = getRoutingContext().session();
             if (session != null && session.get(MuYunConst.SESSION_USER_KEY) != null) {
                 return session.get(MuYunConst.SESSION_USER_KEY);
-            } else if (getRoutingContext().get("debug") != null
+            } else if (getRoutingContext().get(DEBUG_MODE_CONTEXT_KEY) != null
                 && getRoutingContext().request().getHeader("userID") != null) {
                 String userID = getRoutingContext().request().getHeader("userID");
                 return IRuntimeUser.build(userID);

@@ -11,7 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 
 @ApplicationScoped
-public class SockJsBridge {
+public class SockJsBridgeRouter {
 
     void init(@Observes Router router, Vertx vertx) {
         SockJSHandlerOptions options = new SockJSHandlerOptions();
