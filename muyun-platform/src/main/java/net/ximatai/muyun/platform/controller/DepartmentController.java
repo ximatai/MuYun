@@ -16,6 +16,7 @@ import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.HashMap;
@@ -67,6 +68,15 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
             showMe = false;
         }
         return ITreeAbility.super.tree(rootID, showMe, labelColumn, maxLevel);
+    }
+
+    @Override
+    public Integer sort(String id, String prevId, String nextId, String parentId) {
+        if (StringUtil.isBlank(parentId)) {
+            parentId = (String) view(id).get("id_at_org_organization");
+        }
+
+        return ITreeAbility.super.sort(id, prevId, nextId, parentId);
     }
 
     @Override
