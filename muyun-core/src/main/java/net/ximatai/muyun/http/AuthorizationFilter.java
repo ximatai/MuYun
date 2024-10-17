@@ -9,7 +9,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.RouterFilterPriority;
 import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.core.MuYunConfig;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.service.IAuthorizationService;
@@ -57,6 +57,7 @@ public class AuthorizationFilter implements IRuntimeAbility {
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
                 int code = runtimeUser.getId().equals(IRuntimeUser.WHITE.getId()) ? 401 : 403; //说明是白名单用户，也就是登录过期情况
                 context.response().setStatusCode(code).end(apiRequest.getError().getMessage());
+//                context.fail(code,apiRequest.getError());
                 return;
             }
 
