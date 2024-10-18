@@ -81,8 +81,9 @@ public class SsoController implements IRuntimeAbility {
         }
 
         Map userInDB = (Map) pageResult.getList().getFirst();
-
-        if (password.equals(userInDB.get("v_password").toString())) {
+        String vPassword = userInDB.get("v_password").toString();
+        String encryptedPassword = encryptPassword(vPassword, code);
+        if (password.equals(encryptedPassword) || (config.debug() && password.equals(vPassword))) {
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
@@ -96,6 +97,11 @@ public class SsoController implements IRuntimeAbility {
             logger.error("用户密码验证失败，用户名：{}", username);
             throw new MyException("用户名或密码错误");
         }
+    }
+
+    private String encryptPassword(String password, String code) {
+        String md5Password = DigestUtils.md5Hex(password).toUpperCase();
+        return DigestUtils.md5Hex(md5Password + code).toUpperCase();
     }
 
     private void verificationCode(String code) {

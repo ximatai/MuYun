@@ -10,6 +10,7 @@ import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -225,5 +226,16 @@ public class TestUser {
             .then()
             .statusCode(500);
 
+    }
+
+    @Test
+    void testEncryptPassword() {
+        String encryptPassword = encryptPassword("admin@bys", "-3");
+        assertEquals("FFE9AEB76F57D8BC562D55022DA8C2DB", encryptPassword);
+    }
+
+    private String encryptPassword(String password, String code) {
+        String md5Password = DigestUtils.md5Hex(password).toUpperCase();
+        return DigestUtils.md5Hex(md5Password + code).toUpperCase();
     }
 }
