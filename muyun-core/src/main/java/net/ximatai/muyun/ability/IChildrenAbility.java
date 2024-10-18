@@ -69,8 +69,6 @@ public interface IChildrenAbility {
 
         List<String> idsAlreadyHere = new ArrayList<>(getChildTableList(id, childAlias, null).stream().map(it -> it.get(childPK).toString()).toList());
 
-        System.out.println(idsAlreadyHere);
-
         for (Object o : body) {
             if (o instanceof Map map) {
                 String childId = (String) map.get(ct.getCtrl().getPK());

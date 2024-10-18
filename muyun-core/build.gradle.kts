@@ -12,7 +12,6 @@ dependencies {
     api("io.quarkus:quarkus-arc")
     api("io.quarkus:quarkus-vertx")
     api("io.quarkus:quarkus-reactive-routes")
-    api("io.quarkus:quarkus-scheduler")
     api("io.quarkus:quarkus-rest-jackson")
     api("io.quarkus:quarkus-smallrye-openapi")
 
