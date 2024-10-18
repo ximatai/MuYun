@@ -34,7 +34,6 @@
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
-        <module name="UnnecessaryParentheses"/>
         <module name="ConstantName"/>
         <module name="LocalVariableName">
             <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
@@ -71,7 +70,6 @@
         <module name="UnusedImports"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
-        <module name="UnusedImports"/>
 
         <module name="EmptyLineSeparator">
             <property name="allowMultipleEmptyLines" value="false"/>

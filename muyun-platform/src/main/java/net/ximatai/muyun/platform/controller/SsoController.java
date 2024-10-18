@@ -83,7 +83,7 @@ public class SsoController implements IRuntimeAbility {
         Map userInDB = (Map) pageResult.getList().getFirst();
         String vPassword = userInDB.get("v_password").toString();
         String encryptedPassword = encryptPassword(vPassword, code);
-        if (password.equals(encryptedPassword) || (config.debug() && password.equals(vPassword))) {
+        if ((config.debug() && password.equals(vPassword)) || password.equals(encryptedPassword)) {
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);

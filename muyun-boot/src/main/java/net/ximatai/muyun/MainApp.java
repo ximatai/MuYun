@@ -22,8 +22,7 @@ public class MainApp implements QuarkusApplication {
 
     @Override
     public int run(String... args) {
-        logger.info("MuYun started successfully! Running on port: {}. Debug mode is {}"
-            , port, config.debug() ? "OPEN" : "CLOSE");
+        logger.info("MuYun started successfully! Running on port: {}. Debug mode is {}", port, config.debug() ? "OPEN" : "CLOSE");
         Quarkus.waitForExit();
         return 0;
     }
