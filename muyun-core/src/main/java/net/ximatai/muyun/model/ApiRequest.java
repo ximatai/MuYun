@@ -13,6 +13,8 @@ public class ApiRequest {
     private boolean isSkip = false;
     private final IRuntimeUser user;
     private String moduleID;
+    private String moduleName;
+    private String actionName;
 
     private PermsException error;
 
@@ -94,6 +96,24 @@ public class ApiRequest {
 
     public boolean isNotBlank() {
         return !this.equals(BLANK);
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public ApiRequest setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+        return this;
+    }
+
+    public String getActionName() {
+        return actionName;
+    }
+
+    public ApiRequest setActionName(String actionName) {
+        this.actionName = actionName;
+        return this;
     }
 
     @Override

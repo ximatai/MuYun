@@ -38,8 +38,8 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
     public Response toResponse(Exception e) {
         // 默认的响应状态是内部服务器错误
         Response.Status responseStatus = INTERNAL_SERVER_ERROR;
-        String requestPath = uriInfo.getRequestUri().toString();
-        logger.error("{} @{}", e.getMessage(), requestPath, e);
+        String requestPath = uriInfo.getRequestUri().getPath();
+        logger.error("USER:{},URI:{}", getUser().getId(), requestPath);
 
         String message = config.debug() ? e.getMessage() : "服务器错误，请检查。";
 
@@ -48,11 +48,12 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
             message = exception.getMessage();
         } else if (e instanceof MyException exception) {
             message = exception.getMessage();
-        } else if (e instanceof MyDatabaseException myDatabaseException) {
-            switch (myDatabaseException.getType()) {
+        } else if (e instanceof MyDatabaseException exception) {
+            switch (exception.getType()) {
                 case DATA_NOT_FOUND -> responseStatus = Response.Status.NOT_FOUND;
                 case DEFAULT -> responseStatus = Response.Status.BAD_REQUEST;
             }
+            message = exception.getMessage();
         } else if (e instanceof NotFoundException) {
             responseStatus = Response.Status.NOT_FOUND;
         }

@@ -65,7 +65,7 @@ public class AuthorizationService implements IAuthorizationService {
     }
 
     @PostConstruct
-    private void init() {
+    protected void init() {
         List<Map<String, Object>> list = db.query("select * from platform.app_module ");
         list.forEach(map -> {
             moduleCache.put(map.get("v_alias").toString(), map);
@@ -122,11 +122,11 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Override
     public boolean isAuthorized(ApiRequest request) {
-        String userID = request.getUser().getId();
-        if (request.isSkip() || config.isSuperUser(userID)) {
+        if (request.isSkip()) {
             return true;
         }
 
+        String userID = request.getUser().getId();
         Map<String, Object> moduleRow = moduleCache.get(request.getModule());
 
         if (moduleRow == null) { // 模块未配置，不参与权限
@@ -136,6 +136,7 @@ public class AuthorizationService implements IAuthorizationService {
 
         String moduleID = moduleRow.get("id").toString();
         request.setModuleID(moduleID);
+        request.setModuleName(moduleRow.get("v_name").toString());
 
         String action = request.getAction();
         if ("tree".equals(action)) {
@@ -144,8 +145,16 @@ public class AuthorizationService implements IAuthorizationService {
 
         Map<String, Object> actionRow = actionCache.get("%s@%s".formatted(action, moduleID));
 
+        if (actionRow != null) {
+            request.setActionName(actionRow.get("v_name").toString());
+        }
+
         if (actionRow == null || (boolean) actionRow.get("b_white")) { // 功能未配置，或者是白名单功能，不参与权限
             request.setSkip();
+            return true;
+        }
+
+        if (config.isSuperUser(userID)) {
             return true;
         }
 
