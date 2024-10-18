@@ -39,7 +39,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
         // 默认的响应状态是内部服务器错误
         Response.Status responseStatus = INTERNAL_SERVER_ERROR;
         String requestPath = uriInfo.getRequestUri().getPath();
-        logger.error("USER:{},URI:{}", getUser().getId(), requestPath, e);
+        logger.error("USER:{},URI:{}", getUser().getId(), requestPath);
 
         String message = config.debug() ? e.getMessage() : "服务器错误，请检查。";
 
