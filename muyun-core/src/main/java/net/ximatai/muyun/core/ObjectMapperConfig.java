@@ -11,7 +11,6 @@ import jakarta.enterprise.inject.Produces;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 @ApplicationScoped
 public class ObjectMapperConfig {
@@ -35,9 +34,9 @@ class CustomDateSerializer extends StdSerializer<Date> {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    static {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+8")); // 设置时区
-    }
+//    static {
+//        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT+8")); // 设置时区
+//    }
 
     public CustomDateSerializer() {
         this(null);
