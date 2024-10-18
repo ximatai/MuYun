@@ -23,27 +23,27 @@ public class FileserverRouter {
     final Logger logger = LoggerFactory.getLogger(getClass());
 
     String originalFileName;
-    
+
     @Inject
     FileserverConfig config;
-    
+
     @Inject
     Vertx vertx;
-    
+
     @Route(path = "/fs/index", methods = Route.HttpMethod.GET)
     public void indexFunc(RoutingContext ctx) {
         ctx.response()
             .putHeader("content-type", "text/html")
             .end(
-                "<form action=\"/fs/form\" method=\"post\" enctype=\"multipart/form-data\">\n" +
-                    "    <div>\n" +
-                    "        <label for=\"name\">Select a file:</label>\n" +
-                    "        <input type=\"file\" name=\"file\" />\n" +
-                    "    </div>\n" +
-                    "    <div class=\"button\">\n" +
-                    "        <button type=\"submit\">Send</button>\n" +
-                    "    </div>" +
-                    "</form>"
+                "<form action=\"/fs/form\" method=\"post\" enctype=\"multipart/form-data\">\n"
+                    + "    <div>\n"
+                    + "        <label for=\"name\">Select a file:</label>\n"
+                    + "        <input type=\"file\" name=\"file\" />\n"
+                    + "    </div>\n"
+                    + "    <div class=\"button\">\n"
+                    + "        <button type=\"submit\">Send</button>\n"
+                    + "    </div>"
+                    + "</form>"
             );
     }
 
@@ -58,14 +58,11 @@ public class FileserverRouter {
             originalFileName = f.fileName();
             long fileSize = f.size();
             String uid = "bsy-" + uploadedFileName.split("\\\\")[2];
-
             String fileNameUid = suffixN(uid);
             String fileContextUid = suffixO(uid);
             vertx.fileSystem().writeFile(config.uploadPath() + fileNameUid, Buffer.buffer(originalFileName));
             vertx.fileSystem().copy(uploadedFileName, config.uploadPath() + fileContextUid);
             vertx.fileSystem().delete(uploadedFileName);
-
-
             ctx.response().write(uid);
         }
         ctx.response().end();
@@ -80,10 +77,10 @@ public class FileserverRouter {
         File file = new File(contentFilePath);
         String nameFilePath = config.uploadPath() + nameFile;
         vertx.fileSystem().readFile(nameFilePath, result -> {
-            if(result.succeeded()){
+            if (result.succeeded()) {
                 Buffer buffer = result.result();
                 String content = buffer.toString("UTF-8");
-                if(file.exists()){
+                if (file.exists()) {
                     ctx.response()
                         .putHeader("Content-Disposition", "attachment; filename=" + content)
                         .sendFile(file.getPath());
@@ -96,7 +93,7 @@ public class FileserverRouter {
     }
 
     @Route(path = "/fs/delete/:uid", methods = Route.HttpMethod.GET)
-    public void delete(RoutingContext ctx){
+    public void delete(RoutingContext ctx) {
         String uid = ctx.pathParam("uid");
         String deleteNamePath = suffixN(config.uploadPath() + uid);
         String deleteContentPath = suffixO(config.uploadPath() + uid);
@@ -114,20 +111,18 @@ public class FileserverRouter {
         String fileContentPath = suffixO(config.uploadPath() + uid);
         File file = new File(fileNamePath);
         File fileContent = new File(fileContentPath);
-
         vertx.fileSystem().readFile(fileNamePath, result -> {
-            if(result.succeeded()){
+            if (result.succeeded()) {
                 Buffer buffer = result.result();
                 String line = buffer.toString("UTF-8");
                 String suffix = line.split("\\.")[1];
-
                 Path path = Paths.get(fileNamePath);
                 String createTime = "00:00";
-                try{
+                try {
                     BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
                     FileTime creationTime = attrs.creationTime();
                     createTime = creationTime.toString();
-                } catch(IOException e){
+                } catch (IOException e) {
                     logger.error("Failed to read file attributes", e);
                 }
 
@@ -137,7 +132,6 @@ public class FileserverRouter {
                     .put("suffix", suffix)
                     .put("uid", uid)
                     .put("time", createTime);
-
                 ctx.response()
                     .putHeader("Content-Type", "application/json")
                     .end(jsonObject.toString());

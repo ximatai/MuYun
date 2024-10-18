@@ -62,7 +62,6 @@ public class TestFileserverRouter {
 
         String uid = response.getBody().asString();
 
-
         // 下载文件
         Response response2 = given()
             .when()
@@ -96,7 +95,7 @@ public class TestFileserverRouter {
     }
 
     @AfterEach
-    public void tearDown(){
+    public void tearDown() {
         String deleteUrl = "/fs/delete/" + uid;
         given()
             .when()
