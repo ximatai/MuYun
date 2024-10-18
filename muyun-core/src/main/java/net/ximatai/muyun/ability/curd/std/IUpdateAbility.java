@@ -10,6 +10,8 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
+import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.DataChangeChannel;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -39,6 +41,12 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof IRuntimeAbility runtimeAbility) {
             String userID = runtimeAbility.getUser().getId();
             map.put("id_at_auth_user__update", userID);
+        }
+
+        if (this instanceof ITreeAbility treeAbility) {
+            if (id.equals(body.get(treeAbility.getParentKeyColumn().getName()))) {
+                throw new MyException("树结构的父节点不能是它自身");
+            }
         }
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
