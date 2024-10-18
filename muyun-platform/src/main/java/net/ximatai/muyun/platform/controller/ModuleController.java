@@ -138,6 +138,10 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         String root23 = this.lockModule(root2, "基础数据", "void", null, null, null);
         this.lockModule(root23, "字典管理", "dict", "platform.app_dictcategory", "platform/dict/index", null);
         this.lockModule(root23, "行政区划", "region", "platform.app_region", "platform/region/index", null);
+
+        String root24 = this.lockModule(root2, "日志管理", "void", null, null, null);
+        this.lockModule(root24, "操作日志", "access", "log.log_access", "platform/access/index", null);
+        this.lockModule(root24, "异常日志", "error", "log.log_error", "platform/error/index", null);
     }
 
     /**

@@ -24,6 +24,7 @@ dependencies {
     implementation(project(":muyun-database-std"))
     implementation(project(":muyun-platform"))
     implementation(project(":muyun-proxy"))
+    implementation(project(":muyun-log"))
 
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")

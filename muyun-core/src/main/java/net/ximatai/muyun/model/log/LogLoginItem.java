@@ -1,6 +1,6 @@
 package net.ximatai.muyun.model.log;
 
-public class LogLoginItem extends LogBaseItem {
+public class LogLoginItem extends LogItem {
 
 
 }

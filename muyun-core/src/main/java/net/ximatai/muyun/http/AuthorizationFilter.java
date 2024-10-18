@@ -56,15 +56,14 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
             }
 
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
+            routingContext.put(MuYunConst.API_REQUEST_CONTEXT_KEY, apiRequest);
+
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
                 throw apiRequest.getError();
             }
-
-            routingContext.put(MuYunConst.API_REQUEST_CONTEXT_KEY, apiRequest);
         }
 
     }
-
 
     @Override
     public RoutingContext getRoutingContext() {
