@@ -25,7 +25,7 @@ quarkus:
   datasource:
     db-kind: postgresql
     username: postgres
-    password: 123456
+    password: postgres
     #    password: Muyun20&24
     jdbc:
       url: jdbc:postgresql://localhost:5432/muyun

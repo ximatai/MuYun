@@ -19,30 +19,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestFileserverRouter {
 
     // 文件名
-    String nameF;
+    String fileName;
     String uid;
     // 文件内容
-    String contextF = "";
+    String fileContent = "";
     // 临时文件
     File tempFile;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException {
         int fileNameInt = getRandomInt();
-        nameF = String.valueOf(fileNameInt);
+        fileName = String.valueOf(fileNameInt);
         try {
-            tempFile = File.createTempFile(nameF, ".txt");
+            tempFile = File.createTempFile(fileName, ".txt");
             FileOutputStream fos = new FileOutputStream(tempFile);
             int ctx1 = getRandomInt();
-            contextF += String.valueOf(ctx1 + "\n");
+            fileContent += String.valueOf(ctx1 + "\n");
             int ctx2 = getRandomInt();
-            contextF += String.valueOf(ctx2);
-            fos.write(contextF.getBytes());
+            fileContent += String.valueOf(ctx2);
+            fos.write(fileContent.getBytes());
             fos.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw(e);
         }
-
     }
 
     @Test
@@ -51,7 +50,7 @@ public class TestFileserverRouter {
         Response response = given()
             .multiPart("file", tempFile)
             .when()
-            .post("/fs/form")
+            .post("/fileserver/form")
             .then()
             .log().all()
             .statusCode(200)
@@ -65,7 +64,7 @@ public class TestFileserverRouter {
         // 下载文件
         Response response2 = given()
             .when()
-            .get("/fs/download/" + uid)
+            .get("/fileserver/download/" + uid)
             .then()
             .log().all()
             .statusCode(200)
@@ -74,15 +73,12 @@ public class TestFileserverRouter {
 
         String downloadContent = response2.getBody().asString();
         // 验证文件内容是否相同
-        assertEquals(contextF, downloadContent);
-
-        // 文件内容可以再info接口中验证
-        // assertEquals(tempFile.getName(), jsonObject.getString("fileName"));
+        assertEquals(fileContent, downloadContent);
 
         // 读取文件info
         Response response3 = given()
             .when()
-            .get("/fs/info/" + uid)
+            .get("/fileserver/info/" + uid)
             .then()
             .log().all()
             .statusCode(200)
@@ -96,7 +92,7 @@ public class TestFileserverRouter {
 
     @AfterEach
     public void tearDown() {
-        String deleteUrl = "/fs/delete/" + uid;
+        String deleteUrl = "/fileserver/delete/" + uid;
         given()
             .when()
             .get(deleteUrl)

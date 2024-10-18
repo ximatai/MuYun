@@ -30,7 +30,7 @@ public class FileserverRouter {
     @Inject
     Vertx vertx;
 
-    @Route(path = "/fs/index", methods = Route.HttpMethod.GET)
+    @Route(path = "/fileserver/index", methods = Route.HttpMethod.GET)
     public void indexFunc(RoutingContext ctx) {
         ctx.response()
             .putHeader("content-type", "text/html")
@@ -47,7 +47,7 @@ public class FileserverRouter {
             );
     }
 
-    @Route(path = "/fs/form", methods = Route.HttpMethod.POST)
+    @Route(path = "/fileserver/form", methods = Route.HttpMethod.POST)
     public void form(RoutingContext ctx) {
 
         // 支持分块传输编码
@@ -68,7 +68,7 @@ public class FileserverRouter {
         ctx.response().end();
     }
 
-    @Route(path = "/fs/download/:fileUid", methods = Route.HttpMethod.GET)
+    @Route(path = "/fileserver/download/:fileUid", methods = Route.HttpMethod.GET)
     public void download(RoutingContext ctx) {
         String fileUid = ctx.pathParam("fileUid");
         String nameFile = suffixN(fileUid);
@@ -92,7 +92,7 @@ public class FileserverRouter {
         });
     }
 
-    @Route(path = "/fs/delete/:uid", methods = Route.HttpMethod.GET)
+    @Route(path = "/fileserver/delete/:uid", methods = Route.HttpMethod.GET)
     public void delete(RoutingContext ctx) {
         String uid = ctx.pathParam("uid");
         String deleteNamePath = suffixN(config.uploadPath() + uid);
@@ -104,7 +104,7 @@ public class FileserverRouter {
         ctx.response().end("Successfully deleted.");
     }
 
-    @Route(path = "/fs/info/:uid", methods = Route.HttpMethod.GET)
+    @Route(path = "/fileserver/info/:uid", methods = Route.HttpMethod.GET)
     public void info(RoutingContext ctx) {
         String uid = ctx.pathParam("uid");
         String fileNamePath = suffixN(config.uploadPath() + uid);
