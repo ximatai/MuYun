@@ -70,6 +70,20 @@ class TestTreeAbility {
     }
 
     @Test
+    void testTreeNodePIDSelf() {
+        String error = given()
+            .contentType("application/json")
+            .body(Map.of("pid", aID))
+            .post("%s/update/%s".formatted(path, aID))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertEquals(error, "树结构的父节点不能是它自身");
+    }
+
+    @Test
     void testTreeA() {
         List<TreeNode> response = given()
             .queryParam("rootID", aID)
