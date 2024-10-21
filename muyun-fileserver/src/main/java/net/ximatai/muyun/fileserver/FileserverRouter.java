@@ -4,7 +4,9 @@ import io.quarkus.vertx.web.Route;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.FileUpload;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +31,22 @@ public class FileserverRouter {
 
     @Inject
     Vertx vertx;
+    
+    void init(@Observes Router router, Vertx vertx){
+        router.get(config.pagePath() + "index").handler(this::indexFunc);
+        router.post(config.pagePath() + "form").handler(this::form);
+        router.get(config.pagePath() + "download/:fileUid").handler(this::download);
+        router.get(config.pagePath() + "delete/:uid").handler(this::delete);
+        router.get(config.pagePath() + "info/:uid").handler(this::info);
+    }
 
-    @Route(path = "/fileserver/index", methods = Route.HttpMethod.GET)
+    // @Route(path = "/fileServer/index", methods = Route.HttpMethod.GET)
     public void indexFunc(RoutingContext ctx) {
         ctx.response()
             .putHeader("content-type", "text/html")
             .end(
-                "<form action=\"/fs/form\" method=\"post\" enctype=\"multipart/form-data\">\n"
+                // "<form action=\"/fileServer/form\" method=\"post\" enctype=\"multipart/form-data\">\n"
+                "<form action=\"form\" method=\"post\" enctype=\"multipart/form-data\">\n"
                     + "    <div>\n"
                     + "        <label for=\"name\">Select a file:</label>\n"
                     + "        <input type=\"file\" name=\"file\" />\n"
@@ -47,7 +58,7 @@ public class FileserverRouter {
             );
     }
 
-    @Route(path = "/fileserver/form", methods = Route.HttpMethod.POST)
+    // @Route(path = "/fileServer/form", methods = Route.HttpMethod.POST)
     public void form(RoutingContext ctx) {
 
         // 支持分块传输编码
@@ -58,8 +69,8 @@ public class FileserverRouter {
             originalFileName = f.fileName();
             long fileSize = f.size();
             String uid = "bsy-" + uploadedFileName.split("\\\\")[2];
-            String fileNameUid = suffixN(uid);
-            String fileContextUid = suffixO(uid);
+            String fileNameUid = suffixFileNameWithN(uid);
+            String fileContextUid = suffixFileNameWithO(uid);
             vertx.fileSystem().writeFile(config.uploadPath() + fileNameUid, Buffer.buffer(originalFileName));
             vertx.fileSystem().copy(uploadedFileName, config.uploadPath() + fileContextUid);
             vertx.fileSystem().delete(uploadedFileName);
@@ -68,11 +79,11 @@ public class FileserverRouter {
         ctx.response().end();
     }
 
-    @Route(path = "/fileserver/download/:fileUid", methods = Route.HttpMethod.GET)
+    // @Route(path = "/fileServer/download/:fileUid", methods = Route.HttpMethod.GET)
     public void download(RoutingContext ctx) {
         String fileUid = ctx.pathParam("fileUid");
-        String nameFile = suffixN(fileUid);
-        String contentFile = suffixO(fileUid);
+        String nameFile = suffixFileNameWithN(fileUid);
+        String contentFile = suffixFileNameWithO(fileUid);
         String contentFilePath = config.uploadPath() + contentFile;
         File file = new File(contentFilePath);
         String nameFilePath = config.uploadPath() + nameFile;
@@ -92,11 +103,11 @@ public class FileserverRouter {
         });
     }
 
-    @Route(path = "/fileserver/delete/:uid", methods = Route.HttpMethod.GET)
+    // @Route(path = "/fileServer/delete/:uid", methods = Route.HttpMethod.GET)
     public void delete(RoutingContext ctx) {
         String uid = ctx.pathParam("uid");
-        String deleteNamePath = suffixN(config.uploadPath() + uid);
-        String deleteContentPath = suffixO(config.uploadPath() + uid);
+        String deleteNamePath = suffixFileNameWithN(config.uploadPath() + uid);
+        String deleteContentPath = suffixFileNameWithO(config.uploadPath() + uid);
         File fileN = new File(deleteNamePath);
         File fileO = new File(deleteContentPath);
         boolean isDelete1 = fileN.delete();
@@ -104,11 +115,11 @@ public class FileserverRouter {
         ctx.response().end("Successfully deleted.");
     }
 
-    @Route(path = "/fileserver/info/:uid", methods = Route.HttpMethod.GET)
+    // @Route(path = "/fileServer/info/:uid", methods = Route.HttpMethod.GET)
     public void info(RoutingContext ctx) {
         String uid = ctx.pathParam("uid");
-        String fileNamePath = suffixN(config.uploadPath() + uid);
-        String fileContentPath = suffixO(config.uploadPath() + uid);
+        String fileNamePath = suffixFileNameWithN(config.uploadPath() + uid);
+        String fileContentPath = suffixFileNameWithO(config.uploadPath() + uid);
         File file = new File(fileNamePath);
         File fileContent = new File(fileContentPath);
         vertx.fileSystem().readFile(fileNamePath, result -> {
@@ -144,11 +155,11 @@ public class FileserverRouter {
     }
 
     // uid文件名处理方法
-    public String suffixN(String fileName) {
+    private String suffixFileNameWithN(String fileName) {
         return fileName + "-n";
     }
 
-    public String suffixO(String fileName) {
+    private String suffixFileNameWithO(String fileName) {
         return fileName + "-o";
     }
 }

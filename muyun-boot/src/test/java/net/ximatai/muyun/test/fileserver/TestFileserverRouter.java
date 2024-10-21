@@ -30,18 +30,14 @@ public class TestFileserverRouter {
     public void setup() throws IOException {
         int fileNameInt = getRandomInt();
         fileName = String.valueOf(fileNameInt);
-        try {
-            tempFile = File.createTempFile(fileName, ".txt");
-            FileOutputStream fos = new FileOutputStream(tempFile);
-            int ctx1 = getRandomInt();
-            fileContent += String.valueOf(ctx1 + "\n");
-            int ctx2 = getRandomInt();
-            fileContent += String.valueOf(ctx2);
-            fos.write(fileContent.getBytes());
-            fos.close();
-        } catch (IOException e) {
-            throw(e);
-        }
+        tempFile = File.createTempFile(fileName, ".txt");
+        FileOutputStream fos = new FileOutputStream(tempFile);
+        int ctx1 = getRandomInt();
+        fileContent += String.valueOf(ctx1 + "\n");
+        int ctx2 = getRandomInt();
+        fileContent += String.valueOf(ctx2);
+        fos.write(fileContent.getBytes());
+        fos.close();
     }
 
     @Test
@@ -56,10 +52,8 @@ public class TestFileserverRouter {
             .statusCode(200)
             .extract()
             .response();
-        // String jsonResponse = response.getBody().asString();
-        // JsonObject jsonObject = new JsonObject(jsonResponse);
 
-        String uid = response.getBody().asString();
+        uid = response.getBody().asString();
 
         // 下载文件
         Response response2 = given()
@@ -98,7 +92,6 @@ public class TestFileserverRouter {
             .get(deleteUrl)
             .then()
             .statusCode(200);
-
         tempFile.delete();
     }
 

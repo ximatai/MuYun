@@ -3,6 +3,7 @@ muyun:
   super-user-id: 1
 fileserver: 
   upload-path: D:\\file-uploads\\
+  page-path: /fileserver/
 web:
   redirects:
     - from: /
@@ -25,10 +26,10 @@ quarkus:
   datasource:
     db-kind: postgresql
     username: postgres
-    password: postgres
+    password: muyun2024
     #    password: Muyun20&24
     jdbc:
-      url: jdbc:postgresql://localhost:5432/muyun
+      url: jdbc:postgresql://localhost:54324/muyun
     #      url: jdbc:postgresql://192.168.6.205:32128/uni_antifraud
     #      enabled: true
     # reactive:
