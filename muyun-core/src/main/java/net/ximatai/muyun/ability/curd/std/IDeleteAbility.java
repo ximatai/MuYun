@@ -23,6 +23,10 @@ import java.util.List;
  */
 public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    default void beforeDelete(String id) {
+
+    }
+
     default void afterDelete(String id) {
 
     }
@@ -32,6 +36,7 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Transactional
     @Operation(summary = "删除数据", description = "返回被删除数据的数量，正常为1")
     default Integer delete(@PathParam("id") String id) {
+        this.beforeDelete(id);
         int result;
 
         if (this instanceof IChildrenAbility ability) { // 如果带子表，考虑级联删除
