@@ -9,12 +9,14 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
+import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.log.LogItem;
 import net.ximatai.muyun.service.ILogAccess;
 import net.ximatai.muyun.service.ILogError;
+import net.ximatai.muyun.service.ILogLogin;
 import net.ximatai.muyun.util.UserAgentParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,9 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
     @Inject
     Instance<ILogError> iLogError;
 
+    @Inject
+    Instance<ILogLogin> iLogLogin;
+
     private static final Logger LOG = LoggerFactory.getLogger(LogFilter.class);
 
     // 定义一个常量用于存储开始时间的键
@@ -50,7 +55,13 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
         ApiRequest apiRequest = getApiRequest();
-        if (apiRequest == null || apiRequest.getModuleName() == null || apiRequest.getActionName() == null) {
+        if (apiRequest == null) {
+            return;
+        }
+
+        String moduleName = apiRequest.getModuleName();
+        String actionName = apiRequest.getActionName();
+        if (moduleName == null || actionName == null) {
             return;
         }
 
@@ -70,9 +81,9 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
         // 创建 LogBaseItem 并填充响应信息
         LogItem logItem = new LogItem()
             .setUserID(userID)
-            .setUsername(user.getUsername())
-            .setModuleName(apiRequest.getModuleName())
-            .setActionName(apiRequest.getActionName())
+            .setUsername(apiRequest.getUsername())
+            .setModuleName(moduleName)
+            .setActionName(actionName)
             .setDataID(apiRequest.getDataID())
             .setUri(uri)
             .setMethod(method)
@@ -88,7 +99,12 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
             logItem.setParams(params);
         }
 
-        if (status > 400 && iLogError.isResolvable()) {
+        if (MuYunConst.SSO_MODULE_NAME.equals(moduleName) && iLogLogin.isResolvable()) {
+            if (apiRequest.getError() != null) {
+                logItem.setError(apiRequest.getError().getMessage()); // 对应登录失败的日志
+            }
+            iLogLogin.get().log(logItem);
+        } else if (status > 400 && iLogError.isResolvable()) {
             logItem.setError(responseContext.getEntity() != null ? responseContext.getEntity().toString() : "Unknown error");
             iLogError.get().log(logItem);
         } else if (iLogAccess.isResolvable()) {

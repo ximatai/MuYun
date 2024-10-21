@@ -1,7 +1,5 @@
 package net.ximatai.muyun.model;
 
-import net.ximatai.muyun.core.exception.PermsException;
-
 public class ApiRequest {
 
     public static final ApiRequest BLANK = new ApiRequest(IRuntimeUser.WHITE, "");
@@ -15,8 +13,9 @@ public class ApiRequest {
     private String moduleID;
     private String moduleName;
     private String actionName;
+    private String username;
 
-    private PermsException error;
+    private RuntimeException error;
 
     public ApiRequest(IRuntimeUser user, String path) {
         this.user = user;
@@ -53,12 +52,8 @@ public class ApiRequest {
         isSkip = true;
     }
 
-    public void setError(String moduleName, String actionName) {
-        this.error = new PermsException("您没有[%s]的[%s]功能权限".formatted(moduleName, actionName));
-    }
-
-    public void setError(String moduleName, String actionName, String dataID) {
-        this.error = new PermsException("您没有[%s]中[%S]数据[%s]的权限".formatted(moduleName, actionName, dataID));
+    public void setError(RuntimeException error) {
+        this.error = error;
     }
 
     public String getModule() {
@@ -81,7 +76,7 @@ public class ApiRequest {
         return isSkip;
     }
 
-    public PermsException getError() {
+    public RuntimeException getError() {
         return error;
     }
 
@@ -113,6 +108,19 @@ public class ApiRequest {
 
     public ApiRequest setActionName(String actionName) {
         this.actionName = actionName;
+        return this;
+    }
+
+    public String getUsername() {
+        if (username != null) { // sso 登录的时候，会手动写入username
+            return username;
+        }
+
+        return user.getUsername();
+    }
+
+    public ApiRequest setUsername(String username) {
+        this.username = username;
         return this;
     }
 

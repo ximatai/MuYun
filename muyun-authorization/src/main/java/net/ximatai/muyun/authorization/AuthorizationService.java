@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.PermsException;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.service.IAuthorizationService;
@@ -161,14 +162,16 @@ public class AuthorizationService implements IAuthorizationService {
         boolean authorized = isAuthorized(userID, request.getModule(), action);
 
         if (!authorized) { // 功能权限验证失败
-            request.setError((String) moduleRow.get("v_name"), (String) actionRow.get("v_name"));
+            PermsException permsException = new PermsException("您没有[%s]的[%s]功能权限".formatted(moduleRow.get("v_name"), actionRow.get("v_name")));
+            request.setError(permsException);
             return false;
         }
 
         if (request.getDataID() != null) {
             boolean dataAuthorized = isDataAuthorized(userID, request.getModule(), action, request.getDataID());
             if (!dataAuthorized) {
-                request.setError((String) moduleRow.get("v_name"), (String) actionRow.get("v_name"), request.getDataID());
+                PermsException permsException1 = new PermsException("您没有[%s]中[%S]数据[%s]的权限".formatted(moduleRow.get("v_name"), actionRow.get("v_name"), request.getDataID()));
+                request.setError(permsException1);
                 return false;
             }
         }

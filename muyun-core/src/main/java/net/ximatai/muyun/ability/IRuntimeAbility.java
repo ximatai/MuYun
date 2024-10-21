@@ -40,7 +40,7 @@ public interface IRuntimeAbility {
         }
     }
 
-    default void setUser(IRuntimeUser user) {
+    default void setUserInContext(IRuntimeUser user) {
         getRoutingContext().session().put(MuYunConst.SESSION_USER_KEY, user);
     }
 

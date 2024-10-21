@@ -12,9 +12,11 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
+import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.platform.model.RuntimeUser;
@@ -59,6 +61,11 @@ public class SsoController implements IRuntimeAbility {
     @Path("/login")
     @Operation(summary = "登录")
     public IRuntimeUser login(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("code") String code) {
+        ApiRequest apiRequest = getApiRequest();
+
+        apiRequest.setModuleName(MuYunConst.SSO_MODULE_NAME);
+        apiRequest.setActionName("登录");
+
         if (StringUtil.isBlank(username)) {
             throw new MyException("请输入用户名");
         }
@@ -71,12 +78,18 @@ public class SsoController implements IRuntimeAbility {
             throw new MyException("请输入验证码");
         }
 
-        verificationCode(code);
+        apiRequest.setUsername(username);
+        RuntimeException runtimeException = verificationCode(code);
+        if (runtimeException != null) {
+            apiRequest.setError(runtimeException);
+            throw runtimeException;
+        }
 
         PageResult pageResult = userController.query(Map.of("v_username", username));
 
         if (pageResult.getSize() == 0) {
-            logger.error("不存在的用户信息进行登录：{}", username);
+            apiRequest.setError(new RuntimeException("该用户不存在：%s".formatted(username)));
+            logger.error("该用户不存在：{}", username);
             throw new MyException("用户名或密码错误");
         }
 
@@ -87,14 +100,16 @@ public class SsoController implements IRuntimeAbility {
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
-                setUser(runtimeUser);
+                setUserInContext(runtimeUser);
                 return runtimeUser;
             } else {
-                logger.error("用户已停用，用户名：{}", username);
+                logger.error("用户已停用，用户名：%s".formatted(username));
+                apiRequest.setError(new RuntimeException("用户已停用，用户名：" + username));
                 throw new MyException("用户名或密码错误");
             }
         } else {
-            logger.error("用户密码验证失败，用户名：{}", username);
+            logger.error("用户密码验证失败，用户名：%s".formatted(username));
+            apiRequest.setError(new RuntimeException("用户密码验证失败，用户名：" + username));
             throw new MyException("用户名或密码错误");
         }
     }
@@ -104,28 +119,29 @@ public class SsoController implements IRuntimeAbility {
         return DigestUtils.md5Hex(md5Password + code).toUpperCase();
     }
 
-    private void verificationCode(String code) {
+    private RuntimeException verificationCode(String code) {
         if (config.debug() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) {
-            return;
+            return null;
         }
 
         Cookie cookie = routingContext.request().getCookie("code");
         if (cookie == null) {
-            throw new MyException("验证码已过期");
+            return new MyException("验证码已过期");
         }
 
         String hashCodeInCookie = cookie.getValue();
 
         if (hashCodeInCookie.equals(hashText(code))) {
             if (codeCache.getIfPresent(code) != null) {
-                throw new MyException("验证码已过期");
+                return new MyException("验证码已过期");
             }
 
             codeCache.put(code, code);
         } else {
-            throw new MyException("验证码不正确");
+            return new MyException("验证码不正确");
         }
 
+        return null;
     }
 
     @POST
@@ -143,6 +159,10 @@ public class SsoController implements IRuntimeAbility {
     @Path("/logout")
     @Operation(summary = "退出")
     public boolean logout() {
+        ApiRequest apiRequest = getApiRequest();
+        apiRequest.setModuleName("SSO");
+        apiRequest.setActionName("登录");
+
         this.destroy();
         return true;
     }
