@@ -10,6 +10,7 @@ import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,7 +27,7 @@ public class TestRegionController {
     RegionController regionController;
 
     @Test
-    void testCreateWithIDBlank() {
+    void testCreateWithIDBlank() { // 必须提供 id
         assertThrows(NullPointerException.class, () -> {
             regionController.create(Map.of(
                 "v_name", "test"
@@ -69,6 +70,24 @@ public class TestRegionController {
                 "v_name", "test"
             ));
         });
+    }
 
+    @Test
+    void testIdMapName() {
+        String id1 = regionController.create(Map.of(
+            "id", UUID.randomUUID().toString(),
+            "v_name", "test1"
+        ));
+
+        Map<String, String> stringStringMap = regionController.idMapName();
+
+        assertEquals("test1", stringStringMap.get(id1));
+
+        String id2 = regionController.create(Map.of(
+            "id", UUID.randomUUID().toString(),
+            "v_name", "test2"
+        ));
+
+        assertEquals("test2", regionController.getNameById(id2));
     }
 }
