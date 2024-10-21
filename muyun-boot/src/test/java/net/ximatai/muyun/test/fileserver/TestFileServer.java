@@ -16,7 +16,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-public class TestFileserverRouter {
+public class TestFileServer {
 
     // 文件名
     String fileName;
@@ -46,7 +46,7 @@ public class TestFileserverRouter {
         Response response = given()
             .multiPart("file", tempFile)
             .when()
-            .post("/fileserver/form")
+            .post("/fileServer/form")
             .then()
             .log().all()
             .statusCode(200)
@@ -58,7 +58,7 @@ public class TestFileserverRouter {
         // 下载文件
         Response response2 = given()
             .when()
-            .get("/fileserver/download/" + uid)
+            .get("/fileServer/download/" + uid)
             .then()
             .log().all()
             .statusCode(200)
@@ -72,7 +72,7 @@ public class TestFileserverRouter {
         // 读取文件info
         Response response3 = given()
             .when()
-            .get("/fileserver/info/" + uid)
+            .get("/fileServer/info/" + uid)
             .then()
             .log().all()
             .statusCode(200)
@@ -86,7 +86,7 @@ public class TestFileserverRouter {
 
     @AfterEach
     public void tearDown() {
-        String deleteUrl = "/fileserver/delete/" + uid;
+        String deleteUrl = "/fileServer/delete/" + uid;
         given()
             .when()
             .get(deleteUrl)
