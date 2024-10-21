@@ -8,7 +8,6 @@ dependencies {
     api(project(":muyun-database-std"))
     api(project(":muyun-authorization"))
 
-    api(libs.commons.codes)
     api(libs.easyCaptcha)
 //    api(project(":muyun-database-uni"))
 }

@@ -1,13 +1,14 @@
 package net.ximatai.muyun.platform.ability;
 
+import net.ximatai.muyun.ability.IFileAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.curd.std.ICreateAbility;
 import net.ximatai.muyun.ability.curd.std.IDeleteAbility;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.ability.curd.std.IUpdateAbility;
 import net.ximatai.muyun.platform.controller.ModuleController;
-import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public interface IModuleRegisterAbility {
         }
         if (this instanceof ISortAbility) {
             actions.add(ModuleAction.SORT);
+        }
+        if (this instanceof IFileAbility) {
+            actions.add(new ModuleAction("download", "下载", ModuleAction.TypeLike.VIEW));
         }
         return actions;
     }

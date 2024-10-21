@@ -180,7 +180,7 @@ public class SsoController implements IRuntimeAbility {
     }
 
     private String hashText(String text) {
-        return DigestUtils.sha256Hex(text + "mace").substring(0, 16);
+        return DigestUtils.sha256Hex(text + "MuYun").substring(0, 16);
     }
 
     @Override

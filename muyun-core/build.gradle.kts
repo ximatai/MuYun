@@ -15,6 +15,7 @@ dependencies {
     api("io.quarkus:quarkus-rest-jackson")
     api("io.quarkus:quarkus-smallrye-openapi")
 
+    api(libs.commons.codes)
     api(libs.bcprov)
     api(libs.caffeine)
 
