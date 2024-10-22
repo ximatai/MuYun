@@ -1,7 +1,6 @@
 package net.ximatai.muyun.fileserver;
 
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Router;
@@ -12,6 +11,7 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.vertx.core.Vertx;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,8 +20,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @ApplicationScoped
 public class FileServer {
@@ -134,7 +132,7 @@ public class FileServer {
     }
 
     // @Route(path = "/fileServer/info/:uid", methods = Route.HttpMethod.GET)
-    private void info(RoutingContext ctx){
+    private void info(RoutingContext ctx) {
         String uid = ctx.pathParam("uid");
         String fileNamePath = suffixFileNameWithN(config.uploadPath() + uid);
         String fileContentPath = suffixFileNameWithO(config.uploadPath() + uid);
@@ -254,8 +252,7 @@ public class FileServer {
 //
 //        return (FileInfoEntity) completableFuture.get();
 //    }
-
-
+    
     // uid文件名处理方法
     private String suffixFileNameWithN(String fileName) {
         return fileName + "-n";
