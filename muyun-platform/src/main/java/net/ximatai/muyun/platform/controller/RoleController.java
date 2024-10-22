@@ -8,6 +8,7 @@ import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
@@ -127,5 +128,19 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
             .setAlias("role")
             .addAction(new ModuleAction("assign", "分配", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("revoke", "撤回", ModuleAction.TypeLike.UPDATE));
+    }
+
+    @Override
+    public void beforeDelete(String id) {
+        super.beforeDelete(id);
+
+        PageResult result = userRoleController.query(Map.of(
+            "id_at_auth_role", id
+        ));
+
+        if (result.getSize() > 0) {
+            throw new MyException("该角色已经给相关人员，不允许删除");
+        }
+
     }
 }
