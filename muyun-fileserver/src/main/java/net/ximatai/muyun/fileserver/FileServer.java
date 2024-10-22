@@ -1,5 +1,6 @@
 package net.ximatai.muyun.fileserver;
 
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.FileUpload;
@@ -10,7 +11,6 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.vertx.core.Vertx;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class FileServer {
     String originalFileName;
 
     @Inject
-    FileserverConfig config;
+    FileServerConfig config;
 
     @Inject
     Vertx vertx;
@@ -252,7 +252,7 @@ public class FileServer {
 //
 //        return (FileInfoEntity) completableFuture.get();
 //    }
-    
+
     // uid文件名处理方法
     private String suffixFileNameWithN(String fileName) {
         return fileName + "-n";

@@ -12,7 +12,7 @@ import jakarta.inject.Inject;
 public class FileserverRegister {
     
     @Inject
-    FileserverConfig config;
+    FileServerConfig config;
 
     @RouteFilter(10)  // 该注解中有route
     void filter(RoutingContext context) {
