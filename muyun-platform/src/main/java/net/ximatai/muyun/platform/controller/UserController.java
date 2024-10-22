@@ -52,6 +52,15 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
         );
     }
 
+    /**
+     * 登录成功标记  t_this_login \ t_last_login
+     */
+    public void checkIn(String id) {
+        getDB().update("""
+                update platform.auth_user set t_last_login = t_this_login,t_this_login = now() where id = ?
+                """, id);
+    }
+
     @Override
     public List<String> getColumnsForSigning() {
         return List.of();
