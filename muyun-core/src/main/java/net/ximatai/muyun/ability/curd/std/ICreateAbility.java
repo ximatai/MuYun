@@ -9,9 +9,12 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
+import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.model.IRuntimeUser;
+import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
@@ -132,6 +135,13 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             body.put("id_at_org_department__perms", user.getDepartmentId());
             body.put("id_at_org_organization__perms", user.getOrganizationId());
             body.put("id_at_app_module__perms", moduleID);
+        }
+
+        if (this instanceof ITreeAbility treeAbility) {
+            Column pidColumn = treeAbility.getParentKeyColumn();
+            if (StringUtil.isBlank(body.get(pidColumn.getName()))) {
+                body.put(pidColumn.getName(), pidColumn.getDefaultValue());
+            }
         }
     }
 
