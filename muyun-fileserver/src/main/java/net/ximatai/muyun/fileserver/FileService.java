@@ -22,7 +22,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.UUID;
 
 @ApplicationScoped
-public class FileServer {
+public class FileService {
 
     final Logger logger = LoggerFactory.getLogger(getClass());
 
