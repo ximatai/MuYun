@@ -1,10 +1,13 @@
 package net.ximatai.muyun.util;
 
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.TreeNode;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TreeBuilder {
@@ -35,8 +38,10 @@ public class TreeBuilder {
         Map<String, List<Map<String, Object>>> groupedByParentKey = list.stream()
             .collect(Collectors.groupingBy(item -> (String) item.get(parentKeyColumn)));
 
+        Set<TreeNode> nodes = new HashSet<>();
+
         // 构建树形结构的递归方法
-        List<TreeNode> treeNodeList = buildChildren(groupedByParentKey, pkColumn, parentKeyColumn, rootID, labelColumn, 1, maxLevel);
+        List<TreeNode> treeNodeList = buildChildren(groupedByParentKey, pkColumn, parentKeyColumn, rootID, labelColumn, 1, maxLevel, nodes);
 
         if (showMe) {
             if (rootID.equals(ROOT_PID)) {
@@ -53,7 +58,7 @@ public class TreeBuilder {
     }
 
     private static List<TreeNode> buildChildren(Map<String, List<Map<String, Object>>> groupedByParentKey, String pkColumn, String parentKeyColumn,
-                                                String currentRootID, String labelColumn, int currentLevel, int maxLevel) {
+                                                String currentRootID, String labelColumn, int currentLevel, int maxLevel, Set<TreeNode> nodes) {
         if (currentLevel > maxLevel) {
             return Collections.emptyList(); // 超过最大层级，返回空列表
         }
@@ -68,9 +73,15 @@ public class TreeBuilder {
                 .setLabel((String) node.get(labelColumn))
                 .setData(node);
 
+            if (nodes.contains(treeNode)) {
+                throw new MyException("树节点出现递归调用");
+            } else {
+                nodes.add(treeNode);
+            }
+
             // 递归构建子节点
             List<TreeNode> childNodes = buildChildren(groupedByParentKey, pkColumn, parentKeyColumn,
-                (String) node.get(pkColumn), labelColumn, currentLevel + 1, maxLevel);
+                (String) node.get(pkColumn), labelColumn, currentLevel + 1, maxLevel, nodes);
             treeNode.setChildren(childNodes);
 
             return treeNode;

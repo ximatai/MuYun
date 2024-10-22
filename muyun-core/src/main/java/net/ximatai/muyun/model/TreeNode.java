@@ -55,4 +55,18 @@ public class TreeNode {
         return this;
     }
 
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TreeNode node) {
+            return this.getId().equals(node.getId());
+        } else {
+            return false;
+        }
+    }
+
 }
