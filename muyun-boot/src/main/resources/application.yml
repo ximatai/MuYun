@@ -3,7 +3,7 @@ muyun:
   super-user-id: 1
 fileserver: 
   upload-path: D:\\file-uploads\\
-  page-path: /fileserver/
+  page-path: fileServer
 web:
   redirects:
     - from: /
