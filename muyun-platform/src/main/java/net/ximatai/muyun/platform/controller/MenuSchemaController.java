@@ -125,4 +125,13 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
             throw new MyException("终端类型必填");
         }
     }
+
+    @Override
+    public void beforeDelete(String id) {
+        super.beforeDelete(id);
+        List<TreeNode> tree = this.tree(id);
+        if (!tree.isEmpty()) {
+            throw new MyException("该菜单方案对应菜单数据不为空，不允许删除");
+        }
+    }
 }
