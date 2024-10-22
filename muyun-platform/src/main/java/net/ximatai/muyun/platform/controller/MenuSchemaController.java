@@ -7,6 +7,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ISortAbility;
+import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
@@ -22,13 +23,14 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Tag(name = "菜单方案管理")
 @Path(BASE_PATH + "/menuSchema")
-public class MenuSchemaController extends ScaffoldForPlatform implements IChildrenAbility, ISortAbility {
+public class MenuSchemaController extends ScaffoldForPlatform implements IChildrenAbility, ISortAbility, IDataCheckAbility {
 
     @Inject
     DictCategoryController dictCategoryController;
@@ -112,6 +114,15 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
             return row.get("id").toString();
         } else {
             throw new MyException("未找到该用户匹配的菜单方案");
+        }
+    }
+
+    @Override
+    public void check(Map body, boolean isUpdate) {
+        List terminalType = (List) body.get("dicts_terminal_type");
+        Objects.requireNonNull(terminalType, "终端类型必填");
+        if (terminalType.isEmpty()) {
+            throw new MyException("终端类型必填");
         }
     }
 }

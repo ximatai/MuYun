@@ -27,6 +27,43 @@ public class TestMenu {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    void testTerminalTypeNull() {
+        String error = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "默认方案"
+            ))
+            .when()
+            .post("%s/menuSchema/create".formatted(base))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertEquals("终端类型必填", error);
+    }
+
+    @Test
+    void testTerminalTypeBlank() {
+        String error = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "默认方案",
+                "dicts_terminal_type", List.of()
+            ))
+            .when()
+            .post("%s/menuSchema/create".formatted(base))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertEquals("终端类型必填", error);
+    }
+
+    @Test
     void test() {
         String schemaID = given()
             .header("userID", config.superUserId())

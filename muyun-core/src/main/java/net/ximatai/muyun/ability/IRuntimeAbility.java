@@ -28,7 +28,7 @@ public interface IRuntimeAbility {
             Session session = getRoutingContext().session();
             if (session != null && session.get(MuYunConst.SESSION_USER_KEY) != null) {
                 return session.get(MuYunConst.SESSION_USER_KEY);
-            } else if (getRoutingContext().get(DEBUG_MODE_CONTEXT_KEY) != null
+            } else if (getRoutingContext().<Boolean>get(DEBUG_MODE_CONTEXT_KEY)
                 && getRoutingContext().request().getHeader("userID") != null) {
                 String userID = getRoutingContext().request().getHeader("userID");
                 return IRuntimeUser.build(userID);
