@@ -73,7 +73,7 @@ public class TestRegionController {
     }
 
     @Test
-    void testIdMapName() {
+    void testIdMapName() throws InterruptedException {
         String id1 = regionController.create(Map.of(
             "id", UUID.randomUUID().toString(),
             "v_name", "test1"
@@ -87,6 +87,8 @@ public class TestRegionController {
             "id", UUID.randomUUID().toString(),
             "v_name", "test2"
         ));
+
+        Thread.sleep(500);
 
         assertEquals("test2", regionController.getNameById(id2));
     }
