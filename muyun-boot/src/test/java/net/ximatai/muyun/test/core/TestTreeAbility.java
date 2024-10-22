@@ -9,6 +9,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
@@ -53,6 +55,19 @@ class TestTreeAbility {
         abID = testController.create(Map.of("pid", aID, "v_name", "A.b"));
         baID = testController.create(Map.of("pid", bID, "v_name", "B.a"));
         aa1ID = testController.create(Map.of("pid", aaID, "v_name", "A.a.1"));
+    }
+
+    @Test
+    void testEndlessLoop() {
+        String x = testController.create(Map.of("v_name", "x"));
+        String y = testController.create(Map.of("v_name", "y", "pid", x));
+        String z = testController.create(Map.of("v_name", "z", "pid", y));
+
+        MyException exception = assertThrows(MyException.class, () -> {
+            testController.update(x, Map.of("pid", z));
+        });
+
+        assertEquals(exception.getMessage(), "不能编辑该节点的父节点为其子孙节点");
     }
 
     @Test

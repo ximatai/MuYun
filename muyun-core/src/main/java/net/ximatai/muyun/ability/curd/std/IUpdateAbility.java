@@ -13,6 +13,7 @@ import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.DataChangeChannel;
+import net.ximatai.muyun.model.TreeNode;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,15 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             if (id.equals(body.get(treeAbility.getParentKeyColumn().getName()))) {
                 throw new MyException("树结构的父节点不能是它自身");
             }
+
+            String pid = (String) body.get(treeAbility.getParentKeyColumn().getName());
+            if (pid != null) {
+                List<TreeNode> tree = treeAbility.tree(id, false, null, null);
+                if (isIdInTree(tree, pid)) {
+                    throw new MyException("不能编辑该节点的父节点为其子孙节点");
+                }
+            }
+
         }
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
@@ -75,6 +85,19 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         afterUpdate(id);
 
         return result;
+    }
+
+    private boolean isIdInTree(List<TreeNode> tree, String id) {
+        for (TreeNode node : tree) {
+            if (node.getId().equals(id)) {
+                return true;
+            } else if (node.getChildren() != null && !node.getChildren().isEmpty()) {
+                if (isIdInTree(node.getChildren(), id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
