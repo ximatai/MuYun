@@ -21,6 +21,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
 
+//TODO 抽象一个 IFileService 接口，对Java层暴露相关方法
 @ApplicationScoped
 public class FileService {
 
@@ -34,6 +35,7 @@ public class FileService {
     @Inject
     Vertx vertx;
 
+    // TODO 代码不够优雅，尤其是最后一行 return
     private String getRootPath() {
         String rootPath = config.pagePath();
         rootPath = rootPath.startsWith("/") ? rootPath : "/" + rootPath;
@@ -48,6 +50,7 @@ public class FileService {
         router.get(getRootPath() + "info/:uid").handler(this::info);
     }
 
+    //TODO 改成 """ """ 的方式存放字符串
     // @Route(path = "/fileServer/index", methods = Route.HttpMethod.GET)
     private void indexFunc(RoutingContext ctx) {
         ctx.response()
@@ -66,6 +69,7 @@ public class FileService {
             );
     }
 
+    // TODO 要知道这是对 前端开放的上传接口，所以叫 form 不合适，正常应该叫 upload
     // @Route(path = "/fileServer/form", methods = Route.HttpMethod.POST)
     private void form(RoutingContext ctx) {
 
@@ -189,6 +193,7 @@ public class FileService {
 //        }
     }
 
+    // TODO 检查下两个文件都生成了么，内容是否完整，要求需要有匹配的单元测试
     // 保存文件
     public String save(File file) {
         String saveUid = generateBsyUid();
@@ -203,6 +208,9 @@ public class FileService {
         return saveUid;
     }
 
+    //TODO get\fetch\ 都要比obtain更合适，同时需要考虑文件不存在的情况，还有就是不要把原始File在java层返回，
+    // 我们不希望获取到File 的java代码可以修改我们的原始文件，所以应该复制一份
+    // 准备对应的单元测试
     // 获取文件
     public File obtain(String uid) {
         String contentFile = suffixFileNameWithO(uid);
@@ -211,6 +219,7 @@ public class FileService {
         return file;
     }
 
+    //TODO delete 更简单，另外就是考虑文件不存在的情况，准备对应的单元测试
     // 丢弃服务器端中的文件
     public boolean drop(String uid) {
         String deleteNamePath = suffixFileNameWithN(config.uploadPath() + uid);
