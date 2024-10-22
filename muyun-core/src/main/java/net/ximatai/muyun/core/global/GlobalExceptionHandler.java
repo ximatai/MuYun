@@ -41,9 +41,15 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
         String requestPath = uriInfo.getRequestUri().getPath();
         logger.error("USER:{},URI:{}", getUser().getId(), requestPath);
 
-        String message = config.debug() ? e.getMessage() : "服务器错误，请检查。";
+        String message = "服务器错误，请检查";
 
-        if (e instanceof PermsException exception) { // 权限报错
+        if (config.debug() && e.getMessage() != null) {
+            message = e.getMessage();
+        }
+
+        if (e instanceof NullPointerException exception && exception.getMessage() != null) {
+            message = exception.getMessage();
+        } else if (e instanceof PermsException exception) { // 权限报错
             responseStatus = getUser().getId().equals(IRuntimeUser.WHITE.getId()) ? UNAUTHORIZED : FORBIDDEN; //说明是白名单用户，也就是登录过期情况
             message = exception.getMessage();
         } else if (e instanceof MyException exception) {
