@@ -101,6 +101,7 @@ public class SsoController implements IRuntimeAbility {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
                 setUserInContext(runtimeUser);
+                userController.checkIn((String) user.get("id"));
                 return runtimeUser;
             } else {
                 logger.error("用户已停用，用户名：%s".formatted(username));
