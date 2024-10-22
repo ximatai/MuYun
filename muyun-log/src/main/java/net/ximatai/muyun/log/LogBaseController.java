@@ -46,12 +46,13 @@ public abstract class LogBaseController implements IMetadataAbility, ISelectAbil
             .addColumn("b_success")
             .addColumn("i_status_code")
             .addColumn("v_error")
-            .addColumn("t_create");
+            .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
         new TableBuilder(databaseOperations).build(wrapper);
     }
 
     public void log(LogItem logItem) {
+
         databaseOperations.insertItem(getSchemaName(), getMainTable(), logItem.toMap());
     }
 
