@@ -1,6 +1,9 @@
 muyun:
   debug: true
   super-user-id: 1
+fileserver: 
+  upload-path: D:\\file-uploads\\
+  page-path: fileServer
 web:
   redirects:
     - from: /
