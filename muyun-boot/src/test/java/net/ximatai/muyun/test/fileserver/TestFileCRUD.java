@@ -45,7 +45,8 @@ public class TestFileCRUD {
         fileContent += String.valueOf(ctx2);
         fos.write(fileContent.getBytes());
         fos.close();
-        String id = service.save(tempFile, fileName);
+        String id = service.save(tempFile, fileName).split("@")[0];
+
         String filePathWithN = config.uploadPath() + id + "-n";
         String filePathWithO = config.uploadPath() + id + "-o";
         Path pathN = Paths.get(filePathWithN);

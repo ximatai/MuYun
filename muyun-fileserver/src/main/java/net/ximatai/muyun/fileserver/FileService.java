@@ -92,6 +92,9 @@ public class FileService implements IFileService {
     // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
     private void download(RoutingContext ctx) {
         String id = ctx.pathParam("id");
+        if (id.contains("@")) {
+            id = id.split("@")[0];
+        }
         File fileObtained = get(id);
         // 发送文件到客户端
         String nameFile = suffixFileNameWithN(id);
@@ -140,11 +143,14 @@ public class FileService implements IFileService {
 
     // 异步得到文件信息
     public Future<FileInfoEntity> asyncInfo(String id) {
+        if (id.contains("@")) {
+            id = id.split("@")[0];
+        }
         Promise<FileInfoEntity> promise = Promise.promise();
         String fileNamePath = suffixFileNameWithN(config.uploadPath() + id);
         String fileContentPath = suffixFileNameWithO(config.uploadPath() + id);
-        File fileName = new File(fileNamePath);
         File fileContent = new File(fileContentPath);
+        String finalId = id;
         vertx.fileSystem().readFile(fileNamePath, result -> {
             if (result.succeeded()) {
                 Buffer buffer = result.result();
@@ -159,7 +165,7 @@ public class FileService implements IFileService {
                 } catch (IOException e) {
                     logger.error("Failed to read file attributes", e);
                 }
-                FileInfoEntity entity = new FileInfoEntity(line, fileContent.length(), suffix, id, createTime);
+                FileInfoEntity entity = new FileInfoEntity(line, fileContent.length(), suffix, finalId, createTime);
                 promise.complete(entity);
             } else {
                 logger.error("Failed to read file name: " + result.cause());
@@ -194,19 +200,21 @@ public class FileService implements IFileService {
     // 保存文件
     public String save(File file, String assignName) {
         String saveId = generateBsyUid();
-        String saveFileName = file.getName();
-        long saveSize = file.length();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
         // 写入文件名
         vertx.fileSystem().writeFile(config.uploadPath() + saveFileNameUid, Buffer.buffer(assignName));
         vertx.fileSystem().copy(file.getAbsolutePath(), config.uploadPath() + saveFileContextUid);
         vertx.fileSystem().delete(file.getAbsolutePath());
-        return saveId;
+        return "%s@%s".formatted(saveId, assignName);
     }
 
     // 获取文件
     public File get(String id) {
+        if (id.contains("@")) {
+            id = id.split("@")[0];
+        }
+
         String nameFile = suffixFileNameWithN(id);
         String contentFile = suffixFileNameWithO(id);
         String nameFilePath = config.uploadPath() + nameFile;
@@ -231,6 +239,10 @@ public class FileService implements IFileService {
 
     // 丢弃服务器端中的文件
     public boolean delete(String id) {
+        if (id.contains("@")) {
+            id = id.split("@")[0];
+        }
+
         String deleteNamePath = suffixFileNameWithN(config.uploadPath() + id);
         String deleteContentPath = suffixFileNameWithO(config.uploadPath() + id);
         File fileN = new File(deleteNamePath);
