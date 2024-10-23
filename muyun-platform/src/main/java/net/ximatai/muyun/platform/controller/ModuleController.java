@@ -129,7 +129,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         this.lockModule(root21, "菜单方案", "menuSchema", "platform.app_menu_schema", "platform/menuSchema/index", null);
         this.lockModule(root21, "菜单管理", "menu", "platform.app_menu", "platform/menu/index", null);
 
-        String root22 = this.lockModule(root2, "权限管理", "void", null, null, null);
+        String root22 = this.lockModule(root2, "角色权限", "void", null, null, null);
         this.lockModule(root22, "角色管理", "role", "platform.app_module", "platform/role/index", null);
         this.lockModule(root22, "权限管理", "authorization", null, "platform/authorization/index", null);
 
