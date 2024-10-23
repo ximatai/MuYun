@@ -60,8 +60,19 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     @Path("/tree/{id}")
     public List<DictTreeNode> tree(@PathParam("id") String id) {
         List<TreeNode> list = dictController.tree(id, false, null, null);
-        return list.stream().map(it -> DictTreeNode.from(it)
-            .setValue(it.getData().get("v_value").toString())).toList();
+        return nodeToDictNode(list);
+    }
+
+    private List<DictTreeNode> nodeToDictNode(List<? extends TreeNode> list) {
+        return list.stream().map(it -> {
+            DictTreeNode node = DictTreeNode.from(it)
+                .setValue(it.getData().get("v_value").toString());
+            List<TreeNode> children = node.getChildren();
+            if (children != null && !children.isEmpty()) {
+                node.setChildren(nodeToDictNode(children));
+            }
+            return node;
+        }).toList();
     }
 
     @GET

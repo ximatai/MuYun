@@ -67,9 +67,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     @Override
     protected void afterInit() {
-        if (muYunConfig.debug()) {
-            initData();
-        }
+        initData();
     }
 
     @Override

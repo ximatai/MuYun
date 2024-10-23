@@ -354,7 +354,7 @@ public class AuthorizationService implements IAuthorizationService {
                     .collect(Collectors.joining(",")));
             case "department" -> "%s='%s'".formatted(departmentColumn, departmentID);
             case "department_and_subordinates" -> "%s in (%s)"
-                .formatted(departmentColumn, departmentAndSubordinates(organizationID)
+                .formatted(departmentColumn, departmentAndSubordinates(departmentID)
                     .stream().map("'%s'"::formatted)
                     .collect(Collectors.joining(",")));
             case "supervision_region" -> "%s in (%s)"
@@ -481,7 +481,7 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Override
     public Set<String> getUserAvailableRoles(String userID) {
-        if (config.debug()) {
+        if (config.isTestMode()) {
             return loadRoles(userID);
         } else {
             return userToRoles.get(userID);

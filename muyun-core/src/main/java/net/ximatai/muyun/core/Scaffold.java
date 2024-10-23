@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IDatabaseAbility;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,17 @@ public abstract class Scaffold implements IDatabaseAbility, IRuntimeAbility {
     private IDatabaseOperations databaseOperations;
     private EventBus eventBus;
     private RoutingContext routingContext;
+    private MuYunConfig config;
+
+    @Override
+    public MuYunConfig getConfig() {
+        return config;
+    }
+
+    @Inject
+    public void setConfig(MuYunConfig config) {
+        this.config = config;
+    }
 
     @Inject
     public void setRoutingContext(RoutingContext routingContext) {

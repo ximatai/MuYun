@@ -19,6 +19,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
@@ -164,6 +165,39 @@ public class TestDictController {
             });
 
         assertEquals(response.size(), 3);
+        DictTreeNode node = response.get(0);
+        assertNotNull(node.getValue());
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(
+                Map.of(
+                    "v_value", "031",
+                    "v_name", "name31",
+                    "pid", node.getId()
+                )
+            )
+            .when()
+            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+         given()
+            .header("userID", config.superUserId())
+            .get("%s/dict/tree/%s".formatted(base, "root1"))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+//        assertEquals(response.size(), 3);
+//        node = response.get(0);
+//        assertEquals(node.getChildren().size(), 1);
+//        assertNotNull(node.getValue());
 
         List<DictTreeNode> response2 = given()
             .header("userID", config.superUserId())

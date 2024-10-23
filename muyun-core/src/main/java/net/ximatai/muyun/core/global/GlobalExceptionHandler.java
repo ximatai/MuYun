@@ -43,7 +43,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
 
         String message = "服务器错误，请检查";
 
-        if (config.debug() && e.getMessage() != null) {
+        if (!config.isProdMode() && e.getMessage() != null) { // 非生产环境可以访问原始错误信息
             message = e.getMessage();
         }
 
@@ -73,5 +73,10 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
     @Override
     public RoutingContext getRoutingContext() {
         return routingContext;
+    }
+
+    @Override
+    public MuYunConfig getConfig() {
+        return config;
     }
 }

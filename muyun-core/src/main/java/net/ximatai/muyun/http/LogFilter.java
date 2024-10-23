@@ -11,6 +11,7 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.log.LogItem;
@@ -40,6 +41,9 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
 
     @Inject
     Instance<ILogLogin> iLogLogin;
+
+    @Inject
+    MuYunConfig config;
 
     private static final Logger LOG = LoggerFactory.getLogger(LogFilter.class);
 
@@ -143,5 +147,10 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
     @Override
     public RoutingContext getRoutingContext() {
         return routingContext;
+    }
+
+    @Override
+    public MuYunConfig getConfig() {
+        return config;
     }
 }

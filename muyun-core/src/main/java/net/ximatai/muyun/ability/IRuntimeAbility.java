@@ -3,10 +3,9 @@ package net.ximatai.muyun.ability;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import net.ximatai.muyun.MuYunConst;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
-
-import static net.ximatai.muyun.MuYunConst.DEBUG_MODE_CONTEXT_KEY;
 
 /**
  * 获取运行时上下文的能力
@@ -14,6 +13,8 @@ import static net.ximatai.muyun.MuYunConst.DEBUG_MODE_CONTEXT_KEY;
 public interface IRuntimeAbility {
 
     RoutingContext getRoutingContext();
+
+    MuYunConfig getConfig();
 
     default ApiRequest getApiRequest() {
         try {
@@ -28,7 +29,7 @@ public interface IRuntimeAbility {
             Session session = getRoutingContext().session();
             if (session != null && session.get(MuYunConst.SESSION_USER_KEY) != null) {
                 return session.get(MuYunConst.SESSION_USER_KEY);
-            } else if (getRoutingContext().<Boolean>get(DEBUG_MODE_CONTEXT_KEY)
+            } else if (getConfig().isTestMode() // 只有测试模式需要手动提供 userID 放在 Header里
                 && getRoutingContext().request().getHeader("userID") != null) {
                 String userID = getRoutingContext().request().getHeader("userID");
                 return IRuntimeUser.build(userID);

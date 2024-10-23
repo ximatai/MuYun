@@ -1,5 +1,4 @@
 muyun:
-  debug: true
   super-user-id: 1
 
 quarkus:

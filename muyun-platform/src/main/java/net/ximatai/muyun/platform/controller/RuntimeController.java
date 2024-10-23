@@ -95,6 +95,11 @@ public class RuntimeController implements IRuntimeAbility {
         return routingContext;
     }
 
+    @Override
+    public MuYunConfig getConfig() {
+        return config;
+    }
+
     private List<TreeNode> filterMenuByAuth(List<TreeNode> list) {
         String userID = getUser().getId();
         Map<String, Set<String>> authorizedResources = authorizationService.getAuthorizedResources(userID);

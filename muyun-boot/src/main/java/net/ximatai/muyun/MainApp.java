@@ -5,7 +5,6 @@ import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,12 +16,9 @@ public class MainApp implements QuarkusApplication {
     @Inject
     MuYunConfig config;
 
-    @ConfigProperty(name = "quarkus.http.port")
-    int port;
-
     @Override
     public int run(String... args) {
-        logger.info("MuYun started successfully! Running on port: {}. Debug mode is {}", port, config.debug() ? "OPEN" : "CLOSE");
+        logger.info("PROFILE ON {}", config.profile());
         Quarkus.waitForExit();
         return 0;
     }

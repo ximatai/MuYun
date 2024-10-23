@@ -50,8 +50,8 @@ public class TreeNode {
         return this;
     }
 
-    public TreeNode setChildren(List<TreeNode> children) {
-        this.children = children;
+    public TreeNode setChildren(List<? extends TreeNode> children) {
+        this.children = (List<TreeNode>) children;
         return this;
     }
 

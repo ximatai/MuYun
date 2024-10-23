@@ -9,10 +9,10 @@ public class DictTreeNode extends TreeNode {
 
     public static DictTreeNode from(TreeNode node) {
         return (DictTreeNode) new DictTreeNode()
-                .setId(node.getId())
-                .setLabel(node.getLabel())
-                .setChildren(node.getChildren())
-                .setData(node.getData());
+            .setId(node.getId())
+            .setLabel(node.getLabel())
+            .setChildren(node.getChildren())
+            .setData(node.getData());
     }
 
     public String getValue() {

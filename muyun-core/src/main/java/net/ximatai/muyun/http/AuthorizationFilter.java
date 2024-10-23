@@ -19,8 +19,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
 
-import static net.ximatai.muyun.MuYunConst.DEBUG_MODE_CONTEXT_KEY;
-
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 @ApplicationScoped
@@ -43,10 +41,6 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
         // 获取请求的路径
         String path = requestContext.getUriInfo().getRequestUri().getPath();
 
-        if (config.debug()) {
-            routingContext.put(DEBUG_MODE_CONTEXT_KEY, true);
-        }
-
         if (path.startsWith(restPath)) { //仅对 /api开头的请求做权限拦截
             IRuntimeUser runtimeUser = this.getUser();
             if ("/".equals(restPath)) {
@@ -68,5 +62,10 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
     @Override
     public RoutingContext getRoutingContext() {
         return routingContext;
+    }
+
+    @Override
+    public MuYunConfig getConfig() {
+        return config;
     }
 }

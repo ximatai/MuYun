@@ -280,11 +280,16 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             .addAction(new ModuleAction("setRoles", "设置角色", ModuleAction.TypeLike.UPDATE));
     }
 
-    private static String promptForInput(Scanner scanner, String promptMessage) {
+    private String promptForInput(Scanner scanner, String promptMessage) {
+        if (config.isTestMode()) { // 单元测试模式，锁定用户名密码
+            return "admin";
+        }
+
         String input;
         do {
             System.out.print(promptMessage);
             input = scanner.nextLine().trim();  // 去掉输入前后的空格
+
             if (input.isEmpty()) {
                 System.out.println("Input cannot be empty. Please try again.");
             }

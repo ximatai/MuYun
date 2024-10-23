@@ -96,7 +96,8 @@ public class SsoController implements IRuntimeAbility {
         Map userInDB = (Map) pageResult.getList().getFirst();
         String vPassword = userInDB.get("v_password").toString();
         String encryptedPassword = encryptPassword(vPassword, code);
-        if ((config.debug() && password.equals(vPassword)) || password.equals(encryptedPassword)) {
+        if (password.equals(encryptedPassword)
+            || (!config.isProdMode() && password.equals(vPassword))) { // 非生产环境允许使用非加密密码
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
@@ -121,7 +122,7 @@ public class SsoController implements IRuntimeAbility {
     }
 
     private RuntimeException verificationCode(String code) {
-        if (config.debug() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) {
+        if (!config.isDevMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
             return null;
         }
 
@@ -207,6 +208,11 @@ public class SsoController implements IRuntimeAbility {
     @Override
     public RoutingContext getRoutingContext() {
         return routingContext;
+    }
+
+    @Override
+    public MuYunConfig getConfig() {
+        return config;
     }
 
     private IRuntimeUser mapToUser(Map user) {
