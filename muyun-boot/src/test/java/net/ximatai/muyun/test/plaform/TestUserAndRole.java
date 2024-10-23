@@ -90,6 +90,20 @@ public class TestUserAndRole {
 
         assertTrue(roles.contains(roleID));
 
+        // 已分配人员不允许删除
+        given()
+            .header("userID", config.superUserId())
+            .get("%s/role/delete/%s".formatted(base, roleID))
+            .then()
+            .statusCode(500);
+
+        given()
+            .header("userID", config.superUserId())
+            .get("%s/role/revoke/%s/to/%s".formatted(base, roleID, userID))
+            .then()
+            .statusCode(200)
+            .extract();
+
         given()
             .header("userID", config.superUserId())
             .get("%s/role/delete/%s".formatted(base, roleID))
