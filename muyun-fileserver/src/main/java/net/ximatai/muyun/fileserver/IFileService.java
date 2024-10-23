@@ -1,7 +1,5 @@
 package net.ximatai.muyun.fileserver;
 
-import io.vertx.core.Future;
-
 import java.io.File;
 
 public interface IFileService {
