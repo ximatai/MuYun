@@ -1,7 +1,7 @@
 muyun:
   super-user-id: 1 # 可以在环境变量里预先设置 MUYUN_USERNAME、MUYUN_PASSWORD 来确定初始化的用户名和密码
 file-server:
-  upload-path: /Users/liurui/Downloads/uploads
+  upload-path: ./test
   page-path: fileServer
 web:
   redirects:
