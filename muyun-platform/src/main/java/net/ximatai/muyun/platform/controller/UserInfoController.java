@@ -239,6 +239,9 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     public List<QueryItem> queryItemList() {
         return List.of(
             QueryItem.of("v_email"),
+            QueryItem.of("id_at_org_organization"),
+            QueryItem.of("id_at_org_department"),
+            QueryItem.of("b_user"),
             QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("v_phone").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("v_username").setSymbolType(QueryItem.SymbolType.LIKE)
