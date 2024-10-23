@@ -87,7 +87,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         return result;
     }
 
-    private boolean isIdInTree(List<TreeNode> tree, String id) {
+    private boolean isIdInTree(List<? extends TreeNode> tree, String id) {
         for (TreeNode node : tree) {
             if (node.getId().equals(id)) {
                 return true;

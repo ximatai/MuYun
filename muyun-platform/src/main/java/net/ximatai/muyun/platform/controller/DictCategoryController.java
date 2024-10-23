@@ -67,7 +67,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         return list.stream().map(it -> {
             DictTreeNode node = DictTreeNode.from(it)
                 .setValue(it.getData().get("v_value").toString());
-            List<TreeNode> children = node.getChildren();
+            List<? extends TreeNode> children = node.getChildren();
             if (children != null && !children.isEmpty()) {
                 node.setChildren(nodeToDictNode(children));
             }

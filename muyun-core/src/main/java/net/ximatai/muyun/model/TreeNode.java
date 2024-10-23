@@ -14,7 +14,7 @@ public class TreeNode {
     @Schema(description = "数据内容")
     private Map<String, Object> data;
     @Schema(description = "子节点")
-    private List<TreeNode> children;
+    private List<? extends TreeNode> children;
 
     public TreeNode() {
     }
@@ -31,7 +31,7 @@ public class TreeNode {
         return data;
     }
 
-    public List<TreeNode> getChildren() {
+    public List<? extends TreeNode> getChildren() {
         return children;
     }
 
@@ -51,7 +51,7 @@ public class TreeNode {
     }
 
     public TreeNode setChildren(List<? extends TreeNode> children) {
-        this.children = (List<TreeNode>) children;
+        this.children = children;
         return this;
     }
 

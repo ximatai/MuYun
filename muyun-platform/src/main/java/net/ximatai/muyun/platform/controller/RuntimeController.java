@@ -107,7 +107,7 @@ public class RuntimeController implements IRuntimeAbility {
         return filterMenuByAuth(list, authorizedResources);
     }
 
-    private List<TreeNode> filterMenuByAuth(List<TreeNode> list, Map<String, Set<String>> resources) {
+    private List<TreeNode> filterMenuByAuth(List<? extends TreeNode> list, Map<String, Set<String>> resources) {
         List<TreeNode> result = new ArrayList<>();
         for (TreeNode node : list) {
             Map data = node.getData();

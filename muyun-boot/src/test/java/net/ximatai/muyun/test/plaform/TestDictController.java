@@ -185,7 +185,7 @@ public class TestDictController {
             .extract()
             .asString();
 
-         given()
+        List<Map> responsex = given()
             .header("userID", config.superUserId())
             .get("%s/dict/tree/%s".formatted(base, "root1"))
             .then()
@@ -194,10 +194,9 @@ public class TestDictController {
             .as(new TypeRef<>() {
             });
 
-//        assertEquals(response.size(), 3);
-//        node = response.get(0);
-//        assertEquals(node.getChildren().size(), 1);
-//        assertNotNull(node.getValue());
+        assertEquals(responsex.size(), 3);
+        Map nodex = ((List<Map>) responsex.get(0).get("children")).get(0);
+        assertNotNull(nodex.get("value"));
 
         List<DictTreeNode> response2 = given()
             .header("userID", config.superUserId())
