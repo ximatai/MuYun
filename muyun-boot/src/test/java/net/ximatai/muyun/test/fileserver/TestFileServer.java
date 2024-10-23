@@ -1,10 +1,8 @@
 package net.ximatai.muyun.test.fileserver;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
 import io.vertx.core.json.JsonObject;
-import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,12 +16,12 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestFileServer {
 
     // 文件名
     String fileName;
-    String uid;
+    String id;
     // 文件内容
     String fileContent = "";
     // 临时文件
@@ -49,19 +47,19 @@ public class TestFileServer {
         Response response = given()
             .multiPart("file", tempFile)
             .when()
-            .post("/fileServer/form")
+            .post("/fileServer/upload")
             .then()
             .log().all()
             .statusCode(200)
             .extract()
             .response();
 
-        uid = response.getBody().asString();
+        id = response.getBody().asString();
 
         // 下载文件
         Response response2 = given()
             .when()
-            .get("/fileServer/download/" + uid)
+            .get("/fileServer/download/" + id)
             .then()
             .log().all()
             .statusCode(200)
@@ -75,7 +73,7 @@ public class TestFileServer {
         // 读取文件info
         Response response3 = given()
             .when()
-            .get("/fileServer/info/" + uid)
+            .get("/fileServer/info/" + id)
             .then()
             .log().all()
             .statusCode(200)
@@ -89,7 +87,7 @@ public class TestFileServer {
 
     @AfterEach
     public void tearDown() {
-        String deleteUrl = "/fileServer/delete/" + uid;
+        String deleteUrl = "/fileServer/delete/" + id;
         given()
             .when()
             .get(deleteUrl)
