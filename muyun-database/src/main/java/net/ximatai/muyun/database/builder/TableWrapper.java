@@ -90,6 +90,11 @@ public class TableWrapper extends TableBase {
         return this;
     }
 
+    public TableWrapper addColumn(String columnName, String comment, Object defaultValue) {
+        columns.add(Column.of(columnName).setComment(comment).setDefaultValue(defaultValue));
+        return this;
+    }
+
     public TableWrapper addColumn(Column column) {
         if (primaryKey != null && Objects.equals(column.getName(), primaryKey.getName())) {
             throw new IllegalArgumentException("Primary key already exists");
