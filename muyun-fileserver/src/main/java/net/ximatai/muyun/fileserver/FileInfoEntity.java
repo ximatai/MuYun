@@ -1,20 +1,22 @@
 package net.ximatai.muyun.fileserver;
 
+import io.vertx.core.json.JsonObject;
+
 public class FileInfoEntity {
     String name;
     long size;
     String suffix;
-    String uid;
+    String id;
     String time;
 
     public FileInfoEntity() {
     }
 
-    public FileInfoEntity(String name, long size, String suffix, String uid, String time) {
+    public FileInfoEntity(String name, long size, String suffix, String id, String time) {
         this.name = name;
         this.size = size;
         this.suffix = suffix;
-        this.uid = uid;
+        this.id = id;
         this.time = time;
     }
 
@@ -42,12 +44,12 @@ public class FileInfoEntity {
         this.suffix = suffix;
     }
 
-    public String getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTime() {
@@ -56,5 +58,15 @@ public class FileInfoEntity {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public JsonObject toJson() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.put("name", name)
+            .put("size", size)
+            .put("suffix", suffix)
+            .put("id", id)
+            .put("time", time);
+        return jsonObject;
     }
 }

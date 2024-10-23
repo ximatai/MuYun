@@ -1,8 +1,9 @@
 package net.ximatai.muyun.fileserver;
 
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -20,10 +21,11 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
-//TODO 抽象一个 IFileService 接口，对Java层暴露相关方法
 @ApplicationScoped
-public class FileService {
+public class FileService implements IFileService {
 
     final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,77 +37,64 @@ public class FileService {
     @Inject
     Vertx vertx;
 
-    // TODO 代码不够优雅，尤其是最后一行 return
     private String getRootPath() {
         String rootPath = config.pagePath();
-        rootPath = rootPath.startsWith("/") ? rootPath : "/" + rootPath;
-        return rootPath.endsWith("/") ? rootPath : rootPath + "/";
+        if (!rootPath.startsWith("/")) {
+            rootPath = "/" + rootPath;
+        }
+        if (!rootPath.endsWith("/")) {
+            rootPath = rootPath + "/";
+        }
+        return rootPath;
     }
 
     void init(@Observes Router router, Vertx vertx) {
         router.get(getRootPath() + "index").handler(this::indexFunc);
-        router.post(getRootPath() + "form").handler(this::form);
-        router.get(getRootPath() + "download/:fileUid").handler(this::download);
-        router.get(getRootPath() + "delete/:uid").handler(this::delete);
-        router.get(getRootPath() + "info/:uid").handler(this::info);
+        router.post(getRootPath() + "upload").handler(this::upload);
+        router.get(getRootPath() + "download/:id").handler(this::download);
+        router.get(getRootPath() + "delete/:id").handler(this::delete);
+        router.get(getRootPath() + "info/:id").handler(this::info);
     }
 
-    //TODO 改成 """ """ 的方式存放字符串
     // @Route(path = "/fileServer/index", methods = Route.HttpMethod.GET)
     private void indexFunc(RoutingContext ctx) {
         ctx.response()
             .putHeader("content-type", "text/html")
             .end(
-                // "<form action=\"/fileServer/form\" method=\"post\" enctype=\"multipart/form-data\">\n"
-                "<form action=\"form\" method=\"post\" enctype=\"multipart/form-data\">\n"
-                    + "    <div>\n"
-                    + "        <label for=\"name\">Select a file:</label>\n"
-                    + "        <input type=\"file\" name=\"file\" />\n"
-                    + "    </div>\n"
-                    + "    <div class=\"button\">\n"
-                    + "        <button type=\"submit\">Send</button>\n"
-                    + "    </div>"
-                    + "</form>"
+                """
+                            <form action="upload" method="post" enctype="multipart/form-data">
+                                 <div>
+                                    <label for="name">Select a file:</label>
+                                    <input type="file" name="file" />
+                                </div>
+                                <div class="button">
+                                    <button type="submit">Send</button>
+                                </div>
+                            </form>
+                    """
             );
     }
 
-    // TODO 要知道这是对 前端开放的上传接口，所以叫 form 不合适，正常应该叫 upload
     // @Route(path = "/fileServer/form", methods = Route.HttpMethod.POST)
-    private void form(RoutingContext ctx) {
-
+    private void upload(RoutingContext ctx) {
         // 支持分块传输编码
         ctx.response().setChunked(true);
         for (FileUpload f : ctx.fileUploads()) {
-            // 原来之前面向http的处理逻辑
-            /*
-            // 获取文件名、文件大小、uid
-            String uploadedFileName = f.uploadedFileName();
-            originalFileName = f.fileName();
-            long fileSize = f.size();
-            String uid = "bsy-" + uploadedFileName.split("\\\\")[2];
-            String fileNameUid = suffixFileNameWithN(uid);
-            String fileContextUid = suffixFileNameWithO(uid);
-            vertx.fileSystem().writeFile(config.uploadPath() + fileNameUid, Buffer.buffer(originalFileName));
-            vertx.fileSystem().copy(uploadedFileName, config.uploadPath() + fileContextUid);
-            vertx.fileSystem().delete(uploadedFileName);
-            */
-
-            // 面向Java的文件上传逻辑
             String uploadedFileName = f.uploadedFileName();
             originalFileName = f.fileName();
             File file = new File(uploadedFileName);
-            String uid = save(file);
-            ctx.response().write(uid);
+            String id = save(file, originalFileName);
+            ctx.response().write(id);
         }
         ctx.response().end();
     }
 
-    // @Route(path = "/fileServer/download/:fileUid", methods = Route.HttpMethod.GET)
+    // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
     private void download(RoutingContext ctx) {
-        String fileUid = ctx.pathParam("fileUid");
-        File fileObtained = obtain(fileUid);
+        String id = ctx.pathParam("id");
+        File fileObtained = get(id);
         // 发送文件到客户端
-        String nameFile = suffixFileNameWithN(fileUid);
+        String nameFile = suffixFileNameWithN(id);
         String nameFilePath = config.uploadPath() + nameFile;
         vertx.fileSystem().readFile(nameFilePath, result -> {
             if (result.succeeded()) {
@@ -115,19 +104,19 @@ public class FileService {
                     ctx.response()
                         .putHeader("Content-Disposition", "attachment; filename=" + content)
                         .sendFile(fileObtained.getPath());
+                    vertx.fileSystem().delete(fileObtained.getPath());
                 }
             } else {
                 logger.error("Failed to read file name: " + result.cause());
                 ctx.fail(result.cause());
             }
         });
-
     }
 
-    // @Route(path = "/fileServer/delete/:uid", methods = Route.HttpMethod.GET)
+    // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)
     private void delete(RoutingContext ctx) {
-        String uid = ctx.pathParam("uid");
-        boolean isDeleted = drop(uid);
+        String id = ctx.pathParam("id");
+        boolean isDeleted = delete(id);
         if (isDeleted) {
             ctx.response().end("Successfully deleted.");
         } else {
@@ -135,12 +124,26 @@ public class FileService {
         }
     }
 
-    // @Route(path = "/fileServer/info/:uid", methods = Route.HttpMethod.GET)
     private void info(RoutingContext ctx) {
-        String uid = ctx.pathParam("uid");
-        String fileNamePath = suffixFileNameWithN(config.uploadPath() + uid);
-        String fileContentPath = suffixFileNameWithO(config.uploadPath() + uid);
-        File file = new File(fileNamePath);
+        String id = ctx.pathParam("id");
+        asyncInfo(id)
+            .onSuccess(entity -> {
+                ctx.response()
+                    .putHeader("Content-Type", "application/json")
+                    .end(entity.toJson().toString());
+
+            }).onFailure(err -> {
+                logger.error("Failed to get file info: " + err);
+                ctx.fail(err);
+            });
+    }
+
+    // 异步得到文件信息
+    public Future<FileInfoEntity> asyncInfo(String id) {
+        Promise<FileInfoEntity> promise = Promise.promise();
+        String fileNamePath = suffixFileNameWithN(config.uploadPath() + id);
+        String fileContentPath = suffixFileNameWithO(config.uploadPath() + id);
+        File fileName = new File(fileNamePath);
         File fileContent = new File(fileContentPath);
         vertx.fileSystem().readFile(fileNamePath, result -> {
             if (result.succeeded()) {
@@ -156,111 +159,94 @@ public class FileService {
                 } catch (IOException e) {
                     logger.error("Failed to read file attributes", e);
                 }
-
-                JsonObject jsonObject = new JsonObject()
-                    .put("name", line)
-                    .put("size", fileContent.length())
-                    .put("suffix", suffix)
-                    .put("uid", uid)
-                    .put("time", createTime);
-                ctx.response()
-                    .putHeader("Content-Type", "application/json")
-                    .end(jsonObject.toString());
-
+                FileInfoEntity entity = new FileInfoEntity(line, fileContent.length(), suffix, id, createTime);
+                promise.complete(entity);
             } else {
                 logger.error("Failed to read file name: " + result.cause());
-                ctx.fail(result.cause());
+                promise.fail(result.cause());
             }
         });
-
-//        try {
-//            FileInfoEntity fileInfoEntity = show(uid);
-//            String name = fileInfoEntity.getName();
-//            long size = fileInfoEntity.getSize();
-//            String suffix = fileInfoEntity.getSuffix();
-//            String time = fileInfoEntity.getTime();
-//            JsonObject jsonObject = new JsonObject()
-//                .put("name", name)
-//                .put("size", size)
-//                .put("suffix", suffix)
-//                .put("uid", uid)
-//                .put("time", time);
-//            ctx.response()
-//                .putHeader("Content-Type", "application/json")
-//                .end(Json.encodePrettily(jsonObject.toString()));
-//        }catch (ExecutionException | InterruptedException e){
-//            e.printStackTrace();
-//        }
+        return promise.future();
     }
 
-    // TODO 检查下两个文件都生成了么，内容是否完整，要求需要有匹配的单元测试
+    public FileInfoEntity info(String id) {
+        CompletableFuture<FileInfoEntity> completableFuture = new CompletableFuture<FileInfoEntity>();
+        asyncInfo(id)
+            .onSuccess(entity -> {
+                completableFuture.complete(entity);
+            })
+            .onFailure(err -> {
+                completableFuture.completeExceptionally(err);
+            });
+        try {
+            return completableFuture.get();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     // 保存文件
-    public String save(File file) {
-        String saveUid = generateBsyUid();
+    public String save(File file, String originalFileName) {
+        String saveId = generateBsyUid();
         String saveFileName = file.getName();
         long saveSize = file.length();
-        String saveFileNameUid = suffixFileNameWithN(saveUid);
-        String saveFileContextUid = suffixFileNameWithO(saveUid);
+        String saveFileNameUid = suffixFileNameWithN(saveId);
+        String saveFileContextUid = suffixFileNameWithO(saveId);
         // 写入文件名
         vertx.fileSystem().writeFile(config.uploadPath() + saveFileNameUid, Buffer.buffer(originalFileName));
         vertx.fileSystem().copy(file.getAbsolutePath(), config.uploadPath() + saveFileContextUid);
         vertx.fileSystem().delete(file.getAbsolutePath());
-        return saveUid;
+        return saveId;
     }
 
-    //TODO get\fetch\ 都要比obtain更合适，同时需要考虑文件不存在的情况，还有就是不要把原始File在java层返回，
-    // 我们不希望获取到File 的java代码可以修改我们的原始文件，所以应该复制一份
-    // 准备对应的单元测试
     // 获取文件
-    public File obtain(String uid) {
-        String contentFile = suffixFileNameWithO(uid);
+    public File get(String id) {
+        String nameFile = suffixFileNameWithN(id);
+        String contentFile = suffixFileNameWithO(id);
+        String nameFilePath = config.uploadPath() + nameFile;
         String contentFilePath = config.uploadPath() + contentFile;
-        File file = new File(contentFilePath);
-        return file;
+        Path pathN = Paths.get(nameFilePath);
+        Path pathO = Paths.get(contentFilePath);
+        if (!Files.exists(pathN)) return null;
+        try {
+            String name = Files.readString(pathN);
+            String context = Files.readString(pathO);
+            String fileBak = config.uploadPath() + name;
+            File newFile = new File(fileBak);
+            if (newFile.createNewFile()) {
+                Files.writeString(Paths.get(fileBak), context);
+                return newFile;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
-    //TODO delete 更简单，另外就是考虑文件不存在的情况，准备对应的单元测试
     // 丢弃服务器端中的文件
-    public boolean drop(String uid) {
-        String deleteNamePath = suffixFileNameWithN(config.uploadPath() + uid);
-        String deleteContentPath = suffixFileNameWithO(config.uploadPath() + uid);
+    public boolean delete(String id) {
+        String deleteNamePath = suffixFileNameWithN(config.uploadPath() + id);
+        String deleteContentPath = suffixFileNameWithO(config.uploadPath() + id);
         File fileN = new File(deleteNamePath);
         File fileO = new File(deleteContentPath);
-        boolean isDelete1 = fileN.delete();
-        boolean isDelete2 = fileO.delete();
-        return isDelete1 && isDelete2;
+        vertx.fileSystem().delete(deleteNamePath, res -> {
+            if (res.succeeded()) {
+                logger.info("FileName deleted successfully: " + deleteNamePath);
+            } else {
+                logger.error("Failed to delete file: " + deleteNamePath, res.cause());
+            }
+        });
+        vertx.fileSystem().delete(deleteContentPath, res -> {
+            if (res.succeeded()) {
+                logger.info("FileContent deleted successfully: " + deleteContentPath);
+            } else {
+                logger.error("Failed to delete file: " + deleteContentPath, res.cause());
+            }
+        });
+        return fileN.exists() || fileO.exists();
     }
-
-//    public FileInfoEntity show(String uid) throws ExecutionException, InterruptedException {
-//        String fileNamePath = suffixFileNameWithN(config.uploadPath() + uid);
-//        String fileContentPath = suffixFileNameWithO(config.uploadPath() + uid);
-//        File file = new File(fileNamePath);
-//        File fileContent = new File(fileContentPath);
-//        CompletableFuture completableFuture = new CompletableFuture();
-//        vertx.fileSystem().readFile(fileNamePath, result -> {
-//            if (result.succeeded()) {
-//                Buffer buffer = result.result();
-//                String line = buffer.toString("UTF-8");
-//                String suffix = line.split("\\.")[1];
-//                Path path = Paths.get(fileNamePath);
-//                String createTime = "00:00";
-//                try {
-//                    BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-//                    FileTime creationTime = attrs.creationTime();
-//                    createTime = creationTime.toString();
-//                } catch (IOException e) {
-//                    logger.error("Failed to read file attributes", e);
-//                }
-//                
-//                FileInfoEntity entity = new FileInfoEntity(line, fileContent.length(), suffix, uid, createTime);
-//                completableFuture.complete(entity);
-//            } else {
-//                logger.error("Failed to read file name: " + result.cause());
-//            }
-//        });
-//
-//        return (FileInfoEntity) completableFuture.get();
-//    }
 
     // uid文件名处理方法
     private String suffixFileNameWithN(String fileName) {
