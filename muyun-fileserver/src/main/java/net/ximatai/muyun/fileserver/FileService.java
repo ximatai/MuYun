@@ -186,16 +186,21 @@ public class FileService implements IFileService {
             throw new RuntimeException(e);
         }
     }
-    
+
+    public String save(File file) {
+        return this.save(file, file.getName());
+    }
+
+
     // 保存文件
-    public String save(File file, String originalFileName) {
+    public String save(File file, String assignName) {
         String saveId = generateBsyUid();
         String saveFileName = file.getName();
         long saveSize = file.length();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
         // 写入文件名
-        vertx.fileSystem().writeFile(config.uploadPath() + saveFileNameUid, Buffer.buffer(originalFileName));
+        vertx.fileSystem().writeFile(config.uploadPath() + saveFileNameUid, Buffer.buffer(assignName));
         vertx.fileSystem().copy(file.getAbsolutePath(), config.uploadPath() + saveFileContextUid);
         vertx.fileSystem().delete(file.getAbsolutePath());
         return saveId;
