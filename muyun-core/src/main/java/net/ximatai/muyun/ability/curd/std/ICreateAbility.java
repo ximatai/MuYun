@@ -130,11 +130,21 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof IRuntimeAbility runtimeAbility) {
             String moduleID = runtimeAbility.getApiRequest().getModuleID();
             IRuntimeUser user = runtimeAbility.getApiRequest().getUser();
-            body.put("id_at_auth_user__create", user.getId());
-            body.put("id_at_auth_user__perms", user.getId());
-            body.put("id_at_org_department__perms", user.getDepartmentId());
-            body.put("id_at_org_organization__perms", user.getOrganizationId());
-            body.put("id_at_app_module__perms", moduleID);
+            if (!body.containsKey("id_at_auth_user__create")) {
+                body.put("id_at_auth_user__create", user.getId());
+            }
+            if (!body.containsKey("id_at_auth_user__perms")) {
+                body.put("id_at_auth_user__perms", user.getId());
+            }
+            if (!body.containsKey("id_at_org_department__perms")) {
+                body.put("id_at_org_department__perms", user.getDepartmentId());
+            }
+            if (!body.containsKey("id_at_org_organization__perms")) {
+                body.put("id_at_org_organization__perms", user.getOrganizationId());
+            }
+            if (!body.containsKey("id_at_app_module__perms")) {
+                body.put("id_at_app_module__perms", moduleID);
+            }
         }
 
         if (this instanceof ITreeAbility treeAbility) {
