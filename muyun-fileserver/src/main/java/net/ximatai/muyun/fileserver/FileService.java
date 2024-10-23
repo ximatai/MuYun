@@ -104,13 +104,13 @@ public class FileService implements IFileService {
                     ctx.response()
                         .putHeader("Content-Disposition", "attachment; filename=" + content)
                         .sendFile(fileObtained.getPath());
+                    vertx.fileSystem().delete(fileObtained.getPath());
                 }
             } else {
                 logger.error("Failed to read file name: " + result.cause());
                 ctx.fail(result.cause());
             }
         });
-
     }
 
     // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)
