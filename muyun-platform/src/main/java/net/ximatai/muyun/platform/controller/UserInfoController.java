@@ -31,6 +31,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
@@ -100,8 +101,25 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
         Map<String, ?> superUser = this.view(superUserId);
         if (superUser == null) {
+            String adminUsername = System.getenv("MUYUN_USERNAME");
+            String adminPassword = System.getenv("MUYUN_PASSWORD");
+
+            if (adminUsername == null || adminPassword == null) {
+                System.out.println("SuperUser not found in the database.");
+                System.out.println("Please input the initial admin account details:");
+
+                Scanner scanner = new Scanner(System.in);
+
+                adminUsername = promptForInput(scanner, "Admin Username: ");
+                adminPassword = promptForInput(scanner, "Admin Password: ");
+            } else {
+                logger.info("USE ENVIRONMENT INFORMATION");
+                logger.info("ADMIN USERNAME: {}", adminUsername);
+                logger.info("ADMIN PASSWORD: {}", adminPassword);
+            }
+
             this.create(Map.of("id", superUserId, "v_name", "超级管理员"));
-            this.setUser(superUserId, Map.of("v_username", "admin", "v_password", "admin@bsy", "v_password2", "admin@bsy"));
+            this.setUser(superUserId, Map.of("v_username", adminUsername, "v_password", adminPassword, "v_password2", adminPassword));
         }
     }
 
@@ -260,5 +278,17 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             .addAction(new ModuleAction("enableUser", "启用账户", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("roles", "获取角色", ModuleAction.TypeLike.VIEW))
             .addAction(new ModuleAction("setRoles", "设置角色", ModuleAction.TypeLike.UPDATE));
+    }
+
+    private static String promptForInput(Scanner scanner, String promptMessage) {
+        String input;
+        do {
+            System.out.print(promptMessage);
+            input = scanner.nextLine().trim();  // 去掉输入前后的空格
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please try again.");
+            }
+        } while (input.isEmpty());
+        return input;
     }
 }
