@@ -191,7 +191,6 @@ public class FileService implements IFileService {
         return this.save(file, file.getName());
     }
 
-
     // 保存文件
     public String save(File file, String assignName) {
         String saveId = generateBsyUid();
