@@ -2,7 +2,7 @@ muyun:
   debug: true
   super-user-id: 1
 file-server:
-  upload-path: /Users/liurui/Downloads/uploads
+  upload-path: ./test
   page-path: fileServer
 web:
   redirects:
