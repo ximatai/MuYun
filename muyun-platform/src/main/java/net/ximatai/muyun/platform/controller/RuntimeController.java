@@ -83,6 +83,7 @@ public class RuntimeController implements IRuntimeAbility {
                                     from platform.app_menu
                                              left join platform.app_module on app_menu.id_at_app_module = app_module.id
                 where app_menu.b_enable = true and app_menu.id_at_app_menu_schema = ?
+                order by app_menu.n_order
                 """, schemaID);
 
             List<TreeNode> treeNodes = TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
