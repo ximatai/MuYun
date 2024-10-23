@@ -1,11 +1,13 @@
 package net.ximatai.muyun.test.fileserver;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.vertx.core.json.JsonObject;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileInfoEntity;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -20,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestFileCRUD {
 
     @Inject
