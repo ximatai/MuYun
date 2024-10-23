@@ -13,7 +13,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Set environment variable
-        run: ｜
+        run: |
           echo "MUYUN_USERNAME=admin" >> $GITHUB_ENV
           echo "MUYUN_PASSWORD=admin@muyun" >> $GITHUB_ENV
       - uses: actions/checkout@v3
