@@ -99,6 +99,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
         return List.of(
             QueryItem.of("id"),
             QueryItem.of("dict_org_type"),
+            QueryItem.of("v_shortname"),
             QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("v_code").setSymbolType(QueryItem.SymbolType.LIKE)
         );
