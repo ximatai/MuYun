@@ -42,7 +42,10 @@ public class ReferenceInfo {
             putTranslate(column, getColumnAlias(column));
         });
 
-        putTranslate(ctrl.getLabelColumn());
+        if (ctrl.getLabelColumn() != null) {
+            putTranslate(ctrl.getLabelColumn());
+        }
+
         return this;
     }
 
