@@ -236,11 +236,11 @@ public class FileService implements IFileService {
         if (!Files.exists(pathN)) return null;
         try {
             String name = Files.readString(pathN);
-            String context = Files.readString(pathO);
+            byte[] bytes = Files.readAllBytes(pathO);
             String fileBak = getUploadPath() + name;
             File newFile = new File(fileBak);
             if (newFile.createNewFile()) {
-                Files.writeString(Paths.get(fileBak), context);
+                Files.write(Paths.get(fileBak), bytes);
                 return newFile;
             }
         } catch (IOException e) {
