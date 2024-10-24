@@ -42,11 +42,11 @@ public class TestFileDownload {
         String id = service.save(tempFile, fileName).split("@")[0];
         Thread.sleep(1000);
         File file = service.get(id);
-        String filePath = file.getAbsolutePath();
+        String filePath = file.getPath();
         System.out.println(filePath);
         // 错误原因: 目标目录中已经存在了同名文件，导致无法创建目标文件的副本
         File file2 = service.get(id);
-        String filePath2 = file2.getAbsolutePath();
+        String filePath2 = file2.getPath();
         System.out.println(filePath2);
     }
     

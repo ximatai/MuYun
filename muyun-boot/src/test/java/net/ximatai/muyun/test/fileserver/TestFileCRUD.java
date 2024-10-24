@@ -51,7 +51,7 @@ public class TestFileCRUD {
         String filePathWithO = config.uploadPath() + id + "-o";
         Path pathN = Paths.get(filePathWithN);
         Path pathO = Paths.get(filePathWithO);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         assertTrue(Files.exists(pathN));
         assertTrue(Files.exists(pathO));
         
