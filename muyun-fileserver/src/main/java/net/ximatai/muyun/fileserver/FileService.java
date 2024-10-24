@@ -5,11 +5,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
-import io.vertx.ext.web.FileUpload;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,24 +26,11 @@ public class FileService implements IFileService {
 
     final Logger logger = LoggerFactory.getLogger(getClass());
 
-    String originalFileName;
-
     @Inject
     FileServerConfig config;
 
     @Inject
     Vertx vertx;
-
-    private String getRootPath() {
-        String rootPath = config.pagePath();
-        if (!rootPath.startsWith("/")) {
-            rootPath = "/" + rootPath;
-        }
-        if (!rootPath.endsWith("/")) {
-            rootPath = rootPath + "/";
-        }
-        return rootPath;
-    }
 
     private String getUploadPath() {
         String uploadPath = config.uploadPath();
@@ -55,99 +38,6 @@ public class FileService implements IFileService {
             uploadPath = uploadPath + "/";
         }
         return uploadPath;
-    }
-
-    void init(@Observes Router router, Vertx vertx) {
-        router.get(getRootPath() + "index").handler(this::indexFunc);
-        router.post(getRootPath() + "upload").handler(this::upload);
-        router.get(getRootPath() + "download/:id").handler(this::download);
-        router.get(getRootPath() + "delete/:id").handler(this::delete);
-        router.get(getRootPath() + "info/:id").handler(this::info);
-    }
-
-    // @Route(path = "/fileServer/index", methods = Route.HttpMethod.GET)
-    private void indexFunc(RoutingContext ctx) {
-        ctx.response()
-            .putHeader("content-type", "text/html")
-            .end(
-                """
-                            <form action="upload" method="post" enctype="multipart/form-data">
-                                 <div>
-                                    <label for="name">Select a file:</label>
-                                    <input type="file" name="file" />
-                                </div>
-                                <div class="button">
-                                    <button type="submit">Send</button>
-                                </div>
-                            </form>
-                    """
-            );
-    }
-
-    // @Route(path = "/fileServer/form", methods = Route.HttpMethod.POST)
-    private void upload(RoutingContext ctx) {
-        // 支持分块传输编码
-        ctx.response().setChunked(true);
-        for (FileUpload f : ctx.fileUploads()) {
-            String uploadedFileName = f.uploadedFileName();
-            originalFileName = f.fileName();
-            File file = new File(uploadedFileName);
-            String id = save(file, originalFileName);
-            ctx.response().write(id);
-        }
-        ctx.response().end();
-    }
-
-    // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
-    private void download(RoutingContext ctx) {
-        String id = ctx.pathParam("id");
-        if (id.contains("@")) {
-            id = id.split("@")[0];
-        }
-        File fileObtained = get(id);
-        // 发送文件到客户端
-        String nameFile = suffixFileNameWithN(id);
-        String nameFilePath = getUploadPath() + nameFile;
-        vertx.fileSystem().readFile(nameFilePath, result -> {
-            if (result.succeeded()) {
-                Buffer buffer = result.result();
-                String content = buffer.toString("UTF-8");
-                if (fileObtained.exists()) {
-                    ctx.response()
-                        .putHeader("Content-Disposition", "attachment; filename=" + content)
-                        .sendFile(fileObtained.getPath());
-                    vertx.fileSystem().delete(fileObtained.getPath());
-                }
-            } else {
-                logger.error("Failed to read file name: " + result.cause());
-                ctx.fail(result.cause());
-            }
-        });
-    }
-
-    // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)
-    private void delete(RoutingContext ctx) {
-        String id = ctx.pathParam("id");
-        boolean isDeleted = delete(id);
-        if (isDeleted) {
-            ctx.response().end("Successfully deleted.");
-        } else {
-            ctx.response().end("Failed to delete.");
-        }
-    }
-
-    private void info(RoutingContext ctx) {
-        String id = ctx.pathParam("id");
-        asyncInfo(id)
-            .onSuccess(entity -> {
-                ctx.response()
-                    .putHeader("Content-Type", "application/json")
-                    .end(entity.toJson().toString());
-
-            }).onFailure(err -> {
-                logger.error("Failed to get file info: " + err);
-                ctx.fail(err);
-            });
     }
 
     // 异步得到文件信息
@@ -211,9 +101,7 @@ public class FileService implements IFileService {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
-
         FileSystem fileSystem = vertx.fileSystem();
-
         // 写入文件名
         fileSystem.writeFile(getUploadPath() + saveFileNameUid, Buffer.buffer(assignName));
         fileSystem.copy(file.getAbsolutePath(), getUploadPath() + saveFileContextUid);
@@ -226,7 +114,6 @@ public class FileService implements IFileService {
         if (id.contains("@")) {
             id = id.split("@")[0];
         }
-
         String nameFile = suffixFileNameWithN(id);
         String contentFile = suffixFileNameWithO(id);
         String nameFilePath = getUploadPath() + nameFile;
@@ -276,17 +163,8 @@ public class FileService implements IFileService {
         return fileN.exists() || fileO.exists();
     }
 
-    // uid文件名处理方法
-    private String suffixFileNameWithN(String fileName) {
-        return fileName + "-n";
-    }
-
-    private String suffixFileNameWithO(String fileName) {
-        return fileName + "-o";
-    }
-
     private String generateBsyUid() {
         UUID uid = UUID.randomUUID();
-        return "bsy-" + uid.toString();
+        return "bsy-" + uid;
     }
 }
