@@ -128,6 +128,25 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         return view(page, size, noPage, sort, null, null);
     }
 
+    /**
+     * @return 权限条件 SQL
+     */
+    default String getAuthCondition() {
+        String authCondition = "and 1=1";
+        if (this instanceof IAuthAbility authAbility) {
+            ApiRequest apiRequest = authAbility.getApiRequest();
+            String module = apiRequest.getModule();
+            String action = apiRequest.getAction();
+            if (apiRequest.isNotBlank() // view 接口可能被程序内部调用，这种情况不应该拼装权限
+                && isModuleMatchingPath(module)
+                && "view".equals(action)) {
+                String userID = authAbility.getUser().getId();
+                authCondition = authAbility.getAuthorizationService().getAuthCondition(userID, module, action);
+            }
+        }
+        return authCondition;
+    }
+
     default PageResult view(Integer page,
                             Long size,
                             Boolean noPage,
@@ -156,18 +175,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             orderColumns.addAll(getSortDefaultColumns());
         }
 
-        String authCondition = "and 1=1";
-        if (this instanceof IAuthAbility authAbility) {
-            ApiRequest apiRequest = authAbility.getApiRequest();
-            String module = apiRequest.getModule();
-            String action = apiRequest.getAction();
-            if (apiRequest.isNotBlank() // view 接口可能被程序内部调用，这种情况不应该拼装权限
-                && isModuleMatchingPath(module)
-                && "view".equals(action)) {
-                String userID = authAbility.getUser().getId();
-                authCondition = authAbility.getAuthorizationService().getAuthCondition(userID, module, action);
-            }
-        }
+        String authCondition = getAuthCondition();
 
         StringBuilder queryCondition = new StringBuilder();
 
