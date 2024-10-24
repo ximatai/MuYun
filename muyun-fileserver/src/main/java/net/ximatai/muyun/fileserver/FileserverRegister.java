@@ -10,17 +10,26 @@ import jakarta.inject.Inject;
 @Startup
 @ApplicationScoped
 public class FileserverRegister {
-    
+
     @Inject
     FileServerConfig config;
 
-    @RouteFilter(10)  // 该注解中有route
+    private String getUploadPath() {
+        String uploadPath = config.uploadPath();
+        if (!uploadPath.endsWith("/")) {
+            uploadPath = uploadPath + "/";
+        }
+        return uploadPath;
+    }
+
+    @RouteFilter(10)
+        // 该注解中有route
     void filter(RoutingContext context) {
-        BodyHandler.create().setUploadsDirectory(config.uploadPath()).handle(context);
+        BodyHandler.create().setUploadsDirectory(getUploadPath()).handle(context);
         // BodyHandler是一个类，对象handler可以作为route的参数
         // create()函数返回一个BodyHandlerImpl
         // BodyHandlerImpl中有handle方法
         // handle方法接收context来处理
     }
-    
+
 }

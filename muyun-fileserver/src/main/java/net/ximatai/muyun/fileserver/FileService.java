@@ -4,6 +4,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.FileSystem;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -46,6 +47,14 @@ public class FileService implements IFileService {
             rootPath = rootPath + "/";
         }
         return rootPath;
+    }
+
+    private String getUploadPath() {
+        String uploadPath = config.uploadPath();
+        if (!uploadPath.endsWith("/")) {
+            uploadPath = uploadPath + "/";
+        }
+        return uploadPath;
     }
 
     void init(@Observes Router router, Vertx vertx) {
@@ -98,7 +107,7 @@ public class FileService implements IFileService {
         File fileObtained = get(id);
         // 发送文件到客户端
         String nameFile = suffixFileNameWithN(id);
-        String nameFilePath = config.uploadPath() + nameFile;
+        String nameFilePath = getUploadPath() + nameFile;
         vertx.fileSystem().readFile(nameFilePath, result -> {
             if (result.succeeded()) {
                 Buffer buffer = result.result();
@@ -147,8 +156,8 @@ public class FileService implements IFileService {
             id = id.split("@")[0];
         }
         Promise<FileInfoEntity> promise = Promise.promise();
-        String fileNamePath = suffixFileNameWithN(config.uploadPath() + id);
-        String fileContentPath = suffixFileNameWithO(config.uploadPath() + id);
+        String fileNamePath = suffixFileNameWithN(getUploadPath() + id);
+        String fileContentPath = suffixFileNameWithO(getUploadPath() + id);
         File fileContent = new File(fileContentPath);
         String finalId = id;
         vertx.fileSystem().readFile(fileNamePath, result -> {
@@ -202,10 +211,13 @@ public class FileService implements IFileService {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
+
+        FileSystem fileSystem = vertx.fileSystem();
+
         // 写入文件名
-        vertx.fileSystem().writeFile(config.uploadPath() + saveFileNameUid, Buffer.buffer(assignName));
-        vertx.fileSystem().copy(file.getAbsolutePath(), config.uploadPath() + saveFileContextUid);
-        vertx.fileSystem().delete(file.getAbsolutePath());
+        fileSystem.writeFile(getUploadPath() + saveFileNameUid, Buffer.buffer(assignName));
+        fileSystem.copy(file.getAbsolutePath(), getUploadPath() + saveFileContextUid);
+        fileSystem.delete(file.getAbsolutePath());
         return "%s@%s".formatted(saveId, assignName);
     }
 
@@ -217,15 +229,15 @@ public class FileService implements IFileService {
 
         String nameFile = suffixFileNameWithN(id);
         String contentFile = suffixFileNameWithO(id);
-        String nameFilePath = config.uploadPath() + nameFile;
-        String contentFilePath = config.uploadPath() + contentFile;
+        String nameFilePath = getUploadPath() + nameFile;
+        String contentFilePath = getUploadPath() + contentFile;
         Path pathN = Paths.get(nameFilePath);
         Path pathO = Paths.get(contentFilePath);
         if (!Files.exists(pathN)) return null;
         try {
             String name = Files.readString(pathN);
             String context = Files.readString(pathO);
-            String fileBak = config.uploadPath() + name;
+            String fileBak = getUploadPath() + name;
             File newFile = new File(fileBak);
             if (newFile.createNewFile()) {
                 Files.writeString(Paths.get(fileBak), context);
@@ -243,8 +255,8 @@ public class FileService implements IFileService {
             id = id.split("@")[0];
         }
 
-        String deleteNamePath = suffixFileNameWithN(config.uploadPath() + id);
-        String deleteContentPath = suffixFileNameWithO(config.uploadPath() + id);
+        String deleteNamePath = suffixFileNameWithN(getUploadPath() + id);
+        String deleteContentPath = suffixFileNameWithO(getUploadPath() + id);
         File fileN = new File(deleteNamePath);
         File fileO = new File(deleteContentPath);
         vertx.fileSystem().delete(deleteNamePath, res -> {
