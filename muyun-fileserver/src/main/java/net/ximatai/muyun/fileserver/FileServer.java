@@ -107,7 +107,7 @@ public class FileServer {
                     ctx.response()
                         .putHeader("Content-Disposition", "attachment; filename=" + content)
                         .sendFile(fileObtained.getPath());
-                    vertx.fileSystem().delete(fileObtained.getPath());
+                    // vertx.fileSystem().delete(fileObtained.getPath());
                 }
             } else {
                 logger.error("Failed to read file name: " + result.cause());

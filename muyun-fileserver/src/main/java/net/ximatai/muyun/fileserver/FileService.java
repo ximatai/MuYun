@@ -124,16 +124,14 @@ public class FileService implements IFileService {
         try {
             String name = Files.readString(pathN);
             byte[] bytes = Files.readAllBytes(pathO);
-            String fileBak = getUploadPath() + name;
-            File newFile = new File(fileBak);
-            if (newFile.createNewFile()) {
-                Files.write(Paths.get(fileBak), bytes);
-                return newFile;
-            }
+            // 上传文件副本
+            File newFile = File.createTempFile(name.split("\\.")[0], "." + name.split("\\.")[1]);
+            Files.write(Paths.get(newFile.getPath()), bytes);
+            return newFile;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        // return null;
     }
 
     // 丢弃服务器端中的文件
