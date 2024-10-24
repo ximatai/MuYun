@@ -125,7 +125,11 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @Override
     public List<ReferenceInfo> getReferenceList() {
-        return List.of(organizationController.toReferenceInfo("id_at_org_organization"), departmentController.toReferenceInfo("id_at_org_department"), dictController.toReferenceInfo("dict_user_gender"), userController.toReferenceInfo("id").add("b_enabled").add("v_username", "v_username"));
+        return List.of(
+            organizationController.toReferenceInfo("id_at_org_organization"),
+            departmentController.toReferenceInfo("id_at_org_department"),
+            dictController.toReferenceInfo("dict_user_gender"),
+            userController.toReferenceInfo("id").add("b_enabled").add("v_username", "v_username"));
     }
 
     @POST
@@ -242,7 +246,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             QueryItem.of("id_at_org_organization"),
             QueryItem.of("id_at_org_department"),
             QueryItem.of("b_user"),
-            QueryItem.of("b_enabled"),
+            QueryItem.of("b_enabled_at_auth_user"),
             QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("v_phone").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("v_username").setSymbolType(QueryItem.SymbolType.LIKE)
