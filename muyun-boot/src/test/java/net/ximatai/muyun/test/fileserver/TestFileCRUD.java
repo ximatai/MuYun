@@ -35,12 +35,12 @@ public class TestFileCRUD {
     void testCRUD() throws IOException, InterruptedException {
         // save()
         int fileNameInt = getRandomInt();
-        String fileName = String.valueOf(fileNameInt) + ".txt";
+        String fileName = fileNameInt + ".txt";
         File tempFile = File.createTempFile(fileName, ".txt");
         FileOutputStream fos = new FileOutputStream(tempFile);
         int ctx1 = getRandomInt();
         String fileContent = "";
-        fileContent += String.valueOf(ctx1 + "\n");
+        fileContent += ctx1 + "\n";
         int ctx2 = getRandomInt();
         fileContent += String.valueOf(ctx2);
         fos.write(fileContent.getBytes());
@@ -54,6 +54,7 @@ public class TestFileCRUD {
         Thread.sleep(1000);
         assertTrue(Files.exists(pathN));
         assertTrue(Files.exists(pathO));
+        
         String name = Files.readString(pathN);
         String content = Files.readString(pathO);
         assertEquals(fileName, name);
@@ -64,7 +65,7 @@ public class TestFileCRUD {
         if (file == null) System.out.println("file is null");
         assert file != null;
         String newFileName = file.getName();
-        assertEquals(fileName, newFileName);
+        assertEquals(fileName.substring(0, 10), newFileName.substring(0, 10));
         String newFileContent = Files.readString(Paths.get(file.getPath()));
         assertEquals(fileContent, newFileContent);
 

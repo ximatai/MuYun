@@ -36,7 +36,7 @@ public class TestFileServer {
         tempFile = File.createTempFile(fileName, ".txt");
         FileOutputStream fos = new FileOutputStream(tempFile);
         int ctx1 = getRandomInt();
-        fileContent += String.valueOf(ctx1 + "\n");
+        fileContent += ctx1 + "\n";
         int ctx2 = getRandomInt();
         fileContent += String.valueOf(ctx2);
         fos.write(fileContent.getBytes());
