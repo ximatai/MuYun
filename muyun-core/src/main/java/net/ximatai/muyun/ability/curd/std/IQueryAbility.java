@@ -36,11 +36,11 @@ public interface IQueryAbility extends ISelectAbility {
                             @Parameter(description = "是否分页") @QueryParam("noPage") Boolean noPage,
                             @Parameter(description = "排序", example = "t_create,desc") @QueryParam("sort") List<String> sort,
                             @RequestBody(description = "查询条件信息") Map<String, Object> queryBody) {
-        return ISelectAbility.super.view(page, size, noPage, sort, queryBody, queryItemList());
+        return this.view(page, size, noPage, sort, queryBody, queryItemList());
     }
 
     default PageResult query(Map<String, Object> queryBody) {
-        return ISelectAbility.super.view(null, null, true, null, queryBody, queryItemList());
+        return this.view(null, null, true, null, queryBody, queryItemList());
     }
 
 }
