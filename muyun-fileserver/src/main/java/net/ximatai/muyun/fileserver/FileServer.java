@@ -42,7 +42,7 @@ public class FileServer {
 
     private String getUploadPath() {
         String uploadPath = config.uploadPath();
-        if (!uploadPath.endsWith("/")) {
+        if (!uploadPath.endsWith("/") && !uploadPath.endsWith("\\")) {
             uploadPath = uploadPath + "/";
         }
         return uploadPath;

@@ -36,7 +36,7 @@ public class FileService implements IFileService {
 
     private String getUploadPath() {
         String uploadPath = config.uploadPath();
-        if (!uploadPath.endsWith("/")) {
+        if (!uploadPath.endsWith("/") && !uploadPath.endsWith("\\")) {
             uploadPath = uploadPath + "/";
         }
         return uploadPath;
@@ -111,7 +111,19 @@ public class FileService implements IFileService {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(getUploadPath() + saveFileNameUid))) {
+        String folderPath = getUploadPath();
+        Path path = Paths.get(folderPath);
+        try{
+            if(Files.notExists(path)){
+                Files.createDirectories(path);
+                System.out.println("文件夹已创建: " + folderPath);
+            } else{
+                System.out.println("文件夹已存在: " + folderPath);
+            }
+        } catch (Exception e){
+            logger.error("创建文件夹失败", e);
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(folderPath + saveFileNameUid))) {
             writer.write(assignName);
         } catch (IOException e) {
             logger.error("Failed to write file name", e);
