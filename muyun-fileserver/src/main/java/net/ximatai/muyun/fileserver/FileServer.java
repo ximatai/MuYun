@@ -84,9 +84,13 @@ public class FileServer {
             originalFileName = f.fileName();
             File file = new File(uploadedFileName);
             String id = fileService.save(file, originalFileName);
-            ctx.response().write(id);
+            ctx.response()
+                // .putHeader("Content-Type", "text/plain;charset=utf-8")
+                .write(id);
         }
-        ctx.response().end();
+        ctx.response()
+            // .putHeader("Content-Type", "text/plain;charset=utf-8")
+            .end();
     }
 
     // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)

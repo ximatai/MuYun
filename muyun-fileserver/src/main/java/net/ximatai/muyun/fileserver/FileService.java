@@ -79,17 +79,12 @@ public class FileService implements IFileService {
     public FileInfoEntity info(String id) {
         CompletableFuture<FileInfoEntity> completableFuture = new CompletableFuture<FileInfoEntity>();
         asyncInfo(id)
-            .onSuccess(entity -> {
-                completableFuture.complete(entity);
-            })
-            .onFailure(err -> {
-                completableFuture.completeExceptionally(err);
-            });
+            .onSuccess(completableFuture::complete)
+            .onFailure(completableFuture::completeExceptionally);
         try {
             return completableFuture.get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Failed to get file info", e);
             throw new RuntimeException(e);
         }
     }
@@ -119,14 +114,14 @@ public class FileService implements IFileService {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(getUploadPath() + saveFileNameUid))) {
             writer.write(assignName);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to write file name", e);
         }
         Path sourcePath = Paths.get(file.getAbsolutePath());
         Path targetPath = Paths.get(getUploadPath() + saveFileContextUid);
         try {
             Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed to move file", e);
         }
         return "%s@%s".formatted(saveId, assignName);
     }
@@ -168,16 +163,16 @@ public class FileService implements IFileService {
         File fileO = new File(deleteContentPath);
         vertx.fileSystem().delete(deleteNamePath, res -> {
             if (res.succeeded()) {
-                logger.info("FileName deleted successfully: " + deleteNamePath);
+                logger.info("FileName deleted successfully: {}", deleteNamePath);
             } else {
-                logger.error("Failed to delete file: " + deleteNamePath, res.cause());
+                logger.error("Failed to delete file: {}", deleteNamePath, res.cause());
             }
         });
         vertx.fileSystem().delete(deleteContentPath, res -> {
             if (res.succeeded()) {
-                logger.info("FileContent deleted successfully: " + deleteContentPath);
+                logger.info("FileContent deleted successfully: {}", deleteContentPath);
             } else {
-                logger.error("Failed to delete file: " + deleteContentPath, res.cause());
+                logger.error("Failed to delete file: {}", deleteContentPath, res.cause());
             }
         });
         return fileN.exists() || fileO.exists();
