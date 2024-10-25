@@ -4,17 +4,19 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.file.FileSystem;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
@@ -97,15 +99,35 @@ public class FileService implements IFileService {
     }
 
     // 保存文件
+//    public String save(File file, String assignName) {
+//        String saveId = generateBsyUid();
+//        String saveFileNameUid = suffixFileNameWithN(saveId);
+//        String saveFileContextUid = suffixFileNameWithO(saveId);
+//        FileSystem fileSystem = vertx.fileSystem();
+//        // 写入文件名
+//        fileSystem.writeFile(getUploadPath() + saveFileNameUid, Buffer.buffer(assignName));
+//        fileSystem.copy(file.getAbsolutePath(), getUploadPath() + saveFileContextUid);
+//        fileSystem.delete(file.getAbsolutePath());
+//        return "%s@%s".formatted(saveId, assignName);
+//    }
+
+    // 同步save方法
     public String save(File file, String assignName) {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
-        FileSystem fileSystem = vertx.fileSystem();
-        // 写入文件名
-        fileSystem.writeFile(getUploadPath() + saveFileNameUid, Buffer.buffer(assignName));
-        fileSystem.copy(file.getAbsolutePath(), getUploadPath() + saveFileContextUid);
-        fileSystem.delete(file.getAbsolutePath());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(getUploadPath() + saveFileNameUid))) {
+            writer.write(assignName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Path sourcePath = Paths.get(file.getAbsolutePath());
+        Path targetPath = Paths.get(getUploadPath() + saveFileContextUid);
+        try {
+            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return "%s@%s".formatted(saveId, assignName);
     }
 
