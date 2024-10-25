@@ -43,12 +43,17 @@ class TestReference {
     @Inject
     TestReferableController testReferableController;
 
+    @Inject
+    TestReferableController2 testReferableController2;
+
     @BeforeEach
     void setUp() {
         databaseOperations.execute("TRUNCATE TABLE %s".formatted(testController.getMainTable()));
 
-        String id1 = testReferableController.create(Map.of("v_name", "test1"));
-        String id2 = testReferableController.create(Map.of("v_name", "test2"));
+        String idLevel3 = testReferableController2.create(Map.of("v_name", "test_level3"));
+
+        String id1 = testReferableController.create(Map.of("v_name", "test_level2", "id_at_test_table_referable2", idLevel3));
+        String id2 = testReferableController.create(Map.of("v_name", "test_level2"));
 
         testController.create(Map.of("name", "test1", "t_create", "2024-01-01 12:00:00", "id_at_test_table_referable", id1));
         testController.create(Map.of("name", "test2", "t_create", "2024-01-02 12:00:00", "id_at_test_table_referable", id2));
@@ -76,10 +81,11 @@ class TestReference {
         response.getList().forEach(item -> {
             switch (item.get("name").toString()) {
                 case "test1":
-                    assertEquals("test1", item.get("v_name_at_test_table_referable"));
+                    assertEquals("test_level2", item.get("v_name_at_test_table_referable"));
+                    assertEquals("test_level3", item.get("haha"));
                     break;
                 case "test2":
-                    assertEquals("test2", item.get("v_name_at_test_table_referable"));
+                    assertEquals("test_level2", item.get("v_name_at_test_table_referable"));
                     break;
                 case "test3":
                     assertNull(item.get("v_name_at_test_table_referable"));
@@ -127,12 +133,17 @@ class TestReferenceController extends Scaffold implements ICURDAbility, ITableCr
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
             testReferableController.toReferenceInfo("id_at_test_table_referable")
+                .setDeep()
+                .add("haha", "haha")
         );
     }
 }
 
 @Path("/test_referable")
-class TestReferableController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, IReferableAbility {
+class TestReferableController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, IReferableAbility, IReferenceAbility {
+
+    @Inject
+    TestReferableController2 testReferableController2;
 
     @Override
     public String getSchemaName() {
@@ -142,6 +153,44 @@ class TestReferableController extends Scaffold implements ICURDAbility, ITableCr
     @Override
     public String getMainTable() {
         return "test_table_referable";
+    }
+
+    @Override
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
+            .setPrimaryKey(Column.ID_POSTGRES)
+            .addColumn(Column.of("v_name").setType("varchar"))
+            .addColumn("id_at_test_table_referable2")
+            .addColumn(Column.of("t_create"));
+
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("id")
+        );
+    }
+
+    @Override
+    public List<ReferenceInfo> getReferenceList() {
+        return List.of(
+            testReferableController2.toReferenceInfo("id_at_test_table_referable2").add("v_name", "haha")
+        );
+    }
+}
+
+@Path("/test_referable2")
+class TestReferableController2 extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility, IReferableAbility {
+
+    @Override
+    public String getSchemaName() {
+        return "test";
+    }
+
+    @Override
+    public String getMainTable() {
+        return "test_table_referable2";
     }
 
     @Override
@@ -160,3 +209,5 @@ class TestReferableController extends Scaffold implements ICURDAbility, ITableCr
         );
     }
 }
+
+

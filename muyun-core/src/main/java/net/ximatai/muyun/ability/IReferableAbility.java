@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.model.ReferenceInfo;
 
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * 可以被关联的能力
  */
-public interface IReferableAbility extends IMetadataAbility, ILabelAbility {
+public interface IReferableAbility extends IMetadataAbility, ILabelAbility, ISelectAbility {
 
     default String getKeyColumn() {
         return getPK();

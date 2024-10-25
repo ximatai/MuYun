@@ -87,15 +87,32 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                     other.append(" and %s.%s = %s ".formatted(referenceTableTempName, column, value));
                 });
 
-                joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s %s "
-                    .formatted(referenceTable.getSchema(), referenceTable.getName(),
-                        referenceTableTempName, getMainTable(), info.getRelationColumn(),
-                        referenceTableTempName, info.getHitField(), other));
+                if (info.isDeep()) {
+                    joinSql.append("\n left join (%s) as %s on %s.%s = %s.%s %s "
+                        .formatted(info.getDeepSelectSql(),
+                            referenceTableTempName, getMainTable(), info.getRelationColumn(),
+                            referenceTableTempName, info.getHitField(), other));
+                } else {
+                    joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s %s "
+                        .formatted(referenceTable.getSchema(), referenceTable.getName(),
+                            referenceTableTempName, getMainTable(), info.getRelationColumn(),
+                            referenceTableTempName, info.getHitField(), other));
+                }
             });
 
         }
 
         return "select %s from %s.%s %s where 1=1 %s ".formatted(starSql, getSchemaName(), getMainTable(), joinSql, softDeleteSql);
+    }
+
+    default void processEachRow(Map row) {
+        if (this instanceof ISecurityAbility securityAbility) {
+            securityAbility.decrypt(row);
+            securityAbility.checkSign(row);
+        }
+        if (this instanceof IDesensitizationAbility desensitizationAbility) {
+            desensitizationAbility.desensitize(row);
+        }
     }
 
     @GET
@@ -107,14 +124,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (row == null) {
             return null;
         }
-
-        if (this instanceof ISecurityAbility securityAbility) {
-            securityAbility.decrypt(row);
-            securityAbility.checkSign(row);
-        }
-        if (this instanceof IDesensitizationAbility desensitizationAbility) {
-            desensitizationAbility.desensitize(row);
-        }
+        processEachRow(row);
         return row;
     }
 
@@ -297,14 +307,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         List<Map<String, Object>> list = getDB().query(querySql.toString(), params);
 
-        if (this instanceof ISecurityAbility securityAbility) {
-            list.forEach(securityAbility::decrypt);
-            list.forEach(securityAbility::checkSign);
-        }
-
-        if (this instanceof IDesensitizationAbility desensitizationAbility) {
-            list.forEach(desensitizationAbility::desensitize);
-        }
+        list.forEach(this::processEachRow);
 
         return new PageResult<>(list, total, size, page);
     }
