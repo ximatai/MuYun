@@ -71,7 +71,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     @GET
     @Path("/tree/{id}")
     public List<DictTreeNode> tree(@PathParam("id") String id) {
-        if(getConfig().isTestMode()){
+        if (getConfig().isTestMode()) {
             categoryCache.invalidateAll();
         }
         return categoryCache.get(id);
@@ -92,12 +92,27 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     @GET
     @Path("/translate/{category}")
     public String translate(@PathParam("category") String category, @QueryParam("source") String source) {
-        TreeNode node = tree(category).stream().filter(treeNode -> treeNode.getData().get("v_value").equals(source)).findFirst().orElse(null);
+        DictTreeNode node = findNode(tree(category), source);
+
         if (node == null) {
             throw new MyException("字典值 %s 在 %s 类型中不存在".formatted(source, category));
         }
 
         return node.getData().get("v_name").toString();
+    }
+
+    private DictTreeNode findNode(List<DictTreeNode> list, String source) {
+        for (DictTreeNode node : list) {
+            if (node.getValue().equals(source)) {
+                return node;
+            } else if (node.getChildren() != null) {
+                DictTreeNode found = findNode(node.getChildren(), source);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
