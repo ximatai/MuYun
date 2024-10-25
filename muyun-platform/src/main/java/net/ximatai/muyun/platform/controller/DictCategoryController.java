@@ -1,5 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -24,6 +26,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -34,6 +37,10 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
 
     @Inject
     DictController dictController;
+
+    private final LoadingCache<String, List<DictTreeNode>> categoryCache = Caffeine.newBuilder()
+        .expireAfterWrite(1, TimeUnit.MINUTES)
+        .build(this::loadCategory);
 
     @Override
     public String getMainTable() {
@@ -56,11 +63,18 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         );
     }
 
+    private List<DictTreeNode> loadCategory(String id) {
+        List<TreeNode> list = dictController.tree(id, false, null, null);
+        return nodeToDictNode(list);
+    }
+
     @GET
     @Path("/tree/{id}")
     public List<DictTreeNode> tree(@PathParam("id") String id) {
-        List<TreeNode> list = dictController.tree(id, false, null, null);
-        return nodeToDictNode(list);
+        if(getConfig().isTestMode()){
+            categoryCache.invalidateAll();
+        }
+        return categoryCache.get(id);
     }
 
     private List<DictTreeNode> nodeToDictNode(List<? extends TreeNode> list) {
