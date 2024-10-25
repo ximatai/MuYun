@@ -51,7 +51,7 @@ public interface IMetadataAbility extends IDatabaseAbility {
             path = path.substring(0, path.length() - 1);
         }
 
-        if (path.equals(module)) {
+        if (path.equals(module) || path.endsWith(module)) {
             return true;
         } else if (path.contains("wildcard") && module.contains("wildcard")) { //说明是通配的controller
             String moduleAtPath = path.split("/")[0];

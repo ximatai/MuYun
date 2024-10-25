@@ -147,6 +147,11 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             ApiRequest apiRequest = authAbility.getApiRequest();
             String module = apiRequest.getModule();
             String action = apiRequest.getAction();
+
+            if ("tree".equals(action)) {
+                action = "view"; // tree 参考 view 权限
+            }
+
             if (apiRequest.isNotBlank() // view 接口可能被程序内部调用，这种情况不应该拼装权限
                 && isModuleMatchingPath(module)
                 && "view".equals(action)) {
