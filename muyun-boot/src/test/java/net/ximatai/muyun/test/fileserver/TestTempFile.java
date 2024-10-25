@@ -11,10 +11,11 @@ import java.io.IOException;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestTempFile {
-    
+
     @Test
     public void test() throws IOException {
         String fileName = "MaNing.txt";
         File tempFile = File.createTempFile(fileName.split("\\.")[0], "." + fileName.split("\\.")[1]);
+        tempFile.deleteOnExit();
     }
 }

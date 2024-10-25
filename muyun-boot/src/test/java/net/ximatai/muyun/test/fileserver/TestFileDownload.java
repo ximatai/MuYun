@@ -22,11 +22,11 @@ public class TestFileDownload {
 
     @Inject
     FileServerConfig config;
-    
+
     String fileName;
     String fileContent;
     File tempFile;
-    
+
     @BeforeEach
     public void setup() throws IOException {
         fileName = "ZZZZZZ.txt";
@@ -48,6 +48,10 @@ public class TestFileDownload {
         File file2 = service.get(id);
         String filePath2 = file2.getPath();
         System.out.println(filePath2);
+
+        service.delete(id);
+        file.deleteOnExit();
+        file2.deleteOnExit();
     }
-    
+
 }

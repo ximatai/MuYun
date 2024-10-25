@@ -54,7 +54,7 @@ public class TestFileCRUD {
         Thread.sleep(2000);
         assertTrue(Files.exists(pathN));
         assertTrue(Files.exists(pathO));
-        
+
         String name = Files.readString(pathN);
         String content = Files.readString(pathO);
         assertEquals(fileName, name);
@@ -84,6 +84,8 @@ public class TestFileCRUD {
         assertTrue(isDeleted);
         boolean isDeleted2 = file.delete();
         assertTrue(isDeleted2);
+
+        tempFile.deleteOnExit();
     }
 
     /**

@@ -95,7 +95,7 @@ public class TestFileServer {
             .get(deleteUrl)
             .then()
             .statusCode(200);
-        tempFile.delete();
+        tempFile.deleteOnExit();
     }
 
     /**
