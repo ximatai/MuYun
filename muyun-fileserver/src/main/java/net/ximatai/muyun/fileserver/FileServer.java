@@ -22,7 +22,7 @@ public class FileServer {
 
     @Inject
     FileServerConfig config;
-
+    
     @Inject
     Vertx vertx;
     
@@ -112,6 +112,7 @@ public class FileServer {
                         .putHeader("Content-Disposition", "attachment; filename=" + content)
                         .sendFile(fileObtained.getPath());
                     // vertx.fileSystem().delete(fileObtained.getPath());
+                    fileObtained.deleteOnExit();
                 }
             } else {
                 logger.error("Failed to read file name: " + result.cause());

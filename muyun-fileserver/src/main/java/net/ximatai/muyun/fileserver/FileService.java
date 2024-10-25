@@ -4,6 +4,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.FileSystem;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -34,12 +36,26 @@ public class FileService implements IFileService {
     @Inject
     Vertx vertx;
 
-    private String getUploadPath() {
-        String uploadPath = config.uploadPath();
-        if (!uploadPath.endsWith("/") && !uploadPath.endsWith("\\")) {
-            uploadPath = uploadPath + "/";
+    private String folderPath;
+
+    @PostConstruct
+    public void init() {
+        // 检查配置的文件夹是否存在
+        folderPath = config.uploadPath();
+        if (!folderPath.endsWith("/") && !folderPath.endsWith("\\")) {
+            folderPath = folderPath + "/";
         }
-        return uploadPath;
+        Path path = Paths.get(folderPath);
+        try {
+            if (Files.notExists(path)) {
+                Files.createDirectories(path);
+                System.out.println("文件夹已创建: " + folderPath);
+            } else {
+                System.out.println("文件夹已存在: " + folderPath);
+            }
+        } catch (Exception e) {
+            logger.error("创建文件夹失败", e);
+        }
     }
 
     // 异步得到文件信息
@@ -48,8 +64,8 @@ public class FileService implements IFileService {
             id = id.split("@")[0];
         }
         Promise<FileInfoEntity> promise = Promise.promise();
-        String fileNamePath = suffixFileNameWithN(getUploadPath() + id);
-        String fileContentPath = suffixFileNameWithO(getUploadPath() + id);
+        String fileNamePath = suffixFileNameWithN(folderPath + id);
+        String fileContentPath = suffixFileNameWithO(folderPath + id);
         File fileContent = new File(fileContentPath);
         String finalId = id;
         vertx.fileSystem().readFile(fileNamePath, result -> {
@@ -93,43 +109,31 @@ public class FileService implements IFileService {
         return this.save(file, file.getName());
     }
 
-    // 保存文件
-//    public String save(File file, String assignName) {
-//        String saveId = generateBsyUid();
-//        String saveFileNameUid = suffixFileNameWithN(saveId);
-//        String saveFileContextUid = suffixFileNameWithO(saveId);
-//        FileSystem fileSystem = vertx.fileSystem();
-//        // 写入文件名
-//        fileSystem.writeFile(getUploadPath() + saveFileNameUid, Buffer.buffer(assignName));
-//        fileSystem.copy(file.getAbsolutePath(), getUploadPath() + saveFileContextUid);
-//        fileSystem.delete(file.getAbsolutePath());
-//        return "%s@%s".formatted(saveId, assignName);
-//    }
-
-    // 同步save方法
+    // 异步save方法
     public String save(File file, String assignName) {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
-        String folderPath = getUploadPath();
-        Path path = Paths.get(folderPath);
-        try {
-            if (Files.notExists(path)) {
-                Files.createDirectories(path);
-                System.out.println("文件夹已创建: " + folderPath);
-            } else {
-                System.out.println("文件夹已存在: " + folderPath);
-            }
-        } catch (Exception e) {
-            logger.error("创建文件夹失败", e);
-        }
+        FileSystem fileSystem = vertx.fileSystem();
+        // 写入文件名
+        fileSystem.writeFile(folderPath + saveFileNameUid, Buffer.buffer(assignName));
+        fileSystem.copy(file.getAbsolutePath(), folderPath + saveFileContextUid);
+        fileSystem.delete(file.getAbsolutePath());
+        return "%s@%s".formatted(saveId, assignName);
+    }
+
+    // 同步save方法
+    public String save1(File file, String assignName) {
+        String saveId = generateBsyUid();
+        String saveFileNameUid = suffixFileNameWithN(saveId);
+        String saveFileContextUid = suffixFileNameWithO(saveId);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(folderPath + saveFileNameUid))) {
             writer.write(assignName);
         } catch (IOException e) {
             logger.error("Failed to write file name", e);
         }
         Path sourcePath = Paths.get(file.getAbsolutePath());
-        Path targetPath = Paths.get(getUploadPath() + saveFileContextUid);
+        Path targetPath = Paths.get(folderPath + saveFileContextUid);
         try {
             Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -145,8 +149,8 @@ public class FileService implements IFileService {
         }
         String nameFile = suffixFileNameWithN(id);
         String contentFile = suffixFileNameWithO(id);
-        String nameFilePath = getUploadPath() + nameFile;
-        String contentFilePath = getUploadPath() + contentFile;
+        String nameFilePath = folderPath + nameFile;
+        String contentFilePath = folderPath + contentFile;
         Path pathN = Paths.get(nameFilePath);
         Path pathO = Paths.get(contentFilePath);
         if (!Files.exists(pathN)) return null;
@@ -169,8 +173,8 @@ public class FileService implements IFileService {
             id = id.split("@")[0];
         }
 
-        String deleteNamePath = suffixFileNameWithN(getUploadPath() + id);
-        String deleteContentPath = suffixFileNameWithO(getUploadPath() + id);
+        String deleteNamePath = suffixFileNameWithN(folderPath + id);
+        String deleteContentPath = suffixFileNameWithO(folderPath + id);
         File fileN = new File(deleteNamePath);
         File fileO = new File(deleteContentPath);
         vertx.fileSystem().delete(deleteNamePath, res -> {
