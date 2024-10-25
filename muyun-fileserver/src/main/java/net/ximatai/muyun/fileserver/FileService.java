@@ -110,7 +110,7 @@ public class FileService implements IFileService {
     }
 
     // 异步save方法
-    public String save(File file, String assignName) {
+    public String save1(File file, String assignName) {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
@@ -123,7 +123,7 @@ public class FileService implements IFileService {
     }
 
     // 同步save方法
-    public String save1(File file, String assignName) {
+    public String save(File file, String assignName) {
         String saveId = generateBsyUid();
         String saveFileNameUid = suffixFileNameWithN(saveId);
         String saveFileContextUid = suffixFileNameWithO(saveId);
