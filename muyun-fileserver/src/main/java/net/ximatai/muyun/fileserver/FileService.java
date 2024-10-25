@@ -113,14 +113,14 @@ public class FileService implements IFileService {
         String saveFileContextUid = suffixFileNameWithO(saveId);
         String folderPath = getUploadPath();
         Path path = Paths.get(folderPath);
-        try{
-            if(Files.notExists(path)){
+        try {
+            if (Files.notExists(path)) {
                 Files.createDirectories(path);
                 System.out.println("文件夹已创建: " + folderPath);
-            } else{
+            } else {
                 System.out.println("文件夹已存在: " + folderPath);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("创建文件夹失败", e);
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(folderPath + saveFileNameUid))) {
