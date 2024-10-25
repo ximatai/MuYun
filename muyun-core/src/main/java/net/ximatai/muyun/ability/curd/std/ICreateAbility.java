@@ -124,7 +124,9 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
     default void fitOutDefaultValue(Map body) {
         if (!body.containsKey("t_create")) {
-            body.put("t_create", LocalDateTime.now());
+            LocalDateTime now = LocalDateTime.now();
+            body.put("t_create", now);
+            body.put("t_update", now);
         }
 
         if (this instanceof IRuntimeAbility runtimeAbility) {
