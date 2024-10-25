@@ -1,5 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -33,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_ALIAS;
@@ -67,6 +70,10 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @Inject
     MuYunConfig config;
+
+    private final LoadingCache<String, Map<String, ?>> userCache = Caffeine.newBuilder()
+        .expireAfterWrite(1, TimeUnit.MINUTES)
+        .build(this::loadUser);
 
     @Override
     public String getMainTable() {
@@ -286,6 +293,14 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             .addAction(new ModuleAction("enableUser", "启用账户", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("roles", "获取角色", ModuleAction.TypeLike.VIEW))
             .addAction(new ModuleAction("setRoles", "设置角色", ModuleAction.TypeLike.UPDATE));
+    }
+
+    private Map<String, ?> loadUser(String userID) {
+        return this.view(userID);
+    }
+
+    public String idToName(String id) {
+        return (String) userCache.get(id).get("v_name");
     }
 
     private String promptForInput(Scanner scanner, String promptMessage) {
