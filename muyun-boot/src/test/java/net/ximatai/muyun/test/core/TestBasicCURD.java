@@ -125,7 +125,7 @@ class TestBasicCURD {
         assertEquals(request.get("id"), e.get("id"));
         assertEquals(request.get("name"), e.get("name"));
         assertNull(e.get("name2"));
-        assertNull(e.get("t_update"));
+        assertNotNull(e.get("t_update"));
         assertNotNull(e.get("t_create"));
     }
 
