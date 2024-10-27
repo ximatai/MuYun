@@ -8,8 +8,11 @@ import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
+import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -19,10 +22,15 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Tag(name = "公告发布")
-@Path(BASE_PATH + "/notice")
-public class NoticeController extends ScaffoldForPlatform {
+@Path(BASE_PATH + "/"+MODULE_ALIAS)
+public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility {
+    public final static String MODULE_ALIAS = "notice";
+
     @Inject
     DictCategoryController dictCategoryController;
+
+    @Inject
+    ModuleController moduleController;
 
     @Override
     public String getMainTable() {
@@ -77,4 +85,18 @@ public class NoticeController extends ScaffoldForPlatform {
         ));
     }
 
+    @java.lang.Override
+    public ModuleController getModuleController() {
+        return moduleController;
+    }
+
+    @java.lang.Override
+    public ModuleConfig getModuleConfig() {
+        return ModuleConfig.ofName("通知发布")
+            .setAlias(MODULE_ALIAS)
+            .setTable(getMainTable())
+            .setUrl("platform/notice/index")
+            .addAction(new ModuleAction("release", "发布通知", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("rollback", "撤销发布", ModuleAction.TypeLike.UPDATE))
+    }
 }
