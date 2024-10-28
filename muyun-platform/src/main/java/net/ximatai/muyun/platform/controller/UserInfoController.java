@@ -301,9 +301,9 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     public String idToName(String id) {
         Map<String, ?> user = userCache.get(id);
         if (user == null) {
-            return (String) user.get("v_name");
-        } else {
             return null;
+        } else {
+            return (String) user.get("v_name");
         }
     }
 
