@@ -1,6 +1,7 @@
 package net.ximatai.muyun.core.config;
 
 import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 
@@ -27,6 +28,7 @@ public interface MuYunConfig {
         return profile().equals(ProfileMode.DEV);
     }
 
+    @WithDefault("1")
     String superUserId();
 
     default boolean isSuperUser(String userID) {
