@@ -23,7 +23,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.NoticeController.MODULE_ALIAS;
 
 @Tag(name = "公告发布")
-@Path(BASE_PATH + "/"+MODULE_ALIAS)
+@Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility {
     public final static String MODULE_ALIAS = "notice";
 
