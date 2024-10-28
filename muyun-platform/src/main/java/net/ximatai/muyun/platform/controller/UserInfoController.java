@@ -271,7 +271,9 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Operation(summary = "设置账户拥有的角色")
     public Integer setRoles(@PathParam("userID") String userID, List<String> roles) {
         userController.putChildTableList(userID, "auth_user_role", List.of());
-        return userController.putChildTableList(userID, "auth_user_role", roles.stream().map(it -> Map.of("id_at_auth_role", it)).toList()).getCreate();
+        int create = userController.putChildTableList(userID, "auth_user_role", roles.stream().map(it -> Map.of("id_at_auth_role", it)).toList()).getCreate();
+        getEventBus().publish("role_changed", userID);
+        return create;
     }
 
     @Override

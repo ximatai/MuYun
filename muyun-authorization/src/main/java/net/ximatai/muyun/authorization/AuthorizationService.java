@@ -2,6 +2,7 @@ package net.ximatai.muyun.authorization;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -31,6 +32,9 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Inject
     MuYunConfig config;
+
+    @Inject
+    EventBus eventBus;
 
     private final LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
@@ -70,6 +74,11 @@ public class AuthorizationService implements IAuthorizationService {
         List<Map<String, Object>> list = db.query("select * from platform.app_module ");
         list.forEach(map -> {
             moduleCache.put(map.get("v_alias").toString(), map);
+        });
+
+        eventBus.<String>consumer("role_changed", msg -> {
+            String userID = msg.body();
+            userToRoles.invalidate(userID);
         });
     }
 
