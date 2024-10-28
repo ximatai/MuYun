@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -22,6 +23,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.NoticeController.MODULE_ALIAS;
 
+@Startup
 @Tag(name = "公告发布")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility {
@@ -40,6 +42,7 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
 
     @Override
     protected void afterInit() {
+        super.afterInit();
         dictCategoryController.putDictCategory(
             new DictCategory("dict_notice_access_scope", "platform_dir", "通知公开范围", 0).setDictList(
                 new Dict("open", "全公开"),
@@ -86,12 +89,12 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
         ));
     }
 
-    @java.lang.Override
+    @Override
     public ModuleController getModuleController() {
         return moduleController;
     }
 
-    @java.lang.Override
+    @Override
     public ModuleConfig getModuleConfig() {
         return ModuleConfig.ofName("通知发布")
             .setAlias(MODULE_ALIAS)

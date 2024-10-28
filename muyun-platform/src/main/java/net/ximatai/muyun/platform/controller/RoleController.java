@@ -64,12 +64,6 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     }
 
     @Override
-    protected void afterInit() {
-        super.afterInit();
-        this.registerModule();
-    }
-
-    @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)

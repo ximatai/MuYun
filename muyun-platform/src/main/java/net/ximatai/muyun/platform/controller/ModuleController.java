@@ -67,6 +67,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     @Override
     protected void afterInit() {
+        super.afterInit();
         initData();
     }
 

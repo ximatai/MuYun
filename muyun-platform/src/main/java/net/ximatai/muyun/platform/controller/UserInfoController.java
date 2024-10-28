@@ -101,7 +101,6 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Override
     protected void afterInit() {
         super.afterInit();
-        this.registerModule();
         dictCategoryController.putDictCategory(new DictCategory("user_gender", "platform_dir", "人员性别", 1).setDictList(new Dict("0", "未知"), new Dict("1", "男"), new Dict("2", "女")), false);
 
         String superUserId = config.superUserId();

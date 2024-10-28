@@ -35,6 +35,7 @@ public class MenuController extends ScaffoldForPlatform implements ITreeAbility,
 
     @Override
     protected void afterInit() {
+        super.afterInit();
         dictCategoryController.putDictCategory(
             new DictCategory("menu_opentype", "platform_dir", "菜单打开方式", 1).setDictList(
                 new Dict("tab", "内嵌TAB"),

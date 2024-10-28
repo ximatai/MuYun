@@ -46,6 +46,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
 
     @Override
     protected void afterInit() {
+        super.afterInit();
         dictCategoryController.putDictCategory(
             new DictCategory("terminal_type", "muyun_dir", "终端类型", 1).setDictList(
                 new Dict("web", "网页端"),

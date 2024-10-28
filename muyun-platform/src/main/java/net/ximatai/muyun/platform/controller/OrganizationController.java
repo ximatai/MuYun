@@ -42,6 +42,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
 
     @Override
     protected void afterInit() {
+        super.afterInit();
         dictCategoryController.putDictCategory(
             new DictCategory("org_type", "platform_dir", "机构类型", 0).setDictList(
                 new Dict("jituan", "集团公司"),
