@@ -299,7 +299,12 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     public String idToName(String id) {
-        return (String) userCache.get(id).get("v_name");
+        Map<String, ?> user = userCache.get(id);
+        if (user == null) {
+            return (String) user.get("v_name");
+        } else {
+            return null;
+        }
     }
 
     private String promptForInput(Scanner scanner, String promptMessage) {
