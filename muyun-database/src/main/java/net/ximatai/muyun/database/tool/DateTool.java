@@ -26,7 +26,7 @@ public class DateTool {
 
     public static Timestamp stringToSqlTimestamp(String dateString) {
         if (dateString == null || dateString.isEmpty()) {
-            throw new IllegalArgumentException("Date string cannot be null or empty.");
+            return null;
         }
 
         try {
