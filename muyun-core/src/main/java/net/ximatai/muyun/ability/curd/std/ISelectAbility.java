@@ -142,21 +142,13 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
      * @return 权限条件 SQL
      */
     default String getAuthCondition() {
-        String authCondition = "and 1=1";
+        String authCondition = "";
         if (this instanceof IAuthAbility authAbility) {
             ApiRequest apiRequest = authAbility.getApiRequest();
-            String module = apiRequest.getModule();
-            String action = apiRequest.getAction();
 
-            if ("tree".equals(action)) {
-                action = "view"; // tree 参考 view 权限
-            }
-
-            if (apiRequest.isNotBlank() // view 接口可能被程序内部调用，这种情况不应该拼装权限
-                && isModuleMatchingPath(module)
-                && "view".equals(action)) {
-                String userID = authAbility.getUser().getId();
-                authCondition = authAbility.getAuthorizationService().getAuthCondition(userID, module, action);
+            if (apiRequest.getAuthCondition() != null) {
+                authCondition = apiRequest.getAuthCondition();
+                apiRequest.setAuthCondition(null); // 权限条件不会被多次使用
             }
         }
         return authCondition;

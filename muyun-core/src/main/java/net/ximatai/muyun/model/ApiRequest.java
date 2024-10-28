@@ -14,6 +14,7 @@ public class ApiRequest {
     private String moduleName;
     private String actionName;
     private String username;
+    private String authCondition;
 
     private RuntimeException error;
 
@@ -122,6 +123,14 @@ public class ApiRequest {
     public ApiRequest setUsername(String username) {
         this.username = username;
         return this;
+    }
+
+    public String getAuthCondition() {
+        return authCondition;
+    }
+
+    public void setAuthCondition(String authCondition) {
+        this.authCondition = authCondition;
     }
 
     @Override
