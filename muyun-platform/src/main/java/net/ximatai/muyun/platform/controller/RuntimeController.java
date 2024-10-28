@@ -65,7 +65,7 @@ public class RuntimeController implements IRuntimeAbility {
         } else if (config.isSuperUser(userID)) {
             List<Map<String, Object>> list = db.query("""
                 select id,pid,id as id_at_app_module,v_alias,v_name,v_url,'' as v_icon,'tab' as opentype from platform.app_module
-                where b_system = true;
+                where b_system = true order by n_order;
                 """);
 
             return TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
