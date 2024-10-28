@@ -15,7 +15,7 @@
 
 ## 架构设计
 
-![CleanShot 2024-10-28 at 14 41 30](https://github.com/user-attachments/assets/8fb32d60-3015-4643-89bb-5fb69e612c30)
+![CleanShot 2024-10-28 at 14 48 22@2x](https://github.com/user-attachments/assets/4cd95a86-8099-4df7-97a1-97fafbd3aed5)
 
 ## 开发进度
 
