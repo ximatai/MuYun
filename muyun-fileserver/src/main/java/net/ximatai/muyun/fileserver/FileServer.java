@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @ApplicationScoped
@@ -109,10 +110,9 @@ public class FileServer {
         vertx.fileSystem().readFile(nameFilePath, result -> {
             if (result.succeeded()) {
                 Buffer buffer = result.result();
-                String fileName = new String(buffer.getBytes(), StandardCharsets.ISO_8859_1);
                 if (fileObtained.exists()) {
                     ctx.response()
-                        .putHeader("Content-Disposition", "attachment; filename=" + fileName)
+                        .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(buffer.toString(), StandardCharsets.UTF_8))
                         .putHeader("Content-type", "application/octet-stream")
                         .sendFile(fileObtained.getPath());
                     // vertx.fileSystem().delete(fileObtained.getPath());
