@@ -1,4 +1,4 @@
-package net.ximatai.muyun;
+package net.ximatai.muyun.boot;
 
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.QuarkusApplication;
