@@ -6,6 +6,7 @@ yasson = "3.0.4"
 bcprov = "1.78.1"
 caffeine = "3.1.8"
 codec = "1.17.1"
+commons-text = "1.12.0"
 
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
@@ -16,6 +17,7 @@ yasson = { module = "org.eclipse:yasson", version.ref = "yasson" }
 bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
 commons-codes = { module = "commons-codec:commons-codec", version.ref = "codec" }
+commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
 easyCaptcha = { module = "com.github.whvcse:easy-captcha", version = "1.6.2" }
 
 [plugins]
