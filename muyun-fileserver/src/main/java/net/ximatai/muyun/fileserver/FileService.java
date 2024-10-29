@@ -160,7 +160,17 @@ public class FileService implements IFileService {
             // 上传文件副本
             File newFile = File.createTempFile(name.split("\\.")[0], "." + name.split("\\.")[1]);
             Files.write(Paths.get(newFile.getPath()), bytes);
-            return newFile;
+            
+            String indirectPath = newFile.getAbsolutePath().split(name.split("\\.")[0])[0];
+            String uid = generateBsyUid();
+            String directoryPath = indirectPath + uid;
+            File directory = new File(directoryPath);
+            boolean result = directory.mkdirs();
+            Path sourcePath = Paths.get(newFile.getAbsolutePath());
+            Path targetDir = Paths.get(directory.getAbsolutePath());
+            Path targetPath = targetDir.resolve(name);
+            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            return targetPath.toFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
