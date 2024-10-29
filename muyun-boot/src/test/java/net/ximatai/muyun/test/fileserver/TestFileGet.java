@@ -69,7 +69,7 @@ public class TestFileGet {
     @Test
     public void test2() throws IOException {
         // 文件路径  
-        Path filePath = Paths.get("D:/file-uploads/OctDay.txt");
+        Path filePath = Paths.get("./OctDay.txt");
 
         // 要写入的内容（作为字符串列表）  
         List<String> lines = Arrays.asList(
