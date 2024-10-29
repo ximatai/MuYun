@@ -43,6 +43,15 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         .build(this::loadCategory);
 
     @Override
+    protected void afterInit() {
+        super.afterInit();
+        String address = dictController.getDataChangeChannel().getAddress();
+        getEventBus().consumer(address).handler(it -> {
+            categoryCache.invalidateAll();
+        });
+    }
+
+    @Override
     public String getMainTable() {
         return "app_dictcategory";
     }
@@ -71,9 +80,6 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     @GET
     @Path("/tree/{id}")
     public List<DictTreeNode> tree(@PathParam("id") String id) {
-        if (getConfig().isTestMode()) {
-            categoryCache.invalidateAll();
-        }
         return categoryCache.get(id);
     }
 
@@ -126,7 +132,9 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
             if (parentId == null) {
                 parentId = dict.get("id_at_app_dictcategory").toString();
             }
-            return dictController.sort(id, prevId, nextId, parentId);
+            Integer sorted = dictController.sort(id, prevId, nextId, parentId);
+            categoryCache.invalidate(parentId);
+            return sorted;
         }
 
         return 0;
