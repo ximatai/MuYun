@@ -8,24 +8,26 @@ import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 @ApplicationScoped
 public class FileServer {
-    
+
     final Logger logger = LoggerFactory.getLogger(getClass());
 
     String originalFileName;
 
     @Inject
     FileServerConfig config;
-    
+
     @Inject
     Vertx vertx;
-    
+
     @Inject
     IFileService fileService;
 
@@ -82,10 +84,11 @@ public class FileServer {
         for (FileUpload f : ctx.fileUploads()) {
             String uploadedFileName = f.uploadedFileName();
             originalFileName = f.fileName();
+            originalFileName = StringEscapeUtils.unescapeHtml4(originalFileName);
             File file = new File(uploadedFileName);
             String id = fileService.save(file, originalFileName);
             ctx.response()
-                // .putHeader("Content-Type", "text/plain;charset=utf-8")
+                .putHeader("Content-Type", "text/plain;charset=utf-8")
                 .write(id);
         }
         ctx.response()
@@ -106,10 +109,11 @@ public class FileServer {
         vertx.fileSystem().readFile(nameFilePath, result -> {
             if (result.succeeded()) {
                 Buffer buffer = result.result();
-                String content = buffer.toString("UTF-8");
+
                 if (fileObtained.exists()) {
                     ctx.response()
-                        .putHeader("Content-Disposition", "attachment; filename=" + content)
+                        .putHeader("Content-Disposition", "attachment; filename=" + new String(buffer.getBytes(), StandardCharsets.ISO_8859_1))
+                        .putHeader("Content-type", "application/octet-stream")
                         .sendFile(fileObtained.getPath());
                     // vertx.fileSystem().delete(fileObtained.getPath());
                     fileObtained.deleteOnExit();
@@ -144,5 +148,5 @@ public class FileServer {
                 ctx.fail(err);
             });
     }
-    
+
 }
