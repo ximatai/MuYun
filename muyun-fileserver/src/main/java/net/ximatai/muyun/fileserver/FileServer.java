@@ -8,7 +8,6 @@ import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +84,7 @@ public class FileServer {
         for (FileUpload f : ctx.fileUploads()) {
             String uploadedFileName = f.uploadedFileName();
             originalFileName = f.fileName();
-            originalFileName = StringEscapeUtils.unescapeHtml4(originalFileName);
+            logger.info("uploaded file name: {}", uploadedFileName);
             File file = new File(uploadedFileName);
             String id = fileService.save(file, originalFileName);
             ctx.response()

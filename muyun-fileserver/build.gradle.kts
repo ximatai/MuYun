@@ -9,6 +9,4 @@ dependencies {
     api("io.quarkus:quarkus-arc")
     api("io.quarkus:quarkus-vertx")
     api("io.quarkus:quarkus-reactive-routes")
-
-    implementation(libs.commons.text)
 }
