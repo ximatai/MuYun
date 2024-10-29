@@ -21,6 +21,7 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.DictCategory;
 import net.ximatai.muyun.platform.model.DictTreeNode;
+import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
@@ -129,11 +130,11 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         if (category != null) { // 说明是给类目排序
             return ITreeAbility.super.sort(id, prevId, nextId, parentId);
         } else if (dict != null) { // 说明是给字典排序
-            if (parentId == null) {
+            if (StringUtil.isBlank(parentId)) {
                 parentId = dict.get("id_at_app_dictcategory").toString();
             }
             Integer sorted = dictController.sort(id, prevId, nextId, parentId);
-            categoryCache.invalidate(parentId);
+            categoryCache.invalidate(dict.get("id_at_app_dictcategory").toString());
             return sorted;
         }
 
