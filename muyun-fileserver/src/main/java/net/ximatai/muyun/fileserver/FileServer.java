@@ -109,10 +109,10 @@ public class FileServer {
         vertx.fileSystem().readFile(nameFilePath, result -> {
             if (result.succeeded()) {
                 Buffer buffer = result.result();
-
+                String fileName = new String(buffer.getBytes(), StandardCharsets.ISO_8859_1);
                 if (fileObtained.exists()) {
                     ctx.response()
-                        .putHeader("Content-Disposition", "attachment; filename=" + new String(buffer.getBytes(), StandardCharsets.ISO_8859_1))
+                        .putHeader("Content-Disposition", "attachment; filename=" + fileName)
                         .putHeader("Content-type", "application/octet-stream")
                         .sendFile(fileObtained.getPath());
                     // vertx.fileSystem().delete(fileObtained.getPath());
