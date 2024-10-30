@@ -64,7 +64,7 @@ public abstract class Scaffold implements IDatabaseAbility, IRuntimeAbility {
             ability.create(getDatabaseOperations());
         }
         afterInit();
-        logger.info("Scaffold initialized");
+        logger.info("{} initialized", this.getClass().getSimpleName());
     }
 
     protected void afterInit() {
