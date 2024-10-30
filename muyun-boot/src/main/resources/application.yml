@@ -1,20 +1,17 @@
-muyun:
-  super-user-id: 1 # 可以在环境变量里预先设置 MUYUN_USERNAME、MUYUN_PASSWORD 来确定初始化的用户名和密码
 file-server:
-  upload-path: ./test/
-  page-path: fileServer
+  upload-path: ./fileUploads/
 web:
   redirects:
     - from: /
       to: /web/
 frontend:
   resources:
-    - prefix: /web/
+    - prefix: /web1/
       path: /Users/liurui/develop/workspace-bsy/unicom_xinan_project/dist
 proxy:
   upstreams:
-    - prefix: /web1/
-      url: http://localhost:3000/
+    - prefix: /web/
+      url: http://192.168.3.9:8089/web/
 quarkus:
   http:
     port: 8080
@@ -26,13 +23,8 @@ quarkus:
     db-kind: postgresql
     username: postgres
     password: muyun2024
-    #    password: Muyun20&24
     jdbc:
       url: jdbc:postgresql://localhost:54324/muyun
-    #      url: jdbc:postgresql://192.168.6.205:32128/uni_antifraud
-    #      enabled: true
-    # reactive:
-    #   url: vertx-reactive:postgresql://localhost:54324/muyun
 
   banner:
     path: banner.txt
@@ -50,11 +42,12 @@ quarkus:
       enable: true
       format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"
     file:
-      enable: false
+      enable: true
       path: logs/muyun.log
       level: DEBUG
       format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3.}] (%t) %s%e%n"
       rotation:
-        #        max-file-count: 7
         file-suffix: .yyyy-MM-dd
         rotate-on-boot: true
+        max-backup-index: 7
+#  profile: test
