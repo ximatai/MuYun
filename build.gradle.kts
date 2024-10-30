@@ -9,7 +9,7 @@ plugins {
 allprojects {
     group = "net.ximatai.muyun"
     version = "1.0.0-SNAPSHOT"
-//    version = "0.1.0"
+//    version = "0.1.1"
 
     repositories {
         mavenLocal()
