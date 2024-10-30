@@ -9,9 +9,13 @@ import io.vertx.ext.web.sstore.LocalSessionStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import net.ximatai.muyun.RouterFilterPriority;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class SessionFilter {
+
+    @ConfigProperty(name = "quarkus.rest.path")
+    String restPath;
 
     private SessionHandler sessionHandler;
 
@@ -21,7 +25,12 @@ public class SessionFilter {
 
     @RouteFilter(RouterFilterPriority.SESSION_BUILDER)
     void filter(RoutingContext context) {
-        sessionHandler.handle(context);
+        String path = context.request().path();
+        if (path.startsWith(restPath)) { // 只有 /api的请求需要考虑 session
+            sessionHandler.handle(context);
+        } else {
+            context.next();
+        }
     }
 
 }
