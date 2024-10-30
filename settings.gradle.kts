@@ -6,22 +6,13 @@ pluginManagement {
     }
 }
 
-plugins {
-    id("com.gradle.develocity") version "3.17.5"
-}
-
 rootProject.name = "MuYun"
-
-require(JavaVersion.current() >= JavaVersion.VERSION_21) {
-    "You must use at least Java 21 to build the project, you're currently using ${System.getProperty("java.version")}"
-}
 
 include("muyun-core")
 //include("muyun-core-uni")
 include("muyun-database")
 include("muyun-database-std")
 //include("muyun-database-uni")
-//include("muyun-msg")
 include("muyun-platform")
 include("muyun-authorization")
 include("muyun-proxy")
@@ -29,11 +20,3 @@ include("muyun-log")
 include("muyun-fileserver")
 
 include("muyun-boot")
-
-develocity {
-    buildScan {
-        termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
-        termsOfUseAgree = "yes"
-        publishing.onlyIf { false }
-    }
-}

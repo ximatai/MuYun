@@ -1,6 +1,4 @@
 plugins {
-    java
-    checkstyle
     alias(libs.plugins.quarkus)
 }
 

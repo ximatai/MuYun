@@ -3,27 +3,40 @@ plugins {
     checkstyle
     signing
     id("io.github.jeadyx.sonatype-uploader") version "2.8"
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
+    id("org.kordamp.gradle.jandex") version "2.1.0"
 }
 
 allprojects {
+    group = "net.ximatai.muyun"
+    version = "1.0.0-SNAPSHOT"
+//    version = "0.1.0"
+
+    repositories {
+        mavenLocal()
+        maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
+        mavenCentral()
+    }
+}
+
+subprojects {
     apply {
         plugin("java")
         plugin("checkstyle")
-        plugin("configure-jandex")
+//        plugin("configure-jandex")
         plugin("maven-publish")
         plugin("signing")
         plugin("io.github.jeadyx.sonatype-uploader")
+        plugin("org.kordamp.gradle.jandex")
     }
 
-    group = "net.ximatai.muyun"
-//    version = "0.1.0"
-    version = "1.0.0-SNAPSHOT"
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+        withJavadocJar()
+        withSourcesJar()
+    }
 
     publishing {
         publications {
@@ -70,7 +83,6 @@ allprojects {
         }
     }
 
-
     sonatypeUploader {
         repositoryPath = layout.buildDirectory.dir("repo").get().asFile.path
         tokenName = findProperty("sonatype.token").toString()
@@ -90,31 +102,16 @@ allprojects {
         enabled = false
     }
 
+    tasks.named<Checkstyle>("checkstyleMain") {
+        dependsOn(tasks.named("jandex"))
+    }
+
     tasks.named<Javadoc>("javadoc") {
         mustRunAfter(tasks.named("jandex"))
     }
 
     tasks.withType<GenerateModuleMetadata> {
         suppressedValidationErrors.add("enforced-platform")
-    }
-
-    repositories {
-        maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
-        mavenCentral()
-        mavenLocal()
-    }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-        withJavadocJar()
-        withSourcesJar()
-    }
-
-    tasks.withType<Test> {
-        systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
-        maxHeapSize = "2g"
     }
 
     tasks.withType<JavaCompile> {
