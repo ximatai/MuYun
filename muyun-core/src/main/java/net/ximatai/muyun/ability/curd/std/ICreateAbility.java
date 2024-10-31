@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.ICodeGenerateAbility;
 import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.ability.IMetadataAbility;
@@ -129,9 +130,9 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             body.put("t_update", now);
         }
 
-        if (this instanceof IRuntimeAbility runtimeAbility) {
-            String moduleID = runtimeAbility.getApiRequest().getModuleID();
-            IRuntimeUser user = runtimeAbility.getApiRequest().getUser();
+        if (this instanceof IRuntimeAbility ability) {
+            String moduleID = ability.getApiRequest().getModuleID();
+            IRuntimeUser user = ability.getApiRequest().getUser();
             if (!body.containsKey("id_at_auth_user__create")) {
                 body.put("id_at_auth_user__create", user.getId());
             }
@@ -149,11 +150,15 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             }
         }
 
-        if (this instanceof ITreeAbility treeAbility) {
-            Column pidColumn = treeAbility.getParentKeyColumn();
+        if (this instanceof ITreeAbility ability) {
+            Column pidColumn = ability.getParentKeyColumn();
             if (StringUtil.isBlank(body.get(pidColumn.getName()))) {
                 body.put(pidColumn.getName(), pidColumn.getDefaultValue());
             }
+        }
+
+        if (this instanceof ICodeGenerateAbility ability) {
+            body.put(ability.getCodeColumn(), ability.generateCode(body));
         }
     }
 
