@@ -123,7 +123,7 @@ public class SsoController implements IRuntimeAbility {
 
     private RuntimeException verificationCode(String code) {
         code = code.trim().toLowerCase();
-        if (!config.isDevMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
+        if (!config.isProdMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
             return null;
         }
 
