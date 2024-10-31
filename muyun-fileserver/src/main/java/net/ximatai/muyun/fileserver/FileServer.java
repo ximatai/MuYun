@@ -105,7 +105,7 @@ public class FileServer {
         String id = ctx.pathParam("id");
         // 先尝试按文件名下载
         File fileObtained = fileService.get2(id);
-        if (fileObtained.exists()) {
+        if (fileObtained != null && fileObtained.exists()) {
             ctx.response()
                 .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(id, StandardCharsets.UTF_8))
                 .putHeader("Content-type", "application/octet-stream")
