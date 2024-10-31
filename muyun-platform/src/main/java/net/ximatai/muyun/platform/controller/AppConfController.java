@@ -1,5 +1,6 @@
 package net.ximatai.muyun.platform.controller;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -10,6 +11,9 @@ import net.ximatai.muyun.ability.curd.std.IUpdateAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
+import net.ximatai.muyun.platform.model.ModuleAction;
+import net.ximatai.muyun.platform.model.ModuleConfig;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.Map;
@@ -18,9 +22,12 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Tag(name = "全局程序配置（面向前端平台级业务）")
 @Path(BASE_PATH + "/conf")
-public class AppConfController extends Scaffold implements ICreateAbility, ISelectAbility, IUpdateAbility, ITableCreateAbility {
+public class AppConfController extends Scaffold implements ICreateAbility, ISelectAbility, IUpdateAbility, ITableCreateAbility, IModuleRegisterAbility {
 
     private final static String CONF_ID = "1";
+
+    @Inject
+    ModuleController moduleController;
 
     @Override
     public String getMainTable() {
@@ -37,6 +44,7 @@ public class AppConfController extends Scaffold implements ICreateAbility, ISele
     @Override
     protected void afterInit() {
         super.afterInit();
+        this.registerModule();
 
         Map<String, ?> view = this.view(CONF_ID);
         if (view == null) {
@@ -65,4 +73,18 @@ public class AppConfController extends Scaffold implements ICreateAbility, ISele
         ));
     }
 
+    @Override
+    public ModuleController getModuleController() {
+        return moduleController;
+    }
+
+    @Override
+    public ModuleConfig getModuleConfig() {
+        return ModuleConfig.ofName("用户管理")
+            .setAlias("conf")
+            .setTable(getMainTable())
+            .setUrl("platform/conf/index")
+            .addAction(new ModuleAction("set", "写入配置", ModuleAction.TypeLike.UPDATE))
+            .addAction(new ModuleAction("get", "获取配置", ModuleAction.TypeLike.UPDATE));
+    }
 }
