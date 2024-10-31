@@ -64,15 +64,19 @@ public class FileServer {
             .putHeader("content-type", "text/html")
             .end(
                 """
-                            <form action="upload" method="post" enctype="multipart/form-data">
-                                 <div>
-                                    <label for="name">Select a file:</label>
-                                    <input type="file" name="file" />
-                                </div>
-                                <div class="button">
-                                    <button type="submit">Send</button>
-                                </div>
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head>
+                                <meta charset="UTF-8">
+                                <title>Title</title>
+                            </head>
+                            <body>
+                            <form enctype="multipart/form-data" action="/fileServer/upload" method="post">
+                                <input name="files1"  type="file" multiple />
+                                <button type="submit">提交</button>
                             </form>
+                            </body>
+                            </html>
                     """
             );
     }
@@ -99,29 +103,42 @@ public class FileServer {
     // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
     private void download(RoutingContext ctx) {
         String id = ctx.pathParam("id");
-        if (id.contains("@")) {
-            id = id.split("@")[0];
-        }
-        File fileObtained = fileService.get(id);
-        // 发送文件到客户端
-        String nameFile = fileService.suffixFileNameWithN(id);
-        String nameFilePath = getUploadPath() + nameFile;
-        vertx.fileSystem().readFile(nameFilePath, result -> {
-            if (result.succeeded()) {
-                Buffer buffer = result.result();
-                if (fileObtained.exists()) {
-                    ctx.response()
-                        .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(buffer.toString(), StandardCharsets.UTF_8))
-                        .putHeader("Content-type", "application/octet-stream")
-                        .sendFile(fileObtained.getPath());
-                    // vertx.fileSystem().delete(fileObtained.getPath());
-                    fileObtained.deleteOnExit();
-                }
-            } else {
-                logger.error("Failed to read file name: " + result.cause());
-                ctx.fail(result.cause());
+        // 先尝试按文件名下载
+        File fileObtained = fileService.get2(id);
+        if (fileObtained.exists()) {
+            ctx.response()
+                .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(id, StandardCharsets.UTF_8))
+                .putHeader("Content-type", "application/octet-stream")
+                .sendFile(fileObtained.getPath());
+        } else {
+            // 文件名下载失败，按照uid下载；
+            if (id.contains("@") && id.length() > 35) {
+                id = id.split("@")[0];
             }
-        });
+            fileObtained = fileService.get(id);
+            if (fileObtained != null) {
+                // 发送文件到客户端
+                String nameFile = fileService.suffixFileNameWithN(id);
+                String nameFilePath = getUploadPath() + nameFile;
+                File finalFileObtained = fileObtained;
+                vertx.fileSystem().readFile(nameFilePath, result -> {
+                    if (result.succeeded()) {
+                        Buffer buffer = result.result();
+                        if (finalFileObtained.exists()) {
+                            ctx.response()
+                                .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(buffer.toString(), StandardCharsets.UTF_8))
+                                .putHeader("Content-type", "application/octet-stream")
+                                .sendFile(finalFileObtained.getPath());
+                            // vertx.fileSystem().delete(fileObtained.getPath());
+                            finalFileObtained.deleteOnExit();
+                        }
+                    } else {
+                        logger.error("Failed to read file name: " + result.cause());
+                        ctx.fail(result.cause());
+                    }
+                });
+            }
+        }
     }
 
     // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)

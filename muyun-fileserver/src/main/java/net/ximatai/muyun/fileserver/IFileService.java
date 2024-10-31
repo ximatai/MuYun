@@ -10,6 +10,8 @@ public interface IFileService {
     String save(File file, String assignName);
 
     File get(String id);
+    
+    File get2(String fileName);
 
     boolean delete(String id);
 

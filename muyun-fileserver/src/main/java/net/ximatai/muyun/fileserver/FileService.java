@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -155,7 +156,7 @@ public class FileService implements IFileService {
         Path pathO = Paths.get(contentFilePath);
         if (!Files.exists(pathN)) return null;
         try {
-            String name = Files.readString(pathN);
+            String name = Files.readString(pathN, StandardCharsets.UTF_8);
             byte[] bytes = Files.readAllBytes(pathO);
             // 上传文件副本
             File newFile = File.createTempFile(name.split("\\.")[0], "." + name.split("\\.")[1]);
@@ -175,6 +176,16 @@ public class FileService implements IFileService {
             throw new RuntimeException(e);
         }
         // return null;
+    }
+    
+    public File get2(String fileName) {
+        String filePath = folderPath + fileName;
+        Path path = Paths.get(filePath);
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            File file = path.toFile();
+            return file;
+        }
+        return null;
     }
 
     // 丢弃服务器端中的文件
