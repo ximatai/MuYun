@@ -1,10 +1,12 @@
 package net.ximatai.muyun.test.fileserver;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.response.Response;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestGetByName {
 
     final Logger logger = LoggerFactory.getLogger(getClass());
