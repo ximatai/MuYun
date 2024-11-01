@@ -8,6 +8,7 @@ import net.ximatai.muyun.model.code.ICodePart;
 import net.ximatai.muyun.model.code.SerialCodePart;
 import net.ximatai.muyun.model.code.TransformCodePart;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,16 +24,20 @@ public interface ICodeGenerateAbility extends IMetadataAbility, IDatabaseAbility
     @GET
     @Path("/generateCode")
     default String generateCode() {
-        return generate(null);
+        return generate(null, 1).getFirst();
     }
 
     @POST
     @Path("/generateCode")
     default String generateCode(Map body) {
-        return generate(body);
+        return generate(body, 1).getFirst();
     }
 
-    default String generate(Map data) {
+    default List<String> generate(List<Map> list) {
+        return generate(list.getFirst(), list.size());
+    }
+
+    default List<String> generate(Map data, int size) {
         CodeGenerateConfig config = getCodeGenerateConfig();
         List<ICodePart> codePartList = config.getCodePartList();
 
@@ -47,9 +52,11 @@ public interface ICodeGenerateAbility extends IMetadataAbility, IDatabaseAbility
         boolean hasSerial = codePartList.getLast() instanceof SerialCodePart;
 
         if (!hasSerial) { // 不存在流水号情况
-            return codePartList.stream()
-                .map(ICodePart::varchar)
-                .collect(Collectors.joining());
+            return List.of(
+                codePartList.stream()
+                    .map(ICodePart::varchar)
+                    .collect(Collectors.joining())
+            );
         }
 
         // 生成前缀
@@ -76,7 +83,15 @@ public interface ICodeGenerateAbility extends IMetadataAbility, IDatabaseAbility
 
         // 返回生成的代码
         SerialCodePart serialPart = (SerialCodePart) codePartList.getLast();
-        return prefix + serialPart.setBase(nowSerial).varchar();
+        serialPart.setBase(nowSerial);
+
+        List<String> codes = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            codes.add(prefix + serialPart.varchar());
+        }
+
+        return codes;
     }
 
 }

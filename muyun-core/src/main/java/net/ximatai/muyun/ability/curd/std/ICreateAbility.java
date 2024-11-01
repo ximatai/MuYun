@@ -76,21 +76,31 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         List<Map<String, ?>> dataList = new ArrayList<>();
 
-        list.forEach(body -> {
-                HashMap<String, ?> map = new HashMap<>(body);
-                fitOutDefaultValue(map);
+        List<String> codeList = null;
 
-                if (this instanceof IDataCheckAbility dataCheckAbility) {
-                    dataCheckAbility.check(body, false);
-                }
+        if (this instanceof ICodeGenerateAbility ability) {
+            codeList = ability.generate(list);
+        }
 
-                if (this instanceof ISecurityAbility securityAbility) {
-                    securityAbility.signAndEncrypt(map);
-                }
+        for (int i = 0; i < list.size(); i++) {
+            Map map = new HashMap<>(list.get(i));
+            fitOutDefaultValue(map);
 
-                dataList.add(map);
+            if (codeList != null) {
+                ICodeGenerateAbility ability = (ICodeGenerateAbility) this;
+                map.put(ability.getCodeColumn(), codeList.get(i));
             }
-        );
+
+            if (this instanceof IDataCheckAbility dataCheckAbility) {
+                dataCheckAbility.check(map, false);
+            }
+
+            if (this instanceof ISecurityAbility securityAbility) {
+                securityAbility.signAndEncrypt(map);
+            }
+
+            dataList.add(map);
+        }
 
         List<String> idList = getDB().insertList(getSchemaName(), getMainTable(), dataList);
 

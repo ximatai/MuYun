@@ -15,6 +15,6 @@ public class SerialCodePart implements ICodePart {
 
     @Override
     public String varchar() {
-        return String.format("%0" + width + "d", base + 1);
+        return String.format("%0" + width + "d", ++base);
     }
 }
