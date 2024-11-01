@@ -13,7 +13,8 @@ public class CodeGenerateConfig {
         return codePartList;
     }
 
-    public void setCodePartList(List<ICodePart> codePartList) {
+    // 构造函数：初始化 codePartList
+    public CodeGenerateConfig(List<ICodePart> codePartList) {
         int serialIndex = -1;
 
         // 查找 SerialCodePart 在列表中的位置
@@ -30,11 +31,6 @@ public class CodeGenerateConfig {
         }
 
         this.codePartList = codePartList;
-    }
-
-    // 构造函数：初始化 codePartList
-    public CodeGenerateConfig(List<ICodePart> codePartList) {
-        setCodePartList(codePartList);
     }
 
     public CodeGenerateConfig(int serialWidth) {
