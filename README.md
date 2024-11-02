@@ -66,9 +66,10 @@
     - [x] 权限
       - [x] 功能权限
       - [x] 数据权限
-    - [ ] 单据编码
-    - [ ] 工作流
+    - [x] 单据编码
     - [x] 通知公告
+    - [ ] 在线用户
+    - [ ] 工作流
     - [ ] 站内信
 * [ ] 微服务
     - [ ] 通信
@@ -81,13 +82,16 @@
 
 本项目使用 Java 21 开发。
 
-本项目目前支持使用 [PostgreSQL](https://www.postgresql.org/) 作为数据库，未来会引入 [MySQL](https://www.mysql.com/) 支持。
+本项目目前对 [PostgreSQL](https://www.postgresql.org/) 做了完整适配，其他数据库需要做轻微改造才能兼容。
 
-可以使用 [Docker Compose](https://docs.docker.com/compose/) 一键启动环境：
+可以使用 [Docker Compose](https://docs.docker.com/compose/) 启动数据库：
 
 ```shell
 docker compose up -d
 ```
+
+或者 docker 命令：
+`docker run --rm  -p 54324:5432 -e POSTGRES_PASSWORD=muyun2024 -e POSTGRES_DB=muyun  postgres:17-alpine`
 
 后端开发环境启动：
 
