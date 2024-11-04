@@ -84,7 +84,7 @@ public class AppConfController extends Scaffold implements ICreateAbility, ISele
             .setAlias("conf")
             .setTable(getMainTable())
             .setUrl("platform/conf/index")
-            .addAction(new ModuleAction("set", "写入配置", ModuleAction.TypeLike.UPDATE))
-            .addAction(new ModuleAction("get", "获取配置", ModuleAction.TypeLike.UPDATE));
+            .addAction(new ModuleAction("set", "写入配置", ModuleAction.TypeLike.UPDATE));
+//            .addAction(new ModuleAction("get", "获取配置", ModuleAction.TypeLike.UPDATE));  不参与权限
     }
 }
