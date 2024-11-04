@@ -22,7 +22,9 @@ import net.ximatai.muyun.model.SortColumn;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -261,6 +263,22 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                         if (b != null) {
                             condition.append(" and %s ".formatted(qi.getColumn()));
                             condition.append(" <= ? ");
+
+                            // b 是时间，但是b跟a的时间相同，并且 a 时间的 时分秒都是0，就把b的时分秒补成 23:59:59.999
+                            if (b instanceof Timestamp bTime && b.equals(a) &&
+                                bTime.toLocalDateTime().getHour() == 0 &&
+                                bTime.toLocalDateTime().getMinute() == 0 &&
+                                bTime.toLocalDateTime().getSecond() == 0) {
+
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(bTime);
+                                cal.set(Calendar.HOUR_OF_DAY, 23);
+                                cal.set(Calendar.MINUTE, 59);
+                                cal.set(Calendar.SECOND, 59);
+                                cal.set(Calendar.MILLISECOND, 999);
+                                b = new Timestamp(cal.getTimeInMillis());
+                            }
+
                             params.add(b);
                         }
                         break;
