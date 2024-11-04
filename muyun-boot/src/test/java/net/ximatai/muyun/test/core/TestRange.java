@@ -29,27 +29,27 @@ import static org.junit.Assert.assertEquals;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestRange {
-    
+
     private String path = "/test_range";
-    
+
     @Inject
     IDatabaseOperations databaseOperations;
-    
+
     @Inject
     TestRangeController controller;
-    
+
     String tableName;
-    
-    @BeforeEach 
-    void setUp(){
+
+    @BeforeEach
+    void setUp() {
         tableName = controller.getMainTable();
         databaseOperations.execute("TRUNCATE TABLE %s".formatted(tableName));
         controller.create(Map.of("id", "1", "name", "test1", "t_create", "2024-01-01 12:00:00"));
     }
-    
+
     @Test
     @DisplayName("测试日期查询")
-    void test(){
+    void test() {
         Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-01", "2024-01-01"});
 
         PageResult<Map> response = given()
@@ -61,10 +61,10 @@ public class TestRange {
             .then()
             .statusCode(200)
             .extract()
-            .as(new TypeRef<>(){
-                
+            .as(new TypeRef<>() {
+
             });
-        
+
         assertEquals(1, response.getTotal());
     }
 }
@@ -72,7 +72,7 @@ public class TestRange {
 @Startup
 @Path("/test_range")
 class TestRangeController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility {
-    
+
     @Override
     public String getSchemaName() {
         return "test";

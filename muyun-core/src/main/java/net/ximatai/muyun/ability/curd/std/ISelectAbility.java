@@ -278,10 +278,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             condition.append(" <= ? ");
 
                             // b 是时间，但是b跟a的时间相同，并且 a 时间的 时分秒都是0，就把b的时分秒补成 23:59:59.999
-                            if (b instanceof Timestamp bTime && b.equals(a) &&
-                                bTime.toLocalDateTime().getHour() == 0 &&
-                                bTime.toLocalDateTime().getMinute() == 0 &&
-                                bTime.toLocalDateTime().getSecond() == 0) {
+                            if (b instanceof Timestamp bTime && b.equals(a)
+                                && bTime.toLocalDateTime().getHour() == 0
+                                && bTime.toLocalDateTime().getMinute() == 0
+                                && bTime.toLocalDateTime().getSecond() == 0) {
 
                                 Calendar cal = Calendar.getInstance();
                                 cal.setTime(bTime);
