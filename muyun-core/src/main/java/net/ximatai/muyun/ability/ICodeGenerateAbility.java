@@ -73,7 +73,7 @@ public interface ICodeGenerateAbility extends IMetadataAbility, IDatabaseAbility
 
         // 查询数据库，获取当前流水号的最大值
         Map<String, Object> row = getDB().row("select %s from %s.%s where %s like ? order by %s desc limit 1 "
-            .formatted(codeColumn, getSchemaName(), getMainTable(), codeColumn, codeColumn), prefix);
+            .formatted(codeColumn, getSchemaName(), getMainTable(), codeColumn, codeColumn), prefix + "%");
 
         if (row != null) {
             String nowCode = (String) row.get(codeColumn);

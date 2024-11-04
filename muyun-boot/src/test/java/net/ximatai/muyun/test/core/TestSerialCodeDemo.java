@@ -44,6 +44,11 @@ public class TestSerialCodeDemo {
         String yyyyMMdd = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         Assertions.assertEquals("BSY%s0005".formatted(yyyyMMdd), map.get("v_code"));
+
+        String idNew = serialCodeDemo.create(Map.of("v_name", "test"));
+
+        Map<String, ?> view = serialCodeDemo.view(idNew);
+        Assertions.assertEquals("BSY%s0006".formatted(yyyyMMdd), view.get("v_code"));
     }
 
 }
