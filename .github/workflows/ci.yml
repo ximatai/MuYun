@@ -16,15 +16,15 @@ jobs:
         run: |
           echo "MUYUN_USERNAME=admin" >> $GITHUB_ENV
           echo "MUYUN_PASSWORD=admin@muyun" >> $GITHUB_ENV
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - name: Checkstyle
         run: ./gradlew checkstyleMain checkstyleTest --scan
-      - name: Build with Gradle
+      - name: Test with Gradle
         run: ./gradlew test
