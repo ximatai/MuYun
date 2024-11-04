@@ -43,4 +43,8 @@ public interface IQueryAbility extends ISelectAbility {
         return this.view(null, null, true, null, queryBody, queryItemList());
     }
 
+    default PageResult query(Map<String, Object> queryBody, String authCondition) {
+        return this.view(null, null, true, null, queryBody, queryItemList(), authCondition);
+    }
+
 }
