@@ -163,6 +163,17 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             Map<String, Object> queryBody,
                             List<QueryItem> queryItemList
     ) {
+        return this.view(page, size, noPage, sort, queryBody, queryItemList, null);
+    }
+
+    default PageResult view(Integer page,
+                            Long size,
+                            Boolean noPage,
+                            List<String> sort,
+                            Map<String, Object> queryBody,
+                            List<QueryItem> queryItemList,
+                            String authCondition
+    ) {
         List<Object> params = new ArrayList<>();
 
         List<SortColumn> orderColumns = new ArrayList<>();
@@ -184,7 +195,9 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             orderColumns.addAll(getSortDefaultColumns());
         }
 
-        String authCondition = getAuthCondition();
+        if (authCondition == null) {
+            authCondition = getAuthCondition();
+        }
 
         StringBuilder queryCondition = new StringBuilder();
 

@@ -1,5 +1,6 @@
 package net.ximatai.muyun.test.core;
 
+import io.quarkus.runtime.Startup;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
@@ -26,7 +27,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
 @QuarkusTest
-//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestRange {
     
     private String path = "/test_range";
@@ -68,6 +69,7 @@ public class TestRange {
     }
 }
 
+@Startup
 @Path("/test_range")
 class TestRangeController extends Scaffold implements ICURDAbility, ITableCreateAbility, IQueryAbility {
     
