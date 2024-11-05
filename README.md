@@ -96,5 +96,5 @@ docker compose up -d
 后端开发环境启动：
 
 ```shell
-./gradlew :muyun-boot:quarkusDev
+./gradlew --console=plain :muyun-boot:quarkusDev
 ```
