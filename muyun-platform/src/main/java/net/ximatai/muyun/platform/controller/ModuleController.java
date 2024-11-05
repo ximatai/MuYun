@@ -46,6 +46,15 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         return "app_module";
     }
 
+    private List<Map<String, Object>> systemModuleList;
+
+    private List<Map<String, Object>> getSystemModuleList() {
+        if (systemModuleList == null) {
+            systemModuleList = getDB().query("select * from %s.%s where b_system = true".formatted(getSchemaName(), getMainTable()));
+        }
+        return systemModuleList;
+    }
+
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
@@ -143,6 +152,8 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
         String root3 = this.lockModule(null, "日常办公", "void", null, null, null);
         this.lockModule(root3, "通知发布", "notice", "platform.app_notice", "platform/notice/index", null);
+
+        systemModuleList = null;
     }
 
     /**
@@ -156,12 +167,12 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
      * @return
      */
     private String lockModule(String pid, String name, String alias, String table, String url, List<ModuleAction> moduleActions) {
-        List<Map<String, Object>> list;
+        Map<String, Object> hitModule;
 
         if ("void".equals(alias)) { // 说明不是叶子节点
-            list = getDB().query("select id from platform.app_module where b_system = true and v_alias = 'void' and v_name = ?", name);
+            hitModule = getSystemModuleList().stream().filter(it -> it.get("v_name").equals(name)).findFirst().orElse(null);
         } else {
-            list = getDB().query("select id from platform.app_module where b_system = true and v_alias = ?", alias);
+            hitModule = getSystemModuleList().stream().filter(it -> it.get("v_alias").equals(alias)).findFirst().orElse(null);
         }
 
         String moduleID;
@@ -171,7 +182,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             actions = moduleActions.stream().map(ModuleAction::toMap).toList();
         }
 
-        if (list.isEmpty()) { // 新增模块
+        if (hitModule == null) { // 新增模块
             HashMap map = new HashMap();
             if (pid != null) {
                 map.put("pid", pid);
@@ -185,7 +196,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
             map.put("b_system", true);
             moduleID = this.create(map);
         } else {
-            moduleID = list.getFirst().get("id").toString();
+            moduleID = hitModule.get("id").toString();
 
             if (moduleActions != null) { // 修改时可以根据 moduleActions 进行增量补充
                 List<Map> actionList = this.getChildTableList(moduleID, "app_module_action", null);
@@ -210,5 +221,6 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
 
     public void register(ModuleConfig config) {
         this.lockModule(null, config.getName(), config.getAlias(), config.getTable(), config.getUrl(), config.getActions());
+        systemModuleList = null;
     }
 }
