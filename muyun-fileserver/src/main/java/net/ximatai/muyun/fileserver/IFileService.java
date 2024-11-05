@@ -11,7 +11,7 @@ public interface IFileService {
 
     File get(String id);
     
-    File get2(String fileName);
+    // File get2(String fileName);
 
     boolean delete(String id);
 

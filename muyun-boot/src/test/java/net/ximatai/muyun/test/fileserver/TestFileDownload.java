@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestFileDownload {
 
     @Inject

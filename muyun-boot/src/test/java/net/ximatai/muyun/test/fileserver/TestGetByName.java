@@ -66,7 +66,7 @@ public class TestGetByName {
         String data = "当我和这个世界不一样，那就让我不一样";
         byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
         Files.write(filePath, dataBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        File file = fileService.get2(fileName);
+        File file = fileService.get(fileName);
         assertNotNull(file);
         Response response = given()
             .when()

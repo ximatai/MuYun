@@ -103,46 +103,36 @@ public class FileServer {
     // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
     private void download(RoutingContext ctx) {
         String id = ctx.pathParam("id");
-        // 先尝试按文件名下载
-        File fileObtained = fileService.get2(id);
-        if (fileObtained != null && fileObtained.exists()) {
+        File fileObtained = fileService.get(id);
+        if (id.contains("@") && id.length() > 35) {
+            id = id.split("@")[0];
+            String nameFile = fileService.suffixFileNameWithN(id);
+            String nameFilePath = getUploadPath() + nameFile;
+            vertx.fileSystem().readFile(nameFilePath, result -> {
+                if (result.succeeded()) {
+                    Buffer buffer = result.result();
+                    if (fileObtained.exists()) {
+                        ctx.response()
+                            .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(buffer.toString(), StandardCharsets.UTF_8))
+                            .putHeader("Content-type", "application/octet-stream")
+                            .sendFile(fileObtained.getPath());
+                        fileObtained.deleteOnExit();
+                    }
+                } else {
+                    logger.error("Failed to read file name: " + result.cause());
+                    ctx.fail(result.cause());
+                }
+            });
+        } else {
             ctx.response()
                 .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(id, StandardCharsets.UTF_8))
                 .putHeader("Content-type", "application/octet-stream")
                 .sendFile(fileObtained.getPath());
-        } else {
-            // 文件名下载失败，按照uid下载；
-            if (id.contains("@") && id.length() > 35) {
-                id = id.split("@")[0];
-            }
-            fileObtained = fileService.get(id);
-            if (fileObtained != null) {
-                // 发送文件到客户端
-                String nameFile = fileService.suffixFileNameWithN(id);
-                String nameFilePath = getUploadPath() + nameFile;
-                File finalFileObtained = fileObtained;
-                vertx.fileSystem().readFile(nameFilePath, result -> {
-                    if (result.succeeded()) {
-                        Buffer buffer = result.result();
-                        if (finalFileObtained.exists()) {
-                            ctx.response()
-                                .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(buffer.toString(), StandardCharsets.UTF_8))
-                                .putHeader("Content-type", "application/octet-stream")
-                                .sendFile(finalFileObtained.getPath());
-                            // vertx.fileSystem().delete(fileObtained.getPath());
-                            finalFileObtained.deleteOnExit();
-                        }
-                    } else {
-                        logger.error("Failed to read file name: " + result.cause());
-                        ctx.fail(result.cause());
-                    }
-                });
-            }
         }
     }
 
     // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)
-    private void delete(RoutingContext ctx) {
+    private void delete (RoutingContext ctx){
         String id = ctx.pathParam("id");
         boolean isDeleted = fileService.delete(id);
         if (isDeleted) {
@@ -152,7 +142,7 @@ public class FileServer {
         }
     }
 
-    private void info(RoutingContext ctx) {
+    private void info (RoutingContext ctx){
         String id = ctx.pathParam("id");
         fileService.asyncInfo(id)
             .onSuccess(entity -> {
@@ -166,3 +156,4 @@ public class FileServer {
     }
 
 }
+    

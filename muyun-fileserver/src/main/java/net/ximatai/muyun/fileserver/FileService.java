@@ -144,7 +144,7 @@ public class FileService implements IFileService {
     }
 
     // 获取文件
-    public File get(String id) {
+    public File get1(String id) {
         if (id.contains("@")) {
             id = id.split("@")[0];
         }
@@ -186,6 +186,18 @@ public class FileService implements IFileService {
             return file;
         }
         return null;
+    }
+    
+    public File get(String idOrName){
+        String id = "";
+        if ((idOrName.contains("@") && idOrName.length() > 40) || idOrName.length() == 40) {
+            id = idOrName.split("@")[0];
+        }
+        if(id.length() != 40){
+            return get2(idOrName);
+        }else{
+            return get1(id);
+        }
     }
 
     // 丢弃服务器端中的文件
