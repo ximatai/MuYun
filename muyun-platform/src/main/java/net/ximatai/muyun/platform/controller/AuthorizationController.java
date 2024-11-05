@@ -28,11 +28,13 @@ import java.util.Map;
 import java.util.Objects;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
+import static net.ximatai.muyun.platform.controller.AuthorizationController.MODULE_ALIAS;
 
 @Startup
 @Tag(name = "权限管理")
-@Path(BASE_PATH + "/authorization")
+@Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility {
+    public final static String MODULE_ALIAS = "authorization";
 
     private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
         .build(this::loadAction);
@@ -181,7 +183,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     @Override
     public ModuleConfig getModuleConfig() {
         return ModuleConfig.ofName("权限管理")
-            .setAlias("authorization")
+            .setAlias(MODULE_ALIAS)
             .setUrl("platform/authorization/index")
             .addAction(new ModuleAction("view", "浏览", ModuleAction.TypeLike.VIEW))
             .addAction(new ModuleAction("grant", "授权", ModuleAction.TypeLike.UPDATE))

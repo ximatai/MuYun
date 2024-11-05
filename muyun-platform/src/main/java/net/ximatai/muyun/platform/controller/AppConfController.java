@@ -19,10 +19,12 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
+import static net.ximatai.muyun.platform.controller.AppConfController.MODULE_ALIAS;
 
 @Tag(name = "全局程序配置（面向前端平台级业务）")
-@Path(BASE_PATH + "/conf")
+@Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class AppConfController extends Scaffold implements ICreateAbility, ISelectAbility, IUpdateAbility, ITableCreateAbility, IModuleRegisterAbility {
+    public final static String MODULE_ALIAS = "conf";
 
     private final static String CONF_ID = "1";
 
@@ -81,10 +83,10 @@ public class AppConfController extends Scaffold implements ICreateAbility, ISele
     @Override
     public ModuleConfig getModuleConfig() {
         return ModuleConfig.ofName("用户管理")
-            .setAlias("conf")
+            .setAlias(MODULE_ALIAS)
             .setTable(getMainTable())
             .setUrl("platform/conf/index")
             .addAction(new ModuleAction("set", "写入配置", ModuleAction.TypeLike.UPDATE));
-//            .addAction(new ModuleAction("get", "获取配置", ModuleAction.TypeLike.UPDATE));  不参与权限
+//            .addAction(new ModuleAction("get", "获取配置", ModuleAction.TypeLike.UPDATE));  不参与权限，所以注释掉
     }
 }

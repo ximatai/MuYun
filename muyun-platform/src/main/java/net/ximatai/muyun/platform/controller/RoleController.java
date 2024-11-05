@@ -23,11 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
+import static net.ximatai.muyun.platform.controller.RoleController.MODULE_ALIAS;
 
 @Startup
 @Tag(name = "角色管理")
-@Path(BASE_PATH + "/role")
+@Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class RoleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IModuleRegisterAbility {
+
+    public final static String MODULE_ALIAS = "role";
 
     @Inject
     UserRoleController userRoleController;
@@ -119,7 +122,7 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
         return ModuleConfig.ofName("角色管理")
             .setTable("auth_role")
             .setUrl("platform/role/index")
-            .setAlias("role")
+            .setAlias(MODULE_ALIAS)
             .addAction(new ModuleAction("assign", "分配", ModuleAction.TypeLike.UPDATE))
             .addAction(new ModuleAction("revoke", "撤回", ModuleAction.TypeLike.UPDATE));
     }
