@@ -122,7 +122,7 @@ public class DBColumn {
 
         if (this.getType().equalsIgnoreCase("bool")) {
             return Boolean.parseBoolean(input);
-        }else if(this.getType().startsWith("int")){
+        } else if (this.getType().startsWith("int")) {
             return Integer.parseInt(input);
         }
 
