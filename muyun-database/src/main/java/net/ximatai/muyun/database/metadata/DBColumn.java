@@ -122,6 +122,8 @@ public class DBColumn {
 
         if (this.getType().equalsIgnoreCase("bool")) {
             return Boolean.parseBoolean(input);
+        }else if(this.getType().startsWith("int")){
+            return Integer.parseInt(input);
         }
 
         Matcher matcher = pattern.matcher(input);
