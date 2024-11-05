@@ -5,18 +5,15 @@ import io.quarkus.test.junit.QuarkusTest;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 @QuarkusTest
-//@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestTempFile {
 
     @Test
     public void test() throws IOException {
         String fileName = "五月天.txt";
-        // File tempFile = File.createTempFile(fileName.split("\\.")[0], "." + fileName.split("\\.")[1]);
-        // tempFile.deleteOnExit();
         System.out.println(fileName.length());
     }
 }

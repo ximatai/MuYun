@@ -144,8 +144,21 @@ public class FileService implements IFileService {
     }
 
     // 获取文件
-    public File get1(String id) {
-        if (id.contains("@")) {
+    public File get(String idOrName) {
+        // 根据文件名查找文件
+        File fileDirectory = new File(folderPath);
+        File[] files = fileDirectory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().equals(idOrName)) {
+                    return file;
+                }
+            }
+        }
+
+        // 根据id查找文件
+        String id = idOrName;
+        if (idOrName.contains("@")) {
             id = id.split("@")[0];
         }
         String nameFile = suffixFileNameWithN(id);
@@ -161,7 +174,6 @@ public class FileService implements IFileService {
             // 上传文件副本
             File newFile = File.createTempFile(name.split("\\.")[0], "." + name.split("\\.")[1]);
             Files.write(Paths.get(newFile.getPath()), bytes);
-            
             String indirectPath = newFile.getAbsolutePath().split(name.split("\\.")[0])[0];
             String uid = generateBsyUid();
             String directoryPath = indirectPath + uid;
@@ -174,29 +186,6 @@ public class FileService implements IFileService {
             return targetPath.toFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        // return null;
-    }
-    
-    public File get2(String fileName) {
-        String filePath = folderPath + fileName;
-        Path path = Paths.get(filePath);
-        if (Files.exists(path) && Files.isRegularFile(path)) {
-            File file = path.toFile();
-            return file;
-        }
-        return null;
-    }
-    
-    public File get(String idOrName){
-        String id = "";
-        if ((idOrName.contains("@") && idOrName.length() > 40) || idOrName.length() == 40) {
-            id = idOrName.split("@")[0];
-        }
-        if(id.length() != 40){
-            return get2(idOrName);
-        }else{
-            return get1(id);
         }
     }
 

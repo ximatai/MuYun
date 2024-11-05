@@ -132,7 +132,7 @@ public class FileServer {
     }
 
     // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)
-    private void delete (RoutingContext ctx){
+    private void delete(RoutingContext ctx) {
         String id = ctx.pathParam("id");
         boolean isDeleted = fileService.delete(id);
         if (isDeleted) {
@@ -142,7 +142,7 @@ public class FileServer {
         }
     }
 
-    private void info (RoutingContext ctx){
+    private void info(RoutingContext ctx) {
         String id = ctx.pathParam("id");
         fileService.asyncInfo(id)
             .onSuccess(entity -> {

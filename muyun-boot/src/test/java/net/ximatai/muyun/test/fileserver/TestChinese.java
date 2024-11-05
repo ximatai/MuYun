@@ -1,7 +1,8 @@
 package net.ximatai.muyun.test.fileserver;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.response.Response;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,16 +16,13 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-
 @QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestChinese {
     
     String fileName;
     
     File fileFirst;
-    
-    
     
     @BeforeEach
     public void setup() throws IOException {
@@ -41,33 +39,7 @@ public class TestChinese {
     
     @Test
     public void test() throws IOException {
-//        Response response = given()
-//            .multiPart("file", fileFirst)
-//            .when()
-//            .post("/fileServer/upload")
-//            .then()
-//            .log().all()
-//            .statusCode(200)
-//            .extract()
-//            .response();
-//        
-//        String id = response.getBody().asString();
-//        System.out.println(id);        
-        
-//        Response response2 = given()
-//            .when()
-//            .get("/fileServer/download/"+id)
-//            .then()
-//            .log().all()
-//            .statusCode(200)
-//            .extract()
-//            .response();
-
-        //String downloadContent = response2.getBody().asString();
-        //System.out.println(downloadContent);
-
         LocalDateTime currentTime = LocalDateTime.now();
         System.out.println(currentTime);
-        
     }
 }
