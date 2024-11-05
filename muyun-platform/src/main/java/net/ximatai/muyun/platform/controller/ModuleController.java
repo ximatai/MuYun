@@ -42,9 +42,6 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Inject
     RoleActionController roleActionController;
 
-    @Inject
-    MuYunConfig muYunConfig;
-
     @Override
     public String getMainTable() {
         return "app_module";

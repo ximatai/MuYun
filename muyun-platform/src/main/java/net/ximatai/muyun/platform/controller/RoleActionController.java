@@ -26,7 +26,7 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
     @Override
     protected void afterInit() {
         super.afterInit();
-        dictCategoryController.putDictCategory(new DictCategory("data_auth", "platform_dir", "系统数据权限", 1).setDictList(DATA_AUTH_DICT), true);
+        dictCategoryController.putDictCategory(new DictCategory("data_auth", "platform_dir", "系统数据权限", 1).setDictList(DATA_AUTH_DICT), false);
     }
 
     @Override
