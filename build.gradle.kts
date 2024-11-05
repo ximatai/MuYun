@@ -57,6 +57,7 @@ subprojects {
                             id = "aruis"
                             name = "Rui Liu"
                             email = "lovearuis@gmail.com"
+                            organization = "戏码台"
                         }
                     }
                     scm {

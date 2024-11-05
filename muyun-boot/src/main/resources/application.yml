@@ -11,7 +11,8 @@ frontend:
 proxy:
   upstreams:
     - prefix: /web/
-      url: http://192.168.3.9:8089/web/
+#      url: http://192.168.3.9:8089/web/
+      url: http://127.0.0.1:8001/web/
 quarkus:
   http:
     port: 8080

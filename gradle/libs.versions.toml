@@ -1,9 +1,9 @@
 [versions]
-testcontainers = "1.20.1"
-quarkus = "3.15.1"
-jdbi = "3.45.4"
+testcontainers = "1.20.3"
+quarkus = "3.16.1"
+jdbi = "3.47.0"
 yasson = "3.0.4"
-bcprov = "1.78.1"
+bcprov = "1.79"
 caffeine = "3.1.8"
 codec = "1.17.1"
 
