@@ -6,7 +6,7 @@ import io.smallrye.config.WithDefault;
 import java.util.Objects;
 
 @ConfigMapping(prefix = "muyun")
-public interface MuYunConfig {
+public interface MuYunConfig extends IProfile {
 
     @WithDefault("1")
     String superUserId();
