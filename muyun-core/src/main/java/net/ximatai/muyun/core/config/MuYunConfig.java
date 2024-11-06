@@ -11,6 +11,9 @@ public interface MuYunConfig {
     @WithDefault("1")
     String superUserId();
 
+    @WithDefault("24")
+    int sessionTimeoutHour();
+
     default boolean isSuperUser(String userID) {
         Objects.requireNonNull(userID, "请提供测试用户ID");
         return userID.equals(superUserId());
