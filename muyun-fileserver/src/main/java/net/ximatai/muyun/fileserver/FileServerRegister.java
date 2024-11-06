@@ -9,7 +9,7 @@ import jakarta.inject.Inject;
 
 @Startup
 @ApplicationScoped
-public class FileserverRegister {
+public class FileServerRegister {
 
     @Inject
     FileServerConfig config;
@@ -25,7 +25,10 @@ public class FileserverRegister {
     @RouteFilter(10)
         // 该注解中有route
     void filter(RoutingContext context) {
-        BodyHandler.create().setUploadsDirectory(getUploadPath()).handle(context);
+        BodyHandler.create()
+            .setUploadsDirectory(getUploadPath())
+            .setBodyLimit(500 * 1024 * 1024)
+            .handle(context);
         // BodyHandler是一个类，对象handler可以作为route的参数
         // create()函数返回一个BodyHandlerImpl
         // BodyHandlerImpl中有handle方法
