@@ -4,7 +4,6 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.core.config.IProfile;
-import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 
@@ -14,8 +13,6 @@ import net.ximatai.muyun.model.IRuntimeUser;
 public interface IRuntimeAbility extends IProfile {
 
     RoutingContext getRoutingContext();
-
-    MuYunConfig getConfig();
 
     default ApiRequest getApiRequest() {
         try {

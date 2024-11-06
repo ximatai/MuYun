@@ -75,8 +75,4 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
         return routingContext;
     }
 
-    @Override
-    public MuYunConfig getConfig() {
-        return config;
-    }
 }

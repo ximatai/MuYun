@@ -19,17 +19,6 @@ public abstract class Scaffold implements IDatabaseAbility, IRuntimeAbility {
     private IDatabaseOperations databaseOperations;
     private EventBus eventBus;
     private RoutingContext routingContext;
-    private MuYunConfig config;
-
-    @Override
-    public MuYunConfig getConfig() {
-        return config;
-    }
-
-    @Inject
-    public void setConfig(MuYunConfig config) {
-        this.config = config;
-    }
 
     @Inject
     public void setRoutingContext(RoutingContext routingContext) {

@@ -64,8 +64,4 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
         return routingContext;
     }
 
-    @Override
-    public MuYunConfig getConfig() {
-        return config;
-    }
 }

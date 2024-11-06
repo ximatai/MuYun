@@ -149,8 +149,4 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
         return routingContext;
     }
 
-    @Override
-    public MuYunConfig getConfig() {
-        return config;
-    }
 }

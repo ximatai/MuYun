@@ -211,11 +211,6 @@ public class SsoController implements IRuntimeAbility {
         return routingContext;
     }
 
-    @Override
-    public MuYunConfig getConfig() {
-        return config;
-    }
-
     private IRuntimeUser mapToUser(Map user) {
         return new RuntimeUser()
             .setUsername((String) user.get("v_username"))
