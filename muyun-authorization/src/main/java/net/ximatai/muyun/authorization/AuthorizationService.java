@@ -6,6 +6,7 @@ import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.core.config.IProfile;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.core.exception.PermsException;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class AuthorizationService implements IAuthorizationService {
+public class AuthorizationService implements IAuthorizationService, IProfile {
 
     @Inject
     IDatabaseOperationsStd db;
@@ -493,7 +494,7 @@ public class AuthorizationService implements IAuthorizationService {
 
     @Override
     public Set<String> getUserAvailableRoles(String userID) {
-        if (config.isTestMode()) {
+        if (isTestMode()) {
             return loadRoles(userID);
         } else {
             return userToRoles.get(userID);

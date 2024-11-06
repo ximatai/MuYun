@@ -311,7 +311,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     private String promptForInput(Scanner scanner, String promptMessage) {
-        if (config.isTestMode()) { // 单元测试模式，锁定用户名密码
+        if (isTestMode()) { // 单元测试模式，锁定用户名密码
             return "admin";
         }
 

@@ -43,7 +43,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
 
         String message = "服务器错误，请检查";
 
-        if (!config.isProdMode() && e.getMessage() != null) { // 非生产环境可以访问原始错误信息
+        if (!isProdMode() && e.getMessage() != null) { // 非生产环境可以访问原始错误信息
             message = e.getMessage();
         }
 

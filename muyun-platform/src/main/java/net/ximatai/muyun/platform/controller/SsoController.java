@@ -97,7 +97,7 @@ public class SsoController implements IRuntimeAbility {
         String vPassword = userInDB.get("v_password").toString();
         String encryptedPassword = encryptPassword(vPassword, code);
         if (password.equals(encryptedPassword)
-            || (!config.isProdMode() && password.equals(vPassword))) { // 非生产环境允许使用非加密密码
+            || (!isProdMode() && password.equals(vPassword))) { // 非生产环境允许使用非加密密码
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
@@ -123,7 +123,7 @@ public class SsoController implements IRuntimeAbility {
 
     private RuntimeException verificationCode(String code) {
         code = code.trim().toLowerCase();
-        if (!config.isProdMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
+        if (!isProdMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
             return null;
         }
 
