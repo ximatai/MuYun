@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
-class TestCR {
+class TestDateAndTimeSelect {
 
     @Inject
     TestCRController testController;
@@ -53,9 +53,7 @@ class TestCR {
 
     }
 
-
 }
-
 
 @Startup
 @Path("/TestCRController")
