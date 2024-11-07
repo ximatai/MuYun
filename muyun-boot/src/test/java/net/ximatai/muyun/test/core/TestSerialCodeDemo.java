@@ -49,6 +49,14 @@ public class TestSerialCodeDemo {
 
         Map<String, ?> view = serialCodeDemo.view(idNew);
         Assertions.assertEquals("BSY%s0006".formatted(yyyyMMdd), view.get("v_code"));
+
+        String id2 = serialCodeDemo.create(Map.of("v_name", "test", "v_code", "my_code"));
+        Map<String, ?> view2 = serialCodeDemo.view(id2);
+        Assertions.assertEquals("my_code", view2.get("v_code"));
+
+        String id3 = serialCodeDemo.create(Map.of("v_name", "test"));
+        Map<String, ?> view3 = serialCodeDemo.view(id3);
+        Assertions.assertEquals("BSY%s0007".formatted(yyyyMMdd), view3.get("v_code"));
     }
 
 }
