@@ -1,4 +1,4 @@
-package net.ximatai.muyun.test.leo;
+package net.ximatai.muyun.test.core;
 
 import io.quarkus.runtime.Startup;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
-class TestCR {
+class TestTimeFormatCR {
 
     @Inject
-    TestCRController testController;
+    TestTimeFormatCRController testController;
 
     @Test
     void testCreate() {
@@ -39,7 +39,7 @@ class TestCR {
         assertEquals("2001-01-01 00:00:00.0", map.get("t_test2").toString());
 
         String string = given()
-            .get("/TestCRController/view/" + id)
+            .get("/TestTimeFormatCRController/view/" + id)
             .then()
             .extract()
             .asString();
@@ -53,13 +53,11 @@ class TestCR {
 
     }
 
-
 }
 
-
 @Startup
-@Path("/TestCRController")
-class TestCRController extends Scaffold implements ICURDAbility, ITableCreateAbility {
+@Path("/TestTimeFormatCRController")
+class TestTimeFormatCRController extends Scaffold implements ICURDAbility, ITableCreateAbility {
 
     @Override
     public String getSchemaName() {
