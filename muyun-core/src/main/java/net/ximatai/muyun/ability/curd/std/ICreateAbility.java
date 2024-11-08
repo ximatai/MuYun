@@ -41,6 +41,14 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         HashMap map = new HashMap<>(body);
         fitOutDefaultValue(map);
 
+        if (this instanceof ICodeGenerateAbility ability) {
+            String codeColumn = ability.getCodeColumn();
+            String code = (String) map.get(codeColumn);
+            if (code == null || code.isBlank()) {
+                map.put(codeColumn, ability.generateCode(body));
+            }
+        }
+
         if (this instanceof IDataCheckAbility dataCheckAbility) {
             dataCheckAbility.check(body, false);
         }
@@ -88,7 +96,11 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
             if (codeList != null) {
                 ICodeGenerateAbility ability = (ICodeGenerateAbility) this;
-                map.put(ability.getCodeColumn(), codeList.get(i));
+                String codeColumn = ability.getCodeColumn();
+                String code = (String) map.get(codeColumn);
+                if (code == null || code.isBlank()) {
+                    map.put(codeColumn, codeList.get(i));
+                }
             }
 
             if (this instanceof IDataCheckAbility dataCheckAbility) {
@@ -167,9 +179,6 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
             }
         }
 
-        if (this instanceof ICodeGenerateAbility ability) {
-            body.put(ability.getCodeColumn(), ability.generateCode(body));
-        }
     }
 
 }

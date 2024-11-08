@@ -50,7 +50,7 @@ class CustomDateSerializer extends StdSerializer<Date> {
     @Override
     public void serialize(Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         String formattedDate = "";
-        if(value instanceof java.sql.Date) {
+        if (value instanceof java.sql.Date) {
             formattedDate = CALENDAR_FORMAT.format(value);
         } else {
             formattedDate = DATE_FORMAT.format(value);

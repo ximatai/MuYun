@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IDatabaseAbility;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
-import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

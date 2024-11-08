@@ -9,4 +9,5 @@ public interface FileServerConfig {
 
     @WithDefault("fileServer")
     String pagePath();
+    
 }
