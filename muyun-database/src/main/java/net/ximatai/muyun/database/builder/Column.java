@@ -54,7 +54,7 @@ public class Column {
         return this;
     }
 
-    public Column setType(DataType type){
+    public Column setType(DataType type) {
         this.type = type.toString();
         return this;
     }
