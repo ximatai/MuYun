@@ -1,5 +1,7 @@
 package net.ximatai.muyun.platform.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -7,55 +9,77 @@ public class OnlineDevice {
     private String id;
     private String os;
     private String browser;
-    private Duration onlineDuration;
-    private boolean isActive;
-    private LocalDateTime lastTouch;
+    private boolean isActive = true;
+
+    private LocalDateTime checkInTime;
+    private LocalDateTime lastActiveTime;
+    private OnlineUser onlineUser;
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public OnlineDevice setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getOs() {
         return os;
     }
 
-    public void setOs(String os) {
+    public OnlineDevice setOs(String os) {
         this.os = os;
+        return this;
     }
 
     public String getBrowser() {
         return browser;
     }
 
-    public void setBrowser(String browser) {
+    public OnlineDevice setBrowser(String browser) {
         this.browser = browser;
-    }
-
-    public Duration getOnlineDuration() {
-        return onlineDuration;
-    }
-
-    public void setOnlineDuration(Duration onlineDuration) {
-        this.onlineDuration = onlineDuration;
+        return this;
     }
 
     public boolean isActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public OnlineDevice setActive(boolean active) {
         isActive = active;
+        return this;
     }
 
-    public LocalDateTime getLastTouch() {
-        return lastTouch;
+    public LocalDateTime getCheckInTime() {
+        return checkInTime;
     }
 
-    public void setLastTouch(LocalDateTime lastTouch) {
-        this.lastTouch = lastTouch;
+    public OnlineDevice setCheckInTime(LocalDateTime checkInTime) {
+        this.checkInTime = checkInTime;
+        return this;
+    }
+
+    public LocalDateTime getLastActiveTime() {
+        return lastActiveTime;
+    }
+
+    public OnlineDevice setLastActiveTime(LocalDateTime lastActiveTime) {
+        this.lastActiveTime = lastActiveTime;
+        return this;
+    }
+
+    public Duration getDuration() {
+        return Duration.between(checkInTime, lastActiveTime);
+    }
+
+    @JsonIgnore
+    public OnlineUser getOnlineUser() {
+        return onlineUser;
+    }
+
+    public OnlineDevice setOnlineUser(OnlineUser onlineUser) {
+        this.onlineUser = onlineUser;
+        return this;
     }
 }

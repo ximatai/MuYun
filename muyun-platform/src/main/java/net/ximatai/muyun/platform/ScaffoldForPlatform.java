@@ -30,6 +30,10 @@ public abstract class ScaffoldForPlatform extends BaseScaffold {
     }
 
     public String idToName(String id) {
+        if (id == null) {
+            return null;
+        }
+
         Map<String, ?> user = myCache.get(id);
         if (user != null) {
             return (String) user.get("v_name");
