@@ -73,6 +73,12 @@ public class TestUserAndMenu {
     }
 
     @Test
+    void testIdToName() {
+        String name = userInfoController.idToName(userID);
+        assertEquals("user1", name);
+    }
+
+    @Test
     void testSchemaInit() {
         List<TreeNode> menus = given()
             .header("userID", config.superUserId())
