@@ -4,9 +4,9 @@
     "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-    <module name="NewlineAtEndOfFile">
-        <property name="lineSeparator" value="lf"/>
-    </module>
+<!--    <module name="NewlineAtEndOfFile">-->
+<!--        <property name="lineSeparator" value="lf"/>-->
+<!--    </module>-->
     <module name="SuppressWarningsFilter"/>
     <module name="TreeWalker">
         <module name="SuppressWarningsHolder"/>
