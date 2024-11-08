@@ -5,7 +5,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -41,5 +40,6 @@ public class TestChinese {
     public void test() throws IOException {
         LocalDateTime currentTime = LocalDateTime.now();
         System.out.println(currentTime);
+        fileFirst.deleteOnExit();
     }
 }
