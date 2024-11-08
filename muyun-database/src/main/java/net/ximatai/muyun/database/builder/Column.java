@@ -11,21 +11,19 @@ public class Column {
     private boolean sequence = false;
     private boolean indexed = false;
 
-    public enum Type {
-        VARCHAR, INT, BOOL
-    }
+    IColumnTypeTransform columnTypeTransform = IColumnTypeTransform.POSTGRES;
 
     public static final Column ID_POSTGRES = new Column("id")
         .setPrimaryKey()
-        .setType(Type.VARCHAR)
+        .setType(DataType.VARCHAR)
         .setDefaultValue("gen_random_uuid()");
 
     public static final Column DELETE_FLAG = new Column("b_delete")
-        .setType(Type.BOOL)
+        .setType(DataType.BOOLEAN)
         .setDefaultValue(false);
 
     public static final Column TREE_PID = new Column("pid")
-        .setType(Type.VARCHAR)
+        .setType(DataType.VARCHAR)
         .setIndexed();
 
     public static final Column ORDER = new Column("n_order")
@@ -55,12 +53,7 @@ public class Column {
     }
 
     public Column setType(DataType type) {
-        this.type = type.toString();
-        return this;
-    }
-
-    public Column setType(Type type) {
-        this.type = type.toString();
+        this.type = type.getType(columnTypeTransform);
         return this;
     }
 

@@ -39,7 +39,7 @@ public class TableWrapper extends TableBase {
     }
 
     public TableWrapper setPrimaryKey(String name) {
-        primaryKey = Column.of(name).setPrimaryKey().setType("varchar").setNullable(false);
+        primaryKey = Column.of(name).setPrimaryKey().setType(DataType.VARCHAR).setNullable(false);
         return this;
     }
 

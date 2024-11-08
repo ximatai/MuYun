@@ -2,6 +2,7 @@ package net.ximatai.muyun.ability;
 
 import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.DataType;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public interface ISecurityAbility {
         return getColumnsForSigning().stream()
             .map(this::column2SignColumn)
             .map(Column::of)
-            .map(c -> c.setType("varchar"))
+            .map(c -> c.setType(DataType.VARCHAR))
             .toList();
     }
 

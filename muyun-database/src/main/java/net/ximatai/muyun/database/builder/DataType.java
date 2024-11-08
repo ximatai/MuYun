@@ -1,18 +1,17 @@
 package net.ximatai.muyun.database.builder;
 
 public enum DataType {
-    VARCHAR("varchar"),
-    INT("int"),
-    BOOLEAN("boolean"),
-    TIMESTAMP("timestamp"),
-    DATE("date"),
-    NUMERIC("numeric"),
-    JSON("jsonb"),
-    VARCHAR_ARRAY("varchar[]");
+    VARCHAR,
+    INT,
+    BOOLEAN,
+    TIMESTAMP,
+    DATE,
+    NUMERIC,
+    JSON,
+    VARCHAR_ARRAY;
 
-    private final String type;
-
-    DataType(String type) {
-        this.type = type;
+    String getType(IColumnTypeTransform transform) {
+        return transform.transform(this);
     }
+
 }
