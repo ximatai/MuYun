@@ -93,7 +93,7 @@ docker compose up -d
 或者 docker 命令：
 `docker run --rm  -p 54324:5432 -e POSTGRES_PASSWORD=muyun2024 -e POSTGRES_DB=muyun  postgres:17-alpine`
 
-后端开发环境启动：
+后端开发环境启动（首次启动会引导你设置管理员账号密码）：
 
 ```shell
 ./gradlew --console=plain :muyun-boot:quarkusDev

@@ -110,8 +110,8 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
                 Scanner scanner = new Scanner(System.in);
 
-                adminUsername = promptForInput(scanner, "Admin Username: ");
-                adminPassword = promptForInput(scanner, "Admin Password: ");
+                adminUsername = promptForInput(scanner, "Please create a username for the administrator account (e.g., admin): ");
+                adminPassword = promptForInput(scanner, "Please create a secure password for the administrator account: ");
             } else {
                 logger.info("USE ENVIRONMENT INFORMATION");
                 logger.info("ADMIN USERNAME: {}", adminUsername);
