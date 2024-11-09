@@ -4,6 +4,7 @@ import io.quarkus.scheduler.Scheduled;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -38,10 +39,10 @@ public class OnlineController implements IRuntimeAbility {
     RoutingContext routingContext;
 
     @Inject
-    DepartmentController departmentController;
+    Instance<DepartmentController> departmentControllerInstance;
 
     @Inject
-    OrganizationController organizationController;
+    Instance<OrganizationController> organizationControllerInstance;
 
     private Set<OnlineUser> onlineUsers = new HashSet<>();
     private List<OnlineDevice> onlineDevices = new ArrayList<>();
@@ -75,25 +76,31 @@ public class OnlineController implements IRuntimeAbility {
         String browser = UserAgentParser.getBrowser(userAgent);
 
         OnlineDevice onlineDevice = new OnlineDevice()
-            .setId(deviceID)
-            .setOs(os)
-            .setBrowser(browser)
-            .setActive(true)
-            .setCheckInTime(now)
-            .setLastActiveTime(now);
+                .setId(deviceID)
+                .setOs(os)
+                .setBrowser(browser)
+                .setActive(true)
+                .setCheckInTime(now)
+                .setLastActiveTime(now);
 
         onlineDevices.add(onlineDevice);
         OnlineUser onlineUser = getOnlineUserByID(user.getId());
 
         if (onlineUser == null) {
             onlineUser = new OnlineUser()
-                .setId(user.getId())
-                .setUsername(user.getUsername())
-                .setName(user.getName())
-                .setDepartmentId(user.getDepartmentId())
-                .setOrganizationId(user.getOrganizationId())
-                .setDepartmentName(departmentController.idToName(user.getDepartmentId()))
-                .setOrganizationName(organizationController.idToName(user.getOrganizationId()));
+                    .setId(user.getId())
+                    .setUsername(user.getUsername())
+                    .setName(user.getName())
+                    .setDepartmentId(user.getDepartmentId())
+                    .setOrganizationId(user.getOrganizationId());
+
+            if (departmentControllerInstance.isResolvable()) {
+                onlineUser.setDepartmentName(departmentControllerInstance.get().idToName(user.getDepartmentId()));
+            }
+
+            if (organizationControllerInstance.isResolvable()) {
+                onlineUser.setOrganizationName(organizationControllerInstance.get().idToName(user.getOrganizationId()));
+            }
 
             onlineUsers.add(onlineUser);
         }
@@ -122,8 +129,8 @@ public class OnlineController implements IRuntimeAbility {
         LocalDateTime thresholdTime = LocalDateTime.now().minusSeconds(20);
 
         List<OnlineDevice> toRemoveDevice = onlineDevices.stream()
-            .filter(it -> it.getLastActiveTime().isBefore(thresholdTime))
-            .toList();
+                .filter(it -> it.getLastActiveTime().isBefore(thresholdTime))
+                .toList();
 
         toRemoveDevice.forEach(onlineDevice -> {
             onlineDevice.getOnlineUser().getDeviceList().remove(onlineDevice);
@@ -132,8 +139,8 @@ public class OnlineController implements IRuntimeAbility {
 
         // 一个设备都不在线的用户应该删除
         List<OnlineUser> toRemoveUser = onlineUsers.stream()
-            .filter(it -> it.getDeviceList().isEmpty())
-            .toList();
+                .filter(it -> it.getDeviceList().isEmpty())
+                .toList();
 
         toRemoveUser.forEach(onlineUser -> {
             onlineUsers.remove(onlineUser);
