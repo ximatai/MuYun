@@ -3,27 +3,26 @@ package net.ximatai.muyun.database.builder;
 public class Column {
     private String name;
     private String comment;
-    private String type;
+    private ColumnType type;
     private Object defaultValue;
+    private int length;
     private boolean nullable = true;
     private boolean unique = false;
     private boolean primaryKey = false;
     private boolean sequence = false;
     private boolean indexed = false;
 
-    IColumnTypeTransform columnTypeTransform = IColumnTypeTransform.POSTGRES;
-
     public static final Column ID_POSTGRES = new Column("id")
         .setPrimaryKey()
-        .setType(DataType.VARCHAR)
+        .setType(ColumnType.VARCHAR)
         .setDefaultValue("gen_random_uuid()");
 
     public static final Column DELETE_FLAG = new Column("b_delete")
-        .setType(DataType.BOOLEAN)
+        .setType(ColumnType.BOOLEAN)
         .setDefaultValue(false);
 
     public static final Column TREE_PID = new Column("pid")
-        .setType(DataType.VARCHAR)
+        .setType(ColumnType.VARCHAR)
         .setIndexed();
 
     public static final Column ORDER = new Column("n_order")
@@ -47,13 +46,8 @@ public class Column {
         return this;
     }
 
-    public Column setType(String type) {
+    public Column setType(ColumnType type) {
         this.type = type;
-        return this;
-    }
-
-    public Column setType(DataType type) {
-        this.type = type.getType(columnTypeTransform);
         return this;
     }
 
@@ -121,7 +115,7 @@ public class Column {
         return comment;
     }
 
-    public String getType() {
+    public ColumnType getType() {
         return type;
     }
 
@@ -149,39 +143,48 @@ public class Column {
         return indexed;
     }
 
-    String buildTypeWithColumnName(String name) {
-        String type = null;
+    public int getLength() {
+        return length;
+    }
+
+    public Column setLength(int length) {
+        this.length = length;
+        return this;
+    }
+
+    ColumnType buildTypeWithColumnName(String name) {
+        ColumnType type = null;
 
         if ("id".equals(name)) {
-            type = "varchar";
+            type = ColumnType.VARCHAR;
         } else if ("pid".equals(name)) {
-            type = "varchar";
+            type = ColumnType.VARCHAR;
         } else if (name.startsWith("v_")) {
-            type = "varchar";
+            type = ColumnType.VARCHAR;
         } else if (name.startsWith("i_")) {
-            type = "int";
+            type = ColumnType.INT;
         } else if (name.startsWith("b_")) {
-            type = "boolean";
+            type = ColumnType.BOOLEAN;
         } else if (name.startsWith("t_")) {
-            type = "timestamp";
+            type = ColumnType.TIMESTAMP;
         } else if (name.startsWith("d_")) {
-            type = "date";
+            type = ColumnType.DATE;
         } else if (name.startsWith("n_")) {
-            type = "numeric";
+            type = ColumnType.NUMERIC;
         } else if (name.startsWith("id_")) {
-            type = "varchar";
+            type = ColumnType.VARCHAR;
         } else if (name.startsWith("j_")) {
-            type = "jsonb";
+            type = ColumnType.JSON;
         } else if (name.startsWith("dict_")) {
-            type = "varchar";
+            type = ColumnType.VARCHAR;
         } else if (name.startsWith("file_")) {
-            type = "varchar";
+            type = ColumnType.VARCHAR;
         } else if (name.startsWith("files_")) {
-            type = "varchar[]";
+            type = ColumnType.VARCHAR_ARRAY;
         } else if (name.startsWith("ids_")) {
-            type = "varchar[]";
+            type = ColumnType.VARCHAR_ARRAY;
         } else if (name.startsWith("dicts_")) {
-            type = "varchar[]";
+            type = ColumnType.VARCHAR_ARRAY;
         }
 
         return type;

@@ -8,6 +8,7 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.base.BaseScaffold;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.model.ModuleAction;
@@ -105,7 +106,7 @@ class TestAuthAbilityController extends BaseScaffold {
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("v_name").setType("varchar"));
+            .addColumn(Column.of("v_name").setType(ColumnType.VARCHAR));
     }
 
 }

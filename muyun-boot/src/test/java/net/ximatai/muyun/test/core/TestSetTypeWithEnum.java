@@ -10,7 +10,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.DataType;
+import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
@@ -80,9 +80,9 @@ class TestSetTypeWithEnumController extends Scaffold implements ICURDAbility, IT
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("name").setType(DataType.VARCHAR))
-            .addColumn(Column.of("age").setType(DataType.INT))
-            .addColumn(Column.of("creat_time").setType(DataType.DATE))
-            .addColumn(Column.of("update_time").setType(DataType.TIMESTAMP));  // 字段名
+            .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
+            .addColumn(Column.of("age").setType(ColumnType.INT))
+            .addColumn(Column.of("creat_time").setType(ColumnType.DATE))
+            .addColumn(Column.of("update_time").setType(ColumnType.TIMESTAMP));  // 字段名
     }
 }

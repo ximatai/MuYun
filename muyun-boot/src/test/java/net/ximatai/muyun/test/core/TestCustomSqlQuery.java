@@ -12,6 +12,7 @@ import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
@@ -82,7 +83,7 @@ class TestCustomSqlQueryController extends Scaffold implements ICURDAbility, ITa
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("name").setType("varchar"))
+            .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
     }

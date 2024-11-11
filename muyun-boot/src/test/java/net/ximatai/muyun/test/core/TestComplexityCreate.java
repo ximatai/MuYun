@@ -8,6 +8,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Test;
@@ -190,11 +191,11 @@ class TestComplexityCreateController extends Scaffold implements ICURDAbility, I
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("name").setType("varchar"))
+            .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("t_create").setDefaultValue("now()"))
-            .addColumn(Column.of("names").setType("varchar[]"))
-            .addColumn(Column.of("ints").setType("int[]"))
-            .addColumn(Column.of("json_test").setType("jsonb"));
+            .addColumn(Column.of("names").setType(ColumnType.VARCHAR_ARRAY))
+            .addColumn(Column.of("ints").setType(ColumnType.INT_ARRAY))
+            .addColumn(Column.of("json_test").setType(ColumnType.JSON));
 
     }
 

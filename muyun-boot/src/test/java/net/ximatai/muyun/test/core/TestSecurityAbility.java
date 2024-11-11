@@ -83,9 +83,9 @@ class TestSecurityAbilityController extends Scaffold implements ICURDAbility, IT
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("v_for_sign").setType("varchar"))
-            .addColumn(Column.of("v_for_encrypt").setType("varchar"))
-            .addColumn(Column.of("pid").setType("varchar"))
+            .addColumn(Column.of("v_for_sign"))
+            .addColumn(Column.of("v_for_encrypt"))
+            .addColumn(Column.of("pid"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
     }
 

@@ -13,6 +13,7 @@ import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
@@ -115,8 +116,8 @@ class TestReferenceController extends Scaffold implements ICURDAbility, ITableCr
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("name").setType("varchar"))
-            .addColumn(Column.of("id_at_test_table_referable").setType("varchar"))
+            .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
+            .addColumn(Column.of("id_at_test_table_referable").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
     }
@@ -159,7 +160,7 @@ class TestReferableController extends Scaffold implements ICURDAbility, ITableCr
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("v_name").setType("varchar"))
+            .addColumn(Column.of("v_name"))
             .addColumn("id_at_test_table_referable2")
             .addColumn(Column.of("t_create"));
 
@@ -197,7 +198,7 @@ class TestReferableController2 extends Scaffold implements ICURDAbility, ITableC
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("v_name").setType("varchar"))
+            .addColumn(Column.of("v_name"))
             .addColumn(Column.of("t_create"));
 
     }

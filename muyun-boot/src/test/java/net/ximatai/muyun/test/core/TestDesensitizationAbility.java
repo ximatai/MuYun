@@ -70,8 +70,8 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn(Column.of("v_name").setType("varchar"))
-            .addColumn(Column.of("v_name2").setType("varchar"))
+            .addColumn(Column.of("v_name"))
+            .addColumn(Column.of("v_name2"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
     }
 

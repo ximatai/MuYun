@@ -86,7 +86,8 @@ public class TableBuilder {
     private boolean checkAndBuildColumn(DBTable dbTable, Column column) {
         boolean result = false;
         String name = column.getName();
-        String type = column.getType();
+        ColumnType dataType = column.getType();
+        String type = getColumnTypeTransform().transform(dataType);
         Object defaultValue = column.getDefaultValue();
         String comment = column.getComment();
         boolean sequence = column.isSequence();
@@ -182,6 +183,16 @@ public class TableBuilder {
         });
         builder.append(")");
         return builder.toString();
+    }
+
+    private IColumnTypeTransform getColumnTypeTransform() {
+        String dbName = info.getName().toUpperCase();
+        switch (dbName) {
+            case "POSTGRESQL":
+                return IColumnTypeTransform.POSTGRES;
+            default:
+                return null;
+        }
     }
 
 }
