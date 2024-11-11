@@ -91,6 +91,7 @@ docker compose up -d
 ```
 
 或者 docker 命令：
+
 ```shell
 docker run --rm  -p 54324:5432 -e POSTGRES_PASSWORD=muyun2024 -e POSTGRES_DB=muyun  postgres:17-alpine
 ```
