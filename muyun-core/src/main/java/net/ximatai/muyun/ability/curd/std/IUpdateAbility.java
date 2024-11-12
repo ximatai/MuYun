@@ -26,6 +26,10 @@ import java.util.Map;
  */
 public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    default void beforeUpdate(String id) {
+
+    }
+
     default void afterUpdate(String id) {
 
     }
@@ -35,6 +39,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Transactional
     @Operation(summary = "修改数据", description = "返回被修改数据的数量，正常为1")
     default Integer update(@PathParam("id") String id, Map body) {
+        beforeUpdate(id);
         HashMap map = new HashMap(body);
         map.put(getPK(), id);
         map.put("t_update", LocalDateTime.now());
