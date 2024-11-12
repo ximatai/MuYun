@@ -64,6 +64,7 @@ public class TestFileGet {
         } catch (IOException e) {
             System.err.println("文件移动或重命名失败: " + e.getMessage());
         }
+
     }
     
     @Test
@@ -94,7 +95,7 @@ public class TestFileGet {
         System.out.println(file.getName());
         System.out.println(fileGet.getAbsolutePath());
         assertEquals(fileGet.getName(), file.getName());
-        
+        service.delete(id);
     }
 
     private String generateBsyUid() {

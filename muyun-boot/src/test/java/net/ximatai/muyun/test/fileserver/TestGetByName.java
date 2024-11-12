@@ -79,5 +79,6 @@ public class TestGetByName {
         String nameByGet2 = response.getHeader("Content-Disposition").split("''")[1];
         String nameDecode = URLDecoder.decode(nameByGet2, StandardCharsets.UTF_8);
         assertEquals(fileName, nameDecode);
+        file.deleteOnExit();
     }
 }

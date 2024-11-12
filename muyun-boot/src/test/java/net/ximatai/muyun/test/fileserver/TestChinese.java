@@ -3,8 +3,8 @@ package net.ximatai.muyun.test.fileserver;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,8 +23,8 @@ public class TestChinese {
     
     File fileFirst;
     
-    @BeforeEach
-    public void setup() throws IOException {
+    @Test
+    public void test() throws IOException {
         fileName = "五月天.txt";
         Path filePath = Paths.get("./" + fileName);
         List<String> lines = Arrays.asList(
@@ -34,12 +34,8 @@ public class TestChinese {
         );
         Files.write(filePath, lines, StandardCharsets.UTF_8);
         fileFirst = filePath.toFile();
-    }
-    
-    @Test
-    public void test() throws IOException {
         LocalDateTime currentTime = LocalDateTime.now();
         System.out.println(currentTime);
-        fileFirst.deleteOnExit();
+        fileFirst.delete();
     }
 }
