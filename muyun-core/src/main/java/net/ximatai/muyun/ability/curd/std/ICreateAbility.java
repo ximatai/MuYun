@@ -29,6 +29,10 @@ import java.util.Map;
  */
 public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    default void beforeCreate(Map body) {
+
+    }
+
     default void afterCreate(String id) {
 
     }
@@ -38,6 +42,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Transactional
     @Operation(summary = "新增数据", description = "返回新增数据ID")
     default String create(Map body) {
+        beforeCreate(body);
         HashMap map = new HashMap<>(body);
         fitOutDefaultValue(map);
 
