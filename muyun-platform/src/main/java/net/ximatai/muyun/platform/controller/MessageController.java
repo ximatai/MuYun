@@ -52,7 +52,6 @@ public class MessageController extends ScaffoldForPlatform implements IChildrenA
         return map;
     }
 
-
     @Override
     public List<ChildTableInfo> getChildren() {
         return List.of(
@@ -76,7 +75,7 @@ public class MessageController extends ScaffoldForPlatform implements IChildrenA
 }
 
 @ApplicationScoped
-class MessageForPerson extends ScaffoldForPlatform implements IChildAbility, IReferenceAbility,IQueryAbility {
+class MessageForPerson extends ScaffoldForPlatform implements IChildAbility, IReferenceAbility, IQueryAbility {
 
     @Inject
     UserInfoController userInfoController;
