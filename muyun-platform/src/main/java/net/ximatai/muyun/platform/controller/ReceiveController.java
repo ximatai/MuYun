@@ -33,8 +33,8 @@ public class ReceiveController extends Scaffold implements ISelectAbility, IRefe
     }
 
     @Override
-    public Map<String, ?> view(String id) {
-        Map<String, ?> view = ISelectAbility.super.view(id);
+    public Map<String, Object> view(String id) {
+        Map<String, Object> view = ISelectAbility.super.view(id);
         if (view != null) {
             getDB().update("update %s.%s set i_views = i_views + 1 where id = ?".formatted(getSchemaName(), getMainTable()), id);
         }
