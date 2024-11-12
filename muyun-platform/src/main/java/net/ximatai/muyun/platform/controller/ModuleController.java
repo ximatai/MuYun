@@ -60,11 +60,11 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
-            .addColumn("v_name")
+            .addColumn("v_name", "模块名称")
             .addColumn("v_alias", "模块标识，同后端Controller拦截入口名")
             .addColumn("v_url", "前端路径")
-            .addColumn("v_remark")
-            .addColumn("v_table")
+            .addColumn("v_remark", "备注")
+            .addColumn("v_table", "模块主表")
             .addColumn(Column.of("b_system").setDefaultValue(false))
             .addColumn(Column.of("b_isolation").setComment("是否启用数据隔离").setDefaultValue(false))
             .addIndex("v_alias");

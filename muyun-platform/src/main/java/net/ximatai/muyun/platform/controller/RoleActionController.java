@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
@@ -38,14 +37,13 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .setInherit(BaseBusinessTable.TABLE)
-            .addColumn("id_at_auth_role")
-            .addColumn("id_at_app_module")
+            .addColumn("id_at_auth_role", "角色id")
+            .addColumn("id_at_app_module", "模块id")
             .addColumn("v_alias_at_app_module", "冗余：模块别名")
-            .addColumn("id_at_app_module_action")
+            .addColumn("id_at_app_module_action", "模块id")
             .addColumn("v_alias_at_app_module_action", "冗余：功能别名")
-            .addColumn("dict_data_auth")
-            .addColumn("v_custom_condition")
+            .addColumn("dict_data_auth", "数据权限字典")
+            .addColumn("v_custom_condition", "自定义权限条件")
             .addIndex("id_at_auth_role")
             .addIndex("id_at_app_module_action")
             .addIndex(List.of("id_at_auth_role", "id_at_app_module_action"), true)

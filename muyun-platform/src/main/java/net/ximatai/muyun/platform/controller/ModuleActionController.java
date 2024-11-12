@@ -32,12 +32,12 @@ public class ModuleActionController extends ScaffoldForPlatform implements IChil
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
-            .addColumn("id_at_app_module")
-            .addColumn("v_name")
-            .addColumn("v_alias")
-            .addColumn("v_remark")
-            .addColumn(Column.of("b_white").setDefaultValue(false))
-            .addColumn("i_order")
+            .addColumn("id_at_app_module", "模块id")
+            .addColumn("v_name", "功能名称")
+            .addColumn("v_alias", "功能标识")
+            .addColumn("v_remark", "备注")
+            .addColumn("b_white", "是否白名单", false)
+            .addColumn("i_order", "序号")
             .addIndex(List.of("id_at_app_module", "v_alias"), true);
     }
 

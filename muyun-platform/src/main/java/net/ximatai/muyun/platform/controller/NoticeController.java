@@ -144,7 +144,7 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
 
         MuYunMessage message = new MuYunMessage(
             "收到新通知啦",
-            "%s 刚刚发布了《%s》的通知".formatted(map.get("v_name_from"), map.get("v_title")),
+            "%s 刚刚发布了题为「%s」的通知".formatted(map.get("v_name_from"), map.get("v_title")),
             ""
         );
 
