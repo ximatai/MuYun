@@ -184,7 +184,9 @@ public class AuthorizationService implements IAuthorizationService, IProfile {
                 request.setError(permsException1);
                 return false;
             }
-        } else if ("view".equals(action)) {
+        }
+
+        if ("view".equals(action)) {
             String condition = getAuthCondition(userID, request.getModule(), action);
             request.setAuthCondition(condition);
         }

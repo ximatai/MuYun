@@ -61,7 +61,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     }
 
     default String getSelectOneRowSql() {
-        return "select * from (%s) %s where %s = :id ".formatted(getSelectSql(), getMainTable(), getPK());
+        return "select * from (%s) %s where 1=1 %s and %s = :id ".formatted(getSelectSql(), getMainTable(), getAuthCondition(), getPK());
     }
 
     default String getSelectSql() {
