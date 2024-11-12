@@ -120,7 +120,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @GET
     @Path("/view/{id}")
     @Operation(summary = "查看指定的数据")
-    default Map<String, ?> view(@PathParam("id") String id) {
+    default Map<String, Object> view(@PathParam("id") String id) {
         Map<String, Object> row = getDB().row(getSelectOneRowSql(), Map.of("id", id));
 
         if (row == null) {
