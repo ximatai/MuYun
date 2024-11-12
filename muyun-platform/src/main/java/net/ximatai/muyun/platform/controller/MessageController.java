@@ -13,6 +13,8 @@ import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.platform.model.MuYunMessage;
+import net.ximatai.muyun.platform.service.MessageCenter;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,9 @@ public class MessageController extends ScaffoldForPlatform implements IChildrenA
 
     @Inject
     UserInfoController userInfoController;
+
+    @Inject
+    MessageCenter messageCenter;
 
     @Override
     public String getMainTable() {
@@ -40,6 +45,24 @@ public class MessageController extends ScaffoldForPlatform implements IChildrenA
             .addColumn("v_context", "内容")
             .addColumn("files_att", "附件")
             .addColumn("id_at_app_message__root", "消息根id-适用于回帖情况");
+    }
+
+    @Override
+    public String create(Map body) {
+        String result = super.create(body);
+        List<Map> personList = (List<Map>) body.get("app_message_person");
+
+        MuYunMessage message = new MuYunMessage(
+            "收到新信息啦",
+            "%s 刚刚给你发了题为「%s」的信息".formatted(getUser().getName(), body.get("v_title")),
+            ""
+        );
+
+        personList.forEach(person -> {
+            String toUser = (String) person.get("id_at_auth_user__to");
+            messageCenter.send(toUser, message);
+        });
+        return result;
     }
 
     @Override
