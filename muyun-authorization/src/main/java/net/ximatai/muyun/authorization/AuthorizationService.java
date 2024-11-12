@@ -49,10 +49,6 @@ public class AuthorizationService implements IAuthorizationService, IProfile {
         .expireAfterWrite(5, TimeUnit.MINUTES)
         .build(this::loadAction);
 
-    private final LoadingCache<String, Set<String>> userToRoles = Caffeine.newBuilder()
-        .expireAfterWrite(1, TimeUnit.MINUTES)
-        .build(this::loadRoles);
-
     private final LoadingCache<String, Set<String>> organizationToRegions = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadRegions);
@@ -65,7 +61,6 @@ public class AuthorizationService implements IAuthorizationService, IProfile {
         moduleCache.invalidateAll();
         userinfoCache.invalidateAll();
         actionCache.invalidateAll();
-        userToRoles.invalidateAll();
         organizationToRegions.invalidateAll();
         allOrgAndDept.invalidateAll();
     }
@@ -75,11 +70,6 @@ public class AuthorizationService implements IAuthorizationService, IProfile {
         List<Map<String, Object>> list = db.query("select * from platform.app_module ");
         list.forEach(map -> {
             moduleCache.put(map.get("v_alias").toString(), map);
-        });
-
-        eventBus.<String>consumer("role_changed", msg -> {
-            String userID = msg.body();
-            userToRoles.invalidate(userID);
         });
     }
 
@@ -96,16 +86,6 @@ public class AuthorizationService implements IAuthorizationService, IProfile {
         String action = split[0];
         String moduleID = split[1];
         return db.row("select * from platform.app_module_action where id_at_app_module = ? and v_alias = ?", moduleID, action);
-    }
-
-    private Set<String> loadRoles(String userID) {
-        List<Map<String, Object>> rows = db.query("""
-            select id_at_auth_role
-            from platform.auth_user_role
-            where id_at_auth_user = ?
-            and exists(select * from platform.auth_role where auth_role.id = id_at_auth_role)
-            """, userID);
-        return rows.stream().map(it -> it.get("id_at_auth_role").toString()).collect(Collectors.toSet());
     }
 
     private Set<String> loadRegions(String organizationID) {
@@ -496,10 +476,12 @@ public class AuthorizationService implements IAuthorizationService, IProfile {
 
     @Override
     public Set<String> getUserAvailableRoles(String userID) {
-        if (isTestMode()) {
-            return loadRoles(userID);
-        } else {
-            return userToRoles.get(userID);
-        }
+        List<Map<String, Object>> rows = db.query("""
+            select id_at_auth_role
+            from platform.auth_user_role
+            where id_at_auth_user = ?
+            and exists(select * from platform.auth_role where auth_role.id = id_at_auth_role)
+            """, userID);
+        return rows.stream().map(it -> it.get("id_at_auth_role").toString()).collect(Collectors.toSet());
     }
 }

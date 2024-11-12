@@ -5,17 +5,17 @@ import io.vertx.core.json.JsonObject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class MessageToFrontEnd {
+public class MuYunMessage {
     private final String title;
     private final String content;
     private final LocalDateTime createdAt;
     private final String url;
 
-    public MessageToFrontEnd(String title, String content, String url) {
+    public MuYunMessage(String title, String content, String url) {
         this(title, content, url, LocalDateTime.now());
     }
 
-    public MessageToFrontEnd(String title, String content, String url, LocalDateTime createdAt) {
+    public MuYunMessage(String title, String content, String url, LocalDateTime createdAt) {
         this.title = title;
         this.content = content;
         this.url = url;

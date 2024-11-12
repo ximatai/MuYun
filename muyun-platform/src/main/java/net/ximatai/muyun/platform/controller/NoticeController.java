@@ -10,14 +10,14 @@ import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ReferenceInfo;
-import net.ximatai.muyun.platform.BusChannel;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
-import net.ximatai.muyun.platform.model.MessageToFrontEnd;
+import net.ximatai.muyun.platform.model.MuYunMessage;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
+import net.ximatai.muyun.platform.service.MessageCenter;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -44,6 +44,9 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
 
     @Inject
     UserInfoController userInfoController;
+
+    @Inject
+    MessageCenter messageCenter;
 
     @Override
     public String getMainTable() {
@@ -139,14 +142,14 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
             default -> Set.of();
         };
 
-        MessageToFrontEnd message = new MessageToFrontEnd(
+        MuYunMessage message = new MuYunMessage(
             "收到新通知啦",
             "%s 刚刚发布了《%s》的通知".formatted(map.get("v_name_from"), map.get("v_title")),
             ""
         );
 
         users.forEach(it -> {
-            getEventBus().publish(BusChannel.channelForUser(it), message.toJson());
+            messageCenter.send(it, message);
         });
     }
 

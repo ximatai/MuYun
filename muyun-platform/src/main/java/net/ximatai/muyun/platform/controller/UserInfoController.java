@@ -34,7 +34,6 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
 
-import static net.ximatai.muyun.platform.BusChannel.ROLE_CHANGED;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_ALIAS;
 
@@ -265,9 +264,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Operation(summary = "设置账户拥有的角色")
     public Integer setRoles(@PathParam("userID") String userID, List<String> roles) {
         userController.putChildTableList(userID, "auth_user_role", List.of());
-        int create = userController.putChildTableList(userID, "auth_user_role", roles.stream().map(it -> Map.of("id_at_auth_role", it)).toList()).getCreate();
-        getEventBus().publish(ROLE_CHANGED, userID);
-        return create;
+        return userController.putChildTableList(userID, "auth_user_role", roles.stream().map(it -> Map.of("id_at_auth_role", it)).toList()).getCreate();
     }
 
     @Override
