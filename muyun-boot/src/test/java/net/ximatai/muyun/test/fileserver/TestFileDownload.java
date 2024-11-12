@@ -48,7 +48,6 @@ public class TestFileDownload {
         File file2 = service.get(id);
         String filePath2 = file2.getPath();
         System.out.println(filePath2);
-
         service.delete(id);
         file.deleteOnExit();
         file2.deleteOnExit();
