@@ -14,6 +14,7 @@ dependencies {
     api("io.quarkus:quarkus-reactive-routes")
     api("io.quarkus:quarkus-rest-jackson")
     api("io.quarkus:quarkus-smallrye-openapi")
+    api("io.quarkus:quarkus-scheduler")
 
     api(libs.commons.codes)
     api(libs.bcprov)

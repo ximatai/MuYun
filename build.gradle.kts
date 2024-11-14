@@ -9,7 +9,7 @@ plugins {
 allprojects {
     group = "net.ximatai.muyun"
     version = "1.0.0-SNAPSHOT"
-//    version = "0.1.3"
+    version = "0.1.5"
 
     repositories {
         mavenLocal()
@@ -23,7 +23,6 @@ subprojects {
     apply {
         plugin("java")
         plugin("checkstyle")
-//        plugin("configure-jandex")
         plugin("maven-publish")
         plugin("signing")
         plugin("io.github.jeadyx.sonatype-uploader")
@@ -124,14 +123,14 @@ subprojects {
         maxHeapSize = "2g"
     }
 
-    tasks.register("publishModule") {
-        dependsOn("publishMavenJavaPublicationToMavenRepository")
-        dependsOn("publishToSonatype")
-    }
+}
 
+tasks.register("prepareRepo") {
+    group = "release"
+    dependsOn(subprojects.flatMap { it.tasks.matching { task -> task.name == "publishMavenJavaPublicationToMavenRepository" } })
 }
 
 tasks.register("releaseAllJars") {
     group = "release"
-    dependsOn(subprojects.flatMap { it.tasks.matching { task -> task.name == "publishModule" } })
+    dependsOn(subprojects.flatMap { it.tasks.matching { task -> task.name == "publishToSonatype" } })
 }
