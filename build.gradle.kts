@@ -14,7 +14,7 @@ allprojects {
     repositories {
         mavenLocal()
         maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
+//        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenCentral()
     }
 }
