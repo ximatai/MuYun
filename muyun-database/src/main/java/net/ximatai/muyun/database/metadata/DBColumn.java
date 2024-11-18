@@ -8,11 +8,8 @@ public class DBColumn {
     private String description;
     private String type;
     private String defaultValue;
-    private String indexName;
     private boolean nullable;
     private boolean primaryKey;
-    private boolean unique;
-    private boolean indexed;
     private boolean sequence;
 
     // 使用正则表达式来匹配单引号之间的内容
@@ -67,28 +64,12 @@ public class DBColumn {
         this.primaryKey = primaryKey;
     }
 
-    public boolean isUnique() {
-        return unique;
-    }
-
-    public void setUnique(boolean unique) {
-        this.unique = unique;
-    }
-
     public boolean isSequence() {
         return sequence;
     }
 
-    public void setSequence(boolean sequence) {
-        this.sequence = sequence;
-    }
-
     public void setSequence() {
         this.sequence = true;
-    }
-
-    public void setUnique() {
-        this.unique = true;
     }
 
     public void setNullable() {
@@ -97,22 +78,6 @@ public class DBColumn {
 
     public void setPrimaryKey() {
         this.primaryKey = true;
-    }
-
-    public boolean isIndexed() {
-        return indexed;
-    }
-
-    public void setIndexed(boolean indexed) {
-        this.indexed = indexed;
-    }
-
-    public String getIndexName() {
-        return indexName;
-    }
-
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
     }
 
     public Object extractDefaultContent(String input) {

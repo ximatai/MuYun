@@ -7,14 +7,19 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class DBTable extends TableBase {
     private Jdbi jdbi;
 
     private Map<String, DBColumn> columnMap;
+
+    private List<DBIndex> indexList;
 
     public DBTable(Jdbi jdbi) {
         this.jdbi = jdbi;
@@ -70,21 +75,6 @@ public class DBTable extends TableBase {
                         }
                     }
 
-                    // index
-                    try (ResultSet rs = metaData.getIndexInfo(null, schema, name, false, false)) {
-                        while (rs.next()) {
-                            String columnName = rs.getString("COLUMN_NAME");
-                            DBColumn column = columnMap.get(columnName);
-                            if (column != null) {
-                                column.setIndexName(rs.getString("INDEX_NAME"));
-                                column.setIndexed(true);
-                                if (!rs.getBoolean("NON_UNIQUE")) {
-                                    column.setUnique(true);
-                                }
-                            }
-                        }
-                    }
-
                     this.columnMap = columnMap;
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -92,6 +82,45 @@ public class DBTable extends TableBase {
             });
         }
         return columnMap;
+    }
+
+    public List<DBIndex> getIndexList() {
+        if (indexList == null) {
+            indexList = new ArrayList<>();
+            jdbi.useHandle(handle -> {
+                Connection connection = handle.getConnection();
+                try {
+                    DatabaseMetaData metaData = connection.getMetaData();
+                    try (ResultSet rs = metaData.getIndexInfo(null, schema, name, false, false)) {
+                        while (rs.next()) {
+                            String indexName = rs.getString("INDEX_NAME");
+                            if (indexName.endsWith("_pkey")) { // 主键索引不参与
+                                continue;
+                            }
+
+                            String columnName = rs.getString("COLUMN_NAME");
+                            Optional<DBIndex> hitIndex = indexList.stream().filter(i -> i.getName().equals(indexName)).findFirst();
+
+                            if (hitIndex.isPresent()) {
+                                hitIndex.get().addColumn(columnName);
+                            } else {
+                                DBIndex index = new DBIndex();
+                                index.setName(indexName);
+                                index.addColumn(columnName);
+                                if (!rs.getBoolean("NON_UNIQUE")) {
+                                    index.setUnique(true);
+                                }
+                                indexList.add(index);
+                            }
+
+                        }
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+        return indexList;
     }
 
     public boolean contains(String column) {
@@ -108,5 +137,9 @@ public class DBTable extends TableBase {
 
     public void resetColumns() {
         this.columnMap = null;
+    }
+
+    public void resetIndexes() {
+        this.indexList = null;
     }
 }

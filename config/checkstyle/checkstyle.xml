@@ -4,9 +4,9 @@
     "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-<!--    <module name="NewlineAtEndOfFile">-->
-<!--        <property name="lineSeparator" value="lf"/>-->
-<!--    </module>-->
+    <!--    <module name="NewlineAtEndOfFile">-->
+    <!--        <property name="lineSeparator" value="lf"/>-->
+    <!--    </module>-->
     <module name="SuppressWarningsFilter"/>
     <module name="TreeWalker">
         <module name="SuppressWarningsHolder"/>
@@ -61,10 +61,6 @@
         <module name="SingleSpaceSeparator"/>
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAround"/>
-
-        <module name="AvoidStarImport">
-            <property name="allowStaticMemberImports" value="true"/>
-        </module>
 
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>

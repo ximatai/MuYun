@@ -3,12 +3,15 @@ package net.ximatai.muyun.database.builder;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
+import net.ximatai.muyun.database.metadata.DBIndex;
 import net.ximatai.muyun.database.metadata.DBInfo;
 import net.ximatai.muyun.database.metadata.DBSchema;
 import net.ximatai.muyun.database.metadata.DBTable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class TableBuilder {
 
@@ -77,7 +80,7 @@ public class TableBuilder {
             checkAndBuildIndex(dbTable, index);
         });
 
-        dbTable.resetColumns();
+        dbTable.resetIndexes();
 
         return result;
 
@@ -142,34 +145,31 @@ public class TableBuilder {
     }
 
     private boolean checkAndBuildIndex(DBTable dbTable, Index index) {
-        boolean result = false;
         List<String> columns = index.getColumns();
-        int size = columns.size();
-        if (size == 1) {
-            String col = columns.getFirst();
-            DBColumn dbColumn = dbTable.getColumn(col);
-            if (index.isUnique() && !dbColumn.isUnique()) { //之前不是唯一索引
-                String indexName = "%s_%s_uindex".formatted(dbTable.getName(), col);
-                db.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
-                result = true;
-            } else if (!index.isUnique() && !dbColumn.isIndexed()) { //之前没有索引
-                String indexName = "%s_%s_index".formatted(dbTable.getName(), col);
-                db.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), col));
-                result = true;
-            }
-        } else if (size > 0) {
-            if (index.isUnique()) {
-                String indexName = "%s_%s_uindex".formatted(dbTable.getName(), String.join("_", columns));
-                db.execute("create unique index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
-                result = true;
+        List<DBIndex> indexList = dbTable.getIndexList();
+        Optional<DBIndex> dbIndexOptional = indexList.stream().filter(i -> new HashSet<>(i.getColumns()).equals(new HashSet<>(columns))).findFirst();
+
+        if (dbIndexOptional.isPresent()) {
+            DBIndex dbIndex = dbIndexOptional.get();
+            if (dbIndex.isUnique() == index.isUnique()) {
+                return false;
             } else {
-                String indexName = "%s_%s_index".formatted(dbTable.getName(), String.join("_", columns));
-                db.execute("create index if not exists %s on %s.%s(%s);".formatted(indexName, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
-                result = true;
+                db.execute("drop index %s.%s;".formatted(dbTable.getSchema(), dbIndex.getName()));
             }
 
         }
-        return result;
+
+        String indexName = "%s_%s_".formatted(dbTable.getName(), String.join("_", columns));
+        String unique = "";
+        String nameSuffix = "index";
+        if (index.isUnique()) {
+            unique = "unique";
+            nameSuffix = "uindex";
+        }
+        db.execute("create %s index if not exists %s%s on %s.%s(%s);"
+            .formatted(unique, indexName, nameSuffix, dbTable.getSchema(), dbTable.getName(), String.join(",", columns)));
+
+        return true;
     }
 
     private String inheritSQL(List<TableBase> inherits) {

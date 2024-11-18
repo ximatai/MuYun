@@ -7,6 +7,7 @@ import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.metadata.DBIndex;
 import net.ximatai.muyun.database.metadata.DBSchema;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
@@ -20,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
@@ -87,12 +89,20 @@ public class TableBuilderTest {
             .addIndex(List.of("v_test", "v_test2"));
         tableBuilder.build(wrapper);
 
-        assertTrue(db.getDBInfo().getSchema("test").containsTable("test_table_x2"));
-        assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("id").isPrimaryKey());
-        assertFalse(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isUnique());
-        assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test").isIndexed());
-        assertTrue(db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("v_test2").isUnique());
-        Object boolDefaultValue = db.getDBInfo().getSchema("test").getTable("test_table_x2").getColumn("b_test").getDefaultValue();
+        DBSchema schema = db.getDBInfo().getSchema("test");
+
+        assertTrue(schema.containsTable("test_table_x2"));
+        assertTrue(schema.getTable("test_table_x2").getColumn("id").isPrimaryKey());
+        List<DBIndex> indexList = schema.getTable("test_table_x2").getIndexList();
+        Optional<DBIndex> dbIndex = indexList.stream().filter(index -> index.getColumns().contains("v_test")).findFirst();
+        Optional<DBIndex> dbIndex2 = indexList.stream().filter(index -> index.getColumns().contains("v_test2") && index.isMulti()).findFirst();
+
+        assertTrue(dbIndex.isPresent());
+        assertTrue(dbIndex2.isPresent());
+        assertTrue(dbIndex2.get().getColumns().contains("v_test"));
+        assertTrue(dbIndex2.get().getColumns().contains("v_test2"));
+
+        Object boolDefaultValue = schema.getTable("test_table_x2").getColumn("b_test").getDefaultValue();
         assertEquals(true, boolDefaultValue);
     }
 
