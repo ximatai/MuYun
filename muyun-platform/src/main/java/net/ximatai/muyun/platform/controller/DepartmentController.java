@@ -87,11 +87,6 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     }
 
     @Override
-    public void check(Map body, boolean isUpdate) {
-        Objects.requireNonNull(body.get("id_at_org_organization"), "部门必须归属具体机构，须包含 id_at_org_organization 数据");
-    }
-
-    @Override
     public List<QueryItem> queryItemList() {
         return List.of(
             QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),

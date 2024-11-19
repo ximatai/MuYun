@@ -2,6 +2,7 @@ package net.ximatai.muyun.ability;
 
 import jakarta.transaction.Transactional;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -23,7 +24,12 @@ public interface ITableCreateAbility extends IMetadataAbility {
 
     @Transactional
     default void create(IDatabaseOperations db) {
-        TableWrapper wrapper = TableWrapper.withName(getMainTable())
+        String mainTable = getMainTable();
+        if (!mainTable.toLowerCase().equals(mainTable)) {
+            throw new MyException("%s表明不合法，不允许使用大写字母".formatted(mainTable));
+        }
+
+        TableWrapper wrapper = TableWrapper.withName(mainTable)
             .setSchema(getSchemaName());
 
         fitOut(wrapper);

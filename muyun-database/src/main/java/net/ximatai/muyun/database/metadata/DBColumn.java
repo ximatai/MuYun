@@ -80,6 +80,13 @@ public class DBColumn {
         this.primaryKey = true;
     }
 
+    public String getLabel() {
+        if (getDescription() != null) {
+            return getDescription();
+        }
+        return getName();
+    }
+
     public Object extractDefaultContent(String input) {
         if (input == null) {
             return null;

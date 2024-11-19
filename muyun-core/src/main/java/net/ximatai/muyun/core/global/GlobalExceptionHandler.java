@@ -17,9 +17,7 @@ import net.ximatai.muyun.model.IRuntimeUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static jakarta.ws.rs.core.Response.Status.FORBIDDEN;
-import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
-import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static jakarta.ws.rs.core.Response.Status.*;
 
 @Provider
 public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRuntimeAbility {
@@ -42,6 +40,10 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
         String requestPath = uriInfo.getRequestUri().getPath();
 
         logger.error("USER:{},URI:{}", getUser().getId(), requestPath);
+
+        if (!config.isProdMode()) {
+            e.printStackTrace();
+        }
 
         String message = "服务器错误，请检查";
 

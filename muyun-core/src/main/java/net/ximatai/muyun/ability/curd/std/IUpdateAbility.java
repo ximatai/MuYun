@@ -66,6 +66,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
             dataCheckAbility.check(map, true);
+            dataCheckAbility.checkWhenUpdate(id, body);
         }
 
         if (this instanceof ISecurityAbility securityAbility) {

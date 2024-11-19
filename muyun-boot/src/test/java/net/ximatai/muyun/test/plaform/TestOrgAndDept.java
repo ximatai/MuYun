@@ -107,7 +107,7 @@ public class TestOrgAndDept {
             .extract()
             .asString();
 
-        assertTrue(res.contains("部门必须归属具体机构"));
+        assertEquals("数据项[所属机构]要求为必填", res);
 
         given()
             .header("userID", config.superUserId())

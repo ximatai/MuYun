@@ -62,7 +62,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         wrapper
             .setPrimaryKey("id")
             .setInherit(BaseBusinessTable.TABLE)
-            .addColumn("v_name")
+            .addColumn("v_name", "字典类目名称")
             .addColumn("v_remark");
     }
 

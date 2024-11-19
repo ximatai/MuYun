@@ -3,14 +3,7 @@ package net.ximatai.muyun.ability.curd.std;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import net.ximatai.muyun.ability.IChildrenAbility;
-import net.ximatai.muyun.ability.ICodeGenerateAbility;
-import net.ximatai.muyun.ability.IDataBroadcastAbility;
-import net.ximatai.muyun.ability.IDatabaseAbilityStd;
-import net.ximatai.muyun.ability.IMetadataAbility;
-import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.ability.ISecurityAbility;
-import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.ability.*;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.model.DataChangeChannel;
@@ -56,6 +49,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         if (this instanceof IDataCheckAbility dataCheckAbility) {
             dataCheckAbility.check(body, false);
+            dataCheckAbility.checkWhenCreate(body);
         }
 
         if (this instanceof ISecurityAbility securityAbility) {
