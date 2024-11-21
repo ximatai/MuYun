@@ -32,6 +32,8 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
 
     @Inject
     Provider<OrganizationController> organizationProvider;
+    @Inject
+    Provider<UserInfoController> userInfoControllerProvider;
 
     @Override
     public String getMainTable() {
@@ -83,7 +85,9 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Override
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
-            organizationProvider.get().toReferenceInfo("id_at_org_organization")
+            organizationProvider.get().toReferenceInfo("id_at_org_organization"),
+            userInfoControllerProvider.get().toReferenceInfo("id_at_auth_user__leader"),
+            userInfoControllerProvider.get().toReferenceInfo("id_at_auth_user__boss")
         );
     }
 
