@@ -86,8 +86,8 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
             organizationProvider.get().toReferenceInfo("id_at_org_organization"),
-            userInfoControllerProvider.get().toReferenceInfo("id_at_auth_user__leader"),
-            userInfoControllerProvider.get().toReferenceInfo("id_at_auth_user__boss")
+            userInfoControllerProvider.get().toReferenceInfo("id_at_auth_user__leader").add("v_name", "v_leader_name"),
+            userInfoControllerProvider.get().toReferenceInfo("id_at_auth_user__boss").add("v_name", "v_boss_name")
         );
     }
 
