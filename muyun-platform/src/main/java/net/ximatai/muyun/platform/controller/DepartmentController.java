@@ -46,7 +46,8 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
             .addColumn("v_name", "名称")
             .addColumn("v_remark", "备注")
             .addColumn(Column.of("id_at_org_organization").setComment("所属机构").setNullable(false))
-            .addColumn("id_at_auth_user__leader", "部门主管");
+            .addColumn("id_at_auth_user__leader", "部门负责人")
+            .addColumn("id_at_auth_user__boss", "主管领导");
     }
 
     @Override
