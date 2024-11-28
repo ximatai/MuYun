@@ -1,3 +1,5 @@
+muyun:
+  gateway-mode: true
 file-server:
   upload-path: ./fileUploads/
 web:
@@ -6,11 +8,11 @@ web:
       to: /web/
 frontend:
   resources:
-    - prefix: /web1/
-      path: /Users/liurui/develop/workspace-bsy/unicom_xinan_project/dist
+    - prefix: /web/
+      path: /Users/aruis/develop/workspace-bsy/unicom_xinan_project/dist
 proxy:
   upstreams:
-    - prefix: /web/
+    - prefix: /web1/
 #      url: http://192.168.3.9:8089/web/
       url: http://127.0.0.1:8001/web/
 quarkus:

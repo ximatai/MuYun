@@ -1,5 +1,7 @@
 package net.ximatai.muyun.model;
 
+import io.vertx.core.json.JsonObject;
+
 public interface IRuntimeUser {
 
     IRuntimeUser WHITE = new IRuntimeUser() {
@@ -65,6 +67,36 @@ public interface IRuntimeUser {
             @Override
             public String getDepartmentId() {
                 return "";
+            }
+        };
+    }
+
+    static IRuntimeUser build(JsonObject object) {
+        return new IRuntimeUser() {
+
+            @Override
+            public String getId() {
+                return object.getString("id");
+            }
+
+            @Override
+            public String getName() {
+                return object.getString("name");
+            }
+
+            @Override
+            public String getUsername() {
+                return object.getString("username");
+            }
+
+            @Override
+            public String getOrganizationId() {
+                return object.getString("organizationId");
+            }
+
+            @Override
+            public String getDepartmentId() {
+                return object.getString("departmentId");
             }
         };
     }
