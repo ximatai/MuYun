@@ -182,7 +182,7 @@ public class SsoController implements IRuntimeAbility {
         String text = specCaptcha.text().toLowerCase();
 
         // 生成 MD5
-        response.addCookie(Cookie.cookie("code", hashText(text)).setHttpOnly(true));
+        response.addCookie(Cookie.cookie("code", hashText(text)).setHttpOnly(true).setPath("/"));
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             specCaptcha.out(os);  // 将图片写入到 ByteArrayOutputStream
