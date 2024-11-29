@@ -38,6 +38,7 @@ public class SsoController implements IRuntimeAbility {
     private final Logger logger = LoggerFactory.getLogger(SsoController.class);
 
     private static final String ALL_PURPOSE_CODE_FOR_DEBUG = "muyun";
+    private static final String KAPTCHA_COOKIE_KEY = "KCODE";
 
     Cache<String, String> codeCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
@@ -123,7 +124,7 @@ public class SsoController implements IRuntimeAbility {
             return null;
         }
 
-        Cookie cookie = routingContext.request().getCookie("code");
+        Cookie cookie = routingContext.request().getCookie(KAPTCHA_COOKIE_KEY);
         if (cookie == null) {
             return new MyException("验证码已过期");
         }
@@ -178,7 +179,7 @@ public class SsoController implements IRuntimeAbility {
         String text = specCaptcha.text().toLowerCase();
 
         // 生成 MD5
-        response.addCookie(Cookie.cookie("code", hashText(text)).setHttpOnly(true).setPath("/"));
+        response.addCookie(Cookie.cookie(KAPTCHA_COOKIE_KEY, hashText(text)).setHttpOnly(true).setPath("/"));
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             specCaptcha.out(os);  // 将图片写入到 ByteArrayOutputStream
