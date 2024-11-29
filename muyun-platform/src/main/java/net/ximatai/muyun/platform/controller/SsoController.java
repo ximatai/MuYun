@@ -14,7 +14,6 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
@@ -53,9 +52,6 @@ public class SsoController implements IRuntimeAbility {
 
     @Inject
     RoutingContext routingContext;
-
-    @Inject
-    MuYunConfig config;
 
     @GET
     @Path("/login")
