@@ -105,12 +105,12 @@ public class SsoController implements IRuntimeAbility {
                 userController.checkIn((String) user.get("id"));
                 return runtimeUser;
             } else {
-                logger.error("用户已停用，用户名：%s".formatted(username));
+                logger.error("用户已停用，用户名：{}", username);
                 apiRequest.setError(new RuntimeException("用户已停用，用户名：" + username));
                 throw new MyException("用户名或密码错误");
             }
         } else {
-            logger.error("用户密码验证失败，用户名：%s".formatted(username));
+            logger.error("用户密码验证失败，用户名：{}", username);
             apiRequest.setError(new RuntimeException("用户密码验证失败，用户名：" + username));
             throw new MyException("用户名或密码错误");
         }
