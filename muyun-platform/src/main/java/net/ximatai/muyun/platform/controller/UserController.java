@@ -57,8 +57,8 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
      */
     public void checkIn(String id) {
         getDB().update("""
-                update platform.auth_user set t_last_login = t_this_login,t_this_login = now() where id = ?
-                """, id);
+            update platform.auth_user set t_last_login = t_this_login,t_this_login = now() where id = ?
+            """, id);
     }
 
     @Override
