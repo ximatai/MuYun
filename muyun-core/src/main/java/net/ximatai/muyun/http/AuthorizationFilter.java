@@ -33,9 +33,6 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
     @Inject
     Instance<IAuthorizationService> authorizationService;
 
-    @Inject
-    MuYunConfig config;
-
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // 获取请求的路径
