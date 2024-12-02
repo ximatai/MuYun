@@ -9,7 +9,6 @@ import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.AuthorizationController;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RegionController;
@@ -32,8 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestDataAuth {
-    String base = PlatformConst.BASE_PATH;
-
     @Inject
     IDatabaseOperationsStd db;
 

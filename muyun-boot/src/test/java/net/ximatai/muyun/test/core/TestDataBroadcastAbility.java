@@ -59,7 +59,7 @@ class TestDataBroadcastAbility {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -71,16 +71,16 @@ class TestDataBroadcastAbility {
             .contentType("application/json")
             .body(Map.of("name", "test2"))
             .when()
-            .post("%s/update/%s".formatted(path, id))
+            .post("/api%s/update/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
             .response()
             .asString();
 
-        given().get("%s/delete/%s".formatted(path, id)).then().statusCode(200);
+        given().get("/api%s/delete/%s".formatted(path, id)).then().statusCode(200);
 
-        given().get("/test/view/" + id).then().statusCode(204);
+        given().get("/api%s/view/%s".formatted(path, id)).then().statusCode(204);
 
     }
 

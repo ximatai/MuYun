@@ -39,7 +39,7 @@ class TestTimeFormatCR {
         assertEquals("2001-01-01 00:00:00.0", map.get("t_test2").toString());
 
         String string = given()
-            .get("/TestTimeFormatCRController/view/" + id)
+            .get("/api/TestTimeFormatCRController/view/" + id)
             .then()
             .extract()
             .asString();

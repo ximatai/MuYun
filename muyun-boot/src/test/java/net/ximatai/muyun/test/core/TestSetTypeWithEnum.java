@@ -43,7 +43,7 @@ class TestSetTypeWithEnum {
         assertEquals("2001-01-01 00:00:00.0", map.get("update_time").toString());
 
         String string = given()
-            .get("/TestSetTypeWithEnumController/view/" + id)
+            .get("/api/TestSetTypeWithEnumController/view/" + id)
             .then()
             .extract()
             .asString();

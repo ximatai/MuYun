@@ -58,7 +58,7 @@ public class TestRange {
             .queryParam("noPage", true)
             .body(request)
             .when()
-            .post("%s/view".formatted(path))
+            .post("/api%s/view".formatted(path))
             .then()
             .statusCode(200)
             .extract()

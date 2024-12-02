@@ -46,7 +46,7 @@ public class TestUser {
                 "dict_user_gender", "0"
             ))
             .when()
-            .post("%s/userinfo/create".formatted(base))
+            .post("/api%s/userinfo/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -54,7 +54,7 @@ public class TestUser {
 
         Map row = given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/view/%s".formatted(base, id))
+            .get("/api%s/userinfo/view/%s".formatted(base, id))
             .then()
             .statusCode(200)
             .extract()
@@ -76,7 +76,7 @@ public class TestUser {
                 "roles", List.of("1", "2")
             ))
             .when()
-            .post("%s/userinfo/setUser/%s".formatted(base, id))
+            .post("/api%s/userinfo/setUser/%s".formatted(base, id))
             .then()
             .statusCode(200)
             .extract()
@@ -84,7 +84,7 @@ public class TestUser {
 
         Map row2 = given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/view/%s".formatted(base, id))
+            .get("/api%s/userinfo/view/%s".formatted(base, id))
             .then()
             .statusCode(200)
             .extract()
@@ -96,7 +96,7 @@ public class TestUser {
 
         List<String> roles = given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/roles/%s".formatted(base, id))
+            .get("/api%s/userinfo/roles/%s".formatted(base, id))
             .then()
             .statusCode(200)
             .extract()
@@ -116,7 +116,7 @@ public class TestUser {
                 "code", "muyun"
             ))
             .when()
-            .post("/sso/login")
+            .post("/api/sso/login")
             .then()
             .statusCode(200)
             .extract()
@@ -130,7 +130,7 @@ public class TestUser {
 
         given()
             .cookies(response.getCookies())
-            .get("%s/runtime/whoami".formatted(base))
+            .get("/api%s/runtime/whoami".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -141,7 +141,7 @@ public class TestUser {
         // 停用用户
         given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/disableUser/%s".formatted(base, id))
+            .get("/api%s/userinfo/disableUser/%s".formatted(base, id))
             .then()
             .statusCode(200);
 
@@ -153,14 +153,14 @@ public class TestUser {
                 "code", "muyun"
             ))
             .when()
-            .post("/sso/login")
+            .post("/api/sso/login")
             .then()
             .statusCode(500);
 
         // 启用用户
         given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/enableUser/%s".formatted(base, id))
+            .get("/api%s/userinfo/enableUser/%s".formatted(base, id))
             .then()
             .statusCode(200);
 
@@ -173,7 +173,7 @@ public class TestUser {
                 "v_password2", "pw2"
             ))
             .when()
-            .post("%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
             .then()
             .statusCode(200)
             .extract()
@@ -189,7 +189,7 @@ public class TestUser {
                 "v_password2", "pw3"
             ))
             .when()
-            .post("%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
             .then()
             .statusCode(200)
             .extract()
@@ -203,14 +203,14 @@ public class TestUser {
                 "code", "muyun"
             ))
             .when()
-            .post("/sso/login")
+            .post("/api/sso/login")
             .then()
             .statusCode(200);
 
         // 删除用户
         given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/delete/%s".formatted(base, id))
+            .get("/api%s/userinfo/delete/%s".formatted(base, id))
             .then()
             .statusCode(200);
 
@@ -222,7 +222,7 @@ public class TestUser {
                 "code", "muyun"
             ))
             .when()
-            .post("/sso/login")
+            .post("/api/sso/login")
             .then()
             .statusCode(500);
 

@@ -66,7 +66,7 @@ class TestBasicCURD {
         PageResult response = given()  // response得到一个分页结果
             .queryParam("page", 1) // 第1页
             .queryParam("size", 2)  // 每页大小为2
-            .get("/test/view")  // 查询
+            .get("/api/test/view")  // 查询
             .then()
             .statusCode(200)
             .extract()
@@ -86,7 +86,7 @@ class TestBasicCURD {
             .queryParam("page", 1)
             .queryParam("size", 2)
             .queryParam("sort", "t_create")  // 根据t_create排序
-            .get("/test/view")
+            .get("/api/test/view")
             .then()
             .statusCode(200)
             .extract()
@@ -104,7 +104,7 @@ class TestBasicCURD {
             .queryParam("size", 2)
             .queryParam("sort", "t_create,desc")  // 根据创建时间升序
             .queryParam("sort", "name,desc")  // 根据name降序
-            .get("/test/view")
+            .get("/api/test/view")
             .then()
             .statusCode(200)
             .extract()
@@ -124,7 +124,7 @@ class TestBasicCURD {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/test/create")
+            .post("/api/test/create")
             .then()
             .statusCode(200)
             .body(is(id));
@@ -149,7 +149,7 @@ class TestBasicCURD {
                 Map.of("name", "test", "name2", "test2")
             ))
             .when()
-            .post("/test/batchCreate")
+            .post("/api/test/batchCreate")
             .then()
             .statusCode(200)
             .extract()
@@ -180,7 +180,7 @@ class TestBasicCURD {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/test/update/" + id)
+            .post("/api/test/update/" + id)
             .then()
             .statusCode(200)
             .body(is("1"));
@@ -201,7 +201,7 @@ class TestBasicCURD {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/test/update/" + id)
+            .post("/api/test/update/" + id)
             .then()
             .statusCode(404);
     }
@@ -215,7 +215,7 @@ class TestBasicCURD {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("/test/update/" + id)
+            .post("/api/test/update/" + id)
             .then()
             .statusCode(200);
     }
@@ -225,7 +225,7 @@ class TestBasicCURD {
     void testGet() {
         String id = ids.getFirst();
         HashMap response = given()
-            .get("/test/view/" + id)
+            .get("/api/test/view/" + id)
             .then()
             .statusCode(200)
             .extract()
@@ -244,7 +244,7 @@ class TestBasicCURD {
     void testGetNotFound() {
         String id = "666";
         given()
-            .get("/test/view/" + id)
+            .get("/api/test/view/" + id)
             .then()
             .statusCode(204);
     }
@@ -254,7 +254,7 @@ class TestBasicCURD {
     void testDelete() {
         String id = ids.getFirst();
         given()
-            .get("/test/delete/" + id)
+            .get("/api/test/delete/" + id)
             .then()
             .statusCode(200);
 
@@ -268,7 +268,7 @@ class TestBasicCURD {
     void testDeleteNotFound() {
         String id = "666";
         given()
-            .get("/test/delete/" + id)
+            .get("/api/test/delete/" + id)
             .then()
             .statusCode(404);
     }

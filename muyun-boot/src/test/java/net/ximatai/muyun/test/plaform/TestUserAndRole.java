@@ -36,7 +36,7 @@ public class TestUserAndRole {
                 "dict_user_gender", "0"
             ))
             .when()
-            .post("%s/userinfo/create".formatted(base))
+            .post("/api%s/userinfo/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -52,7 +52,7 @@ public class TestUserAndRole {
                 "v_password2", "pw"
             ))
             .when()
-            .post("%s/userinfo/setUser/%s".formatted(base, userID))
+            .post("/api%s/userinfo/setUser/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()
@@ -65,7 +65,7 @@ public class TestUserAndRole {
                 "v_name", "测试"
             ))
             .when()
-            .post("%s/role/create".formatted(base))
+            .post("/api%s/role/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -73,14 +73,14 @@ public class TestUserAndRole {
 
         given()
             .header("userID", config.superUserId())
-            .get("%s/role/assign/%s/to/%s".formatted(base, roleID, userID))
+            .get("/api%s/role/assign/%s/to/%s".formatted(base, roleID, userID))
             .then()
             .statusCode(200)
             .extract();
 
         List<String> roles = given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/roles/%s".formatted(base, userID))
+            .get("/api%s/userinfo/roles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()
@@ -93,26 +93,26 @@ public class TestUserAndRole {
         // 已分配人员不允许删除
         given()
             .header("userID", config.superUserId())
-            .get("%s/role/delete/%s".formatted(base, roleID))
+            .get("/api%s/role/delete/%s".formatted(base, roleID))
             .then()
             .statusCode(500);
 
         given()
             .header("userID", config.superUserId())
-            .get("%s/role/revoke/%s/to/%s".formatted(base, roleID, userID))
+            .get("/api%s/role/revoke/%s/to/%s".formatted(base, roleID, userID))
             .then()
             .statusCode(200)
             .extract();
 
         given()
             .header("userID", config.superUserId())
-            .get("%s/role/delete/%s".formatted(base, roleID))
+            .get("/api%s/role/delete/%s".formatted(base, roleID))
             .then()
             .statusCode(200);
 
         List<String> roles2 = given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/roles/%s".formatted(base, userID))
+            .get("/api%s/userinfo/roles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()
@@ -129,7 +129,7 @@ public class TestUserAndRole {
                 "v_name", "测试"
             ))
             .when()
-            .post("%s/role/create".formatted(base))
+            .post("/api%s/role/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -142,7 +142,7 @@ public class TestUserAndRole {
                 "v_name", "测试"
             ))
             .when()
-            .post("%s/role/create".formatted(base))
+            .post("/api%s/role/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -152,7 +152,7 @@ public class TestUserAndRole {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(List.of(role1, role2))
-            .post("%s/userinfo/setRoles/%s".formatted(base, userID))
+            .post("/api%s/userinfo/setRoles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()
@@ -162,7 +162,7 @@ public class TestUserAndRole {
 
         List<String> roles3 = given()
             .header("userID", config.superUserId())
-            .get("%s/userinfo/roles/%s".formatted(base, userID))
+            .get("/api%s/userinfo/roles/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()

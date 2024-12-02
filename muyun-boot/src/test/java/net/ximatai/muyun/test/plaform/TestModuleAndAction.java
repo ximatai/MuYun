@@ -35,7 +35,7 @@ public class TestModuleAndAction {
                 "v_alias", "test"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -43,7 +43,7 @@ public class TestModuleAndAction {
 
         List<Map> response = given()
             .header("userID", config.superUserId())
-            .get("%s/module/view/%s/child/app_module_action".formatted(base, moduleID))
+            .get("/api%s/module/view/%s/child/app_module_action".formatted(base, moduleID))
             .then()
             .statusCode(200)
             .extract()
@@ -63,7 +63,7 @@ public class TestModuleAndAction {
                 "v_alias", "test2"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -77,7 +77,7 @@ public class TestModuleAndAction {
                 "v_alias", "test2"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(500)
             .extract()
@@ -96,7 +96,7 @@ public class TestModuleAndAction {
                 "v_alias", "void"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -111,7 +111,7 @@ public class TestModuleAndAction {
                 "v_alias", "void"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -129,7 +129,7 @@ public class TestModuleAndAction {
                 "v_alias", "test3"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -143,7 +143,7 @@ public class TestModuleAndAction {
                 "v_alias", "test3"
             ))
             .when()
-            .post("%s/module/update/%s".formatted(base, moduleID))
+            .post("/api%s/module/update/%s".formatted(base, moduleID))
             .then()
             .statusCode(200)
             .extract()
@@ -157,7 +157,7 @@ public class TestModuleAndAction {
                 "v_alias", "test4"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api%s/module/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -171,7 +171,7 @@ public class TestModuleAndAction {
                 "v_alias", "test4"
             ))
             .when()
-            .post("%s/module/update/%s".formatted(base, moduleID))
+            .post("/api%s/module/update/%s".formatted(base, moduleID))
             .then()
             .statusCode(500)
             .extract()

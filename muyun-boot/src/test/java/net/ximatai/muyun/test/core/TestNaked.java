@@ -26,7 +26,7 @@ public class TestNaked {
     void test() {
         given()
             .queryParam("sort", "t_create,desc")
-            .get("/demo/view")
+            .get("/api/demo/view")
             .then()
             .statusCode(200)
             .extract()

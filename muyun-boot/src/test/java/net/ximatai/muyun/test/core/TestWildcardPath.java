@@ -16,7 +16,7 @@ public class TestWildcardPath {
     @Test
     void test() {
         String result = given()
-            .get("/commondoc/wildcard/wangpan/view")
+            .get("/api/commondoc/wildcard/wangpan/view")
             .then()
             .statusCode(200)
             .extract()

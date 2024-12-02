@@ -35,7 +35,7 @@ class TestComplexityCreate {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -44,7 +44,7 @@ class TestComplexityCreate {
         //.body(is(id));
 
         HashMap response = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
@@ -65,7 +65,7 @@ class TestComplexityCreate {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -74,7 +74,7 @@ class TestComplexityCreate {
         //.body(is(id));
 
         HashMap response = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
@@ -96,7 +96,7 @@ class TestComplexityCreate {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -105,7 +105,7 @@ class TestComplexityCreate {
         //.body(is(id));
 
         HashMap response = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
@@ -126,7 +126,7 @@ class TestComplexityCreate {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -135,7 +135,7 @@ class TestComplexityCreate {
         //.body(is(id));
 
         HashMap response = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
@@ -150,7 +150,7 @@ class TestComplexityCreate {
             .contentType("application/json")
             .body(Map.of("name", "test", "json_test", Map.of("x", 2)))
             .when()
-            .post("%s/update/%s".formatted(path, id))
+            .post("/api%s/update/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
@@ -160,7 +160,7 @@ class TestComplexityCreate {
         assertEquals("1", update);
 
         HashMap response2 = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()

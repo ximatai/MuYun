@@ -73,7 +73,7 @@ class TestTreeAbility {
     @Test
     void testTree() {
         List<TreeNode> response = given()
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -89,7 +89,7 @@ class TestTreeAbility {
         String error = given()
             .contentType("application/json")
             .body(Map.of("pid", aID))
-            .post("%s/update/%s".formatted(path, aID))
+            .post("/api%s/update/%s".formatted(path, aID))
             .then()
             .statusCode(500)
             .extract()
@@ -102,7 +102,7 @@ class TestTreeAbility {
     void testTreeA() {
         List<TreeNode> response = given()
             .queryParam("rootID", aID)
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -119,7 +119,7 @@ class TestTreeAbility {
         List<TreeNode> response = given()
             .queryParam("rootID", aID)
             .queryParam("showMe", false)
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -138,7 +138,7 @@ class TestTreeAbility {
         List<TreeNode> response2 = given()
             .queryParam("rootID", aID)
             .queryParam("showMe", false)
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -156,7 +156,7 @@ class TestTreeAbility {
         String sortRes = given()
             .queryParam("prevId", aID)
             .queryParam("nextId", bID)
-            .get("%s/sort/%s".formatted(path, cID))
+            .get("/api%s/sort/%s".formatted(path, cID))
             .then()
             .statusCode(200)
             .extract()
@@ -165,7 +165,7 @@ class TestTreeAbility {
         assertEquals("1", sortRes);
 
         List<TreeNode> response = given()
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -183,7 +183,7 @@ class TestTreeAbility {
             .queryParam("prevId", aID)
             .queryParam("nextId", bID)
             .queryParam("parentId", "") // 说明移动到根节点
-            .get("%s/sort/%s".formatted(path, aa1ID))
+            .get("/api%s/sort/%s".formatted(path, aa1ID))
             .then()
             .statusCode(200)
             .extract()
@@ -192,7 +192,7 @@ class TestTreeAbility {
         assertEquals("1", sortRes);
 
         List<TreeNode> response = given()
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -209,7 +209,7 @@ class TestTreeAbility {
             .queryParam("prevId", aaID)
             .queryParam("nextId", abID)
             .queryParam("parentId", aID) // 说明移动到根节点
-            .get("%s/sort/%s".formatted(path, cID))
+            .get("/api%s/sort/%s".formatted(path, cID))
             .then()
             .statusCode(200)
             .extract()
@@ -218,7 +218,7 @@ class TestTreeAbility {
         assertEquals("1", sortRes);
 
         List<TreeNode> response = given()
-            .get("%s/tree".formatted(path))
+            .get("/api%s/tree".formatted(path))
             .then()
             .statusCode(200)
             .extract()

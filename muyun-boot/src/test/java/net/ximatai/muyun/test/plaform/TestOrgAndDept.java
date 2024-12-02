@@ -36,7 +36,7 @@ public class TestOrgAndDept {
                 "dict_org_type", "jituan"
             ))
             .when()
-            .post("%s/organization/create".formatted(base))
+            .post("/api%s/organization/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -44,7 +44,7 @@ public class TestOrgAndDept {
 
         Map orgRow = given()
             .header("userID", config.superUserId())
-            .get("%s/organization/view/%s".formatted(base, orgId))
+            .get("/api%s/organization/view/%s".formatted(base, orgId))
             .then()
             .statusCode(200)
             .extract()
@@ -56,7 +56,7 @@ public class TestOrgAndDept {
 
         List<DictTreeNode> dictTree = given()
             .header("userID", config.superUserId())
-            .get("%s/dict/tree/%s".formatted(base, "org_type"))
+            .get("/api%s/dict/tree/%s".formatted(base, "org_type"))
             .then()
             .statusCode(200)
             .extract()
@@ -73,7 +73,7 @@ public class TestOrgAndDept {
                 "id_at_org_organization", orgId
             ))
             .when()
-            .post("%s/department/create".formatted(base))
+            .post("/api%s/department/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -84,7 +84,7 @@ public class TestOrgAndDept {
 
         Map row = given()
             .header("userID", config.superUserId())
-            .get("%s/department/view/%s".formatted(base, deptId))
+            .get("/api%s/department/view/%s".formatted(base, deptId))
             .then()
             .statusCode(200)
             .extract()
@@ -101,7 +101,7 @@ public class TestOrgAndDept {
                 "v_name", "部门2"
             ))
             .when()
-            .post("%s/department/create".formatted(base))
+            .post("/api%s/department/create".formatted(base))
             .then()
             .statusCode(500)
             .extract()
@@ -118,7 +118,7 @@ public class TestOrgAndDept {
                 "pid", deptId
             ))
             .when()
-            .post("%s/department/create".formatted(base))
+            .post("/api%s/department/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -127,7 +127,7 @@ public class TestOrgAndDept {
         List<TreeNode> depTree = given()
             .header("userID", config.superUserId())
             .queryParam("rootID", orgId)
-            .get("%s/department/tree".formatted(base))
+            .get("/api%s/department/tree".formatted(base))
             .then()
             .statusCode(200)
             .extract()

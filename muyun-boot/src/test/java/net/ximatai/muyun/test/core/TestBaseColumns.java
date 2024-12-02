@@ -31,14 +31,14 @@ public class TestBaseColumns {
             .body(Map.of(
                 "v_test", "test"
             ))
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
             .asString();
 
         Map row = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()

@@ -34,7 +34,7 @@ public class TestDictController {
     void testDictCategoryTree() {
         List<TreeNode> response = given()
             .header("userID", config.superUserId())
-            .get("%s/dict/tree".formatted(base))
+            .get("/api%s/dict/tree".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -48,7 +48,7 @@ public class TestDictController {
     void testVoidDictCategory() {
         List<DictTreeNode> response = given()
             .header("userID", config.superUserId())
-            .get("%s/dict/tree/%s".formatted(base, UUID.randomUUID().toString()))
+            .get("/api%s/dict/tree/%s".formatted(base, UUID.randomUUID().toString()))
             .then()
             .statusCode(200)
             .extract()
@@ -69,7 +69,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
             .body(is("root1"));
@@ -83,7 +83,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
             .body(is("root2"));
@@ -102,7 +102,7 @@ public class TestDictController {
                 )
             ))
             .when()
-            .post("%s/dict/update/%s/child/app_dict".formatted(base, "root1"))
+            .post("/api%s/dict/update/%s/child/app_dict".formatted(base, "root1"))
             .then()
             .statusCode(200);
 
@@ -116,7 +116,7 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
+            .post("/api%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
             .then()
             .statusCode(200);
 
@@ -130,7 +130,7 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
+            .post("/api%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
             .then()
             .statusCode(500)
             .extract()
@@ -151,13 +151,13 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("%s/dict/update/%s/child/app_dict".formatted(base, "root2"))
+            .post("/api%s/dict/update/%s/child/app_dict".formatted(base, "root2"))
             .then()
             .statusCode(200);
 
         List<DictTreeNode> response = given()
             .header("userID", config.superUserId())
-            .get("%s/dict/tree/%s".formatted(base, "root1"))
+            .get("/api%s/dict/tree/%s".formatted(base, "root1"))
             .then()
             .statusCode(200)
             .extract()
@@ -179,7 +179,7 @@ public class TestDictController {
                 )
             )
             .when()
-            .post("%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
+            .post("/api%s/dict/update/%s/child/app_dict/create".formatted(base, "root1"))
             .then()
             .statusCode(200)
             .extract()
@@ -187,7 +187,7 @@ public class TestDictController {
 
         List<Map> responsex = given()
             .header("userID", config.superUserId())
-            .get("%s/dict/tree/%s".formatted(base, "root1"))
+            .get("/api%s/dict/tree/%s".formatted(base, "root1"))
             .then()
             .statusCode(200)
             .extract()
@@ -200,7 +200,7 @@ public class TestDictController {
 
         List<DictTreeNode> response2 = given()
             .header("userID", config.superUserId())
-            .get("%s/dict/tree/%s".formatted(base, "root2"))
+            .get("/api%s/dict/tree/%s".formatted(base, "root2"))
             .then()
             .statusCode(200)
             .extract()
@@ -212,7 +212,7 @@ public class TestDictController {
         String translateRes = given()
             .header("userID", config.superUserId())
             .param("source", "01")
-            .get("%s/dict/translate/%s".formatted(base, "root1"))
+            .get("/api%s/dict/translate/%s".formatted(base, "root1"))
             .then()
             .statusCode(200)
             .extract()
@@ -223,7 +223,7 @@ public class TestDictController {
         String res = given()
             .header("userID", config.superUserId())
             .param("source", "02")
-            .get("%s/dict/translate/%s".formatted(base, "root2"))
+            .get("/api%s/dict/translate/%s".formatted(base, "root2"))
             .then()
             .statusCode(500)
             .extract()
@@ -246,7 +246,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200);
 
@@ -259,7 +259,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(500)
             .extract()
@@ -280,7 +280,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200);
 
@@ -293,7 +293,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(500)
             .extract()
@@ -313,7 +313,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -328,7 +328,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -343,7 +343,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -354,7 +354,7 @@ public class TestDictController {
             .queryParam("prevId", id1)
             .queryParam("nextId", id2)
             .when()
-            .get("%s/dict/sort/%s".formatted(base, id3))
+            .get("/api%s/dict/sort/%s".formatted(base, id3))
             .then()
             .statusCode(200)
             .extract()
@@ -375,7 +375,7 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/create".formatted(base))
+            .post("/api%s/dict/create".formatted(base))
             .then()
             .statusCode(200)
             .body(is(id));
@@ -391,19 +391,19 @@ public class TestDictController {
                 "v_remark", "备注"
             ))
             .when()
-            .post("%s/dict/update/%s".formatted(base, id))
+            .post("/api%s/dict/update/%s".formatted(base, id))
             .then()
             .statusCode(200);
 
         given()
             .header("userID", config.superUserId())
-            .get("%s/dict/view/%s".formatted(base, id))
+            .get("/api%s/dict/view/%s".formatted(base, id))
             .then()
             .statusCode(204);
 
         given()
             .header("userID", config.superUserId())
-            .get("%s/dict/view/%s".formatted(base, newID))
+            .get("/api%s/dict/view/%s".formatted(base, newID))
             .then()
             .statusCode(200);
     }

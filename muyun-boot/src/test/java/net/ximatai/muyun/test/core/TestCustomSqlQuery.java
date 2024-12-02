@@ -53,7 +53,7 @@ class TestCustomSqlQuery {
 
         Map row = given()
             .contentType("application/json")
-            .get("%s/view/%s".formatted(path, "1"))
+            .get("/api%s/view/%s".formatted(path, "1"))
             .then()
             .statusCode(200)
             .extract()

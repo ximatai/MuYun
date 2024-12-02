@@ -26,14 +26,14 @@ public class TestBaseScaffold {
             .contentType("application/json")
             .body(Map.of("v_name", "test"))
             .when()
-            .post("/TestBaseScaffold/create")
+            .post("/api/TestBaseScaffold/create")
             .then()
             .statusCode(200)
             .extract()
             .asString();
 
         Map row = given()
-            .get("/TestBaseScaffold/view/%s".formatted(id))
+            .get("/api/TestBaseScaffold/view/%s".formatted(id))
             .then()
             .statusCode(200)
             .extract()
@@ -48,14 +48,14 @@ public class TestBaseScaffold {
             .contentType("application/json")
             .body(Map.of("v_name", "test", "t_create", createString))
             .when()
-            .post("/TestBaseScaffold/update/%s".formatted(id))
+            .post("/api/TestBaseScaffold/update/%s".formatted(id))
             .then()
             .statusCode(200)
             .extract()
             .asString();
 
         Map row2 = given()
-            .get("/TestBaseScaffold/view/%s".formatted(id))
+            .get("/api/TestBaseScaffold/view/%s".formatted(id))
             .then()
             .statusCode(200)
             .extract()

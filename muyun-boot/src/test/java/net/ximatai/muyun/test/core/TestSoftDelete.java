@@ -41,7 +41,7 @@ class TestSoftDelete {
             .contentType("application/json")
             .body(request)
             .when()
-            .post("%s/create".formatted(path))
+            .post("/api%s/create".formatted(path))
             .then()
             .statusCode(200)
             .extract()
@@ -50,7 +50,7 @@ class TestSoftDelete {
         //.body(is(id));
 
         HashMap response = given()
-            .get("%s/view/%s".formatted(path, id))
+            .get("/api%s/view/%s".formatted(path, id))
             .then()
             .statusCode(200)
             .extract()
@@ -60,9 +60,9 @@ class TestSoftDelete {
 
         assertNotNull(response.get("name"));
 
-        given().get("%s/delete/%s".formatted(path, id)).then().statusCode(200);
+        given().get("/api%s/delete/%s".formatted(path, id)).then().statusCode(200);
 
-        given().get("/test/view/" + id).then().statusCode(204);
+        given().get("/api%s/view/%s".formatted(path, id)).then().statusCode(204);
 
         Map row = (Map) databaseOperations.row("select * from testsoftdelete where id = ?", id);
 
@@ -72,7 +72,7 @@ class TestSoftDelete {
             .contentType("application/json")
             .queryParam("noPage", true)
             .when()
-            .get("%s/view".formatted(path))
+            .get("/api%s/view".formatted(path))
             .then()
             .statusCode(200)
             .extract()

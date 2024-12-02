@@ -5,7 +5,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.authorization.AuthorizationService;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
-import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
 import net.ximatai.muyun.platform.controller.RoleController;
@@ -21,15 +20,12 @@ import java.util.Map;
 import java.util.Set;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
 public class TestAuth {
-    String base = PlatformConst.BASE_PATH;
 
     @Inject
     IDatabaseOperationsStd db;
@@ -185,7 +181,7 @@ public class TestAuth {
                 "v_alias", "test"
             ))
             .when()
-            .post("%s/module/create".formatted(base))
+            .post("/api/platform/module/create")
             .then()
             .statusCode(401)
             .extract()

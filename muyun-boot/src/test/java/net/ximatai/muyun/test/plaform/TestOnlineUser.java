@@ -21,7 +21,7 @@ public class TestOnlineUser {
     void testOnline() {
         String deviceID = given()
             .header("userID", config.superUserId())
-            .get("/platform/online/iAmHere")
+            .get("/api/platform/online/iAmHere")
             .then()
             .statusCode(200)
             .extract()

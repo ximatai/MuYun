@@ -70,7 +70,7 @@ class TestReference {
             .contentType("application/json")
             .queryParam("noPage", true)
             .when()
-            .get("%s/view".formatted(path))
+            .get("/api%s/view".formatted(path))
             .then()
             .statusCode(200)
             .extract()

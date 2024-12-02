@@ -82,7 +82,7 @@ public class TestUserAndMenu {
     void testSchemaInit() {
         List<TreeNode> menus = given()
             .header("userID", config.superUserId())
-            .get("%s/menuSchema/tree/%s".formatted(base, schemaID))
+            .get("/api%s/menuSchema/tree/%s".formatted(base, schemaID))
             .then()
             .statusCode(200)
             .extract()
@@ -120,7 +120,7 @@ public class TestUserAndMenu {
                 "ids_at_auth_role", List.of(roleID)
             ))
             .when()
-            .post("%s/menuSchema/create".formatted(base))
+            .post("/api%s/menuSchema/create".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -130,7 +130,7 @@ public class TestUserAndMenu {
 
         List<TreeNode> menus = given()
             .header("userID", userID)
-            .get("%s/runtime/menu".formatted(base))
+            .get("/api%s/runtime/menu".formatted(base))
             .then()
             .statusCode(200)
             .extract()
@@ -144,14 +144,14 @@ public class TestUserAndMenu {
     @Test
     void testWhiteUserAccess() {
         given()
-            .get("%s/runtime/menu".formatted(base))
+            .get("/api%s/runtime/menu".formatted(base))
             .then()
             .statusCode(401)
             .extract()
             .asString();
 
         given()
-            .get("%s/runtime/whoami".formatted(base))
+            .get("/api%s/runtime/whoami".formatted(base))
             .then()
             .statusCode(401)
             .extract()

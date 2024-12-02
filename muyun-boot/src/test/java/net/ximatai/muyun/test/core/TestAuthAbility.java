@@ -49,7 +49,7 @@ public class TestAuthAbility {
     void testActions() {
         List<String> actions = given()
             .header("userID", config.superUserId())
-            .get("/platform/test/actions")
+            .get("/api/platform/test/actions")
             .then()
             .statusCode(200)
             .extract()
@@ -69,7 +69,7 @@ public class TestAuthAbility {
                 "v_name", "测试"
             ))
             .when()
-            .post("/platform/test/create")
+            .post("/api/platform/test/create")
             .then()
             .statusCode(200)
             .extract()
@@ -77,7 +77,7 @@ public class TestAuthAbility {
 
         List<String> actions = given()
             .header("userID", "1")
-            .get("/platform/test/actions/%s".formatted(id))
+            .get("/api/platform/test/actions/%s".formatted(id))
             .then()
             .statusCode(200)
             .extract()
