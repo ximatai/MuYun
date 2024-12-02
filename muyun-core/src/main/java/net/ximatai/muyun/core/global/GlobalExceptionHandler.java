@@ -22,7 +22,7 @@ import static jakarta.ws.rs.core.Response.Status.*;
 @Provider
 public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRuntimeAbility {
 
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @Inject
     MuYunConfig config;
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
         Response.Status responseStatus = INTERNAL_SERVER_ERROR;
         String requestPath = uriInfo.getRequestUri().getPath();
 
-        logger.error("USER:{},URI:{}", getUser().getId(), requestPath);
+        LOGGER.error("USER:{},URI:{}", getUser().getId(), requestPath);
 
         if (!config.isProdMode()) {
             e.printStackTrace();
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
         } else if (e instanceof NotAllowedException) {
             responseStatus = Response.Status.METHOD_NOT_ALLOWED;
         } else {
-            logger.error("ERROR DETAIL:", e);
+            LOGGER.error("ERROR DETAIL:", e);
         }
 
         return Response

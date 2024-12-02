@@ -6,6 +6,7 @@ import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import io.vertx.core.http.Cookie;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.Session;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -98,7 +99,12 @@ public class SsoController implements IRuntimeAbility {
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
-                setUserInContext(runtimeUser);
+
+                Session session = getRoutingContext().session();
+                if (session != null) {
+                    session.put(MuYunConst.SESSION_USER_KEY, runtimeUser);
+                }
+
                 userController.checkIn((String) user.get("id"));
                 return runtimeUser;
             } else {
@@ -163,7 +169,10 @@ public class SsoController implements IRuntimeAbility {
         apiRequest.setModuleName("SSO");
         apiRequest.setActionName("登录");
 
-        this.destroy();
+        Session session = getRoutingContext().session();
+        if (session != null) {
+            session.destroy();
+        }
         return true;
     }
 

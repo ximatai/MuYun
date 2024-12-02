@@ -9,6 +9,8 @@ pluginManagement {
 rootProject.name = "MuYun"
 
 include("muyun-core")
+include("muyun-runtime-session")
+include("muyun-runtime-gateway")
 //include("muyun-core-uni")
 include("muyun-database")
 include("muyun-database-std")

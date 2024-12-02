@@ -1,5 +1,3 @@
-muyun:
-  gateway-mode: true
 file-server:
   upload-path: ./fileUploads/
 web:

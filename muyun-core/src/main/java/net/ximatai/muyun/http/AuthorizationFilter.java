@@ -11,7 +11,6 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.service.IAuthorizationService;
@@ -47,7 +46,7 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
             }
 
             ApiRequest apiRequest = new ApiRequest(runtimeUser, path);
-            routingContext.put(MuYunConst.API_REQUEST_CONTEXT_KEY, apiRequest);
+            routingContext.put(MuYunConst.CONTEXT_KEY_API_REQUEST, apiRequest);
 
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
                 throw apiRequest.getError();
