@@ -17,11 +17,11 @@
 <script>
     var options = {
         // 配置 SockJS 的传输方式优先级，优先使用 XHR 流和 XHR 轮询
-        transports: ['xhr-streaming', 'xhr-polling', 'jsonp-polling']
+        // transports: ['xhr-streaming', 'xhr-polling', 'jsonp-polling']
     };
 
     // SockJS 连接到服务器的 EventBus
-    var eventBus = new EventBus('./eventbus',options);
+    var eventBus = new EventBus('/api/eventbus',options);
 
     eventBus.enableReconnect(true)
 

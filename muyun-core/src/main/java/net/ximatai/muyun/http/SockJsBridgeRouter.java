@@ -17,7 +17,7 @@ public class SockJsBridgeRouter {
         SockJSHandlerOptions options = new SockJSHandlerOptions();
         SockJSHandler sockJSHandler = SockJSHandler.create(vertx, options);
 
-        router.route("/eventbus/*")
+        router.route("/api/eventbus/*")
             .subRouter(sockJSHandler.bridge(createBridgeOptions()));
     }
 
