@@ -2,14 +2,14 @@ package net.ximatai.muyun.model;
 
 public class ApiRequest {
 
-    public static final ApiRequest BLANK = new ApiRequest(IRuntimeUser.WHITE, "");
+    public static final ApiRequest BLANK = new ApiRequest("");
 
     private final String path;
     private String module;
     private String action;
     private String dataID;
     private boolean isSkip = false;
-    private final IRuntimeUser user;
+    private IRuntimeUser user = IRuntimeUser.WHITE;
     private String moduleID;
     private String moduleName;
     private String actionName;
@@ -18,8 +18,7 @@ public class ApiRequest {
 
     private RuntimeException error;
 
-    public ApiRequest(IRuntimeUser user, String path) {
-        this.user = user;
+    public ApiRequest(String path) {
         this.path = path;
 
         // /api/platform/user/view/xxxx
@@ -47,6 +46,11 @@ public class ApiRequest {
             }
         }
 
+    }
+
+    public ApiRequest setUser(IRuntimeUser user) {
+        this.user = user;
+        return this;
     }
 
     public void setSkip() {
@@ -88,10 +92,6 @@ public class ApiRequest {
     public ApiRequest setModuleID(String moduleID) {
         this.moduleID = moduleID;
         return this;
-    }
-
-    public boolean isNotBlank() {
-        return !this.equals(BLANK);
     }
 
     public String getModuleName() {

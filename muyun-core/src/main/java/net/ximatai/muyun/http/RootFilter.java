@@ -12,12 +12,14 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Priorities;
 import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.service.IRuntimeProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Optional;
 
+import static net.ximatai.muyun.MuYunConst.CONTEXT_KEY_API_REQUEST;
 import static net.ximatai.muyun.MuYunConst.CONTEXT_KEY_RUNTIME_USER;
 
 @ApplicationScoped
@@ -55,6 +57,19 @@ public class RootFilter {
         IRuntimeUser runtimeUser = resolveRuntimeUser(context);
 
         context.put(CONTEXT_KEY_RUNTIME_USER, runtimeUser);
+
+        context.next();
+    }
+
+    @RouteFilter(Priorities.HEADER_DECORATOR)
+    void apiRequestFilter(RoutingContext context) {
+        IRuntimeUser runtimeUser = context.get(CONTEXT_KEY_RUNTIME_USER);
+
+        if (runtimeProvider.isResolvable()) {
+            ApiRequest apiRequest = runtimeProvider.get().apiRequest(context);
+            apiRequest.setUser(runtimeUser);
+            context.put(CONTEXT_KEY_API_REQUEST, apiRequest);
+        }
 
         context.next();
     }

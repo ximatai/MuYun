@@ -1,6 +1,0 @@
-muyun:
-  super-user-id: 1
-
-quarkus:
-  rest:
-    path: /
