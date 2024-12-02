@@ -2,11 +2,9 @@ package net.ximatai.muyun.authorization;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.vertx.core.eventbus.EventBus;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.core.config.IProfile;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.core.exception.PermsException;
@@ -26,16 +24,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class AuthorizationService implements IAuthorizationService, IProfile {
+public class AuthorizationService implements IAuthorizationService {
 
     @Inject
     IDatabaseOperationsStd db;
 
     @Inject
     MuYunConfig config;
-
-    @Inject
-    EventBus eventBus;
 
     private final LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.MINUTES)
