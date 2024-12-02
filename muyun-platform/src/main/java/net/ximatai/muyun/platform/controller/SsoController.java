@@ -15,6 +15,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
+import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
@@ -54,6 +55,9 @@ public class SsoController implements IRuntimeAbility {
 
     @Inject
     RoutingContext routingContext;
+
+    @Inject
+    MuYunConfig config;
 
     @GET
     @Path("/login")
@@ -100,9 +104,11 @@ public class SsoController implements IRuntimeAbility {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
 
-                Session session = getRoutingContext().session();
-                if (session != null) {
-                    session.put(MuYunConst.SESSION_USER_KEY, runtimeUser);
+                if (config.useSession()) {
+                    Session session = getRoutingContext().session();
+                    if (session != null) {
+                        session.put(MuYunConst.SESSION_USER_KEY, runtimeUser);
+                    }
                 }
 
                 userController.checkIn((String) user.get("id"));
@@ -166,13 +172,16 @@ public class SsoController implements IRuntimeAbility {
     @Operation(summary = "退出")
     public boolean logout() {
         ApiRequest apiRequest = getApiRequest();
-        apiRequest.setModuleName("SSO");
-        apiRequest.setActionName("登录");
+        apiRequest.setModuleName(MuYunConst.SSO_MODULE_NAME);
+        apiRequest.setActionName("退出");
 
-        Session session = getRoutingContext().session();
-        if (session != null) {
-            session.destroy();
+        if (config.useSession()) {
+            Session session = getRoutingContext().session();
+            if (session != null) {
+                session.destroy();
+            }
         }
+
         return true;
     }
 

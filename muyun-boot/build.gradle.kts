@@ -20,6 +20,8 @@ dependencies {
 
     implementation(project(":muyun-core"))
     implementation(project(":muyun-runtime-session"))
+//    implementation(project(":muyun-runtime-gateway"))
+
     implementation(project(":muyun-database-std"))
     implementation(project(":muyun-platform"))
     implementation(project(":muyun-proxy"))

@@ -37,15 +37,17 @@ public class RootFilter {
     private SessionHandler sessionHandler;
 
     void init(@Observes StartupEvent ev, Vertx vertx) {
-        int hour = config.sessionTimeoutHour();
-        long timeOut = (long) hour * 60 * 60 * 1000;
-        sessionHandler = SessionHandler.create(LocalSessionStore.create(vertx)).setSessionTimeout(timeOut);
+        if (config.useSession()) {
+            int hour = config.sessionTimeoutHour();
+            long timeOut = (long) hour * 60 * 60 * 1000;
+            sessionHandler = SessionHandler.create(LocalSessionStore.create(vertx)).setSessionTimeout(timeOut);
+        }
     }
 
     @RouteFilter(Priorities.USER + 100)
     void sessionFilter(RoutingContext context) {
         String path = context.request().path();
-        if (path.startsWith(restPath)) { // 只有 /api的请求需要考虑 session
+        if (config.useSession() && path.startsWith(restPath)) { // 只有 /api的请求需要考虑 session
             sessionHandler.handle(context);
         } else {
             context.next();

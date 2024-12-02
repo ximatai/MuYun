@@ -1,3 +1,5 @@
+muyun:
+  use-session: true
 file-server:
   upload-path: ./fileUploads/
 web:
