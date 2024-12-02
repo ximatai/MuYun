@@ -62,6 +62,8 @@ public class MuYunProxy {
                     Future<ServerWebSocket> fut = req.toWebSocket();
                     fut.onSuccess(ws -> {
                         WebSocketConnectOptions webSocketConnectOptions = new WebSocketConnectOptions();
+                        webSocketConnectOptions.setHost(upstream.getHost());
+                        webSocketConnectOptions.setPort(upstream.getPort());
                         webSocketConnectOptions.setURI(uri);
                         webSocketConnectOptions.setHeaders(
                             req.headers()

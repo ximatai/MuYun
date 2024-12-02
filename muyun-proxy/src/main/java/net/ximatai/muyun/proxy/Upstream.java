@@ -13,11 +13,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class Upstream {
-    private final Logger logger = LoggerFactory.getLogger(Upstream.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Upstream.class);
 
-    String url;
-    String path;
-    int weight;
+    private final String url;
+    private final int weight;
+    private String path;
+
+    private String host;
+    private int port;
 
     public String getPath() {
         return path;
@@ -35,6 +38,14 @@ public class Upstream {
         return weight;
     }
 
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
     HttpClient client;
 
     public Upstream(JsonObject json, Vertx vertx) {
@@ -48,8 +59,8 @@ public class Upstream {
 
         try {
             URL realURL = new URI(this.url).toURL();
-            String host = realURL.getHost();
-            int port = realURL.getPort();
+            host = realURL.getHost();
+            port = realURL.getPort();
             this.path = realURL.getPath();
 
             HttpClientOptions clientOptions = new HttpClientOptions();
@@ -66,9 +77,9 @@ public class Upstream {
 
             this.client = vertx.createHttpClient(clientOptions);
         } catch (MalformedURLException e) {
-            logger.error("Malformed URL: {}", this.url, e);
+            LOGGER.error("Malformed URL: {}", this.url, e);
         } catch (URISyntaxException e) {
-            logger.error("Invalid URL: {}", this.url, e);
+            LOGGER.error("Invalid URL: {}", this.url, e);
         }
 
     }
