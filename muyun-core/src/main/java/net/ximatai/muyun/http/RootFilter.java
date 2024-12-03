@@ -71,6 +71,8 @@ public class RootFilter {
             ApiRequest apiRequest = runtimeProvider.get().apiRequest(context);
             apiRequest.setUser(runtimeUser);
             context.put(CONTEXT_KEY_API_REQUEST, apiRequest);
+        } else {
+            context.put(CONTEXT_KEY_API_REQUEST, ApiRequest.BLANK);
         }
 
         context.next();
