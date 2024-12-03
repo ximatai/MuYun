@@ -41,7 +41,9 @@ public class DateTool {
     }
 
     public static Timestamp handleDateTimestamp(Object value) {
-        if ("".equals(value)) {
+        if (value instanceof Timestamp) {
+            return (Timestamp) value;
+        } else if ("".equals(value)) {
             return null;
         } else if (value instanceof LocalDateTime localDateTime) {
             return Timestamp.valueOf(localDateTime);
