@@ -94,6 +94,26 @@ class TestArchiveWhenDelete {
             });
 
         assertEquals(0, response2.getTotal());
+
+        controller.restore(id);
+
+        response2 = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .when()
+            .get("/api%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(1, response2.getTotal());
+
+        row = (Map) databaseOperations.row("select * from %s.%s where id = ?".formatted(controller.getSchemaName(), controller.getArchiveTableName()), id);
+
+        assertNull(row);
+
     }
 
 }
@@ -117,7 +137,6 @@ class TestArchiveWhenDeleteController extends Scaffold implements ICURDAbility, 
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
-
     }
 
 }
