@@ -1,0 +1,123 @@
+package net.ximatai.muyun.test.core;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.common.mapper.TypeRef;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Path;
+import net.ximatai.muyun.ability.IArchiveWhenDelete;
+import net.ximatai.muyun.ability.ITableCreateAbility;
+import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.core.Scaffold;
+import net.ximatai.muyun.database.IDatabaseOperations;
+import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.builder.ColumnType;
+import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.metadata.DBTable;
+import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.*;
+
+@QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+class TestArchiveWhenDelete {
+
+    private String path = "/TestArchiveWhenDelete";
+
+    @Inject
+    IDatabaseOperations databaseOperations;
+
+    @Inject
+    TestArchiveWhenDeleteController controller;
+
+    @Test
+    void testArchiveTableExists() {
+        String archiveTableName = controller.getArchiveTableName();
+        DBTable archiveTable = databaseOperations.getDBInfo().getSchema(controller.getSchemaName()).getTable(archiveTableName);
+        assertNotNull(archiveTable);
+        assertTrue(archiveTable.contains("name"));
+        assertTrue(archiveTable.contains("t_create"));
+        assertTrue(archiveTable.contains("t_archive"));
+        assertTrue(archiveTable.contains("id_at_auth_user__archive"));
+    }
+
+    @Test
+    void testDelete() {
+        Map<String, Object> request = Map.of("name", "test");
+
+        String id = given()
+            .contentType("application/json")
+            .body(request)
+            .when()
+            .post("/api%s/create".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .response()
+            .asString();
+        //.body(is(id));
+
+        HashMap response = given()
+            .get("/api%s/view/%s".formatted(path, id))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertNotNull(response.get("name"));
+
+        given().get("/api%s/delete/%s".formatted(path, id)).then().statusCode(200);
+
+        given().get("/api%s/view/%s".formatted(path, id)).then().statusCode(204);
+
+        Map row = (Map) databaseOperations.row("select * from %s.%s where id = ?".formatted(controller.getSchemaName(), controller.getArchiveTableName()), id);
+
+        assertNotNull(row.get("t_archive"));
+
+        PageResult<Map> response2 = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .when()
+            .get("/api%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(0, response2.getTotal());
+    }
+
+}
+
+@Path("/TestArchiveWhenDelete")
+class TestArchiveWhenDeleteController extends Scaffold implements ICURDAbility, ITableCreateAbility, IArchiveWhenDelete {
+
+    @Override
+    public String getSchemaName() {
+        return "test";
+    }
+
+    @Override
+    public String getMainTable() {
+        return "testarchivewhendelete";
+    }
+
+    @Override
+    public void fitOut(TableWrapper wrapper) {
+        wrapper
+            .setPrimaryKey(Column.ID_POSTGRES)
+            .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
+            .addColumn(Column.of("t_create").setDefaultValue("now()"));
+
+    }
+
+}
