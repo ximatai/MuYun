@@ -24,6 +24,10 @@ public interface IDatabaseOperationsStd extends IDatabaseOperations {
         return num;
     }
 
+    default Map<String, Object> getItem(String schema, String tableName, String id) {
+        return (Map<String, Object>) IDatabaseOperations.super.getItem(schema, tableName, id);
+    }
+
     default Integer deleteItem(String schema, String tableName, String id) {
         Integer num = (Integer) IDatabaseOperations.super.deleteItem(schema, tableName, id);
         if (num == 0) {
