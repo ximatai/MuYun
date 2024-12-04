@@ -8,6 +8,7 @@ import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -37,6 +38,7 @@ public class TestDatabaseOperations {
     }
 
     @Test
+    @DisplayName("验证单条记录插入操作")
     void testInsert() {
         String id = db.insertItem("public", "basic", Map.of(
             "v_name", "test",
@@ -49,6 +51,7 @@ public class TestDatabaseOperations {
     }
 
     @Test
+    @DisplayName("验证批量记录插入操作")
     void testBatchInsert() {
         List list = List.of(
             Map.of(
