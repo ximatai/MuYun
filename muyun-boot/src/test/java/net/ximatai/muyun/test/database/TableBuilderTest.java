@@ -12,6 +12,7 @@ import net.ximatai.muyun.database.metadata.DBSchema;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -66,6 +67,7 @@ public class TableBuilderTest {
     }
 
     @Test
+    @DisplayName("验证数据库连接是否正常")
     void testDB() {
         jdbi.useHandle(h -> {
             var row = h.createQuery("select 1 as title")
@@ -75,6 +77,7 @@ public class TableBuilderTest {
     }
 
     @Test
+    @DisplayName("验证表构建功能是否正确")
     void testTableBuilder() {
         TableBuilder tableBuilder = new TableBuilder(db);
         TableWrapper wrapper = TableWrapper.withName("test_table_x2")
@@ -107,6 +110,7 @@ public class TableBuilderTest {
     }
 
     @Test
+    @DisplayName("验证重复构建表时的行为")
     void testBuildTwice() {
         TableBuilder tableBuilder = new TableBuilder(db);
         TableWrapper wrapper = TableWrapper.withName("test_table_x3")
@@ -120,6 +124,7 @@ public class TableBuilderTest {
     }
 
     @Test
+    @DisplayName("验证元数据信息是否正确")
     void testMetadata() {
         var info = db.getDBInfo();
         var schema = info.getSchema("test");
@@ -133,6 +138,7 @@ public class TableBuilderTest {
     }
 
     @Test
+    @DisplayName("验证通过DatabaseMetaData读取索引信息")
     void testMetadataRead() throws SQLException {
         jdbi.useHandle(h -> {
             Connection conn = h.getConnection();
@@ -147,6 +153,7 @@ public class TableBuilderTest {
     }
 
     @Test
+    @DisplayName("测试继承表的功能")
     void testInherits() {
         TableWrapper basic = TableWrapper.withName("basic")
             .setSchema("public")

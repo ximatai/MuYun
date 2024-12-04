@@ -16,10 +16,7 @@ import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.controller.SupervisionRegionController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Map;
@@ -138,6 +135,7 @@ public class TestDataAuth {
     }
 
     @Test
+    @DisplayName("测试用户对数据项1具有的所有权限")
     void testIsDataAuthorized1() {
         String data1 = db.insertItem("public", "module1", Map.of(
             "v_name", "test1",
@@ -158,6 +156,7 @@ public class TestDataAuth {
     }
 
     @Test
+    @DisplayName("测试用户对数据项1具有所有权限，对数据项2只有查看权限")
     void testIsDataAuthorized2() {
 
         String d1 = db.insertItem("public", "module1", Map.of(
@@ -190,6 +189,7 @@ public class TestDataAuth {
     }
 
     @Test
+    @DisplayName("测试用户对数据项1具有所有权限，对数据项2只有查看权限，且删除权限受限")
     void testIsDataAuthorized3() {
 
         String d1 = db.insertItem("public", "module1", Map.of(
@@ -222,6 +222,7 @@ public class TestDataAuth {
     }
 
     @Test
+    @DisplayName("测试用户对数据项1具有所有权限，对数据项2只有查看权限，并验证部门和子部门权限")
     void testIsDataAuthorized4() {
         db.insertItem("platform", "org_department", Map.of(
             "id", "1",
@@ -268,6 +269,7 @@ public class TestDataAuth {
     }
 
     @Test
+    @DisplayName("测试用户对特定区域的数据项的查看权限")
     void testIsDataAuthorizedRegion() {
         String regionID = regionController.create(Map.of(
             "v_name", "test",
