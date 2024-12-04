@@ -80,6 +80,13 @@ public interface IDatabaseOperations extends IDBInfoProvider {
         return this.delete("DELETE FROM %s.%s WHERE id=:id".formatted(schema, tableName), Map.of("id", id));
     }
 
+    default Object getItem(String schema, String tableName, String id) {
+        DBTable dbTable = getDBInfo().getSchema(schema).getTable(tableName);
+        Objects.requireNonNull(dbTable);
+
+        return this.row("SELECT * FROM %s.%s WHERE id=:id".formatted(schema, tableName), Map.of("id", id));
+    }
+
     <T> Object insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
 
     <T> Object batchInsert(String sql, List<? extends Map<String, ?>> paramsList, String pk, Class<T> idType);
