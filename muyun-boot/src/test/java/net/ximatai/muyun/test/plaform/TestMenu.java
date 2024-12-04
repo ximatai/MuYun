@@ -8,6 +8,7 @@ import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TestMenu {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    @DisplayName("测试创建菜单架构时终端类型为空")
     void testTerminalTypeNull() {
         String error = given()
             .header("userID", config.superUserId())
@@ -45,6 +47,7 @@ public class TestMenu {
     }
 
     @Test
+    @DisplayName("测试创建菜单架构时终端类型为空列表")
     void testTerminalTypeBlank() {
         String error = given()
             .header("userID", config.superUserId())
@@ -64,6 +67,7 @@ public class TestMenu {
     }
 
     @Test
+    @DisplayName("测试创建和更新菜单架构及其子菜单")
     void test() {
         String schemaID = given()
             .header("userID", config.superUserId())

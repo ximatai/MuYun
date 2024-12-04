@@ -8,6 +8,7 @@ import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.platform.controller.NoticeController;
 import net.ximatai.muyun.platform.controller.ReceiveController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class TestNoticeController {
     ReceiveController receiveController;
     
     @Test
+    @DisplayName("测试发布通知并验证通知是否可见")
     public void publish() {
         String id = noticeController.create(Map.of(
             "v_title", "Chinese table tenni",

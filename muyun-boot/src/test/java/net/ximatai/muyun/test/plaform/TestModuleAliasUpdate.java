@@ -42,6 +42,7 @@ public class TestModuleAliasUpdate {
     AuthorizationController authorizationController;
 
     @Test
+    @DisplayName("测试模块别名和操作别名更新后授权信息的一致性")
     void test() {
         String moduleID = moduleController.create(Map.of("v_name", "test", "v_alias", "test_alias", "v_table", "test_table"));
         List<Map> actions = moduleController.getChildTableList(moduleID, "app_module_action", null);

@@ -9,6 +9,7 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.model.DictTreeNode;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class TestDictController {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    @DisplayName("测试获取字典分类树结构")
     void testDictCategoryTree() {
         List<TreeNode> response = given()
             .header("userID", config.superUserId())
@@ -45,6 +47,7 @@ public class TestDictController {
     }
 
     @Test
+    @DisplayName("测试获取空的字典分类")
     void testVoidDictCategory() {
         List<DictTreeNode> response = given()
             .header("userID", config.superUserId())
@@ -59,6 +62,7 @@ public class TestDictController {
     }
 
     @Test
+    @DisplayName("测试添加字典分类")
     void testDictCategoryAdd() {
         given()
             .header("userID", config.superUserId())
@@ -233,6 +237,7 @@ public class TestDictController {
     }
 
     @Test
+    @DisplayName("测试添加重复ID的字典分类")
     void testDictCategoryAddDuplicateID() {
 
         String id = UUID.randomUUID().toString();
@@ -269,6 +274,7 @@ public class TestDictController {
     }
 
     @Test
+    @DisplayName("测试添加重复名称的字典分类")
     void testDictCategoryAddDuplicateName() {
         String name = UUID.randomUUID().toString();
         given()
@@ -303,6 +309,7 @@ public class TestDictController {
     }
 
     @Test
+    @DisplayName("测试字典分类排序")
     void testDictCategorySort() {
         String id1 = given()
             .header("userID", config.superUserId())
@@ -363,6 +370,7 @@ public class TestDictController {
     }
 
     @Test
+    @DisplayName("测试更新字典分类ID")
     void testCategoryIdUpdate() {
         String id = UUID.randomUUID().toString();
 

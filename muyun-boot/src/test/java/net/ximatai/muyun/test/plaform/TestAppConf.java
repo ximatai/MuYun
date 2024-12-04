@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TestAppConf {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    @DisplayName("验证配置的获取和设置操作")
     void testGetAndSet() {
 
         Map conf = Map.of(

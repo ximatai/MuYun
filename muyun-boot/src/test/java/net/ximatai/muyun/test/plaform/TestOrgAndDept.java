@@ -9,6 +9,7 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.model.DictTreeNode;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TestOrgAndDept {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    @DisplayName("测试组织和部门的创建、查看及树结构")
     void test() {
         String orgId = given()
             .contentType("application/json")

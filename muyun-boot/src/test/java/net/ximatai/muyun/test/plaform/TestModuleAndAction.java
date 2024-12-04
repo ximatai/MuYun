@@ -8,6 +8,7 @@ import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TestModuleAndAction {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    @DisplayName("测试创建模块及其默认操作")
     void testModuleAndAction() {
         String moduleID = given()
             .header("userID", config.superUserId())
@@ -54,6 +56,7 @@ public class TestModuleAndAction {
     }
 
     @Test
+    @DisplayName("测试模块别名重复创建")
     void testModuleAliasRepeat() {
         given()
             .header("userID", config.superUserId())
@@ -87,6 +90,7 @@ public class TestModuleAndAction {
     }
 
     @Test
+    @DisplayName("测试模块别名 'void' 允许重复创建")
     void testModuleAliasRepeatForVoid() {
         given()
             .header("userID", config.superUserId())
@@ -120,6 +124,7 @@ public class TestModuleAndAction {
     }
 
     @Test
+    @DisplayName("测试模块创建和更新别名")
     void testModuleCreateAndUpdate() {
         String moduleID = given()
             .header("userID", config.superUserId())
