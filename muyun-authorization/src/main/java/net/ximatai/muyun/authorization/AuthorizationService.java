@@ -272,7 +272,7 @@ public class AuthorizationService implements IAuthorizationService {
                     })
                     .map(row -> {
                         if ("custom".equals(row.get("dict_data_auth"))) {
-                            return row.get("v_custom_condition").toString();
+                            return transformCustomCondition(userID, row.get("v_custom_condition").toString());
                         } else {
                             return dictDataAuthToCondition(userID, module, (String) row.get("dict_data_auth"));
                         }
@@ -465,8 +465,20 @@ public class AuthorizationService implements IAuthorizationService {
         return moduleGroupMap;
     }
 
-    public Map getModuleByID(String moduleID) {
-        return moduleCache.get(moduleID);
+    private String transformCustomCondition(String userID, String condition) {
+        Map<String, Object> userInfo = userinfoCache.get(userID);
+
+        if (userInfo == null) {
+            return condition;
+        }
+
+        String id = (String) userInfo.get("id");
+        String departmentID = (String) userInfo.get("id_at_org_department");
+        String organizationID = (String) userInfo.get("id_at_org_organization");
+
+        return condition.replace("@id@", id)
+            .replace("@id_at_org_department@", departmentID)
+            .replace("@id_at_org_organization@", organizationID);
     }
 
     @Override
