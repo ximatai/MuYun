@@ -78,7 +78,7 @@
 
 ### 前端
 
-**暂无，待后端开发到80%以上后再考虑推进前端开发**
+**暂无，目前精力都放在对后端的持续推进上**
 
 ## 开发指南
 
@@ -106,3 +106,7 @@ docker run --rm  -p 54324:5432 -e POSTGRES_PASSWORD=muyun2024 -e POSTGRES_DB=muy
 ```shell
 ./gradlew --console=plain :muyun-boot:quarkusDev
 ```
+## 一些视频教程
+* https://www.bilibili.com/video/BV1w6zGYkEPo/
+* https://www.bilibili.com/video/BV1W2z8YhEqV/
+* https://www.bilibili.com/video/BV1DHiUYSEHD/
