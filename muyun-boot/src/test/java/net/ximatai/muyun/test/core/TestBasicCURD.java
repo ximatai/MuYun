@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 class TestBasicCURD {
 
     @Inject

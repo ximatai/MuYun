@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestUserAndMenu {
     String base = PlatformConst.BASE_PATH;
 
@@ -104,9 +104,9 @@ public class TestUserAndMenu {
         ));
 
         userInfoController.setUser(userID, Map.of(
-            "v_username", "test",
-            "v_password", "test",
-            "v_password2", "test"
+            "v_username", "test_2",
+            "v_password", "test_2",
+            "v_password2", "test_2"
         ));
 
         String roleID = roleController.create(Map.of("v_name", "role1"));

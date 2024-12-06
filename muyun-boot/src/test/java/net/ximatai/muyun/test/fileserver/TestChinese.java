@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestChinese {
     
     String fileName;

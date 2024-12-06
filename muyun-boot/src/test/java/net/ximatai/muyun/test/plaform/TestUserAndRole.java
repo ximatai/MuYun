@@ -19,7 +19,7 @@ import static org.wildfly.common.Assert.assertFalse;
 import static org.wildfly.common.Assert.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestUserAndRole {
 
     @Inject
@@ -49,7 +49,7 @@ public class TestUserAndRole {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
-                "v_username", "test",
+                "v_username", "test_1",
                 "v_password", "pw",
                 "v_password2", "pw"
             ))

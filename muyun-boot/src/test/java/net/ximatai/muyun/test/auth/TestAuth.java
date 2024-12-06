@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestAuth {
 
     @Inject
@@ -56,7 +56,7 @@ public class TestAuth {
     @BeforeAll
     void setUp() {
         userID = db.insertItem("platform", "auth_user", Map.of(
-            "v_username", "test"
+            "v_username", "test_auth"
         ));
 
         role1 = db.insertItem("platform", "auth_role", Map.of(

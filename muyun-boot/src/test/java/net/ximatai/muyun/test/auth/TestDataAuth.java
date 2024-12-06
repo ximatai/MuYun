@@ -9,24 +9,20 @@ import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.platform.controller.AuthorizationController;
-import net.ximatai.muyun.platform.controller.ModuleController;
-import net.ximatai.muyun.platform.controller.RegionController;
-import net.ximatai.muyun.platform.controller.RoleController;
-import net.ximatai.muyun.platform.controller.SupervisionRegionController;
-import net.ximatai.muyun.platform.controller.UserInfoController;
+import net.ximatai.muyun.platform.controller.*;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestDataAuth {
     @Inject
     IDatabaseOperationsStd db;
@@ -78,7 +74,7 @@ public class TestDataAuth {
         );
 
         userID = db.insertItem("platform", "auth_user", Map.of(
-            "v_username", "test"
+            "v_username", UUID.randomUUID().toString()
         ));
 
         db.insertItem("platform", "auth_userinfo", Map.of(
@@ -105,14 +101,14 @@ public class TestDataAuth {
         ));
 
         module1 = moduleController.create(Map.of(
-            "v_name", "module1",
-            "v_alias", "module1",
+            "v_name", "module_1",
+            "v_alias", "module_1",
             "v_table", "module1"
         ));
 
         module2 = moduleController.create(Map.of(
-            "v_name", "module2",
-            "v_alias", "module2",
+            "v_name", "module_2",
+            "v_alias", "module_2",
             "v_table", "module2"
         ));
 
@@ -150,9 +146,9 @@ public class TestDataAuth {
 
         accredit(role2, view1, "organization");
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", data1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "update", data1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", data1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", data1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "update", data1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "delete", data1));
     }
 
     @Test
@@ -179,13 +175,13 @@ public class TestDataAuth {
 
         accredit(role2, view1, "organization");
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "update", d1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "update", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "delete", d1));
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "update", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "delete", d2));
     }
 
     @Test
@@ -212,13 +208,13 @@ public class TestDataAuth {
 
         accredit(role2, view1, "organization");
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "update", d1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "update", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "delete", d1));
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "update", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "delete", d2));
     }
 
     @Test
@@ -259,13 +255,13 @@ public class TestDataAuth {
 
         accredit(role2, view1, "self");
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "update", d1));
-        assertTrue(authService.isDataAuthorized(userID, "module1", "delete", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "update", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "delete", d1));
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "update", d2));
-        assertFalse(authService.isDataAuthorized(userID, "module1", "delete", d2));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "update", d2));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "delete", d2));
     }
 
     @Test
@@ -287,7 +283,7 @@ public class TestDataAuth {
 
         accredit(role1, view1, "supervision_region");
 
-        assertFalse(authService.isDataAuthorized(userID, "module1", "view", d1));
+        assertFalse(authService.isDataAuthorized(userID, "module_1", "view", d1));
 
         supervisionRegionController.create(Map.of(
             "id_at_org_organization", "1",
@@ -296,7 +292,7 @@ public class TestDataAuth {
 
         authService.invalidateAll();
 
-        assertTrue(authService.isDataAuthorized(userID, "module1", "view", d1));
+        assertTrue(authService.isDataAuthorized(userID, "module_1", "view", d1));
     }
 
     private void accredit(String role, String action, String dataAuth) {

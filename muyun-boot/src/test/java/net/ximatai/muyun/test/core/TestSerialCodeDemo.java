@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestSerialCodeDemo {
 
     @Inject

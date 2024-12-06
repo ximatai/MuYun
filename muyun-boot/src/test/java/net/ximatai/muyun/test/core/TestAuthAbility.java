@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestAuthAbility {
 
     @Inject
