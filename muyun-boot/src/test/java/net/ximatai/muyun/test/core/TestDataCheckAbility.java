@@ -11,6 +11,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TestDataCheckAbility {
     MuYunConfig config;
 
     @Test
+    @DisplayName("测试提交空字符串的v_name字段")
     void testStringBlank() {
         String result = given()
             .header("userID", config.superUserId())
@@ -46,6 +48,7 @@ public class TestDataCheckAbility {
     }
 
     @Test
+    @DisplayName("测试提交缺少v_title字段")
     void testStringNull() {
         String result = given()
             .header("userID", config.superUserId())
@@ -65,6 +68,7 @@ public class TestDataCheckAbility {
     }
 
     @Test
+    @DisplayName("测试提交空列表的ids_test字段")
     void testListEmpty() {
         String result = given()
             .header("userID", config.superUserId())
@@ -85,6 +89,7 @@ public class TestDataCheckAbility {
     }
 
     @Test
+    @DisplayName("测试创建重复的v_name数据")
     void testDuplicateDataCreate() {
         String name = UUID.randomUUID().toString();
         given()
@@ -121,6 +126,7 @@ public class TestDataCheckAbility {
     }
 
     @Test
+    @DisplayName("测试更新为重复的v_name数据")
     void testDuplicateDataUpdate() {
         String name = UUID.randomUUID().toString();
         String id = given()

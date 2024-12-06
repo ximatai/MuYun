@@ -13,6 +13,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -25,6 +26,7 @@ public class TestBaseColumns {
     private String path = "/TestBaseColumns";
 
     @Test
+    @DisplayName("验证创建记录时自动生成的审计列存在")
     void test() {
         String id = given()
             .contentType("application/json")

@@ -15,6 +15,7 @@ import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -46,6 +47,7 @@ public class TestAuthAbility {
     }
 
     @Test
+    @DisplayName("验证获取所有操作权限")
     void testActions() {
         List<String> actions = given()
             .header("userID", config.superUserId())
@@ -61,6 +63,7 @@ public class TestAuthAbility {
     }
 
     @Test
+    @DisplayName("验证获取单个记录的操作权限")
     void testActionsForOne() {
         String id = given()
             .header("userID", config.superUserId())

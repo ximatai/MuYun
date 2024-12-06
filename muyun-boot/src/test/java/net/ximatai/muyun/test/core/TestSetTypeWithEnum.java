@@ -13,6 +13,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ class TestSetTypeWithEnum {
     TestSetTypeWithEnumController testSetTypeWithEnumController;
 
     @Test
+    @DisplayName("测试创建和查看带有枚举类型的对象")
     void testCreat() {
         String id = testSetTypeWithEnumController.create(Map.of(
             "name", "小红",

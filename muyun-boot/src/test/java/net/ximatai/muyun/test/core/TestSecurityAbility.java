@@ -39,6 +39,7 @@ class TestSecurityAbility {
     TestSecurityAbilityController testController;
 
     @Test
+    @DisplayName("验证创建和查看功能以及数据加密和签名")
     void test() {
         String id = testController.create(Map.of(
             "v_for_sign", "test",

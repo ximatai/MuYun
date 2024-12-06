@@ -18,6 +18,7 @@ import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import net.ximatai.muyun.util.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -58,6 +59,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试更新节点时不能编辑节点的父节点为其子孙节点")
     void testEndlessLoop() {
         String x = testController.create(Map.of("v_name", "x"));
         String y = testController.create(Map.of("v_name", "y", "pid", x));
@@ -71,6 +73,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试树结构API返回结点数量")
     void testTree() {
         List<TreeNode> response = given()
             .get("/api%s/tree".formatted(path))
@@ -85,6 +88,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试将节点的父节点设置为其自身时返回的错误信息")
     void testTreeNodePIDSelf() {
         String error = given()
             .contentType("application/json")
@@ -99,6 +103,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试树结构API返回的根节点及其子节点数量")
     void testTreeA() {
         List<TreeNode> response = given()
             .queryParam("rootID", aID)
@@ -115,6 +120,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试树结构API在特定参数下返回的节点及其顺序")
     void testTreeANotShowMe() {
         List<TreeNode> response = given()
             .queryParam("rootID", aID)
@@ -152,6 +158,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试树结构API的排序功能及其对树结构的影响")
     void testTreeSort() {
         String sortRes = given()
             .queryParam("prevId", aID)
@@ -178,6 +185,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试树结构API的跨父节点排序功能及其对树结构的影响")
     void testTreeSorCrossParent() {
         String sortRes = given()
             .queryParam("prevId", aID)
@@ -204,6 +212,7 @@ class TestTreeAbility {
     }
 
     @Test
+    @DisplayName("测试树结构API的跨父节点排序功能及其对树结构的影响（移动到指定父节点）")
     void testTreeSorCrossParent2() {
         String sortRes = given()
             .queryParam("prevId", aaID)

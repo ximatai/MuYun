@@ -11,6 +11,7 @@ import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ class TestComplexityCreate {
     private String path = "/test_complexity_create";
 
     @Test
+    @DisplayName("测试创建包含字符串数组的对象")
     void testArray() {
         Map<String, Object> request = Map.of("name", "test", "names", List.of("a", "b"));
 
@@ -58,6 +60,7 @@ class TestComplexityCreate {
     }
 
     @Test
+    @DisplayName("测试创建包含整数数组的对象")
     void testIntArray() {
         Map<String, Object> request = Map.of("name", "test", "ints", List.of(1, 2, 3));
 
@@ -89,6 +92,7 @@ class TestComplexityCreate {
     }
 
     @Test
+    @DisplayName("测试创建包含JSON数组的对象")
     void testJsonArray() {
         Map<String, Object> request = Map.of("name", "test", "json_test", List.of("a", "b"));
 
@@ -119,6 +123,7 @@ class TestComplexityCreate {
     }
 
     @Test
+    @DisplayName("测试创建和更新包含JSON对象的对象")
     void testJsonObject() {
         Map<String, Object> request = Map.of("name", "test", "json_test", Map.of("x", 1));
 

@@ -13,6 +13,7 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.code.CodeGenerateConfig;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class TestSerialCodeDemo {
     SerialCodeDemo serialCodeDemo;
 
     @Test
+    @DisplayName("测试批量创建和单个创建序列码")
     void test() {
         List<String> ids = serialCodeDemo.batchCreate(
             List.of(

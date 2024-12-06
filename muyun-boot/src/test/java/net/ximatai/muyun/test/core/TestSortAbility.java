@@ -15,6 +15,7 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ class TestSortAbility {
     }
 
     @Test
+    @DisplayName("测试排序功能")
     void testSort() {
 
         var idA = testController.create(Map.of("v_name", "A"));

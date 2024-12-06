@@ -15,6 +15,7 @@ import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -37,6 +38,7 @@ class TestDesensitizationAbility {
     TestDesensitizationAbilityController testController;
 
     @Test
+    @DisplayName("测试创建和查看数据时v_name字段是否被脱敏")
     void test() {
         String text = "hello world!";
         String id = testController.create(Map.of(

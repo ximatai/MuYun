@@ -14,6 +14,7 @@ import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -33,6 +34,7 @@ class TestDataBroadcastAbility {
     private String path = "/TestDataBroadcastAbility";
 
     @Test
+    @DisplayName("测试数据广播功能：创建、更新、删除和查看对象")
     void test() throws InterruptedException {
         DataChangeChannel channel = new DataChangeChannel(testDataBroadcastAbilityController);
 

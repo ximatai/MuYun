@@ -20,6 +20,7 @@ import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -63,6 +64,7 @@ class TestReference {
     }
 
     @Test
+    @DisplayName("测试查询引用接口的结果是否符合预期")
     void testEqual() {
         Map<String, String> request = Map.of("id", "1");
 
