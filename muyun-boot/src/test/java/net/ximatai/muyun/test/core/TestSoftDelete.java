@@ -15,6 +15,7 @@ import net.ximatai.muyun.database.builder.ColumnType;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ class TestSoftDelete {
     IDatabaseOperations databaseOperations;
 
     @Test
+    @DisplayName("测试软删除功能")
     void testDelete() {
         Map<String, Object> request = Map.of("name", "test");
 

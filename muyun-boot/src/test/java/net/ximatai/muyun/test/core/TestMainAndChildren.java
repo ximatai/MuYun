@@ -19,6 +19,7 @@ import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -59,6 +60,7 @@ class TestMainAndChildren {
     }
 
     @Test
+    @DisplayName("测试插入主表和子表记录后能否正确获取")
     void testInsertOK() {
 
         Map response = given()
@@ -90,6 +92,7 @@ class TestMainAndChildren {
     }
 
     @Test
+    @DisplayName("测试更新主表和子表记录后数据是否正确")
     void testUpdateMainAndChildren() {
         Map main = Map.of(
             "v_name", "main2",
@@ -115,6 +118,7 @@ class TestMainAndChildren {
     }
 
     @Test
+    @DisplayName("测试获取子表记录列表")
     void testGetChildTableList() {
         List<Map> response = given()
             .queryParam("noPage", true)
@@ -129,6 +133,7 @@ class TestMainAndChildren {
     }
 
     @Test
+    @DisplayName("测试子表的增删改查操作")
     void testChildCRUD() {
         String child2 = given()
             .contentType("application/json")
@@ -193,6 +198,7 @@ class TestMainAndChildren {
     }
 
     @Test
+    @DisplayName("测试批量操作子表记录")
     void testBatch() {
         System.out.println(idMain);
         System.out.println(idChild);
@@ -255,6 +261,7 @@ class TestMainAndChildren {
     }
 
     @Test
+    @DisplayName("测试删除主表记录时子表记录是否也被删除")
     void testDeleteMainTable() {
         String mainID = testMain.create(Map.of("v_name", "main"));
 

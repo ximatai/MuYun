@@ -12,6 +12,7 @@ import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ class TestTimeFormatCR {
     TestTimeFormatCRController testController;
 
     @Test
+    @DisplayName("测试时间格式创建和查看")
     void testCreate() {
         String id = testController.create(Map.of(
             "d_test", "1988-01-01",

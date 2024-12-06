@@ -17,6 +17,7 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -49,6 +50,7 @@ class TestCustomSqlQuery {
     }
 
     @Test
+    @DisplayName("测试查看指定id的对象")
     void testView() {
 
         Map row = given()

@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -14,6 +15,7 @@ import static io.restassured.RestAssured.given;
 public class TestWildcardPath {
 
     @Test
+    @DisplayName("测试通配符路径的视图接口")
     void test() {
         String result = given()
             .get("/api/commondoc/wildcard/wangpan/view")

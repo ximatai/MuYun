@@ -11,6 +11,7 @@ import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class TestUser {
     RoleController roleController;
 
     @Test
+    @DisplayName("测试用户创建、设置、登录、停用、启用、修改密码和删除功能")
     void test() {
         roleController.create(Map.of("id", "1"));
         roleController.create(Map.of("id", "2"));
@@ -229,6 +231,7 @@ public class TestUser {
     }
 
     @Test
+    @DisplayName("测试密码加密功能")
     void testEncryptPassword() {
         String encryptPassword = encryptPassword("admin@bys", "-3");
         assertEquals("FFE9AEB76F57D8BC562D55022DA8C2DB", encryptPassword);

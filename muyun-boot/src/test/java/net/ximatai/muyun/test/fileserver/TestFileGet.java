@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,6 +33,7 @@ public class TestFileGet {
     FileServerConfig config;
     
     @Test
+    @DisplayName("测试文件的移动和重命名操作")
     public void test() throws IOException {
         String fileName = "MayDay";
         File tempFile = File.createTempFile(fileName, ".txt");
@@ -68,6 +70,7 @@ public class TestFileGet {
     }
     
     @Test
+    @DisplayName("测试文件的创建、写入、保存和获取操作")
     public void test2() throws IOException {
         // 文件路径  
         Path filePath = Paths.get("./OctDay.txt");

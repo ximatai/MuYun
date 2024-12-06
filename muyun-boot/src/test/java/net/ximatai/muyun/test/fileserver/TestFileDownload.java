@@ -7,6 +7,7 @@ import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class TestFileDownload {
     }
 
     @Test
+    @DisplayName("测试文件下载功能，确保多次下载同一个文件时能够正确处理")
     void testFileDownload() throws InterruptedException {
         String id = service.save(tempFile, fileName).split("@")[0];
         Thread.sleep(1000);

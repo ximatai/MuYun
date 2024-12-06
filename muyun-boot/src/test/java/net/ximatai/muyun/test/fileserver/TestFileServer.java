@@ -7,6 +7,7 @@ import io.vertx.core.json.JsonObject;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -44,6 +45,7 @@ public class TestFileServer {
     }
 
     @Test
+    @DisplayName("测试文件的上传、下载和信息读取操作")
     void testFileProcess() {
         // 文件上传
         Response response = given()
