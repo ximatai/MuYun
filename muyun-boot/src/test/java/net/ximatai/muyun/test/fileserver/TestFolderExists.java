@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class TestFolderExists {
     }
 
     @Test
+    @DisplayName("测试文件夹是否存在，如果不存在则创建它")
     void testFolder() {
         String folderPath = getUploadPath();
         Path path = Paths.get(folderPath);

@@ -3,6 +3,7 @@ package net.ximatai.muyun.test.fileserver;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public class TestChinese {
     File fileFirst;
     
     @Test
+    @DisplayName("测试文件的创建、写入和删除操作")
     public void test() throws IOException {
         fileName = "五月天.txt";
         Path filePath = Paths.get("./" + fileName);

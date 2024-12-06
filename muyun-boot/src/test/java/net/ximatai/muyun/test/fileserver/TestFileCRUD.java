@@ -8,6 +8,7 @@ import net.ximatai.muyun.fileserver.FileInfoEntity;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,6 +33,7 @@ public class TestFileCRUD {
     FileServerConfig config;
 
     @Test
+    @DisplayName("测试文件上传、下载、删除")
     void testCRUD() throws IOException, InterruptedException {
         // save()
         int fileNameInt = getRandomInt();

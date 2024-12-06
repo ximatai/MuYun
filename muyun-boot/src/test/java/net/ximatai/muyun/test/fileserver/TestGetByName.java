@@ -8,6 +8,7 @@ import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,7 @@ public class TestGetByName {
     }
 
     @Test
+    @DisplayName("测试通过文件名获取文件并验证下载的文件名是否正确")
     public void test() throws IOException {
         String fileName = "五月天.txt";
         Path filePath = Paths.get(folderPath, fileName);
