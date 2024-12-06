@@ -12,6 +12,7 @@ import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestAuth {
 
     @Inject
@@ -55,7 +56,7 @@ public class TestAuth {
     @BeforeAll
     void setUp() {
         userID = db.insertItem("platform", "auth_user", Map.of(
-            "v_username", "test"
+            "v_username", "test_auth"
         ));
 
         role1 = db.insertItem("platform", "auth_role", Map.of(
@@ -116,6 +117,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证获取用户可用角色的功能")
     void testGetUserAvailableRoles() {
         Set<String> roles = authService.getUserAvailableRoles(userID);
         assertEquals(2, roles.size());
@@ -124,6 +126,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证获取用户允许的操作")
     void testGetAllowedActions() {
         List<String> actions = authService.getAllowedActions(userID, "module1");
         assertEquals(3, actions.size());
@@ -133,6 +136,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证超级用户在 module1 上允许的操作")
     void testGetAllowedActionsForSuper() {
         List<String> actions = authService.getAllowedActions("1", "module1");
         assertEquals(ModuleAction.DEFAULT_ACTIONS.size(), actions.size());
@@ -142,6 +146,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证普通用户授权的资源")
     void testGetAuthorizedResources() {
         Map<String, Set<String>> authorizedResources = authService.getAuthorizedResources(userID);
         assertEquals(2, authorizedResources.size());
@@ -150,6 +155,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证超级用户授权的资源")
     void testGetAuthorizedResourcesForSuper() {
         Map<String, Set<String>> authorizedResources = authService.getAuthorizedResources("1");
         assertEquals(ModuleAction.DEFAULT_ACTIONS.size(), authorizedResources.get("module1").size());
@@ -157,6 +163,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证普通用户的权限")
     void testIsAuthorized() {
         assertTrue(authService.isAuthorized(userID, "module1", "view"));
         assertTrue(authService.isAuthorized(userID, "module1", "menu"));
@@ -165,6 +172,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证超级用户的权限")
     void testIsAuthorizedForSuper() {
         assertTrue(authService.isAuthorized("1", "module1", "view"));
         assertTrue(authService.isAuthorized("1", "module1", "menu"));
@@ -173,6 +181,7 @@ public class TestAuth {
     }
 
     @Test
+    @DisplayName("验证未授权用户创建模块的行为")
     void testWhiteUser() {
         given()
             .contentType("application/json")

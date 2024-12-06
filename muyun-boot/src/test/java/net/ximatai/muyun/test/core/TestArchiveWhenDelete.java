@@ -16,6 +16,7 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 class TestArchiveWhenDelete {
 
     private String path = "/TestArchiveWhenDelete";
@@ -37,6 +38,7 @@ class TestArchiveWhenDelete {
     TestArchiveWhenDeleteController controller;
 
     @Test
+    @DisplayName("验证归档表存在及其包含的列")
     void testArchiveTableExists() {
         String archiveTableName = controller.getArchiveTableName();
         DBTable archiveTable = databaseOperations.getDBInfo().getSchema(controller.getSchemaName()).getTable(archiveTableName);
@@ -48,6 +50,7 @@ class TestArchiveWhenDelete {
     }
 
     @Test
+    @DisplayName("验证删除后记录被归档并可恢复")
     void testDelete() {
         Map<String, Object> request = Map.of("name", "test");
 

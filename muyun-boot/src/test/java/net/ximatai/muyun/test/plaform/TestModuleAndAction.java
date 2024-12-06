@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestModuleAndAction {
     @Inject
     MuYunConfig config;
@@ -31,8 +31,8 @@ public class TestModuleAndAction {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
-                "v_name", "测试",
-                "v_alias", "test"
+                "v_name", "测试1",
+                "v_alias", "test_module_and_action"
             ))
             .when()
             .post("/api%s/module/create".formatted(base))

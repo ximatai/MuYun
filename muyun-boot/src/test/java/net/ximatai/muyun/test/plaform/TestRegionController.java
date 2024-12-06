@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
-@QuarkusTestResource(value = PostgresTestResource.class, restrictToAnnotatedClass = true)
+@QuarkusTestResource(value = PostgresTestResource.class)
 public class TestRegionController {
     @Inject
     MuYunConfig config;
@@ -38,15 +38,15 @@ public class TestRegionController {
     @Test
     void testCreateWithID() {
         String id = regionController.create(Map.of(
-            "id", "test",
+            "id", "test_region",
             "v_name", "test"
         ));
 
-        assertEquals("test", id);
+        assertEquals("test_region", id);
 
         assertThrows(MyException.class, () -> {
             regionController.create(Map.of(
-                "id", "test",
+                "id", "test_region",
                 "v_name", "test"
             ));
         });
@@ -60,7 +60,7 @@ public class TestRegionController {
         assertNotNull(regionController.view("test_new"));
 
         String id2 = regionController.create(Map.of(
-            "id", "test",
+            "id", "test_region2",
             "v_name", "test"
         ));
 
