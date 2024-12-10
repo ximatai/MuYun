@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
@@ -17,6 +18,7 @@ import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
@@ -82,6 +84,30 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
             getUserRoleChild().setAutoDelete(),
             roleActionController.toChildTable("id_at_auth_role").setAutoDelete()
         );
+    }
+
+    @GET
+    @Path("/availableModulesByAction/{roleID}")
+    @Operation(summary = "在角色id基础上，根据功能名查询可用的模块")
+    public List<Map<String, Object>> availableModulesByAction(@PathParam("roleID") String roleID, @QueryParam("action") String action) {
+        return getDB().query("""
+            select id_at_app_module, dict_data_auth
+            from platform.auth_role_action
+            where id_at_auth_role = ?
+                and v_alias_at_app_module_action = ?
+            """, roleID, action);
+    }
+
+    @GET
+    @Path("/availableRolesByAction/{moduleID}")
+    @Operation(summary = "在模块id基础上，根据功能名查询有权限的角色")
+    public List<Map<String, Object>> availableRolesByAction(@PathParam("moduleID") String moduleID, @QueryParam("action") String action) {
+        return getDB().query("""
+            select id_at_auth_role, dict_data_auth
+            from platform.auth_role_action
+            where id_at_app_module = ?
+                and v_alias_at_app_module_action = ?
+            """, moduleID, action);
     }
 
     @GET
