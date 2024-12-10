@@ -184,7 +184,7 @@ public class AuthorizationService implements IAuthorizationService {
         List<Map<String, Object>> result = db.query("""
                 select 1
                 from platform.auth_role_action
-                where v_alias_at_app_module = ? and v_alias_at_app_module_action = ?
+                where b_use = true and v_alias_at_app_module = ? and v_alias_at_app_module_action = ?
                 and id_at_auth_role in (%s)
                 """.formatted(roles.stream().map(n -> "?").collect(Collectors.joining(","))),
             Stream.concat(Stream.of(module, action), roles.stream()).toArray());
@@ -240,7 +240,7 @@ public class AuthorizationService implements IAuthorizationService {
                 select auth_role_action.*, app_module_action.i_order
                 from platform.auth_role_action
                          left join platform.app_module_action on auth_role_action.id_at_app_module_action = app_module_action.id
-                where auth_role_action.v_alias_at_app_module = ?
+                where auth_role_action.b_use = true and auth_role_action.v_alias_at_app_module = ?
                   and auth_role_action.id_at_auth_role in (%s)
                 order by app_module_action.i_order
                 """.formatted(roles.stream().map(n -> "?").collect(Collectors.joining(","))),
@@ -416,7 +416,7 @@ public class AuthorizationService implements IAuthorizationService {
         List<Map<String, Object>> result = db.query("""
                 select distinct v_alias_at_app_module_action as v_action
                 from platform.auth_role_action
-                where v_alias_at_app_module = ?
+                where b_use = true and v_alias_at_app_module = ?
                 and id_at_auth_role in (%s)
                 """.formatted(roles.stream().map(n -> "?").collect(Collectors.joining(","))),
             Stream.concat(Stream.of(module), roles.stream()).toArray());
@@ -447,7 +447,7 @@ public class AuthorizationService implements IAuthorizationService {
             query = """
                 select v_alias_at_app_module, v_alias_at_app_module_action
                 from platform.auth_role_action
-                where id_at_auth_role in (%s)
+                where b_use = true and id_at_auth_role in (%s)
                 """.formatted(roles.stream().map(n -> "?").collect(Collectors.joining(",")));
             params = roles.toArray(); // 普通用户需要角色ID
         }
