@@ -92,10 +92,10 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     public List<Map<String, Object>> availableModulesByAction(@PathParam("roleID") String roleID, @QueryParam("action") String action) {
         return getDB().query("""
             select id_at_app_module, dict_data_auth
-            from platform.auth_role_action
+            from %s
             where id_at_auth_role = ?
                 and v_alias_at_app_module_action = ?
-            """, roleID, action);
+            """.formatted(roleActionController.getSchemaDotTable()), roleID, action);
     }
 
     @GET
@@ -104,10 +104,10 @@ public class RoleController extends ScaffoldForPlatform implements ITreeAbility,
     public List<Map<String, Object>> availableRolesByAction(@PathParam("moduleID") String moduleID, @QueryParam("action") String action) {
         return getDB().query("""
             select id_at_auth_role, dict_data_auth
-            from platform.auth_role_action
+            from %s
             where id_at_app_module = ?
                 and v_alias_at_app_module_action = ?
-            """, moduleID, action);
+            """.formatted(roleActionController.getSchemaDotTable()), moduleID, action);
     }
 
     @GET
