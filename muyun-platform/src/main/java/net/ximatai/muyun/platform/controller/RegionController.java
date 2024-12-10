@@ -70,7 +70,7 @@ public class RegionController extends ScaffoldForPlatform implements ITreeAbilit
                 throw new MyException("行政区划代码[%s]重复".formatted(newID));
             }
 
-            getDB().update("update %s.%s set id = ? where id = ?".formatted(getSchemaName(), getMainTable()), newID, id);
+            getDB().update("update %s set id = ? where id = ?".formatted(getSchemaDotTable()), newID, id);
         }
         return super.update(newID, body);
     }
@@ -94,7 +94,7 @@ public class RegionController extends ScaffoldForPlatform implements ITreeAbilit
      */
     public Map<String, String> idMapName() {
         if (regions == null) {
-            regions = getDB().query("select id,v_name from %s.%s".formatted(getSchemaName(), getMainTable()));
+            regions = getDB().query("select id,v_name from %s".formatted(getSchemaDotTable()));
         }
         return regions.stream()
             .collect(Collectors.toMap(a -> a.get("id").toString(), b -> b.get("v_name").toString()));

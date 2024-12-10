@@ -95,16 +95,16 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             referenceTableTempName, getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 } else {
-                    joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s %s "
-                        .formatted(referenceTable.getSchema(), referenceTable.getName(),
-                            referenceTableTempName, getMainTable(), info.getRelationColumn(),
+                    joinSql.append("\n left join %s as %s on %s.%s = %s.%s %s "
+                        .formatted(referenceTable.getSchemaDotTable(), referenceTableTempName,
+                            getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 }
             });
 
         }
 
-        return "select %s from %s.%s %s where 1=1 %s ".formatted(starSql, getSchemaName(), getMainTable(), joinSql, softDeleteSql);
+        return "select %s from %s %s where 1=1 %s ".formatted(starSql, getSchemaDotTable(), joinSql, softDeleteSql);
     }
 
     default void processEachRow(Map row) {
