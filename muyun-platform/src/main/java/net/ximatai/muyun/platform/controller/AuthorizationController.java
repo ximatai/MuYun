@@ -89,6 +89,30 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     }
 
     @GET
+    @Path("/availableModulesByAction/{roleID}")
+    @Operation(summary = "在角色id基础上，根据功能名查询可用的模块")
+    public List<Map<String, Object>> availableModulesByAction(@PathParam("roleID") String roleID, @QueryParam("action") String action) {
+        return getDB().query("""
+            select id_at_app_module, dict_data_auth
+            from %s
+            where id_at_auth_role = ?
+                and v_alias_at_app_module_action = ?
+            """.formatted(roleActionController.getSchemaDotTable()), roleID, action);
+    }
+
+    @GET
+    @Path("/availableRolesByAction/{moduleID}")
+    @Operation(summary = "在模块id基础上，根据功能名查询有权限的角色")
+    public List<Map<String, Object>> availableRolesByAction(@PathParam("moduleID") String moduleID, @QueryParam("action") String action) {
+        return getDB().query("""
+            select id_at_auth_role, dict_data_auth
+            from %s
+            where id_at_app_module = ?
+                and v_alias_at_app_module_action = ?
+            """.formatted(roleActionController.getSchemaDotTable()), moduleID, action);
+    }
+
+    @GET
     @Path("/grant")
     @Operation(summary = "授权")
     public String grant(@QueryParam("roleID") String roleID, @QueryParam("actionID") String actionID) {
