@@ -4,14 +4,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
-import net.ximatai.muyun.ability.IAuthAbility;
-import net.ximatai.muyun.ability.IDatabaseAbilityStd;
-import net.ximatai.muyun.ability.IDesensitizationAbility;
-import net.ximatai.muyun.ability.IMetadataAbility;
-import net.ximatai.muyun.ability.IReferenceAbility;
-import net.ximatai.muyun.ability.ISecurityAbility;
-import net.ximatai.muyun.ability.ISoftDeleteAbility;
-import net.ximatai.muyun.ability.ISortAbility;
+import net.ximatai.muyun.ability.*;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.tool.DateTool;
@@ -65,10 +58,6 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     }
 
     default String getSelectSql() {
-        if (this instanceof ICustomSelectSqlAbility ability) {
-            return ability.getCustomSql();
-        }
-
         StringBuilder starSql = new StringBuilder("%s.*".formatted(getMainTable()));
         StringBuilder joinSql = new StringBuilder();
         String softDeleteSql = "";
@@ -104,7 +93,12 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         }
 
-        return "select %s from %s %s where 1=1 %s ".formatted(starSql, getSchemaDotTable(), joinSql, softDeleteSql);
+        String mainTable = getSchemaDotTable();
+        if (this instanceof ICustomSelectSqlAbility ability) {
+            mainTable = "(%s) as %s ".formatted(ability.getCustomSql(), getMainTable());
+        }
+
+        return "select %s from %s %s where 1=1 %s ".formatted(starSql, mainTable, joinSql, softDeleteSql);
     }
 
     default void processEachRow(Map row) {
