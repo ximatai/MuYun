@@ -15,9 +15,9 @@ public class InboxController extends MessageController {
     public String getAuthCondition() {
         return """
                and id in (
-               select id_at_app_message from app_message_person where b_delete = false and id_at_auth_user__to = '%s'
+               select id_at_app_message from %s.app_message_person where b_delete = false and id_at_auth_user__to = '%s'
                )
-            """.formatted(getUser().getId());
+            """.formatted(getSchemaName(), getUser().getId());
     }
 
     @Override
