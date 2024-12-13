@@ -1,6 +1,8 @@
 package net.ximatai.muyun.core.desensitization;
 
-public class MaskMiddleAlgorithm implements IDesensitizationAlgorithm {
+public enum MaskMiddleAlgorithm implements IDesensitizationAlgorithm {
+    INSTANCE;
+
     @Override
     public String desensitize(String source) {
         if (source == null || source.length() <= 2) {

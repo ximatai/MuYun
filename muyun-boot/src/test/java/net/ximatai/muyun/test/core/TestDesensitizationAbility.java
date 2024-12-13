@@ -79,6 +79,7 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
 
     @Override
     public Desensitizer getDesensitizer() {
-        return new Desensitizer().registerAlgorithm("v_name", new MaskMiddleAlgorithm());
+        return new Desensitizer()
+            .registerAlgorithm("v_name", MaskMiddleAlgorithm.INSTANCE);
     }
 }
