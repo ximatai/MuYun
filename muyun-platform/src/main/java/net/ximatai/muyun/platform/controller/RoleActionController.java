@@ -50,8 +50,7 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
             .addColumn("b_use", "是否启用", true)
             .addIndex("id_at_auth_role")
             .addIndex("id_at_app_module_action")
-            .addIndex(List.of("id_at_auth_role", "id_at_app_module_action"), true)
-            .addIndex(List.of("id_at_auth_role", "v_alias_at_app_module", "v_alias_at_app_module_action"), true);
+            .addIndex(List.of("id_at_auth_role", "id_at_app_module_action"), true);
     }
 
     @Override
