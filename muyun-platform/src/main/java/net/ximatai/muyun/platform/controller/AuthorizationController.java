@@ -106,7 +106,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
         } else {
             String id = (String) row.get("id");
             roleActionController.update(id, Map.of(
-                "b_use", false
+                "b_use", true
             ));
             return id;
         }
