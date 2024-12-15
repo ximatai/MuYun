@@ -188,7 +188,6 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     private boolean testDataAuth(String actionID, String dataAuth, String customCondition) {
         Map<String, Object> actionMap = actionCache.get(actionID);
         String module = actionMap.get("v_alias_at_app_module").toString();
-        String tableName = actionMap.get("v_table").toString();
 
         String authCondition = null;
         if ("custom".equals(dataAuth)) {
@@ -197,6 +196,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
             authCondition = authorizationService.dictDataAuthToCondition(muYunConfig.superUserId(), module, dataAuth);
         }
         try {
+            String tableName = actionMap.get("v_table").toString();
             getDB().row("select 1 from %s where 1=1 and %s limit 1".formatted(tableName, authCondition));
             return true;
         } catch (Exception e) {
