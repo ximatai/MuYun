@@ -8,8 +8,8 @@ plugins {
 
 allprojects {
     group = "net.ximatai.muyun"
-    version = "1.0.0-SNAPSHOT"
-//    version = "0.1.8"
+//    version = "1.0.0-SNAPSHOT"
+    version = "0.1.9"
 
     repositories {
         mavenLocal()
@@ -68,18 +68,18 @@ subprojects {
             }
         }
         repositories {
-//            maven {
-//                url = uri(layout.buildDirectory.dir("repo"))
-//            }
-
             maven {
-                url = uri("http://192.168.6.205:8081/repository/maven-snapshots/")
-                isAllowInsecureProtocol = true
-                credentials {
-                    username = findProperty("office.maven.username").toString()
-                    password = findProperty("office.maven.password").toString()
-                }
+                url = uri(layout.buildDirectory.dir("repo"))
             }
+
+//            maven {
+//                url = uri("http://192.168.6.205:8081/repository/maven-snapshots/")
+//                isAllowInsecureProtocol = true
+//                credentials {
+//                    username = findProperty("office.maven.username").toString()
+//                    password = findProperty("office.maven.password").toString()
+//                }
+//            }
         }
     }
 
