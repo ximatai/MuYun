@@ -1,7 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
 import jakarta.ws.rs.Path;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.PageResult;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -23,7 +23,7 @@ public class OutboxController extends MessageController {
             "id_at_app_message__root", id
         ));
         if (query.getTotal() > 0) {
-            throw new MyException("该信件已产生了回复，不允许修改或删除");
+            throw new MuYunException("该信件已产生了回复，不允许修改或删除");
         }
     }
 

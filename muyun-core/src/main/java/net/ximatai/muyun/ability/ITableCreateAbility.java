@@ -1,7 +1,7 @@
 package net.ximatai.muyun.ability;
 
 import jakarta.transaction.Transactional;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.TableBuilder;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -25,7 +25,7 @@ public interface ITableCreateAbility extends IMetadataAbility {
     default void create(IDatabaseOperations db) {
         String mainTable = getMainTable();
         if (!mainTable.toLowerCase().equals(mainTable)) {
-            throw new MyException("%s表明不合法，不允许使用大写字母".formatted(mainTable));
+            throw new MuYunException("%s表明不合法，不允许使用大写字母".formatted(mainTable));
         }
 
         TableWrapper wrapper = TableWrapper.withName(mainTable)
@@ -45,7 +45,7 @@ public interface ITableCreateAbility extends IMetadataAbility {
 
         if (this instanceof ISoftDeleteAbility ability) {
             if (this instanceof IArchiveWhenDelete) {
-                throw new MyException("ISoftDeleteAbility 能力与 IArchiveWhenDelete 能力互斥，不可同时采用");
+                throw new MuYunException("ISoftDeleteAbility 能力与 IArchiveWhenDelete 能力互斥，不可同时采用");
             }
 
             wrapper.addColumn(ability.getSoftDeleteColumn());
