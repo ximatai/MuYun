@@ -1,6 +1,6 @@
 package net.ximatai.muyun.util;
 
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.TreeNode;
 
 import java.util.Collections;
@@ -74,7 +74,7 @@ public class TreeBuilder {
                 .setData(node);
 
             if (nodes.contains(treeNode)) {
-                throw new MyException("树节点出现递归调用");
+                throw new MuYunException("树节点出现递归调用");
             } else {
                 nodes.add(treeNode);
             }
