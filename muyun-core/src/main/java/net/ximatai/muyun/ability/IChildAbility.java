@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.model.ChildTableInfo;
 
@@ -14,6 +15,11 @@ public interface IChildAbility extends ICURDAbility, IMetadataAbility {
         } else {
             throw new RuntimeException("foreignKey not found");
         }
+    }
+
+    @Path("/placeholder")
+    default String placeholder() {
+        return "placeholder";
     }
 
 }
