@@ -40,9 +40,8 @@ public class TestFileDownload {
 
     @Test
     @DisplayName("测试文件下载功能，确保多次下载同一个文件时能够正确处理")
-    void testFileDownload() throws InterruptedException {
+    void testFileDownload() {
         String id = service.save(tempFile, fileName).split("@")[0];
-        Thread.sleep(1000);
         File file = service.get(id);
         String filePath = file.getPath();
         System.out.println(filePath);
