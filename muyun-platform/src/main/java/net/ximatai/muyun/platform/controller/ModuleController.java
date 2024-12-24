@@ -11,7 +11,7 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
@@ -111,13 +111,13 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     public void check(Map body, boolean isUpdate) {
         String alias = (String) body.get("v_alias");
         if (StringUtil.isBlank(alias)) {
-            throw new MyException("请提供模块标识，即模块Controller拦截路径");
+            throw new MuYunException("请提供模块标识，即模块Controller拦截路径");
         }
 
         if (!"void".equals(alias)) {
             Map row = getDB().row("select * from platform.app_module where v_alias = ?", alias);
             if (row != null && !row.get("id").equals(body.get("id"))) {
-                throw new MyException("模块标识[%s]已被使用，请勿再用".formatted(alias));
+                throw new MuYunException("模块标识[%s]已被使用，请勿再用".formatted(alias));
             }
         }
     }
