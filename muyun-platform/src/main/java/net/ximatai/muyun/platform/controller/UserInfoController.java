@@ -74,6 +74,12 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     @Override
+    public void beforeCreate(Map body) {
+        super.beforeCreate(body);
+        body.put("b_user", false);
+    }
+
+    @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper.setPrimaryKey(Column.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
