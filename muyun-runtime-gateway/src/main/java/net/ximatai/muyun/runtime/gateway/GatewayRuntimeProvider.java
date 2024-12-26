@@ -8,6 +8,7 @@ import net.ximatai.muyun.service.IRuntimeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Base64;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -20,7 +21,7 @@ public class GatewayRuntimeProvider implements IRuntimeProvider {
             .flatMap(gwUser -> {
                 try {
                     // 尝试构建用户对象
-                    return Optional.of(IRuntimeUser.build(new JsonObject(gwUser)));
+                    return Optional.of(IRuntimeUser.build(new JsonObject(new String(Base64.getDecoder().decode(gwUser)))));
                 } catch (Exception e) {
                     // 记录解析失败的日志
                     LOGGER.warn("Failed to parse gw-user header: {}", gwUser, e);
