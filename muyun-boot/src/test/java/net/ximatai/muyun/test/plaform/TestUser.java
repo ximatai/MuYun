@@ -245,22 +245,6 @@ public class TestUser {
             .statusCode(200)
             .extract()
             .asString();
-        // 设置用户
-        given()
-            .header("userID", config.superUserId())
-            .contentType("application/json")
-            .body(Map.of(
-                "v_username", "test",
-                "v_password", "pw",
-                "v_password2", "pw",
-                "roles", List.of("1", "2")
-            ))
-            .when()
-            .post("/api%s/userinfo/setUser/%s".formatted(base, id))
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
 
         Map row = given()
             .header("userID", config.superUserId())
