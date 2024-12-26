@@ -8,6 +8,7 @@ import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TestUserAndRole {
     String base = PlatformConst.BASE_PATH;
 
     @Test
+    @DisplayName("用户和角色管理综合测试（创建用户并设置用户信息；创建角色并分配给用户；验证已分配人员不允许删除角色；撤销角色分配并删除角色；设置多个角色给用户）")
     void test() {
         String userID = given()
             .header("userID", config.superUserId())

@@ -57,8 +57,10 @@ public class RuntimeController implements IRuntimeAbility {
     @GET
     @Path("/menu")
     @Operation(summary = "查询当前用户菜单信息")
-    public List<TreeNode> menu(@QueryParam("terminalType") String terminalType) {
+    public List<TreeNode> menu(@QueryParam("terminalType") String terminalType, @QueryParam("rootID") String rootID, @QueryParam("showMe") Boolean showMe) {
         String userID = getUser().getId();
+
+        showMe = showMe != null && showMe;
 
         if (IRuntimeUser.WHITE.getId().equals(userID)) {
             throw new PermsException("未登录用户没有查询菜单的权限");
@@ -86,7 +88,7 @@ public class RuntimeController implements IRuntimeAbility {
                 order by app_menu.n_order
                 """, schemaID);
 
-            List<TreeNode> treeNodes = TreeBuilder.build("id", "pid", list, null, false, "v_name", null);
+            List<TreeNode> treeNodes = TreeBuilder.build("id", "pid", list, rootID, showMe, "v_name", null);
             return filterMenuByAuth(treeNodes);
         }
     }

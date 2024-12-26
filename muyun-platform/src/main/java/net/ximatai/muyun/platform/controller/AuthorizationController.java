@@ -78,7 +78,8 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
                 app_module_action.id_at_app_module,
                 app_module_action.i_order,
                 auth_role_action.dict_data_auth,
-                auth_role_action.v_custom_condition
+                auth_role_action.v_custom_condition,
+                coalesce(auth_role_action.b_use,false) as b_use 
             from platform.app_module_action
                      left join platform.auth_role_action
                          on auth_role_action.id_at_app_module_action = app_module_action.id
@@ -92,18 +93,32 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     @Path("/grant")
     @Operation(summary = "授权")
     public String grant(@QueryParam("roleID") String roleID, @QueryParam("actionID") String actionID) {
-        return roleActionController.create(Map.of(
-            "id_at_auth_role", roleID,
-            "id_at_app_module_action", actionID,
-            "dict_data_auth", getDefaultDataAuth(actionID)
-        ));
+        Map<String, Object> row = getDB().row("""
+            select * from platform.auth_role_action where id_at_auth_role = ? and id_at_app_module_action = ? for update
+            """, roleID, actionID);
+
+        if (row == null) {
+            return roleActionController.create(Map.of(
+                "id_at_auth_role", roleID,
+                "id_at_app_module_action", actionID,
+                "dict_data_auth", getDefaultDataAuth(actionID)
+            ));
+        } else {
+            String id = (String) row.get("id");
+            roleActionController.update(id, Map.of(
+                "b_use", true
+            ));
+            return id;
+        }
     }
 
     @GET
     @Path("/revoke/{id}")
     @Operation(summary = "撤回权限")
     public Integer revoke(@PathParam("id") String id) {
-        return roleActionController.delete(id);
+        return roleActionController.update(id, Map.of(
+            "b_use", false
+        ));
     }
 
     @POST
@@ -135,6 +150,30 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
         return roleActionController.update(id, map);
     }
 
+    @GET
+    @Path("/availableModulesByAction/{roleID}")
+    @Operation(summary = "在角色id基础上，根据功能名查询可用的模块")
+    public List<Map<String, Object>> availableModulesByAction(@PathParam("roleID") String roleID, @QueryParam("action") String action) {
+        return getDB().query("""
+            select id_at_app_module, dict_data_auth
+            from %s
+            where b_use = true and id_at_auth_role = ?
+                and v_alias_at_app_module_action = ?
+            """.formatted(roleActionController.getSchemaDotTable()), roleID, action);
+    }
+
+    @GET
+    @Path("/availableRolesByAction/{moduleID}")
+    @Operation(summary = "在模块id基础上，根据功能名查询有权限的角色")
+    public List<Map<String, Object>> availableRolesByAction(@PathParam("moduleID") String moduleID, @QueryParam("action") String action) {
+        return getDB().query("""
+            select id_at_auth_role, dict_data_auth
+            from %s
+            where b_use = true and id_at_app_module = ?
+                and v_alias_at_app_module_action = ?
+            """.formatted(roleActionController.getSchemaDotTable()), moduleID, action);
+    }
+
     private String getDefaultDataAuth(String actionID) {
         Map<String, Object> actionMap = actionCache.get(actionID);
         String action = actionMap.get("v_alias_at_app_module_action").toString();
@@ -149,7 +188,6 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     private boolean testDataAuth(String actionID, String dataAuth, String customCondition) {
         Map<String, Object> actionMap = actionCache.get(actionID);
         String module = actionMap.get("v_alias_at_app_module").toString();
-        String tableName = actionMap.get("v_table").toString();
 
         String authCondition = null;
         if ("custom".equals(dataAuth)) {
@@ -158,6 +196,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
             authCondition = authorizationService.dictDataAuthToCondition(muYunConfig.superUserId(), module, dataAuth);
         }
         try {
+            String tableName = actionMap.get("v_table").toString();
             getDB().row("select 1 from %s where 1=1 and %s limit 1".formatted(tableName, authCondition));
             return true;
         } catch (Exception e) {

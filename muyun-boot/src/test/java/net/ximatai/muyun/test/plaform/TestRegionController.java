@@ -7,6 +7,7 @@ import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.platform.controller.RegionController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ public class TestRegionController {
     RegionController regionController;
 
     @Test
+    @DisplayName("测试创建区域时未提供 ID 抛出 NullPointerException")
     void testCreateWithIDBlank() { // 必须提供 id
         assertThrows(NullPointerException.class, () -> {
             regionController.create(Map.of(
@@ -36,6 +38,7 @@ public class TestRegionController {
     }
 
     @Test
+    @DisplayName("测试创建、更新和删除区域")
     void testCreateWithID() {
         String id = regionController.create(Map.of(
             "id", "test_region",
@@ -73,6 +76,7 @@ public class TestRegionController {
     }
 
     @Test
+    @DisplayName("测试获取 ID 和名称映射以及通过 ID 获取名称")
     void testIdMapName() throws InterruptedException {
         String id1 = regionController.create(Map.of(
             "id", UUID.randomUUID().toString(),

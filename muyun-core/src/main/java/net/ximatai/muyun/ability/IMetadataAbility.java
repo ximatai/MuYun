@@ -18,6 +18,10 @@ public interface IMetadataAbility extends IDatabaseAbility {
         return new TableBase(getSchemaName(), getMainTable());
     }
 
+    default String getSchemaDotTable() {
+        return getSchemaName() + "." + getMainTable();
+    }
+
     default String getPK() {
         return "id";
     }

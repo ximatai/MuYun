@@ -29,4 +29,8 @@ public class TableBase {
     public String getName() {
         return name;
     }
+
+    public String getSchemaDotTable() {
+        return schema + "." + name;
+    }
 }

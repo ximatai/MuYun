@@ -8,6 +8,7 @@ import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.base.BaseScaffold;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TestBaseScaffold {
 
     @Test
+    @DisplayName("验证创建和更新记录时时间列的行为")
     void testCreateAndUpdateHasTimeColumn() {
         String id = given()
             .contentType("application/json")

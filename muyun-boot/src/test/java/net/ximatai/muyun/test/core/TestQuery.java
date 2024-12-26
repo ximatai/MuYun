@@ -17,6 +17,7 @@ import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -55,6 +56,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试等于条件")
     void testEqual() {
         Map<String, String> request = Map.of("id", "1");
 
@@ -76,6 +78,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试等于空字符串条件")
     void testEqualWithBlankString() {
         Map<String, String> request = Map.of("id", "");
 
@@ -95,6 +98,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试不等于条件")
     void testNotEqual() {
         Map<String, String> request = Map.of("no_id", "1");
 
@@ -114,6 +118,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试IN条件")
     void testIn() {
         Map<String, ?> request = Map.of("in_id", List.of("1", "2", "3"));
 
@@ -133,6 +138,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试NOT IN条件")
     void testNotIn() {
         Map<String, ?> request = Map.of("not_in_id", List.of("1", "2", "3"));
 
@@ -152,6 +158,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试LIKE条件")
     void testLike() {
         Map<String, ?> request = Map.of("name", "test");
 
@@ -171,6 +178,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试查询范围从2024-01-05 12:00:00到正无穷的数据")
     void testRange1() {
         Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-05 12:00:00", null});
 
@@ -190,6 +198,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试查询范围从负无穷到2024-01-05 12:00:00的数据")
     void testRange2() {
         Map<String, ?> request = Map.of("t_create", new String[]{null, "2024-01-05 12:00:00"});
 
@@ -209,6 +218,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试查询范围从2024-01-05 00:00:00到2024-01-05 24:00:00的数据")
     void testRange3() {
         Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-05 00:00:00", "2024-01-05 24:00:00"});
 
@@ -228,6 +238,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试查询范围从2024-01-01 00:00:00到2024-01-10 24:00:00的数据")
     void testRange4() {
         Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-01 00:00:00", "2024-01-10 24:00:00"});
 
@@ -247,6 +258,7 @@ class TestQuery {
     }
 
     @Test
+    @DisplayName("测试查询范围从2024-01-05 12:00:00到2024-01-05 12:00:00的数据")
     void testRange5() {
         Map<String, ?> request = Map.of("t_create", new String[]{"2024-01-05 12:00:00", "2024-01-05 12:00:00"});
 

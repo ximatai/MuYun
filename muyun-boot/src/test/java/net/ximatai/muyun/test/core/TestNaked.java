@@ -14,6 +14,7 @@ import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -23,6 +24,7 @@ import static io.restassured.RestAssured.given;
 public class TestNaked {
 
     @Test
+    @DisplayName("测试以创建时间降序查询纯实现接口的controller的表")
     void test() {
         given()
             .queryParam("sort", "t_create,desc")

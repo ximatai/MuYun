@@ -74,6 +74,14 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     @Override
+    public void beforeCreate(Map body) {
+        super.beforeCreate(body);
+        if (body.get("b_user") instanceof Boolean bUser && bUser) {
+            throw new MyException("新增用户 b_user 不允许为真");
+        }
+    }
+
+    @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper.setPrimaryKey(Column.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)

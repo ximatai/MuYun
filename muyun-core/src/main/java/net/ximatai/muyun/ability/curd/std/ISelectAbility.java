@@ -4,14 +4,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
-import net.ximatai.muyun.ability.IAuthAbility;
-import net.ximatai.muyun.ability.IDatabaseAbilityStd;
-import net.ximatai.muyun.ability.IDesensitizationAbility;
-import net.ximatai.muyun.ability.IMetadataAbility;
-import net.ximatai.muyun.ability.IReferenceAbility;
-import net.ximatai.muyun.ability.ISecurityAbility;
-import net.ximatai.muyun.ability.ISoftDeleteAbility;
-import net.ximatai.muyun.ability.ISortAbility;
+import net.ximatai.muyun.ability.*;
 import net.ximatai.muyun.core.exception.QueryException;
 import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.tool.DateTool;
@@ -65,10 +58,6 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     }
 
     default String getSelectSql() {
-        if (this instanceof ICustomSelectSqlAbility ability) {
-            return ability.getCustomSql();
-        }
-
         StringBuilder starSql = new StringBuilder("%s.*".formatted(getMainTable()));
         StringBuilder joinSql = new StringBuilder();
         String softDeleteSql = "";
@@ -95,16 +84,21 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             referenceTableTempName, getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 } else {
-                    joinSql.append("\n left join %s.%s as %s on %s.%s = %s.%s %s "
-                        .formatted(referenceTable.getSchema(), referenceTable.getName(),
-                            referenceTableTempName, getMainTable(), info.getRelationColumn(),
+                    joinSql.append("\n left join %s as %s on %s.%s = %s.%s %s "
+                        .formatted(referenceTable.getSchemaDotTable(), referenceTableTempName,
+                            getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 }
             });
 
         }
 
-        return "select %s from %s.%s %s where 1=1 %s ".formatted(starSql, getSchemaName(), getMainTable(), joinSql, softDeleteSql);
+        String mainTable = getSchemaDotTable();
+        if (this instanceof ICustomSelectSqlAbility ability) {
+            mainTable = "(%s) as %s ".formatted(ability.getCustomSql(), getMainTable());
+        }
+
+        return "select %s from %s %s where 1=1 %s ".formatted(starSql, mainTable, joinSql, softDeleteSql);
     }
 
     default void processEachRow(Map row) {

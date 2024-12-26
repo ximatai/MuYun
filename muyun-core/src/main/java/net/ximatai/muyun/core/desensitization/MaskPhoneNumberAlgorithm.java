@@ -1,6 +1,8 @@
 package net.ximatai.muyun.core.desensitization;
 
-public class MaskPhoneNumberAlgorithm implements IDesensitizationAlgorithm {
+public enum MaskPhoneNumberAlgorithm implements IDesensitizationAlgorithm {
+    INSTANCE;
+
     @Override
     public String desensitize(String source) {
         if (source == null || source.length() != 11) {

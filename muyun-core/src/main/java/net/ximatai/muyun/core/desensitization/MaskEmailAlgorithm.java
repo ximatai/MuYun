@@ -1,6 +1,8 @@
 package net.ximatai.muyun.core.desensitization;
 
-public class MaskEmailAlgorithm implements IDesensitizationAlgorithm {
+public enum MaskEmailAlgorithm implements IDesensitizationAlgorithm {
+    INSTANCE;
+
     @Override
     public String desensitize(String source) {
         if (source == null || !source.contains("@")) {

@@ -14,6 +14,7 @@ import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -73,12 +74,14 @@ public class TestUserAndMenu {
     }
 
     @Test
+    @DisplayName("测试通过用户ID获取用户名")
     void testIdToName() {
         String name = userInfoController.idToName(userID);
         assertEquals("user1", name);
     }
 
     @Test
+    @DisplayName("测试菜单架构初始化")
     void testSchemaInit() {
         List<TreeNode> menus = given()
             .header("userID", config.superUserId())
@@ -94,6 +97,7 @@ public class TestUserAndMenu {
     }
 
     @Test
+    @DisplayName("测试用户菜单为空")
     void testMenuEmpty() {
         String userID = userInfoController.create(Map.of(
             "v_name", "test"
@@ -142,6 +146,7 @@ public class TestUserAndMenu {
     }
 
     @Test
+    @DisplayName("测试未认证用户访问")
     void testWhiteUserAccess() {
         given()
             .get("/api%s/runtime/menu".formatted(base))
@@ -159,6 +164,7 @@ public class TestUserAndMenu {
     }
 
     @Test
+    @DisplayName("测试获取用户对应的菜单架构")
     void testSchemaForUser() {
         String hitSchema = menuSchemaController.schemaForUser(userID, null);
         assertEquals(schemaID, hitSchema);
