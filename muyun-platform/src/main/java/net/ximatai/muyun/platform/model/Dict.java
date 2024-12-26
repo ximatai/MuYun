@@ -9,9 +9,16 @@ public class Dict {
     private String name;
     private int order;
 
+    private String remark;
+
     public Dict(String value, String name) {
         this.value = value;
         this.name = name;
+    }
+    public Dict(String value, String name, String remark) {
+        this.value = value;
+        this.name = name;
+        this.remark = remark;
     }
 
     public Dict setOrder(int order) {
@@ -30,6 +37,7 @@ public class Dict {
         map.put("v_value", value);
         map.put("v_name", name);
         map.put("n_order", order);
+        map.put("v_remark", remark);
         return map;
     }
 

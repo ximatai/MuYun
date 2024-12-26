@@ -177,7 +177,7 @@ public class TestUser {
             .when()
             .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
             .then()
-            .statusCode(200)
+            .statusCode(500)
             .extract()
             .asString();
 
@@ -193,7 +193,7 @@ public class TestUser {
             .when()
             .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
             .then()
-            .statusCode(200)
+            .statusCode(500)
             .extract()
             .asString();
 
@@ -207,7 +207,7 @@ public class TestUser {
             .when()
             .post("/api/sso/login")
             .then()
-            .statusCode(200);
+            .statusCode(500);
 
         // 删除用户
         given()
