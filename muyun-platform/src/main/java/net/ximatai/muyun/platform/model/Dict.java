@@ -15,6 +15,7 @@ public class Dict {
         this.value = value;
         this.name = name;
     }
+
     public Dict(String value, String name, String remark) {
         this.value = value;
         this.name = name;
