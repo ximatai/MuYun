@@ -45,14 +45,14 @@ class TestQuery {
         tableName = testController.getMainTable();
         databaseOperations.execute("TRUNCATE TABLE %s".formatted(tableName));
 
-        testController.create(Map.of("id", "1", "name", "test1", "t_create", "2024-01-01 12:00:00"));
-        testController.create(Map.of("id", "2", "name", "test2", "t_create", "2024-01-02 12:00:00"));
-        testController.create(Map.of("id", "3", "name", "test3", "t_create", "2024-01-03 12:00:00"));
-        testController.create(Map.of("id", "4", "name", "test4", "t_create", "2024-01-04 12:00:00"));
-        testController.create(Map.of("id", "5", "name", "test5", "t_create", "2024-01-05 12:00:00"));
-        testController.create(Map.of("id", "6", "name", "test6", "t_create", "2024-01-06 12:00:00"));
-        testController.create(Map.of("id", "7", "name", "test7", "t_create", "2024-01-07 12:00:00"));
-        testController.create(Map.of("id", "8", "name", "test8", "t_create", "2024-01-08 12:00:00"));
+        testController.create(Map.of("id", "1", "name", "test1", "av_name", List.of("a"), "t_create", "2024-01-01 12:00:00"));
+        testController.create(Map.of("id", "2", "name", "test2", "av_name", List.of("a", "b"), "t_create", "2024-01-02 12:00:00"));
+        testController.create(Map.of("id", "3", "name", "test3", "av_name", List.of("a", "b", "c"), "t_create", "2024-01-03 12:00:00"));
+        testController.create(Map.of("id", "4", "name", "test4", "av_name", List.of("a", "b", "c", "d"), "t_create", "2024-01-04 12:00:00"));
+        testController.create(Map.of("id", "5", "name", "test5", "av_name", List.of("a", "b", "c"), "t_create", "2024-01-05 12:00:00"));
+        testController.create(Map.of("id", "6", "name", "test6", "av_name", List.of("b", "c"), "t_create", "2024-01-06 12:00:00"));
+        testController.create(Map.of("id", "7", "name", "test7", "av_name", List.of("a", "c"), "t_create", "2024-01-07 12:00:00"));
+        testController.create(Map.of("id", "8", "name", "test8", "av_name", List.of("c"), "t_create", "2024-01-08 12:00:00"));
     }
 
     @Test
@@ -277,6 +277,86 @@ class TestQuery {
         assertEquals(1, response.getTotal());
     }
 
+    @Test
+    @DisplayName("比较两个数组完全相同")
+    void testPgArrayEqual() {
+        Map<String, ?> request = Map.of("av_name1", new String[]{"a", "b"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("/api%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(1, response.getTotal());
+    }
+
+    @Test
+    @DisplayName("比较两个数组有交集")
+    void testPgArrayOverlap() {
+        Map<String, ?> request = Map.of("av_name2", new String[]{"a", "b"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("/api%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(7, response.getTotal());
+    }
+
+    @Test
+    @DisplayName("获取在能被传入数组所包含的数据")
+    void testPgArrayContain() {
+        Map<String, ?> request = Map.of("av_name3", new String[]{"a", "b"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("/api%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(2, response.getTotal());
+    }
+
+    @Test
+    @DisplayName("获取包含了传入数组的数据")
+    void testPgArrayBeContain() {
+        Map<String, ?> request = Map.of("av_name4", new String[]{"a", "b"});
+
+        PageResult<Map> response = given()
+            .contentType("application/json")
+            .queryParam("noPage", true)
+            .body(request)
+            .when()
+            .post("/api%s/view".formatted(path))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+            });
+
+        assertEquals(4, response.getTotal());
+    }
+
 }
 
 @Path("/test_query")
@@ -297,6 +377,7 @@ class TestQueryController extends Scaffold implements ICURDAbility, ITableCreate
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
+            .addColumn(Column.of("av_name").setType(ColumnType.VARCHAR_ARRAY))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
     }
@@ -308,6 +389,13 @@ class TestQueryController extends Scaffold implements ICURDAbility, ITableCreate
             QueryItem.of("id").setAlias("no_id").setSymbolType(QueryItem.SymbolType.NOT_EQUAL),
             QueryItem.of("id").setAlias("in_id").setSymbolType(QueryItem.SymbolType.IN),
             QueryItem.of("id").setAlias("not_in_id").setSymbolType(QueryItem.SymbolType.NOT_IN),
+            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("av_name").setSymbolType(QueryItem.SymbolType.PG_ARRAY_EQUAL).setAlias("av_name1"),
+            QueryItem.of("av_name").setSymbolType(QueryItem.SymbolType.PG_ARRAY_OVERLAP).setAlias("av_name2"),
+            QueryItem.of("av_name").setSymbolType(QueryItem.SymbolType.PG_ARRAY_CONTAIN).setAlias("av_name3"),
+            QueryItem.of("av_name").setSymbolType(QueryItem.SymbolType.PG_ARRAY_BE_CONTAIN).setAlias("av_name4"),
+            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("t_create").setTime(true).setSymbolType(QueryItem.SymbolType.RANGE)
         );

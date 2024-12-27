@@ -252,6 +252,31 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                         condition.append(" %s= ? ".formatted(notMark));
                         params.add(v);
                         break;
+                    case PG_ARRAY_EQUAL, PG_ARRAY_OVERLAP, PG_ARRAY_CONTAIN, PG_ARRAY_BE_CONTAIN:
+                        if (!(v instanceof List list)) {
+                            throw new QueryException("数据比较时参数也应为数组");
+                        }
+
+                        String s = "=";
+                        if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_OVERLAP)) {
+                            s = "&&";
+                        }
+                        if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_CONTAIN)) {
+                            s = "<@";
+                        }
+                        if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_BE_CONTAIN)) {
+                            s = "@>";
+                        }
+
+                        String type = "varchar";
+
+                        if (!list.isEmpty() && list.get(0) instanceof Integer) {
+                            type = "int";
+                        }
+
+                        condition.append(" %s ? ".formatted(s));
+                        params.add(getDB().createArray(list, type));
+                        break;
                     case RANGE:
                         if (!(v instanceof List list) || list.size() != 2) {
                             throw new QueryException("区间查询%s的内容必须是长度为2的数组".formatted(k));
