@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.*;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.model.IRuntimeUser;
@@ -116,7 +116,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         List<String> idList = getDB().insertList(getSchemaName(), getMainTable(), dataList);
 
         if (idList.size() != list.size()) {
-            throw new MyException("数据插入不成功");
+            throw new MuYunException("数据插入不成功");
         }
 
         idList.forEach(id -> {

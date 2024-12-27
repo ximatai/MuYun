@@ -8,7 +8,7 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
@@ -101,7 +101,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
         if (query.getTotal() > 0) {
             String dictID = (String) query.getList().getFirst().get("id");
             if (!dictID.equals(body.get("id"))) {
-                throw new MyException("该类目下存在相同的字典值");
+                throw new MuYunException("该类目下存在相同的字典值");
             }
         }
     }

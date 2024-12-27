@@ -13,7 +13,7 @@ import net.ximatai.muyun.ability.IDatabaseAbilityStd;
 import net.ximatai.muyun.authorization.AuthorizationService;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.ModuleAction;
@@ -131,7 +131,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
 
         if ("custom".equals(dataAuth)) {
             if (StringUtil.isBlank(customCondition)) {
-                throw new MyException("自定义数据权限必须提供自定义条件");
+                throw new MuYunException("自定义数据权限必须提供自定义条件");
             }
         }
 
@@ -139,7 +139,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
         String actionID = (String) roleActionMap.get("id_at_app_module_action");
 
         if (!testDataAuth(actionID, dataAuth, customCondition)) {
-            throw new MyException("数据权限不允许配置为：%s".formatted(dataAuth));
+            throw new MuYunException("数据权限不允许配置为：%s".formatted(dataAuth));
         }
 
         HashMap map = new HashMap(body);

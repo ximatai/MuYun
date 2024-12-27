@@ -13,7 +13,7 @@ import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
@@ -77,7 +77,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     public void beforeCreate(Map body) {
         super.beforeCreate(body);
         if (body.get("b_user") instanceof Boolean bUser && bUser) {
-            throw new MyException("新增用户 b_user 不允许为真");
+            throw new MuYunException("新增用户 b_user 不允许为真");
         }
     }
 
@@ -152,12 +152,12 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         Objects.requireNonNull(password2, "必须提供二次输入密码");
 
         if (!password.equals(password2)) {
-            throw new MyException("两次输入的密码不一致");
+            throw new MuYunException("两次输入的密码不一致");
         }
 
         Map<String, ?> userInfo = this.view(id);
         if ((boolean) userInfo.get("b_user")) {
-            throw new MyException("已经设置用户信息，无法再次设置");
+            throw new MuYunException("已经设置用户信息，无法再次设置");
         }
         this.update(id, Map.of("id", id, "b_user", true));
 
@@ -176,7 +176,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Operation(summary = "设置账户密码")
     public int setPassword(@PathParam("id") String id, Map<String, Object> params) {
         if (!config.isSuperUser(getUser().getId())) {
-            throw new MyException("非管理员用户，禁止访问此功能");
+            throw new MuYunException("非管理员用户，禁止访问此功能");
         }
 
         String password = (String) params.get("v_password");
@@ -186,14 +186,14 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         Objects.requireNonNull(password2, "必须提供二次输入密码");
 
         if (!password.equals(password2)) {
-            throw new MyException("两次输入的密码不一致");
+            throw new MuYunException("两次输入的密码不一致");
         }
 
         Map<String, ?> userInfo = this.view(id);
         if ((boolean) userInfo.get("b_user")) {
             return userController.update(id, Map.of("v_password", password));
         } else {
-            throw new MyException("尚未创建对应的用户");
+            throw new MuYunException("尚未创建对应的用户");
         }
     }
 
@@ -209,11 +209,11 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
         Map<String, ?> user = userController.view(id);
 
         if (!user.get("v_password").equals(oldPassword)) {
-            throw new MyException("原密码不正确");
+            throw new MuYunException("原密码不正确");
         }
 
         if (!password.equals(password2)) {
-            throw new MyException("两次输入的密码不一致");
+            throw new MuYunException("两次输入的密码不一致");
         }
 
         return userController.update(id, Map.of("v_password", password));

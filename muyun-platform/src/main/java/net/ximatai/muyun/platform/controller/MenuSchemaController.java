@@ -9,7 +9,7 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
@@ -114,7 +114,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         if (row != null) {
             return row.get("id").toString();
         } else {
-            throw new MyException("未找到该用户匹配的菜单方案");
+            throw new MuYunException("未找到该用户匹配的菜单方案");
         }
     }
 
@@ -123,7 +123,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         List terminalType = (List) body.get("dicts_terminal_type");
         Objects.requireNonNull(terminalType, "终端类型必填");
         if (terminalType.isEmpty()) {
-            throw new MyException("终端类型必填");
+            throw new MuYunException("终端类型必填");
         }
     }
 
@@ -132,7 +132,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
         super.beforeDelete(id);
         List<TreeNode> tree = this.tree(id);
         if (!tree.isEmpty()) {
-            throw new MyException("该菜单方案对应菜单数据不为空，不允许删除");
+            throw new MuYunException("该菜单方案对应菜单数据不为空，不允许删除");
         }
     }
 }

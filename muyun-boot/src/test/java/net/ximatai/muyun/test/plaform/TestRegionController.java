@@ -4,7 +4,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.platform.controller.RegionController;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ public class TestRegionController {
 
         assertEquals("test_region", id);
 
-        assertThrows(MyException.class, () -> {
+        assertThrows(MuYunException.class, () -> {
             regionController.create(Map.of(
                 "id", "test_region",
                 "v_name", "test"
@@ -67,7 +67,7 @@ public class TestRegionController {
             "v_name", "test"
         ));
 
-        assertThrows(MyException.class, () -> {
+        assertThrows(MuYunException.class, () -> {
             regionController.update(id2, Map.of(
                 "id", "test_new",
                 "v_name", "test"
