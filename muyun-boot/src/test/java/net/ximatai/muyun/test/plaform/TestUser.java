@@ -34,7 +34,7 @@ public class TestUser {
     RoleController roleController;
 
     @Test
-    @DisplayName("测试密码复杂度1")
+    @DisplayName("测试密码复杂度")
     void testPasswordComplexity1() {
         //新增用户
         String id = given()
@@ -66,6 +66,7 @@ public class TestUser {
             .statusCode(200)
             .extract()
             .asString();
+        //情况1：密码长度少于8位
         // 修改密码
         given()
             .header("userID", config.superUserId())
@@ -95,41 +96,7 @@ public class TestUser {
             .statusCode(500)
             .extract()
             .asString();
-    }
-
-    @Test
-    @DisplayName("测试密码复杂度2")
-    void testPasswordComplexity2() {
-        //新增用户
-        String id = given()
-            .header("userID", config.superUserId())
-            .contentType("application/json")
-            .body(Map.of(
-                "v_name", "测试",
-                "dict_user_gender", "0"
-            ))
-            .when()
-            .post("/api%s/userinfo/create".formatted(base))
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
-        // 设置用户
-        given()
-            .header("userID", config.superUserId())
-            .contentType("application/json")
-            .body(Map.of(
-                "v_username", "test",
-                "v_password", "pw",
-                "v_password2", "pw",
-                "roles", List.of("1", "2")
-            ))
-            .when()
-            .post("/api%s/userinfo/setUser/%s".formatted(base, id))
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+        //情况2：密码不包含英文字母
         // 修改密码
         given()
             .header("userID", config.superUserId())
@@ -159,41 +126,7 @@ public class TestUser {
             .statusCode(500)
             .extract()
             .asString();
-    }
-
-    @Test
-    @DisplayName("测试密码复杂度3")
-    void testPasswordComplexity3() {
-        //新增用户
-        String id = given()
-            .header("userID", config.superUserId())
-            .contentType("application/json")
-            .body(Map.of(
-                "v_name", "测试",
-                "dict_user_gender", "0"
-            ))
-            .when()
-            .post("/api%s/userinfo/create".formatted(base))
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
-        // 设置用户
-        given()
-            .header("userID", config.superUserId())
-            .contentType("application/json")
-            .body(Map.of(
-                "v_username", "test",
-                "v_password", "pw",
-                "v_password2", "pw",
-                "roles", List.of("1", "2")
-            ))
-            .when()
-            .post("/api%s/userinfo/setUser/%s".formatted(base, id))
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+        //情况3：密码少于8位 且 不包含英文字母
         // 修改密码
         given()
             .header("userID", config.superUserId())
@@ -221,6 +154,36 @@ public class TestUser {
             .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
             .then()
             .statusCode(500)
+            .extract()
+            .asString();
+        //情况4：修改密码成功
+        // 修改密码
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_password", "12345678z",
+                "v_password2", "12345678z"
+            ))
+            .when()
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+        // 修改密码（自助）
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_old_password", "12345678z",
+                "v_password", "z12345678",
+                "v_password2", "z12345678"
+            ))
+            .when()
+            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .then()
+            .statusCode(200)
             .extract()
             .asString();
     }
