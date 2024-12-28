@@ -16,7 +16,7 @@ import jakarta.ws.rs.core.Response;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
@@ -69,15 +69,15 @@ public class SsoController implements IRuntimeAbility {
         apiRequest.setActionName("登录");
 
         if (StringUtil.isBlank(username)) {
-            throw new MyException("请输入用户名");
+            throw new MuYunException("请输入用户名");
         }
 
         if (StringUtil.isBlank(password)) {
-            throw new MyException("请输入密码");
+            throw new MuYunException("请输入密码");
         }
 
         if (StringUtil.isBlank(code)) {
-            throw new MyException("请输入验证码");
+            throw new MuYunException("请输入验证码");
         }
 
         apiRequest.setUsername(username);
@@ -92,7 +92,7 @@ public class SsoController implements IRuntimeAbility {
         if (pageResult.getSize() == 0) {
             apiRequest.setError(new RuntimeException("该用户不存在：%s".formatted(username)));
             logger.error("该用户不存在：{}", username);
-            throw new MyException("用户名或密码错误");
+            throw new MuYunException("用户名或密码错误");
         }
 
         Map userInDB = (Map) pageResult.getList().getFirst();
@@ -116,12 +116,12 @@ public class SsoController implements IRuntimeAbility {
             } else {
                 logger.error("用户已停用，用户名：{}", username);
                 apiRequest.setError(new RuntimeException("用户已停用，用户名：" + username));
-                throw new MyException("用户名或密码错误");
+                throw new MuYunException("用户名或密码错误");
             }
         } else {
             logger.error("用户密码验证失败，用户名：{}", username);
             apiRequest.setError(new RuntimeException("用户密码验证失败，用户名：" + username));
-            throw new MyException("用户名或密码错误");
+            throw new MuYunException("用户名或密码错误");
         }
     }
 
@@ -138,19 +138,19 @@ public class SsoController implements IRuntimeAbility {
 
         Cookie cookie = routingContext.request().getCookie(KAPTCHA_COOKIE_KEY);
         if (cookie == null) {
-            return new MyException("验证码已过期");
+            return new MuYunException("验证码已过期");
         }
 
         String hashCodeInCookie = cookie.getValue();
 
         if (hashCodeInCookie.equals(hashText(code))) {
             if (codeCache.getIfPresent(code) != null) {
-                return new MyException("验证码已过期");
+                return new MuYunException("验证码已过期");
             }
 
             codeCache.put(code, code);
         } else {
-            return new MyException("验证码不正确");
+            return new MuYunException("验证码不正确");
         }
 
         return null;

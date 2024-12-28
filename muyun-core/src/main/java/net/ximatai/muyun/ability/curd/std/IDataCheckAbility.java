@@ -2,7 +2,7 @@ package net.ximatai.muyun.ability.curd.std;
 
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
 import net.ximatai.muyun.model.CheckConfig;
@@ -63,7 +63,7 @@ public interface IDataCheckAbility extends IMetadataAbility {
                 Object row = getDatabaseOperations().row("select 1 from %s.%s where %s = ? %s"
                     .formatted(getSchemaName(), getMainTable(), column, deleteWhere), body.get(column));
                 if (row != null) {
-                    throw new MyException(tip);
+                    throw new MuYunException(tip);
                 }
             }
         });
@@ -88,7 +88,7 @@ public interface IDataCheckAbility extends IMetadataAbility {
                 Object row = getDatabaseOperations().row("select 1 from %s.%s where %s = ? %s and id != ?"
                     .formatted(getSchemaName(), getMainTable(), column, deleteWhere), body.get(column), id);
                 if (row != null) {
-                    throw new MyException(tip);
+                    throw new MuYunException(tip);
                 }
             }
         });
@@ -100,7 +100,7 @@ public interface IDataCheckAbility extends IMetadataAbility {
             || (field instanceof Map<?, ?> map && map.isEmpty())
             || (field instanceof List<?> list && list.isEmpty())
             || (field instanceof Object[] arr && arr.length == 0)) {
-            throw new MyException(tip);
+            throw new MuYunException(tip);
         }
     }
 

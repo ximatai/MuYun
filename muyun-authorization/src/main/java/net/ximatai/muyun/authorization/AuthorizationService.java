@@ -6,7 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.core.exception.PermsException;
 import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.model.ApiRequest;
@@ -219,7 +219,7 @@ public class AuthorizationService implements IAuthorizationService {
             if (hit != null) {
                 return false;
             } else {
-                throw new MyException("请求的数据不存在");
+                throw new MuYunException("请求的数据不存在");
             }
         }
     }
@@ -352,7 +352,7 @@ public class AuthorizationService implements IAuthorizationService {
                     .stream().map("'%s'"::formatted)
                     .collect(Collectors.joining(",")));
             case "self" -> "%s='%s'".formatted(userColumn, userID);
-            default -> throw new MyException("数据权限配置有误：" + dictDataAuth);
+            default -> throw new MuYunException("数据权限配置有误：" + dictDataAuth);
         };
     }
 

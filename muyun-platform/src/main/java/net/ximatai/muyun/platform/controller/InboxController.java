@@ -1,7 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
 import jakarta.ws.rs.Path;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.Map;
@@ -36,6 +36,6 @@ public class InboxController extends MessageController {
 
     @Override
     public Integer update(String id, Map body) {
-        throw new MyException("收件箱内容不可修改");
+        throw new MuYunException("收件箱内容不可修改");
     }
 }

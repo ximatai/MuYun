@@ -1,6 +1,6 @@
 package net.ximatai.muyun.model.code;
 
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class CodeGenerateConfig {
 
         // 验证 SerialCodePart 必须是列表中的最后一部分
         if (serialIndex > -1 && serialIndex != codePartList.size() - 1) {
-            throw new MyException("流水号必须放置与单号生成器的最后一部分");
+            throw new MuYunException("流水号必须放置与单号生成器的最后一部分");
         }
 
         this.codePartList = codePartList;
