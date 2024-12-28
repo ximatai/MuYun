@@ -25,7 +25,7 @@ public interface ITableCreateAbility extends IMetadataAbility {
     default void create(IDatabaseOperations db) {
         String mainTable = getMainTable();
         if (!mainTable.toLowerCase().equals(mainTable)) {
-            throw new MuYunException("%s表明不合法，不允许使用大写字母".formatted(mainTable));
+        throw new MuYunException("%s表名不合法，不允许使用大写字母".formatted(mainTable));
         }
 
         TableWrapper wrapper = TableWrapper.withName(mainTable)
