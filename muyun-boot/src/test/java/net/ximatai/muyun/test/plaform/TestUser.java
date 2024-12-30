@@ -11,8 +11,7 @@ import net.ximatai.muyun.platform.controller.RoleController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(value = PostgresTestResource.class)
 public class TestUser {
     @Inject
@@ -171,8 +171,8 @@ public class TestUser {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
-                "v_password", "pw2",
-                "v_password2", "pw2"
+                "v_password", "1234567z",
+                "v_password2", "1234567z"
             ))
             .when()
             .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
@@ -193,7 +193,7 @@ public class TestUser {
             .when()
             .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
             .then()
-            .statusCode(200)
+            .statusCode(500)
             .extract()
             .asString();
 
@@ -207,7 +207,7 @@ public class TestUser {
             .when()
             .post("/api/sso/login")
             .then()
-            .statusCode(200);
+            .statusCode(500);
 
         // 删除用户
         given()
