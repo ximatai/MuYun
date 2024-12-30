@@ -14,6 +14,7 @@ import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MuYunException;
+import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
