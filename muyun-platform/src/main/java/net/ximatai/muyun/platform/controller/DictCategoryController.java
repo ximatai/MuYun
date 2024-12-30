@@ -13,7 +13,7 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
@@ -102,7 +102,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         DictTreeNode node = findNode(tree(category), source);
 
         if (node == null) {
-            throw new MyException("字典值 %s 在 %s 类型中不存在".formatted(source, category));
+            throw new MuYunException("字典值 %s 在 %s 类型中不存在".formatted(source, category));
         }
 
         return node.getData().get("v_name").toString();
@@ -147,15 +147,15 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
         String name = (String) Objects.requireNonNull(body.get("v_name"), "数据字典类目必须提供名称");
 
         if (!id.equals(id.toLowerCase())) {
-            throw new MyException("数据字典类目编码不能包含大写字母");
+            throw new MuYunException("数据字典类目编码不能包含大写字母");
         }
 
         if (!isUpdate) {
             if (this.query(Map.of("id", id)).getTotal() > 0) {
-                throw new MyException("存在重复的数据字典类目编码");
+                throw new MuYunException("存在重复的数据字典类目编码");
             }
             if (this.query(Map.of("v_name", name)).getTotal() > 0) {
-                throw new MyException("存在重复的数据字典类目名称");
+                throw new MuYunException("存在重复的数据字典类目名称");
             }
         }
     }

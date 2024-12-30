@@ -212,7 +212,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
         return null;
     }
 
-    public Array toArray(List list, String type) {
+    public Array createArray(List list, String type) {
         try {
             return getJdbi().withHandle(handle -> {
                 Connection connection = handle.getConnection();

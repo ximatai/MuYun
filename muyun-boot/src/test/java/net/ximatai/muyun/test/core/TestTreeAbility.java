@@ -9,7 +9,7 @@ import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.IDatabaseOperations;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
@@ -65,7 +65,7 @@ class TestTreeAbility {
         String y = testController.create(Map.of("v_name", "y", "pid", x));
         String z = testController.create(Map.of("v_name", "z", "pid", y));
 
-        MyException exception = assertThrows(MyException.class, () -> {
+        MuYunException exception = assertThrows(MuYunException.class, () -> {
             testController.update(x, Map.of("pid", z));
         });
 

@@ -74,6 +74,7 @@ subprojects {
 
             maven {
                 url = uri("http://192.168.6.205:8081/repository/maven-snapshots/")
+//                url = uri("http://127.0.0.1:8081/repository/maven-snapshots/")
                 isAllowInsecureProtocol = true
                 credentials {
                     username = findProperty("office.maven.username").toString()

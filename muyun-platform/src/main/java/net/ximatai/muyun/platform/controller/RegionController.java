@@ -8,7 +8,7 @@ import net.ximatai.muyun.ability.IDataBroadcastAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
-import net.ximatai.muyun.core.exception.MyException;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
@@ -67,7 +67,7 @@ public class RegionController extends ScaffoldForPlatform implements ITreeAbilit
         if (!id.equals(newID)) { // 说明id被更改了
             Map<String, ?> view = this.view(newID);
             if (view != null) {
-                throw new MyException("行政区划代码[%s]重复".formatted(newID));
+                throw new MuYunException("行政区划代码[%s]重复".formatted(newID));
             }
 
             getDB().update("update %s set id = ? where id = ?".formatted(getSchemaDotTable()), newID, id);
@@ -83,7 +83,7 @@ public class RegionController extends ScaffoldForPlatform implements ITreeAbilit
         Map row = this.view(id);
 
         if (!isUpdate && row != null) { // 找到重复行
-            throw new MyException("行政区划代码[%s]重复".formatted(id));
+            throw new MuYunException("行政区划代码[%s]重复".formatted(id));
         }
     }
 
