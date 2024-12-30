@@ -65,9 +65,8 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
-    @DisplayName("测试密码复杂度1")
+    @DisplayName("验证密码长度少于8位 但 包含英文字母")
     void testPasswordComplexity1() {
-
         //情况1：密码长度少于8位
         // 修改密码
         String s1 = given()
@@ -103,7 +102,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
-    @DisplayName("测试密码复杂度2")
+    @DisplayName("验证密码不包含英文字母 但 长度达到8位")
     void testPasswordComplexity2() {
         //情况2：密码不包含英文字母
         // 修改密码
@@ -140,7 +139,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
-    @DisplayName("测试密码复杂度3")
+    @DisplayName("验证密码长度少于8位 且 不包含英文字母")
     void testPasswordComplexity3() {
         //情况3：密码少于8位 且 不包含英文字母
         // 修改密码
@@ -177,7 +176,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
-    @DisplayName("测试密码复杂度4")
+    @DisplayName("验证密码长度达到8位 且 密码包含英文字母")
     void testPasswordComplexity4() {
         //情况4：修改密码成功
         // 修改密码
