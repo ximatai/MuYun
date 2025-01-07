@@ -22,7 +22,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -66,7 +65,9 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
 
     @Override
     public List<TreeNode> tree(String rootID, Boolean showMe, String labelColumn, Integer maxLevel) {
-        Objects.requireNonNull(rootID, "必须提供根节点 rootID，正常为机构id");
+        if (rootID == null || rootID.isEmpty()) {
+            rootID = getUser().getOrganizationId();
+        }
         if (showMe == null) {
             showMe = false;
         }
