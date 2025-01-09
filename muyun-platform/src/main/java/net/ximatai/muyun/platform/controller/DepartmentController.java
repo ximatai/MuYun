@@ -65,8 +65,8 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
 
     @Override
     public List<TreeNode> tree(String rootID, Boolean showMe, String labelColumn, Integer maxLevel) {
-        if (rootID == null || rootID.isEmpty()) {
-            rootID = getUser().getOrganizationId();
+        if (StringUtil.isBlank(rootID)) {
+            rootID = getUser().getDepartmentId() != null ? getUser().getDepartmentId() : getUser().getOrganizationId();
         }
         if (showMe == null) {
             showMe = false;
