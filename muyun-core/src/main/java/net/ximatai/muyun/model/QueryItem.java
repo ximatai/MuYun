@@ -23,7 +23,7 @@ public class QueryItem {
     private boolean isHide = false; //ui
     private boolean isNotNull = false;
 
-    private Object defaultValue; //ui
+    private Object defaultValue;
 
     private QueryItem() {
     }

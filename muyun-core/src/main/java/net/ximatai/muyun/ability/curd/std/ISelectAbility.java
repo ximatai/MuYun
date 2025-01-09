@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -173,6 +174,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             List<QueryItem> queryItemList,
                             String authCondition
     ) {
+
         List<Object> params = new ArrayList<>();
 
         List<SortColumn> orderColumns = new ArrayList<>();
@@ -202,7 +204,17 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         // 查询条件处理
         if (queryBody != null && queryItemList != null && !queryItemList.isEmpty()) {
-            queryBody.forEach((k, v) -> {
+            HashMap queryMap = new HashMap<>(queryBody);
+
+            queryItemList.stream()
+                .filter(queryItem -> queryItem.getDefaultValue() != null)
+                .forEach(queryItem -> {
+                    if (!queryMap.containsKey(queryItem.getAlias())) { // 向 queryMap 中塞入查询字段默认值
+                        queryMap.put(queryItem.getAlias(), queryItem.getDefaultValue());
+                    }
+                });
+
+            queryMap.forEach((k, v) -> {
                 StringBuilder condition = new StringBuilder();
                 QueryItem qi = queryItemList.stream().filter(item -> item.getAlias().equals(k)).findFirst().orElse(null);
 
