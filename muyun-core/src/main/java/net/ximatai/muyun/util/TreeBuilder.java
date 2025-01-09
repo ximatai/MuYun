@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,21 +31,32 @@ public class TreeBuilder {
             item.putIfAbsent(parentKeyColumn, ROOT_PID);
         });
 
-        if (rootID == null) {
-            rootID = ROOT_PID;
-        }
-
         // 按父键列（`parentKeyColumn`）分组
         Map<String, List<Map<String, Object>>> groupedByParentKey = list.stream()
             .collect(Collectors.groupingBy(item -> (String) item.get(parentKeyColumn)));
 
+        if (rootID == null && groupedByParentKey.containsKey(ROOT_PID)) {
+            rootID = ROOT_PID;
+        }
+
         Set<TreeNode> nodes = new HashSet<>();
+
+        if (rootID == null) { // 需要自动推断 rootID
+            Optional<String> rootKey = groupedByParentKey.keySet().stream().filter(key -> {
+                return list.stream().noneMatch(item -> key.equals(item.get(pkColumn))); // 说明 group 的key，也就是 pid 本身在 list 中不存在对应的行
+            }).findFirst();
+
+            if (rootKey.isPresent()) {
+                rootID = rootKey.get();
+                showMe = false; // 这就是 根节点行不存在的情况，所以不能 showMe
+            }
+        }
 
         // 构建树形结构的递归方法
         List<TreeNode> treeNodeList = buildChildren(groupedByParentKey, pkColumn, parentKeyColumn, rootID, labelColumn, 1, maxLevel, nodes);
 
         if (showMe) {
-            if (rootID.equals(ROOT_PID)) {
+            if (rootID == null || rootID.equals(ROOT_PID)) {
                 throw new RuntimeException("showMe为true时，必须提供rootID");
             }
             String finalRootID = rootID;

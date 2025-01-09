@@ -60,6 +60,25 @@ class TreeBuilderTest {
         assertNull(tree);
     }
 
+    @Test
+    @DisplayName("测试不指定rootID")
+    void testTreeWithoutRootID() {
+        List<TreeNode> tree = TreeBuilder.build("id", "pid", list, null, false, "name", 10);
+        assertEquals(3, tree.size());
+    }
+
+    @Test
+    @DisplayName("测试不指定rootID，并且原始节点rootID不为null")
+    void testTreeWithoutRootID2() {
+        List<TreeNode> tree = TreeBuilder.build("id", "pid", List.of(
+            buildNode("A.a", "A"),
+            buildNode("A.b", "A"),
+            buildNode("A.a.1", "A.a"),
+            buildNode("C.a.1", "C.a")
+        ), null, false, "name", 10);
+        assertEquals(2, tree.size());
+    }
+
     static Map buildNode(String id, String pid) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("id", id);
