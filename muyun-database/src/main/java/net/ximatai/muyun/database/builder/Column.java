@@ -29,6 +29,10 @@ public class Column {
         .setSequence()
         .setIndexed();
 
+    public static final Column CODE = new Column("v_code")
+        .setType(ColumnType.VARCHAR)
+        .setIndexed();
+
     public static final Column CREATE = new Column("t_create")
         .setIndexed();
 

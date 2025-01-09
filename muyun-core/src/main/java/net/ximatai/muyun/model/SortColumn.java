@@ -6,6 +6,7 @@ public class SortColumn {
 
     public static final SortColumn CREATE = new SortColumn(Column.CREATE, Type.DESC);
     public static final SortColumn ORDER = new SortColumn(Column.ORDER, Type.ASC);
+    public static final SortColumn CODE = new SortColumn(Column.CODE, Type.ASC);
 
     private Column column;
     private final String columnName;
