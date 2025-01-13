@@ -51,8 +51,8 @@ public class TestUserPasswordComplexity {
                 .contentType("application/json")
                 .body(Map.of(
                     "v_username", "test",
-                    "v_password", "pw",
-                    "v_password2", "pw",
+                    "v_password", "pw123456",
+                    "v_password2", "pw123456",
                     "roles", List.of("1", "2")
                 ))
                 .when()
@@ -88,7 +88,7 @@ public class TestUserPasswordComplexity {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
-                "v_old_password", "pw",
+                "v_old_password", "pw123456",
                 "v_password", "12345z",
                 "v_password2", "12345z"
             ))
@@ -125,7 +125,7 @@ public class TestUserPasswordComplexity {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
-                "v_old_password", "pw",
+                "v_old_password", "pw123456",
                 "v_password", "12345678",
                 "v_password2", "12345678"
             ))
@@ -162,7 +162,7 @@ public class TestUserPasswordComplexity {
             .header("userID", config.superUserId())
             .contentType("application/json")
             .body(Map.of(
-                "v_old_password", "pw",
+                "v_old_password", "pw123456",
                 "v_password", "123",
                 "v_password2", "123"
             ))

@@ -14,7 +14,6 @@ import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.core.exception.MyException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
@@ -26,6 +25,7 @@ import net.ximatai.muyun.platform.model.DictCategory;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.service.IAuthorizationService;
+import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -103,8 +103,17 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Override
     protected void afterInit() {
         super.afterInit();
-        dictCategoryController.putDictCategory(new DictCategory("user_gender", "platform_dir", "人员性别", 1).setDictList(new Dict("0", "未知"), new Dict("1", "男"), new Dict("2", "女")), false);
-        dictCategoryController.putDictCategory(new DictCategory("password_complexity", "platform_dir", "密码复杂度", 1).setDictList(new Dict(".{8,}", "长度不少于8位", "密码长度应不少于8位"), new Dict("^(?=.*[a-zA-Z]).*$", "包含英文字母", "密码应至少包含一个英文字母")), false);
+        dictCategoryController.putDictCategory(
+            new DictCategory("user_gender", "platform_dir", "人员性别", 1)
+                .setDictList(new Dict("0", "未知"),
+                    new Dict("1", "男"),
+                    new Dict("2", "女")),
+            false);
+        dictCategoryController.putDictCategory(
+            new DictCategory("password_complexity", "platform_dir", "密码复杂度", 1)
+                .setDictList(new Dict(".{8,}", "长度不少于8位", "密码长度应不少于8位"),
+                    new Dict("^(?=.*[a-zA-Z]).*$", "包含英文字母", "密码应至少包含一个英文字母")),
+            false);
 
         String superUserId = config.superUserId();
 
@@ -157,6 +166,8 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             throw new MuYunException("两次输入的密码不一致");
         }
 
+        checkPasswordComplexity(password);
+
         Map<String, ?> userInfo = this.view(id);
         if ((boolean) userInfo.get("b_user")) {
             throw new MuYunException("已经设置用户信息，无法再次设置");
@@ -191,25 +202,31 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             throw new MuYunException("两次输入的密码不一致");
         }
 
-        List<Map> childTableList = dictCategoryController.getChildTableList("password_complexity", "app_dict", null);
-        StringBuilder exceptionMsgSB = new StringBuilder();
-        childTableList.forEach(map -> {
-            String regex = (String) map.get("v_value");
-            if (!password.matches(regex) && !regex.isBlank()) {
-                exceptionMsgSB.append("，").append(map.get("v_remark"));
-            }
-        });
-        String exceptionMsg = exceptionMsgSB.toString();
-        if (!exceptionMsg.isEmpty()) {
-            exceptionMsg = exceptionMsg.substring(1);
-            throw new MyException(exceptionMsg);
-        }
+        checkPasswordComplexity(password);
 
         Map<String, ?> userInfo = this.view(id);
         if ((boolean) userInfo.get("b_user")) {
             return userController.update(id, Map.of("v_password", password));
         } else {
             throw new MuYunException("尚未创建对应的用户");
+        }
+    }
+
+    private void checkPasswordComplexity(String password) {
+        List<Map> childTableList = dictCategoryController.getChildTableList("password_complexity", "app_dict", null);
+        StringBuilder msgBuilder = new StringBuilder();
+        childTableList.forEach(map -> {
+            String regex = (String) map.get("v_value");
+            if (StringUtil.isNotBlank(regex) && !password.matches(regex)) {
+                String remark = (String) map.get("v_remark");
+                String name = (String) map.get("v_name");
+                msgBuilder.append("，").append(StringUtil.isNotBlank(remark) ? remark : name);
+            }
+        });
+        if (!msgBuilder.isEmpty()) {
+            String error = msgBuilder.substring(1);
+            logger.error("bad password :%s,%s".formatted(password, error));
+            throw new MuYunException(error);
         }
     }
 
@@ -232,19 +249,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             throw new MuYunException("两次输入的密码不一致");
         }
 
-        List<Map> childTableList = dictCategoryController.getChildTableList("password_complexity", "app_dict", null);
-        StringBuilder exceptionMsgSB = new StringBuilder();
-        childTableList.forEach(map -> {
-            String regex = (String) map.get("v_value");
-            if (!password.matches(regex) && !regex.isBlank()) {
-                exceptionMsgSB.append("，").append(map.get("v_remark"));
-            }
-        });
-        String exceptionMsg = exceptionMsgSB.toString();
-        if (!exceptionMsg.isEmpty()) {
-            exceptionMsg = exceptionMsg.substring(1);
-            throw new MyException(exceptionMsg);
-        }
+        checkPasswordComplexity(password);
 
         return userController.update(id, Map.of("v_password", password));
     }

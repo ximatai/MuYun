@@ -105,8 +105,8 @@ public class TestUserAndMenu {
 
         userInfoController.setUser(userID, Map.of(
             "v_username", "test_2",
-            "v_password", "test_2",
-            "v_password2", "test_2"
+            "v_password", "pw123456",
+            "v_password2", "pw123456"
         ));
 
         String roleID = roleController.create(Map.of("v_name", "role1"));

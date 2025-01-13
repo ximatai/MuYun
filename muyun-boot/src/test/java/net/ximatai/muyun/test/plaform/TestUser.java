@@ -73,8 +73,8 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "v_username", "test",
-                "v_password", "pw",
-                "v_password2", "pw",
+                "v_password", "pw123456",
+                "v_password2", "pw123456",
                 "roles", List.of("1", "2")
             ))
             .when()
@@ -114,7 +114,7 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw",
+                "password", "pw123456",
                 "code", "muyun"
             ))
             .when()
@@ -151,7 +151,7 @@ public class TestUser {
             .contentType("application/json")
             .body(Map.of(
                 "username", "test",
-                "password", "pw",
+                "password", "pw123456",
                 "code", "muyun"
             ))
             .when()

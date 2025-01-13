@@ -50,8 +50,8 @@ public class TestUserAndRole {
             .contentType("application/json")
             .body(Map.of(
                 "v_username", "test_1",
-                "v_password", "pw",
-                "v_password2", "pw"
+                "v_password", "pw123456",
+                "v_password2", "pw123456"
             ))
             .when()
             .post("/api%s/userinfo/setUser/%s".formatted(base, userID))
