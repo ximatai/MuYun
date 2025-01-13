@@ -30,7 +30,7 @@ public interface IChildrenAbility {
     default List<Map> getChildTableList(@Parameter(description = "主表id") @PathParam("id") String id, @Parameter(description = "子表别名") @PathParam("childAlias") String childAlias, @QueryParam("sort") List<String> sort) {
         ChildTableInfo ct = getChildTable(childAlias);
         String foreignKey = ct.getForeignKey();
-        return ct.getCtrl().view(null, null, true, sort, Map.of(foreignKey, id), List.of(QueryItem.of(foreignKey))).getList();
+        return ct.getCtrl().view(null, null, true, sort, Map.of(foreignKey, id), QueryItem.of(foreignKey).toGroup()).getList();
     }
 
     @GET

@@ -116,6 +116,10 @@ public class QueryItem {
         return this;
     }
 
+    public QueryGroup toGroup() {
+        return QueryGroup.of(this);
+    }
+
     public String getColumn() {
         return column;
     }

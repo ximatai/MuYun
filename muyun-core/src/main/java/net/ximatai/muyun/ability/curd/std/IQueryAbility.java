@@ -5,6 +5,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.model.QueryGroup;
 import net.ximatai.muyun.model.QueryItem;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
@@ -21,6 +22,10 @@ public interface IQueryAbility extends ISelectAbility {
 
     List<QueryItem> queryItemList();
 
+    default QueryGroup queryGroup() {
+        return QueryGroup.of(queryItemList());
+    }
+
     @GET
     @Path("/queryColumns")
     @Operation(summary = "已配置可供查询的字段")
@@ -36,15 +41,15 @@ public interface IQueryAbility extends ISelectAbility {
                             @Parameter(description = "是否分页") @QueryParam("noPage") Boolean noPage,
                             @Parameter(description = "排序", example = "t_create,desc") @QueryParam("sort") List<String> sort,
                             @RequestBody(description = "查询条件信息") Map<String, Object> queryBody) {
-        return this.view(page, size, noPage, sort, queryBody, queryItemList());
+        return this.view(page, size, noPage, sort, queryBody, queryGroup());
     }
 
     default PageResult query(Map<String, Object> queryBody) {
-        return this.view(null, null, true, null, queryBody, queryItemList());
+        return this.view(null, null, true, null, queryBody, queryGroup());
     }
 
     default PageResult query(Map<String, Object> queryBody, String authCondition) {
-        return this.view(null, null, true, null, queryBody, queryItemList(), authCondition);
+        return this.view(null, null, true, null, queryBody, queryGroup(), authCondition);
     }
 
 }

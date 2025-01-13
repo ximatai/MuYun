@@ -10,6 +10,7 @@ import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.model.QueryGroup;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.SortColumn;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -19,7 +20,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -161,9 +161,9 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             Boolean noPage,
                             List<String> sort,
                             Map<String, Object> queryBody,
-                            List<QueryItem> queryItemList
+                            QueryGroup queryGroup
     ) {
-        return this.view(page, size, noPage, sort, queryBody, queryItemList, null);
+        return this.view(page, size, noPage, sort, queryBody, queryGroup, null);
     }
 
     default PageResult view(Integer page,
@@ -171,7 +171,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             Boolean noPage,
                             List<String> sort,
                             Map<String, Object> queryBody,
-                            List<QueryItem> queryItemList,
+                            QueryGroup queryGroup,
                             String authCondition
     ) {
 
@@ -203,140 +203,8 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         StringBuilder queryCondition = new StringBuilder();
 
         // 查询条件处理
-        if (queryBody != null && queryItemList != null && !queryItemList.isEmpty()) {
-            HashMap queryMap = new HashMap<>(queryBody);
-
-            queryItemList.stream()
-                .filter(queryItem -> queryItem.getDefaultValue() != null)
-                .forEach(queryItem -> {
-                    if (!queryMap.containsKey(queryItem.getAlias())) { // 向 queryMap 中塞入查询字段默认值
-                        queryMap.put(queryItem.getAlias(), queryItem.getDefaultValue());
-                    }
-                });
-
-            queryMap.forEach((k, v) -> {
-                StringBuilder condition = new StringBuilder();
-                QueryItem qi = queryItemList.stream().filter(item -> item.getAlias().equals(k)).findFirst().orElse(null);
-
-                if (qi == null) {
-                    throw new QueryException("查询条件%s未配置，查询失败".formatted(k));
-                }
-
-                if (v instanceof String str && str.isBlank()) { // 字符串为空不参与查询
-                    return;
-                }
-
-                condition.append(" and %s ".formatted(qi.getColumn()));
-
-                if (v == null) {
-                    condition.append(" isnull ");
-                    queryCondition.append(condition);
-                    return;
-                }
-
-                QueryItem.SymbolType symbolType = qi.getSymbolType();
-
-                if (qi.isDate() || qi.isDatetime()) { // 是日期，需要提前转换
-                    Function<String, Date> converter = s -> qi.isDate() ? DateTool.stringToSqlDate(s) : DateTool.stringToSqlTimestamp(s);
-
-                    if (v instanceof String s) {
-                        v = converter.apply(s);
-                    } else if (v instanceof List<?> list) {
-                        v = list.stream().map(o -> o instanceof String s ? converter.apply(s) : o).toList();
-                    }
-                }
-
-                switch (symbolType) {
-                    case LIKE:
-                        condition.append(" like ? ");
-                        params.add("%" + v + "%");
-                        break;
-                    case IN, NOT_IN:
-                        if (!(v instanceof List list)) {
-                            throw new QueryException("IN 条件的值必须是列表");
-                        }
-
-                        if (list.isEmpty()) {
-                            list.add("muyuntage_20240903_nanjing");
-                        }
-
-                        String symbol = qi.getSymbolType().equals(QueryItem.SymbolType.IN) ? "in" : "not in";
-                        condition.append(" %s (%s) ".formatted(symbol, list.stream().map(x -> "?").collect(Collectors.joining(","))));
-                        params.addAll(list);
-                        break;
-                    case EQUAL, NOT_EQUAL:
-                        String notMark = symbolType.equals(QueryItem.SymbolType.NOT_EQUAL) ? "!" : "";
-                        condition.append(" %s= ? ".formatted(notMark));
-                        params.add(v);
-                        break;
-                    case PG_ARRAY_EQUAL, PG_ARRAY_OVERLAP, PG_ARRAY_CONTAIN, PG_ARRAY_BE_CONTAIN:
-                        if (!(v instanceof List list)) {
-                            throw new QueryException("数据比较时参数也应为数组");
-                        }
-
-                        String s = "=";
-                        if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_OVERLAP)) {
-                            s = "&&";
-                        }
-                        if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_CONTAIN)) {
-                            s = "<@";
-                        }
-                        if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_BE_CONTAIN)) {
-                            s = "@>";
-                        }
-
-                        String type = "varchar";
-
-                        if (!list.isEmpty() && list.get(0) instanceof Integer) {
-                            type = "int";
-                        }
-
-                        condition.append(" %s ? ".formatted(s));
-                        params.add(getDB().createArray(list, type));
-                        break;
-                    case RANGE:
-                        if (!(v instanceof List list) || list.size() != 2) {
-                            throw new QueryException("区间查询%s的内容必须是长度为2的数组".formatted(k));
-                        }
-
-                        Object a = list.get(0);
-                        Object b = list.get(1);
-
-                        if (a == null) {
-                            condition.append(" = %s ".formatted(qi.getColumn()));
-                        } else {
-                            condition.append(" >= ? ");
-                            params.add(a);
-                        }
-
-                        if (b != null) {
-                            condition.append(" and %s ".formatted(qi.getColumn()));
-                            condition.append(" <= ? ");
-
-                            // b 是时间，但是b跟a的时间相同，并且 a 时间的 时分秒都是0，就把b的时分秒补成 23:59:59.999
-                            if (b instanceof Timestamp bTime && b.equals(a)
-                                && bTime.toLocalDateTime().getHour() == 0
-                                && bTime.toLocalDateTime().getMinute() == 0
-                                && bTime.toLocalDateTime().getSecond() == 0) {
-
-                                Calendar cal = Calendar.getInstance();
-                                cal.setTime(bTime);
-                                cal.set(Calendar.HOUR_OF_DAY, 23);
-                                cal.set(Calendar.MINUTE, 59);
-                                cal.set(Calendar.SECOND, 59);
-                                cal.set(Calendar.MILLISECOND, 999);
-                                b = new Timestamp(cal.getTimeInMillis());
-                            }
-
-                            params.add(b);
-                        }
-                        break;
-                    default:
-                        throw new QueryException("不支持的符号类型: " + symbolType);
-                }
-
-                queryCondition.append(condition);
-            });
+        if (queryBody != null && queryGroup != null) {
+            buildUpQuery(queryCondition, queryGroup, queryBody, params, " and ");
         }
 
         String baseSql = "select * from (%s) %s where 1=1 %s %s ".formatted(getSelectSql(), getMainTable(), authCondition, queryCondition);
@@ -374,6 +242,159 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         list.forEach(this::processEachRow);
 
         return new PageResult<>(list, total, size, page);
+    }
+
+    private void buildUpQuery(StringBuilder condition, QueryGroup group, Map<String, Object> queryBody, List<Object> params, String sqlSymbol) {
+        QueryItem qi = group.getQueryItem();
+
+        StringBuilder part = new StringBuilder();
+
+        if (qi != null && (queryBody.containsKey(qi.getAlias()) || qi.getDefaultValue() != null)) {
+            Object v = queryBody.get(qi.getAlias());
+
+            if (!queryBody.containsKey(qi.getAlias())) { // queryItem 的默认值参与查询
+                v = qi.getDefaultValue();
+            }
+
+            if (!(v instanceof String str) || !str.isBlank()) { // 字符串为空不参与查询
+                buildUpCondition(part, qi, v, params);
+            }
+        }
+
+        if (part.isEmpty()) {
+            part.append("1=1");
+        }
+
+        if (!group.getAndGroups().isEmpty()) {
+            for (QueryGroup queryGroup : group.getAndGroups()) {
+                buildUpQuery(part, queryGroup, queryBody, params, " and ");
+            }
+        }
+
+        if (!group.getOrGroups().isEmpty()) {
+            for (QueryGroup queryGroup : group.getOrGroups()) {
+                buildUpQuery(part, queryGroup, queryBody, params, " or ");
+            }
+        }
+
+        if (part.isEmpty()) {
+            part.append("1=1");
+        }
+
+        condition.append(sqlSymbol);
+        condition.append("(");
+        condition.append(part);
+        condition.append(")");
+
+    }
+
+    private void buildUpCondition(StringBuilder part, QueryItem qi, Object v, List<Object> params) {
+        part.append(" %s ".formatted(qi.getColumn()));
+
+        if (v == null) {
+            part.append(" isnull ");
+        } else {
+            QueryItem.SymbolType symbolType = qi.getSymbolType();
+
+            if (qi.isDate() || qi.isDatetime()) { // 是日期，需要提前转换
+                Function<String, Date> converter = s -> qi.isDate() ? DateTool.stringToSqlDate(s) : DateTool.stringToSqlTimestamp(s);
+
+                if (v instanceof String s) {
+                    v = converter.apply(s);
+                } else if (v instanceof List<?> list) {
+                    v = list.stream().map(o -> o instanceof String s ? converter.apply(s) : o).toList();
+                }
+            }
+
+            switch (symbolType) {
+                case LIKE:
+                    part.append(" like ? ");
+                    params.add("%" + v + "%");
+                    break;
+                case IN, NOT_IN:
+                    if (!(v instanceof List list)) {
+                        throw new QueryException("IN 条件的值必须是列表");
+                    }
+
+                    if (list.isEmpty()) {
+                        list.add("muyuntage_20240903_nanjing");
+                    }
+
+                    String symbol = qi.getSymbolType().equals(QueryItem.SymbolType.IN) ? "in" : "not in";
+                    part.append(" %s (%s) ".formatted(symbol, list.stream().map(x -> "?").collect(Collectors.joining(","))));
+                    params.addAll(list);
+                    break;
+                case EQUAL, NOT_EQUAL:
+                    String notMark = symbolType.equals(QueryItem.SymbolType.NOT_EQUAL) ? "!" : "";
+                    part.append(" %s= ? ".formatted(notMark));
+                    params.add(v);
+                    break;
+                case PG_ARRAY_EQUAL, PG_ARRAY_OVERLAP, PG_ARRAY_CONTAIN, PG_ARRAY_BE_CONTAIN:
+                    if (!(v instanceof List list)) {
+                        throw new QueryException("数据比较时参数也应为数组");
+                    }
+
+                    String s = "=";
+                    if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_OVERLAP)) {
+                        s = "&&";
+                    }
+                    if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_CONTAIN)) {
+                        s = "<@";
+                    }
+                    if (symbolType.equals(QueryItem.SymbolType.PG_ARRAY_BE_CONTAIN)) {
+                        s = "@>";
+                    }
+
+                    String type = "varchar";
+
+                    if (!list.isEmpty() && list.get(0) instanceof Integer) {
+                        type = "int";
+                    }
+
+                    part.append(" %s ? ".formatted(s));
+                    params.add(getDB().createArray(list, type));
+                    break;
+                case RANGE:
+                    if (!(v instanceof List list) || list.size() != 2) {
+                        throw new QueryException("区间查询%s的内容必须是长度为2的数组".formatted(qi.getAlias()));
+                    }
+
+                    Object a = list.get(0);
+                    Object b = list.get(1);
+
+                    if (a == null) {
+                        part.append(" = %s ".formatted(qi.getColumn()));
+                    } else {
+                        part.append(" >= ? ");
+                        params.add(a);
+                    }
+
+                    if (b != null) {
+                        part.append(" and %s ".formatted(qi.getColumn()));
+                        part.append(" <= ? ");
+
+                        // b 是时间，但是b跟a的时间相同，并且 a 时间的 时分秒都是0，就把b的时分秒补成 23:59:59.999
+                        if (b instanceof Timestamp bTime && b.equals(a)
+                            && bTime.toLocalDateTime().getHour() == 0
+                            && bTime.toLocalDateTime().getMinute() == 0
+                            && bTime.toLocalDateTime().getSecond() == 0) {
+
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(bTime);
+                            cal.set(Calendar.HOUR_OF_DAY, 23);
+                            cal.set(Calendar.MINUTE, 59);
+                            cal.set(Calendar.SECOND, 59);
+                            cal.set(Calendar.MILLISECOND, 999);
+                            b = new Timestamp(cal.getTimeInMillis());
+                        }
+
+                        params.add(b);
+                    }
+                    break;
+                default:
+                    throw new QueryException("不支持的符号类型: " + symbolType);
+            }
+        }
     }
 
 }
