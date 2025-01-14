@@ -137,7 +137,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             @Parameter(description = "分页大小") @QueryParam("size") Long size,
                             @Parameter(description = "是否分页") @QueryParam("noPage") Boolean noPage,
                             @Parameter(description = "排序", example = "t_create,desc") @QueryParam("sort") List<String> sort) {
-        return view(page, size, noPage, sort, null, List.of());
+        return view(page, size, noPage, sort, null, null);
     }
 
     /**
@@ -154,16 +154,6 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             }
         }
         return authCondition;
-    }
-
-    default PageResult view(Integer page,
-                            Long size,
-                            Boolean noPage,
-                            List<String> sort,
-                            Map<String, Object> queryBody,
-                            List<QueryItem> queryItemList
-    ) {
-        return this.view(page, size, noPage, sort, queryBody, QueryGroup.of(queryItemList), null);
     }
 
     default PageResult view(Integer page,
