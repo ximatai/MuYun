@@ -118,8 +118,7 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
     }
 
     private String getHost(ContainerRequestContext requestContext) {
-        // 优先考虑 `X-Forwarded-Host`
-        String host = requestContext.getHeaderString("X-Forwarded-Host");
+        String host = requestContext.getHeaderString("X-Forwarded-For");
 
         // 回退到标准的 `Forwarded` 头
         if (host == null || host.isEmpty()) {
@@ -128,7 +127,7 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
                 // 从 `Forwarded` 头提取 `host`
                 String[] forwardedParts = forwardedHeader.split(";");
                 for (String part : forwardedParts) {
-                    if (part.trim().startsWith("host=")) {
+                    if (part.trim().startsWith("for=")) {
                         host = part.split("=")[1].trim();
                         break;
                     }
