@@ -17,7 +17,8 @@
 
 ![CleanShot 2024-10-28 at 14 48 22@2x](https://github.com/user-attachments/assets/4cd95a86-8099-4df7-97a1-97fafbd3aed5)
 
-[MuYun 轻代码平台能力一览](https://github.com/59d4aef6-dafd-4e47-9f80-8e81849d88ae)
+
+[MuYun 轻代码平台能力一览](https://github.com/ximatai/MuYun/blob/master/MuYun%20轻代码平台能力一览.pdf)
 
 ## 开发进度
 
