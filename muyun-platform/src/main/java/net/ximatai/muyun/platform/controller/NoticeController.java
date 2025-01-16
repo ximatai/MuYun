@@ -72,7 +72,7 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_title", "标题")
             .addColumn("v_context", "内容")
-            .addColumn("file_att", "附件")
+            .addColumn("files_att", "附件")
             .addColumn("i_views", "浏览量", 0)
             .addColumn("dict_notice_access_scope", "公开范围")
             .addColumn("ids_at_org_organization", "公开机构范围")
