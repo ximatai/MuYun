@@ -59,6 +59,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         }
     }
 
+    default boolean showCurrentDate(){
+        return false;
+    }
+
     default String getSelectOneRowSql() {
         return "select * from (%s) %s where 1=1 %s and %s = :id ".formatted(getSelectSql(), getMainTable(), getAuthCondition(), getPK());
     }
@@ -102,6 +106,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         String mainTable = getSchemaDotTable();
         if (this instanceof ICustomSelectSqlAbility ability) {
             mainTable = "(%s) as %s ".formatted(ability.getCustomSql(), getMainTable());
+        }
+
+        if(showCurrentDate()){
+            starSql.append(",current_date ");
         }
 
         return "select %s from %s %s where 1=1 %s ".formatted(starSql, mainTable, joinSql, softDeleteSql);
