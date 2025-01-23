@@ -59,7 +59,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         }
     }
 
-    default boolean showCurrentDate(){
+    default boolean showCurrentDate() {
         return false;
     }
 
@@ -108,7 +108,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             mainTable = "(%s) as %s ".formatted(ability.getCustomSql(), getMainTable());
         }
 
-        if(showCurrentDate()){
+        if (showCurrentDate()) {
             starSql.append(",current_date ");
         }
 
