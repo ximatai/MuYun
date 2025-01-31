@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Path("/sso")
-@Tag(name = "登录相关")
+@Tag(description = "登录相关")
 public class SsoController implements IRuntimeAbility {
 
     private final Logger logger = LoggerFactory.getLogger(SsoController.class);

@@ -28,7 +28,7 @@ import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "菜单方案管理")
+@Tag(description = "菜单方案管理")
 @Path(BASE_PATH + "/menuSchema")
 public class MenuSchemaController extends ScaffoldForPlatform implements IChildrenAbility, ISortAbility, IDataCheckAbility {
 

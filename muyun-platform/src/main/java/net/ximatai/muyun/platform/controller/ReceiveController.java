@@ -15,7 +15,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.PlatformConst.DB_SCHEMA;
 
-@Tag(name = "公告接收")
+@Tag(description = "公告接收")
 @Path(BASE_PATH + "/receive")
 public class ReceiveController extends Scaffold implements ISelectAbility, IReferenceAbility {
 

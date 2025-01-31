@@ -24,7 +24,7 @@ import java.util.Set;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "运行时查询")
+@Tag(description = "运行时查询")
 @Path(BASE_PATH + "/runtime")
 public class RuntimeController implements IRuntimeAbility {
 
