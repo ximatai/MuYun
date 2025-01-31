@@ -39,7 +39,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_ALIAS;
 
 @Startup
-@Tag(name = "用户管理")
+@Tag(description = "用户管理")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility, IModuleRegisterAbility {
 

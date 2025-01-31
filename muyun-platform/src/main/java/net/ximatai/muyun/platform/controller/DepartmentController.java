@@ -25,7 +25,7 @@ import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "部门管理")
+@Tag(description = "部门管理")
 @Path(BASE_PATH + "/department")
 public class DepartmentController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferableAbility, IReferenceAbility, IDataCheckAbility, IQueryAbility {
 

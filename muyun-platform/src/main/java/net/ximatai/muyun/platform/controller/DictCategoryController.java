@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
-@Tag(name = "数据字典管理")
+@Tag(description = "数据字典管理")
 @Path(BASE_PATH + "/dict")
 public class DictCategoryController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IDataCheckAbility, IQueryAbility {
 

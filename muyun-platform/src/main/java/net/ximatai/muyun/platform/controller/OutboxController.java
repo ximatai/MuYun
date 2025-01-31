@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "站内信发件箱")
+@Tag(description = "站内信发件箱")
 @Path(BASE_PATH + "/outbox")
 public class OutboxController extends MessageController {
     @Override

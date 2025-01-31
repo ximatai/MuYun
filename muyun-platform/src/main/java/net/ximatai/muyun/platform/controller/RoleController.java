@@ -26,7 +26,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.RoleController.MODULE_ALIAS;
 
 @Startup
-@Tag(name = "角色管理")
+@Tag(description = "角色管理")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class RoleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IModuleRegisterAbility {
 

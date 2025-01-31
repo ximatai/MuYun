@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "站内信收件箱")
+@Tag(description = "站内信收件箱")
 @Path(BASE_PATH + "/inbox")
 public class InboxController extends MessageController {
     @Override

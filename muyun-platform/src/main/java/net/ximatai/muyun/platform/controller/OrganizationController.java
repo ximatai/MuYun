@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "机构管理")
+@Tag(description = "机构管理")
 @Path(BASE_PATH + "/organization")
 public class OrganizationController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IReferenceAbility, IDataBroadcastAbility, IQueryAbility {
 
