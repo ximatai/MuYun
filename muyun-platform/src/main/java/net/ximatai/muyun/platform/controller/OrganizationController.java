@@ -40,6 +40,9 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Inject
     SupervisionRegionController supervisionRegionController;
 
+    @Inject
+    RegionController regionController;
+
     @Override
     protected void afterInit() {
         super.afterInit();
@@ -91,7 +94,8 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Override
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
-            dictController.toReferenceInfo("dict_org_type")
+            dictController.toReferenceInfo("dict_org_type"),
+            regionController.toReferenceInfo("id_at_app_region")
         );
     }
 
