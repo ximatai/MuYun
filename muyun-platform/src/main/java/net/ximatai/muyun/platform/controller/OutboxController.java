@@ -6,6 +6,7 @@ import net.ximatai.muyun.model.PageResult;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
@@ -18,7 +19,7 @@ public class OutboxController extends MessageController {
     }
 
     @Override
-    public void beforeUpdate(String id) {
+    public void beforeUpdate(String id, Optional<Map> body) {
         PageResult query = this.query(Map.of(
             "id_at_app_message__root", id
         ));
@@ -29,6 +30,6 @@ public class OutboxController extends MessageController {
 
     @Override
     public void beforeDelete(String id) {
-        this.beforeUpdate(id);
+        this.beforeUpdate(id, Optional.empty());
     }
 }
