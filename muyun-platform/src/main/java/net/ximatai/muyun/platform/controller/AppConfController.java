@@ -21,7 +21,7 @@ import java.util.Map;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.AppConfController.MODULE_ALIAS;
 
-@Tag(name = "全局程序配置（面向前端平台级业务）")
+@Tag(description = "全局程序配置（面向前端平台级业务）")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class AppConfController extends Scaffold implements ICreateAbility, ISelectAbility, IUpdateAbility, ITableCreateAbility, IModuleRegisterAbility {
     public final static String MODULE_ALIAS = "conf";

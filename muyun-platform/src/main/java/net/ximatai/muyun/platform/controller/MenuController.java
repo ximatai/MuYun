@@ -18,7 +18,7 @@ import java.util.List;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
-@Tag(name = "菜单管理")
+@Tag(description = "菜单管理")
 @Path(BASE_PATH + "/menu")
 public class MenuController extends ScaffoldForPlatform implements ITreeAbility, IChildAbility, IReferenceAbility {
 

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
-@Tag(name = "模块管理")
+@Tag(description = "模块管理")
 @Path(BASE_PATH + "/module")
 public class ModuleController extends ScaffoldForPlatform implements ITreeAbility, IChildrenAbility, IReferableAbility, IDataCheckAbility, IQueryAbility, IDataBroadcastAbility {
 

@@ -27,7 +27,7 @@ import java.util.UUID;
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.OnlineController.MODULE_ALIAS;
 
-@Tag(name = "在线用户")
+@Tag(description = "在线用户")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class OnlineController implements IRuntimeAbility {
     public final static String MODULE_ALIAS = "online";
@@ -76,23 +76,23 @@ public class OnlineController implements IRuntimeAbility {
         String browser = UserAgentParser.getBrowser(userAgent);
 
         OnlineDevice onlineDevice = new OnlineDevice()
-                .setId(deviceID)
-                .setOs(os)
-                .setBrowser(browser)
-                .setActive(true)
-                .setCheckInTime(now)
-                .setLastActiveTime(now);
+            .setId(deviceID)
+            .setOs(os)
+            .setBrowser(browser)
+            .setActive(true)
+            .setCheckInTime(now)
+            .setLastActiveTime(now);
 
         onlineDevices.add(onlineDevice);
         OnlineUser onlineUser = getOnlineUserByID(user.getId());
 
         if (onlineUser == null) {
             onlineUser = new OnlineUser()
-                    .setId(user.getId())
-                    .setUsername(user.getUsername())
-                    .setName(user.getName())
-                    .setDepartmentId(user.getDepartmentId())
-                    .setOrganizationId(user.getOrganizationId());
+                .setId(user.getId())
+                .setUsername(user.getUsername())
+                .setName(user.getName())
+                .setDepartmentId(user.getDepartmentId())
+                .setOrganizationId(user.getOrganizationId());
 
             if (departmentControllerInstance.isResolvable()) {
                 onlineUser.setDepartmentName(departmentControllerInstance.get().idToName(user.getDepartmentId()));
@@ -129,8 +129,8 @@ public class OnlineController implements IRuntimeAbility {
         LocalDateTime thresholdTime = LocalDateTime.now().minusSeconds(20);
 
         List<OnlineDevice> toRemoveDevice = onlineDevices.stream()
-                .filter(it -> it.getLastActiveTime().isBefore(thresholdTime))
-                .toList();
+            .filter(it -> it.getLastActiveTime().isBefore(thresholdTime))
+            .toList();
 
         toRemoveDevice.forEach(onlineDevice -> {
             onlineDevice.getOnlineUser().getDeviceList().remove(onlineDevice);
@@ -139,8 +139,8 @@ public class OnlineController implements IRuntimeAbility {
 
         // 一个设备都不在线的用户应该删除
         List<OnlineUser> toRemoveUser = onlineUsers.stream()
-                .filter(it -> it.getDeviceList().isEmpty())
-                .toList();
+            .filter(it -> it.getDeviceList().isEmpty())
+            .toList();
 
         toRemoveUser.forEach(onlineUser -> {
             onlineUsers.remove(onlineUser);

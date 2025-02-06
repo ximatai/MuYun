@@ -24,7 +24,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 
 @Startup
 @Path(BASE_PATH + "/region")
-@Tag(name = "行政区划管理")
+@Tag(description = "行政区划管理")
 public class RegionController extends ScaffoldForPlatform implements ITreeAbility, IReferableAbility, IChildrenAbility, IDataCheckAbility, IDataBroadcastAbility {
 
     @Inject

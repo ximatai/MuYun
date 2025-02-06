@@ -31,7 +31,7 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.AuthorizationController.MODULE_ALIAS;
 
 @Startup
-@Tag(name = "权限管理")
+@Tag(description = "权限管理")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
 public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility {
     public final static String MODULE_ALIAS = "authorization";
