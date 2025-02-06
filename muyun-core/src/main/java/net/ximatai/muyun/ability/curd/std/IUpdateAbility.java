@@ -20,13 +20,22 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 修改数据的能力
  */
 public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
+    /**
+     * @deprecated 请使用带 Map 参数的 beforeUpdate 方法，这个方法将在未来的版本中移除
+     */
+    @Deprecated(forRemoval = true)
     default void beforeUpdate(String id) {
+
+    }
+
+    default void beforeUpdate(String id, Optional<Map> body) {
 
     }
 
@@ -40,6 +49,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Operation(summary = "修改数据", description = "返回被修改数据的数量，正常为1")
     default Integer update(@PathParam("id") String id, Map body) {
         beforeUpdate(id);
+        beforeUpdate(id, Optional.of(body));
         HashMap map = new HashMap(body);
         map.put(getPK(), id);
         map.put("t_update", LocalDateTime.now());
