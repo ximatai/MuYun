@@ -119,5 +119,9 @@ public interface IDatabaseOperations extends IDBInfoProvider {
 
     Object execute(String sql);
 
+    Object execute(String sql, Object... params);
+
+    Object execute(String sql, List<?> params);
+
     Array createArray(List list, String type);
 }

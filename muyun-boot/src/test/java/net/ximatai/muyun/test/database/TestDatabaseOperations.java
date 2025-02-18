@@ -38,6 +38,12 @@ public class TestDatabaseOperations {
     }
 
     @Test
+    void testExecute() {
+        db.execute("select 'test',?,?", "x", "y");
+        db.execute("select 'test',?,?", List.of("x", "y"));
+    }
+
+    @Test
     @DisplayName("验证单条记录插入操作")
     void testInsert() {
         String id = db.insertItem("public", "basic", Map.of(
