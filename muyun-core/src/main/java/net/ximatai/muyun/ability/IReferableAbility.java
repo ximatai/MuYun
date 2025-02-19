@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import net.ximatai.muyun.ability.curd.std.ICustomSelectSqlAbility;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.model.ReferenceInfo;
@@ -20,7 +21,7 @@ public interface IReferableAbility extends IMetadataAbility, ILabelAbility, ISel
     }
 
     default boolean checkColumnExist(String column) {
-        if (!checkColumn(column)) {
+        if (!(this instanceof ICustomSelectSqlAbility) && !checkColumn(column)) {
             throw new MyDatabaseException("根据引用关系，要求 %s 必须含有 %s 字段".formatted(getMainTable(), column));
         }
         return true;
