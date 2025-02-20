@@ -1,7 +1,7 @@
 package net.ximatai.muyun.model;
 
 import net.ximatai.muyun.ability.IReferableAbility;
-import net.ximatai.muyun.database.builder.TableBase;
+import net.ximatai.muyun.ability.curd.std.ICustomSelectSqlAbility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +25,20 @@ public class ReferenceInfo {
         this.ctrl = ctrl;
     }
 
-    public String getDeepSelectSql() {
-        return ctrl.getSelectSql();
+    public String getReferenceFullTableName() {
+        if (ctrl instanceof ICustomSelectSqlAbility ability) {
+            return "(%s) as %s".formatted(ability.getCustomSql(), ctrl.getTableBase().getName());
+        } else {
+            return ctrl.getSchemaDotTable();
+        }
     }
 
-    public TableBase getReferenceTable() {
-        return ctrl.getTableBase();
+    public String getReferenceTableName() {
+        return ctrl.getTableBase().getName();
+    }
+
+    public String getDeepSelectSql() {
+        return ctrl.getSelectSql();
     }
 
     public String getHitField() {
@@ -60,7 +68,7 @@ public class ReferenceInfo {
     }
 
     private String getColumnAlias(String column) {
-        return column + "_at_" + getReferenceTable().getName();
+        return column + "_at_" + getReferenceTableName();
     }
 
     private void putTranslate(String column) {

@@ -6,7 +6,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.*;
 import net.ximatai.muyun.core.exception.QueryException;
-import net.ximatai.muyun.database.builder.TableBase;
 import net.ximatai.muyun.database.tool.DateTool;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.PageResult;
@@ -78,8 +77,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
         if (this instanceof IReferenceAbility referenceAbility) {
 
             referenceAbility.getReferenceList().forEach(info -> {
-                TableBase referenceTable = info.getReferenceTable();
-                String referenceTableTempName = "%s_%s".formatted(referenceTable.getName(), UUID.randomUUID().toString().substring(25));
+                String referenceTableTempName = "%s_%s".formatted(info.getReferenceTableName(), UUID.randomUUID().toString().substring(25));
                 info.getTranslates().forEach((column, alias) -> {
                     starSql.append(",%s.%s as %s ".formatted(referenceTableTempName, column, alias));
                 });
@@ -95,7 +93,7 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             referenceTableTempName, info.getHitField(), other));
                 } else {
                     joinSql.append("\n left join %s as %s on %s.%s = %s.%s %s "
-                        .formatted(referenceTable.getSchemaDotTable(), referenceTableTempName,
+                        .formatted(info.getReferenceFullTableName(), referenceTableTempName,
                             getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 }
