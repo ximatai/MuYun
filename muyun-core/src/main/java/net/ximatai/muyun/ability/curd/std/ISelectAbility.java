@@ -92,8 +92,12 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
                             referenceTableTempName, getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 } else {
+                    String table = info.getReferenceFullTableName();
+                    if (info.isReferenceCustomSelectSqlAbility()) { //自定义sql
+                        table = info.getReferenceCustomSql();
+                    }
                     joinSql.append("\n left join %s as %s on %s.%s = %s.%s %s "
-                        .formatted(info.getReferenceFullTableName(), referenceTableTempName,
+                        .formatted(table, referenceTableTempName,
                             getMainTable(), info.getRelationColumn(),
                             referenceTableTempName, info.getHitField(), other));
                 }

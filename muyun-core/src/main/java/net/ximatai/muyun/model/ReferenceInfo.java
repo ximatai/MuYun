@@ -2,6 +2,7 @@ package net.ximatai.muyun.model;
 
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.curd.std.ICustomSelectSqlAbility;
+import net.ximatai.muyun.core.exception.MuYunException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +26,20 @@ public class ReferenceInfo {
         this.ctrl = ctrl;
     }
 
-    public String getReferenceFullTableName() {
+    public boolean isReferenceCustomSelectSqlAbility() {
+        return ctrl instanceof ICustomSelectSqlAbility;
+    }
+
+    public String getReferenceCustomSql() {
         if (ctrl instanceof ICustomSelectSqlAbility ability) {
-            return "(%s) as %s".formatted(ability.getCustomSql(), ctrl.getTableBase().getName());
+            return "(%s)".formatted(ability.getCustomSql());
         } else {
-            return ctrl.getSchemaDotTable();
+            throw new MuYunException("Can't get reference custom sql without ICustomSelectSqlAbility");
         }
+    }
+
+    public String getReferenceFullTableName() {
+        return ctrl.getSchemaDotTable();
     }
 
     public String getReferenceTableName() {
