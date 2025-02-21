@@ -24,6 +24,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,10 +101,12 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
     @Path("/rollback/{id}")
     @Operation(summary = "撤销发布公告")
     public int rollback(@PathParam("id") String id) {
-        return getDB().updateItem(getSchemaName(), getMainTable(), Map.of(
-            "id", id,
-            "b_release", false
-        ));
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("t_release", null);
+        map.put("b_release", false);
+
+        return getDB().updateItem(getSchemaName(), getMainTable(), map);
     }
 
     @Override
