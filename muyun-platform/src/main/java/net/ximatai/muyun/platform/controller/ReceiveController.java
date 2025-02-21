@@ -3,9 +3,11 @@ package net.ximatai.muyun.platform.controller;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IReferenceAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.model.IRuntimeUser;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -17,7 +19,7 @@ import static net.ximatai.muyun.platform.PlatformConst.DB_SCHEMA;
 
 @Tag(description = "公告接收")
 @Path(BASE_PATH + "/receive")
-public class ReceiveController extends Scaffold implements ISelectAbility, IReferenceAbility {
+public class ReceiveController extends Scaffold implements ISelectAbility, IReferenceAbility, IQueryAbility {
 
     @Inject
     UserInfoController userInfoController;
@@ -34,7 +36,7 @@ public class ReceiveController extends Scaffold implements ISelectAbility, IRefe
 
     @Override
     public Map<String, Object> view(String id) {
-        Map<String, Object> view = ISelectAbility.super.view(id);
+        Map<String, Object> view = IQueryAbility.super.view(id);
         if (view != null) {
             getDB().update("update %s.%s set i_views = i_views + 1 where id = ?".formatted(getSchemaName(), getMainTable()), id);
         }
@@ -58,5 +60,12 @@ public class ReceiveController extends Scaffold implements ISelectAbility, IRefe
                  or (dict_notice_access_scope='department' and '%s' = any(ids_at_org_department))
                  )
             """.formatted(user.getOrganizationId(), user.getDepartmentId());
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE)
+        );
     }
 }
