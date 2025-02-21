@@ -6,17 +6,19 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IReferenceAbility;
+import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
 import net.ximatai.muyun.platform.model.Dict;
 import net.ximatai.muyun.platform.model.DictCategory;
-import net.ximatai.muyun.platform.model.MuYunMessage;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
+import net.ximatai.muyun.platform.model.MuYunMessage;
 import net.ximatai.muyun.platform.service.MessageCenter;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -33,7 +35,7 @@ import static net.ximatai.muyun.platform.controller.NoticeController.MODULE_ALIA
 @Startup
 @Tag(description = "公告发布")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
-public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility, IReferenceAbility {
+public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility, IReferenceAbility, IQueryAbility {
     public final static String MODULE_ALIAS = "notice";
 
     @Inject
@@ -157,6 +159,13 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
     public List<ReferenceInfo> getReferenceList() {
         return List.of(
             userInfoController.toReferenceInfo("id_at_auth_user__create").add("v_name", "v_name_from")
+        );
+    }
+
+    @Override
+    public List<QueryItem> queryItemList() {
+        return List.of(
+            QueryItem.of("v_title").setSymbolType(QueryItem.SymbolType.LIKE)
         );
     }
 }
