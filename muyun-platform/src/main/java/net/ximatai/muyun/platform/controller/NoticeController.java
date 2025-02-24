@@ -135,14 +135,20 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
                 from platform.auth_user
                          join platform.auth_userinfo on auth_user.id = auth_userinfo.id
                 where b_enabled = true
-                and id_at_org_organization = any(select ids_at_org_organization from platform.app_notice where id = ?)
+                  and exists(select 1
+                           from platform.app_notice
+                           where auth_userinfo.id_at_org_organization = any (app_notice.ids_at_org_organization)
+                             and id = ?)
                 """, id).stream().map(it -> (String) it.get("id")).collect(Collectors.toSet());
             case "department" -> getDB().query("""
                 select auth_user.id
                 from platform.auth_user
                          join platform.auth_userinfo on auth_user.id = auth_userinfo.id
                 where b_enabled = true
-                and id_at_org_department = any(select ids_at_org_department from platform.app_notice where id = ?)
+                  and exists(select 1
+                           from platform.app_notice
+                           where auth_userinfo.id_at_org_department = any (app_notice.ids_at_org_organization)
+                             and id = ?)
                 """, id).stream().map(it -> (String) it.get("id")).collect(Collectors.toSet());
             default -> Set.of();
         };
