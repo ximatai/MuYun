@@ -65,7 +65,7 @@ public class ReceiveController extends Scaffold implements ISelectAbility, IRefe
     @Override
     public List<QueryItem> queryItemList() {
         return List.of(
-            QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE)
+            QueryItem.of("v_title").setSymbolType(QueryItem.SymbolType.LIKE)
         );
     }
 }
