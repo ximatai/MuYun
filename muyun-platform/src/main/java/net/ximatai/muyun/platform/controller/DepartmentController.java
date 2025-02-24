@@ -66,12 +66,22 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Override
     public List<TreeNode> tree(String rootID, Boolean showMe, String labelColumn, Integer maxLevel) {
         if (StringUtil.isBlank(rootID)) {
-            rootID = getUser().getDepartmentId() != null ? getUser().getDepartmentId() : getUser().getOrganizationId();
+            rootID = getUser().getOrganizationId(); // 默认考虑构建当前机构的整棵部门树
         }
+
         if (showMe == null) {
             showMe = false;
         }
-        return ITreeAbility.super.tree(rootID, showMe, labelColumn, maxLevel);
+        List<TreeNode> tree = ITreeAbility.super.tree(rootID, showMe, labelColumn, maxLevel);
+
+        if (tree.isEmpty()) {
+            List list = this.view(null, null, true, null).getList();
+            if (!list.isEmpty()) { //树没构建出来，但是 list 其实是有内容的，那么就放弃 rootID 来构建树
+                return ITreeAbility.super.tree(null, showMe, labelColumn, maxLevel);
+            }
+        }
+
+        return tree;
     }
 
     @Override
