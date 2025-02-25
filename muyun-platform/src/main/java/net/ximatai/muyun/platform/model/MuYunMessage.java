@@ -26,6 +26,7 @@ public class MuYunMessage {
         JsonObject json = new JsonObject();
         json.put("title", title);
         json.put("content", content);
+        json.put("url", url);
         json.put("createdAt", createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         return json;
     }
