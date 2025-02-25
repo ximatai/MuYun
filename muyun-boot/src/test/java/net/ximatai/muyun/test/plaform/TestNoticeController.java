@@ -44,6 +44,13 @@ public class TestNoticeController {
         List<Map> list = view.getList();
         Optional optional = list.stream().filter(ele -> ele.get("id").equals(id)).findFirst();
         assertTrue(optional.isPresent());
+
+        long unreadCount = receiveController.unreadCount();
+        assertEquals(1L, unreadCount);
+
+        receiveController.view(id);
+
+        assertEquals(0L, receiveController.unreadCount());
     }
 
     @Test
