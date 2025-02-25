@@ -167,6 +167,8 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
         users.forEach(it -> {
             messageCenter.send(it, message);
         });
+
+        messageCenter.channelChanged("notice");
     }
 
     @Override

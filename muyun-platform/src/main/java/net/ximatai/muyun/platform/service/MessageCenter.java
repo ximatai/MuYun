@@ -12,7 +12,11 @@ public class MessageCenter {
     EventBus eventBus;
 
     public void send(String userID, MuYunMessage message) {
-        eventBus.send(channelForUser(userID), message.toJson());
+        eventBus.publish(channelForUser(userID), message.toJson());
+    }
+
+    public void channelChanged(String channel) {
+        eventBus.publish("web.channel.%s".formatted(channel), true);
     }
 
     private static String channelForUser(String userID) {
