@@ -123,13 +123,18 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             String adminPassword = System.getenv("MUYUN_PASSWORD");
 
             if (adminUsername == null || adminPassword == null) {
-                System.out.println("SuperUser not found in the database.");
-                System.out.println("Please input the initial admin account details:");
+                if (isTestMode()) {
+                    adminUsername = "admin";
+                    adminPassword = "Admin@2025";
+                } else {
+                    System.out.println("SuperUser not found in the database.");
+                    System.out.println("Please input the initial admin account details:");
 
-                Scanner scanner = new Scanner(System.in);
+                    Scanner scanner = new Scanner(System.in);
 
-                adminUsername = promptForInput(scanner, "Please create a username for the administrator account (e.g., admin): ");
-                adminPassword = promptForInput(scanner, "Please create a secure password for the administrator account: ");
+                    adminUsername = promptForInput(scanner, "Please create a username for the administrator account (e.g., admin): ");
+                    adminPassword = promptForInput(scanner, "Please create a secure password for the administrator account: ");
+                }
             } else {
                 logger.info("USE ENVIRONMENT INFORMATION");
                 logger.info("ADMIN USERNAME: {}", adminUsername);
@@ -331,10 +336,6 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     private String promptForInput(Scanner scanner, String promptMessage) {
-        if (isTestMode()) { // 单元测试模式，锁定用户名密码
-            return "admin";
-        }
-
         String input;
         do {
             System.out.print(promptMessage);
