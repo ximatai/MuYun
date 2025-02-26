@@ -75,10 +75,8 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
         List<TreeNode> tree = ITreeAbility.super.tree(rootID, showMe, labelColumn, maxLevel);
 
         if (tree.isEmpty()) {
-            List list = this.view(null, null, true, null).getList();
-            if (!list.isEmpty()) { //树没构建出来，但是 list 其实是有内容的，那么就放弃 rootID 来构建树
-                return ITreeAbility.super.tree(null, showMe, labelColumn, maxLevel);
-            }
+            //树没构建出来，可能是 rootID 不在权限范围内，那么就放弃 rootID 来构建树
+            return ITreeAbility.super.tree(null, showMe, labelColumn, maxLevel);
         }
 
         return tree;
