@@ -116,7 +116,9 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
         map.put("t_release", null);
         map.put("b_release", false);
 
-        return getDB().updateItem(getSchemaName(), getMainTable(), map);
+        Integer i = getDB().updateItem(getSchemaName(), getMainTable(), map);
+        messageCenter.channelChanged("notice");
+        return i;
     }
 
     @Override
