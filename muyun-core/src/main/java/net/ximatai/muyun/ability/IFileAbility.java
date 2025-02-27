@@ -38,6 +38,9 @@ public interface IFileAbility {
                 if (o instanceof String str && str.contains(fileID)) {
                     exists = true;
                 }
+                if (o instanceof String[] arr && List.of(arr).contains(fileID)) {
+                    exists = true;
+                }
                 if (o instanceof List<?> list && list.contains(dataID)) {
                     exists = true;
                 }

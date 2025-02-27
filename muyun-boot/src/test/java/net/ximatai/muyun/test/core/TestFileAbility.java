@@ -54,14 +54,14 @@ public class TestFileAbility {
     }
 
     @Test
-    @DisplayName("测试上传文件")
-    void testUpload() {
+    @DisplayName("测试上传下载文件")
+    void testUploadAndDownload() {
 
         // 文件上传
         Response response = given()
             .multiPart("file", tempFile)
             .when()
-            .post("/api/platform/file/upload")
+            .post("/api/platform/testfile/upload")
             .then()
             .log().all()
             .statusCode(200)
@@ -72,9 +72,9 @@ public class TestFileAbility {
 
         String id = given()
             .contentType("application/json")
-            .body(Map.of("v_name", "test", "file_atta", fileID))
+            .body(Map.of("v_name", "test", "files_att", List.of(fileID)))
             .when()
-            .post("/api/platform/file/create")
+            .post("/api/platform/testfile/create")
             .then()
             .statusCode(200)
             .extract()
@@ -84,7 +84,7 @@ public class TestFileAbility {
         Response response2 = given()
             .when()
             .queryParam("fileID", fileID)
-            .get("/api/platform/file/download/" + id)
+            .get("/api/platform/testfile/download/" + id)
             .then()
             .log().all()
             .statusCode(200)
@@ -109,7 +109,7 @@ public class TestFileAbility {
     }
 }
 
-@Path("/platform/file")
+@Path("/platform/testfile")
 class TestFileAbilityController extends BaseScaffold implements IFileAbility {
 
     @Inject
@@ -130,7 +130,8 @@ class TestFileAbilityController extends BaseScaffold implements IFileAbility {
         wrapper
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name").setType(ColumnType.VARCHAR))
-            .addColumn("file_atta");
+            .addColumn("file_att")
+            .addColumn("files_att");
     }
 
     @Override
@@ -141,7 +142,8 @@ class TestFileAbilityController extends BaseScaffold implements IFileAbility {
     @Override
     public List<String> fileColumns() {
         return List.of(
-            "file_atta"
+            "file_att",
+            "files_att"
         );
     }
 }
