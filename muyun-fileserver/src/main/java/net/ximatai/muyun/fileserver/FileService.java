@@ -4,7 +4,6 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.file.FileSystem;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -108,19 +107,6 @@ public class FileService implements IFileService {
 
     public String save(File file) {
         return this.save(file, file.getName());
-    }
-
-    // 异步save方法
-    public String save1(File file, String assignName) {
-        String saveId = generateBsyUid();
-        String saveFileNameUid = suffixFileNameWithN(saveId);
-        String saveFileContextUid = suffixFileNameWithO(saveId);
-        FileSystem fileSystem = vertx.fileSystem();
-        // 写入文件名
-        fileSystem.writeFile(folderPath + saveFileNameUid, Buffer.buffer(assignName));
-        fileSystem.copy(file.getAbsolutePath(), folderPath + saveFileContextUid);
-        fileSystem.delete(file.getAbsolutePath());
-        return "%s@%s".formatted(saveId, assignName);
     }
 
     // 同步save方法

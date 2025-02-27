@@ -20,8 +20,6 @@ public class FileServer {
 
     final Logger logger = LoggerFactory.getLogger(getClass());
 
-    String originalFileName;
-
     @Inject
     FileServerConfig config;
 
@@ -87,7 +85,7 @@ public class FileServer {
         ctx.response().setChunked(true);
         for (FileUpload f : ctx.fileUploads()) {
             String uploadedFileName = f.uploadedFileName();
-            originalFileName = f.fileName();
+            String originalFileName = f.fileName();
             logger.info("uploaded file name: {}", uploadedFileName);
             File file = new File(uploadedFileName);
             String id = fileService.save(file, originalFileName);
