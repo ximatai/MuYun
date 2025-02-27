@@ -6,11 +6,13 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
+import net.ximatai.muyun.ability.IFileAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.fileserver.IFileService;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
@@ -38,7 +40,7 @@ import static net.ximatai.muyun.platform.controller.NoticeController.MODULE_ALIA
 @Startup
 @Tag(description = "公告发布")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
-public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility, IReferenceAbility, IQueryAbility, IChildrenAbility {
+public class NoticeController extends ScaffoldForPlatform implements IModuleRegisterAbility, IReferenceAbility, IQueryAbility, IChildrenAbility, IFileAbility {
     public final static String MODULE_ALIAS = "notice";
 
     @Inject
@@ -55,6 +57,9 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
 
     @Inject
     NoticeReadController noticeReadController;
+
+    @Inject
+    IFileService fileService;
 
     @Override
     public String getMainTable() {
@@ -189,6 +194,18 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
     public List<ChildTableInfo> getChildren() {
         return List.of(
             noticeReadController.toChildTable("id_at_app_notice").setAutoDelete()
+        );
+    }
+
+    @Override
+    public IFileService getFileService() {
+        return fileService;
+    }
+
+    @Override
+    public List<String> fileColumns() {
+        return List.of(
+            "files_att"
         );
     }
 }
