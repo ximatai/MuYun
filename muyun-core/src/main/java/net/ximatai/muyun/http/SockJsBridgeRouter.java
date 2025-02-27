@@ -23,8 +23,8 @@ public class SockJsBridgeRouter {
 
     private SockJSBridgeOptions createBridgeOptions() {
         SockJSBridgeOptions options = new SockJSBridgeOptions();
-        options.addInboundPermitted(new PermittedOptions().setAddress("web\\..+"));
-        options.addOutboundPermitted(new PermittedOptions().setAddress("web\\..+"));
+        options.addInboundPermitted(new PermittedOptions().setAddressRegex("web\\..+"));
+        options.addOutboundPermitted(new PermittedOptions().setAddressRegex("web\\..+"));
         options.addOutboundPermitted(new PermittedOptions().setAddressRegex("data.change\\..+").setMatch(new JsonObject().put("toFrontEnd", true)));
         return options;
     }
