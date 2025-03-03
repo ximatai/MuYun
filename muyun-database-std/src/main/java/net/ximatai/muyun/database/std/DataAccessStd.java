@@ -207,21 +207,18 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
     }
 
     @Override
-    public Object execute(String sql) {
-        getJdbi().withHandle(handle -> handle.execute(sql));
-        return null;
+    public Integer execute(String sql) {
+        return getJdbi().withHandle(handle -> handle.execute(sql));
     }
 
     @Override
-    public Object execute(String sql, Object... params) {
-        getJdbi().withHandle(handle -> handle.execute(sql, params));
-        return null;
+    public Integer execute(String sql, Object... params) {
+        return getJdbi().withHandle(handle -> handle.execute(sql, params));
     }
 
     @Override
-    public Object execute(String sql, List<?> params) {
-        getJdbi().withHandle(handle -> handle.execute(sql, params.toArray()));
-        return null;
+    public Integer execute(String sql, List<?> params) {
+        return getJdbi().withHandle(handle -> handle.execute(sql, params.toArray()));
     }
 
     public Array createArray(List list, String type) {
