@@ -20,6 +20,7 @@ import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.platform.model.LoginUser;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -159,12 +160,8 @@ public class SsoController implements IRuntimeAbility {
     @POST
     @Path("/login")
     @Operation(summary = "登录")
-    public IRuntimeUser login(Map body) {
-        String username = (String) body.get("username");
-        String password = (String) body.get("password");
-        String code = (String) body.get("code");
-
-        return login(username, password, code);
+    public IRuntimeUser login(LoginUser user) {
+        return login(user.username(), user.password(), user.code());
     }
 
     @GET

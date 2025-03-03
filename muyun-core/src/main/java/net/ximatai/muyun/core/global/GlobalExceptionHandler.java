@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import static jakarta.ws.rs.core.Response.Status.*;
 
 @Provider
-public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRuntimeAbility {
+public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRuntimeAbility {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Exception>, IRunt
     RoutingContext routingContext;
 
     @Override
-    public Response toResponse(Exception e) {
+    public Response toResponse(Throwable e) {
         // 默认的响应状态是内部服务器错误
         Response.Status responseStatus = INTERNAL_SERVER_ERROR;
         String requestPath = uriInfo.getRequestUri().getPath();
