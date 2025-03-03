@@ -40,7 +40,7 @@ public class RootFilter {
         if (config.useSession()) {
             int hour = config.sessionTimeoutHour();
             long timeOut = (long) hour * 60 * 60 * 1000;
-            sessionHandler = SessionHandler.create(LocalSessionStore.create(vertx)).setSessionTimeout(timeOut);
+            sessionHandler = SessionHandler.create(LocalSessionStore.create(vertx)).setSessionTimeout(timeOut).setCookieHttpOnlyFlag(true);
         }
     }
 
