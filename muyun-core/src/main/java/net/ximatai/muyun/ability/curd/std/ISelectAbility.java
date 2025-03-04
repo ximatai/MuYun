@@ -257,6 +257,10 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
     private void buildUpQuery(StringBuilder condition, QueryGroup group, Map<String, Object> queryBody, List<Object> params, String sqlSymbol) {
         QueryItem qi = group.getQueryItem();
 
+        if (qi.isRequired() && (queryBody.get(qi.getAlias()) == null || queryBody.get(qi.getAlias()).equals(""))) {
+            throw new QueryException("查询条件 %s 为必填".formatted(qi.getAlias()));
+        }
+
         StringBuilder part = new StringBuilder();
 
         if (qi != null && (queryBody.containsKey(qi.getAlias()) || qi.getDefaultValue() != null)) {

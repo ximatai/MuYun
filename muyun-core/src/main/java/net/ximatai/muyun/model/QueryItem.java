@@ -21,7 +21,7 @@ public class QueryItem {
     private boolean isDatetime = false;
     private boolean isBoolean = false;
     private boolean isHide = false; //ui
-    private boolean isNotNull = false;
+    private boolean isRequired = false;
 
     private Object defaultValue;
 
@@ -106,8 +106,8 @@ public class QueryItem {
         return this;
     }
 
-    public QueryItem setNotNull(boolean notNull) {
-        isNotNull = notNull;
+    public QueryItem setRequired(boolean required) {
+        isRequired = required;
         return this;
     }
 
@@ -164,8 +164,8 @@ public class QueryItem {
         return isHide;
     }
 
-    public boolean isNotNull() {
-        return isNotNull;
+    public boolean isRequired() {
+        return isRequired;
     }
 
     public Object getDefaultValue() {
