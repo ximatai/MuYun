@@ -1,11 +1,11 @@
 [versions]
 testcontainers = "1.20.3"
-quarkus = "3.17.5"
-jdbi = "3.47.0"
+quarkus = "3.19.1"
+jdbi = "3.48.0"
 yasson = "3.0.4"
-bcprov = "1.79"
-caffeine = "3.1.8"
-codec = "1.17.1"
+bcprov = "1.80"
+caffeine = "3.2.0"
+codec = "1.18.0"
 
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
