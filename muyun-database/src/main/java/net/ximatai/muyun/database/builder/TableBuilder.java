@@ -8,10 +8,7 @@ import net.ximatai.muyun.database.metadata.DBInfo;
 import net.ximatai.muyun.database.metadata.DBSchema;
 import net.ximatai.muyun.database.metadata.DBTable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class TableBuilder {
 
@@ -132,6 +129,25 @@ public class TableBuilder {
                 db.execute("alter table %s.%s alter column %s drop default".formatted(dbTable.getSchema(), dbTable.getName(), name));
                 db.execute("drop sequence if exists %s.%s;".formatted(dbTable.getSchema(), seq));
             }
+        }
+
+        boolean isColumnTypeChange = !(
+            ("bool".equals(dbColumn.getType()) && ColumnType.BOOLEAN.equals(dataType)) ||
+                ("_varchar".equals(dbColumn.getType()) && ColumnType.VARCHAR_ARRAY.equals(dataType)) ||
+                dbColumn.getType().contains(type.toLowerCase())
+        );
+        if (isColumnTypeChange) {
+            Map<ColumnType, String> typeConverterMap = new HashMap<>();
+            typeConverterMap.put(ColumnType.VARCHAR, "");
+            typeConverterMap.put(ColumnType.INT, "USING %s::integer");
+            typeConverterMap.put(ColumnType.BOOLEAN, "USING %s::boolean");
+            typeConverterMap.put(ColumnType.TIMESTAMP, "USING %s::timestamp without time zone");
+            typeConverterMap.put(ColumnType.DATE, "USING %s::date");
+            typeConverterMap.put(ColumnType.NUMERIC, "USING %s::numeric");
+            typeConverterMap.put(ColumnType.JSON, "USING %s::jsonb");
+            typeConverterMap.put(ColumnType.VARCHAR_ARRAY, "using %s::integer[]");
+            db.execute("alter table %s.%s alter column %s type %s %s;"
+                .formatted(dbTable.getSchema(), dbTable.getName(), name, type, typeConverterMap.get(dataType).formatted(name)));
         }
 
         if (primaryKey && !dbColumn.isPrimaryKey()) {
