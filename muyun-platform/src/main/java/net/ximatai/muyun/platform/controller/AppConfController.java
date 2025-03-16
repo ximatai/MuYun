@@ -82,7 +82,7 @@ public class AppConfController extends Scaffold implements ICreateAbility, ISele
 
     @Override
     public ModuleConfig getModuleConfig() {
-        return ModuleConfig.ofName("用户管理")
+        return ModuleConfig.ofName("平台设置")
             .setAlias(MODULE_ALIAS)
             .setTable(getMainTable())
             .setUrl("platform/conf/index")
