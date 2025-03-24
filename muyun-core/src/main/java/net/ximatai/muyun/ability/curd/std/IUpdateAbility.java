@@ -66,7 +66,7 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
             String pid = (String) body.get(treeAbility.getParentKeyColumn().getName());
             if (pid != null) {
-                List<TreeNode> tree = treeAbility.tree(id, false, null, null);
+                List<TreeNode> tree = treeAbility.tree(id, true, null, null);
                 if (isIdInTree(tree, pid)) {
                     throw new MuYunException("不能编辑该节点的父节点为其子孙节点");
                 }
