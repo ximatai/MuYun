@@ -12,11 +12,14 @@ import jakarta.ws.rs.core.Response;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.fileserver.IFileService;
+import net.ximatai.muyun.fileserver.exception.FileException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import java.io.File;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -59,15 +62,18 @@ public interface IFileAbility {
     default Response download(@PathParam("id") String id, @QueryParam("fileID") String fileID) {
 
         checkFileBelongsToData(fileID, id);
-        File file = getFileService().get(fileID);
+        try {
+            File file = getFileService().get(fileID);
+            String name = getFileService().info(fileID).getName();
+            return Response.ok(file)
+                .header("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(name, StandardCharsets.UTF_8))
+                .header("Content-type", "application/octet-stream")
+                .build();
 
-        if (file == null || !file.exists()) {
+        } catch (FileException e) {
             return Response.status(Response.Status.NOT_FOUND).entity("File not found").build();
         }
 
-        return Response.ok(file)
-            .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-            .build();
     }
 
     @POST

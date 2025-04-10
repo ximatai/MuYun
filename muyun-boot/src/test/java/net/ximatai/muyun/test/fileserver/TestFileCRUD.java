@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileInfoEntity;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
+import net.ximatai.muyun.fileserver.exception.FileException;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class TestFileCRUD {
 
     @Test
     @DisplayName("测试文件上传、下载、删除")
-    void testCRUD() throws IOException {
+    void testCRUD() throws IOException, FileException {
         // save()
         int fileNameInt = getRandomInt();
         String fileName = fileNameInt + ".txt";
@@ -65,8 +66,7 @@ public class TestFileCRUD {
         File file = service.get(id);
         if (file == null) System.out.println("file is null");
         assert file != null;
-        String newFileName = file.getName();
-        assertEquals(fileName.substring(0, 10), newFileName.substring(0, 10));
+
         String newFileContent = Files.readString(Paths.get(file.getPath()));
         assertEquals(fileContent, newFileContent);
 

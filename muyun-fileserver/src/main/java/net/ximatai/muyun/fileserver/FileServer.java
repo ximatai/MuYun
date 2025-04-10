@@ -1,13 +1,13 @@
 package net.ximatai.muyun.fileserver;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.fileserver.exception.FileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,32 +102,22 @@ public class FileServer {
     // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
     private void download(RoutingContext ctx) {
         String id = ctx.pathParam("id");
-        File fileObtained = fileService.get(id);
-        if (id.contains("@") && id.length() > 35) {
-            id = id.split("@")[0];
-            String nameFile = fileService.suffixFileNameWithN(id);
-            String nameFilePath = getUploadPath() + nameFile;
-            vertx.fileSystem().readFile(nameFilePath, result -> {
-                if (result.succeeded()) {
-                    Buffer buffer = result.result();
-                    if (fileObtained.exists()) {
-                        ctx.response()
-                            .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(buffer.toString(), StandardCharsets.UTF_8))
-                            .putHeader("Content-type", "application/octet-stream")
-                            .sendFile(fileObtained.getPath());
-                        fileObtained.deleteOnExit();
-                    }
-                } else {
-                    logger.error("Failed to read file name: " + result.cause());
-                    ctx.fail(result.cause());
-                }
-            });
-        } else {
+        try {
+            File fileObtained = fileService.get(id);
+            String name = fileObtained.getName();
+
+            if (id.contains("@") && id.length() > 35) {
+                name = fileService.info(id).name;
+            }
+
             ctx.response()
-                .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(id, StandardCharsets.UTF_8))
+                .putHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(name, StandardCharsets.UTF_8))
                 .putHeader("Content-type", "application/octet-stream")
                 .sendFile(fileObtained.getPath());
+        } catch (FileException e) {
+            ctx.fail(e);
         }
+
     }
 
     // @Route(path = "/fileServer/delete/:id", methods = Route.HttpMethod.GET)
@@ -143,15 +133,15 @@ public class FileServer {
 
     private void info(RoutingContext ctx) {
         String id = ctx.pathParam("id");
-        fileService.asyncInfo(id)
-            .onSuccess(entity -> {
-                ctx.response()
-                    .putHeader("Content-Type", "application/json")
-                    .end(entity.toJson().toString());
-            }).onFailure(err -> {
-                logger.error("Failed to get file info: " + err);
-                ctx.fail(err);
-            });
+
+        try {
+            ctx.response()
+                .putHeader("Content-Type", "application/json")
+                .end(fileService.info(id).toJson().encode());
+        } catch (FileException e) {
+            ctx.fail(e);
+        }
+
     }
 
 }

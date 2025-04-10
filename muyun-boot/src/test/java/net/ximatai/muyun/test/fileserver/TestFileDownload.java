@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
+import net.ximatai.muyun.fileserver.exception.FileException;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +41,7 @@ public class TestFileDownload {
 
     @Test
     @DisplayName("测试文件下载功能，确保多次下载同一个文件时能够正确处理")
-    void testFileDownload() {
+    void testFileDownload() throws FileException {
         String id = service.save(tempFile, fileName).split("@")[0];
         File file = service.get(id);
         String filePath = file.getPath();

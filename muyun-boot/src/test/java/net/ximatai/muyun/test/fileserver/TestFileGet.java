@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.fileserver.FileServerConfig;
 import net.ximatai.muyun.fileserver.IFileService;
+import net.ximatai.muyun.fileserver.exception.FileException;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,13 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class)
 public class TestFileGet {
-    
+
     @Inject
     IFileService service;
-    
+
     @Inject
     FileServerConfig config;
-    
+
     @Test
     @DisplayName("测试文件的移动和重命名操作")
     public void test() throws IOException {
@@ -68,10 +69,10 @@ public class TestFileGet {
         }
 
     }
-    
+
     @Test
     @DisplayName("测试文件的创建、写入、保存和获取操作")
-    public void test2() throws IOException {
+    public void test2() throws IOException, FileException {
         // 文件路径  
         Path filePath = Paths.get("./OctDay.txt");
 
@@ -89,15 +90,15 @@ public class TestFileGet {
         } catch (IOException e) {
             System.err.println("文件创建或写入失败: " + e.getMessage());
         }
-        
+
         File file = filePath.toFile();
         String id = service.save(file, "OctDay.txt");
-        
+
         File fileGet = service.get(id);
         System.out.println(fileGet.getName());
         System.out.println(file.getName());
         System.out.println(fileGet.getAbsolutePath());
-        assertEquals(fileGet.getName(), file.getName());
+        assertEquals(service.info(id).getName(), file.getName());
         service.delete(id);
     }
 

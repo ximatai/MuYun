@@ -1,20 +1,19 @@
 package net.ximatai.muyun.fileserver;
 
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import net.ximatai.muyun.fileserver.exception.FileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,8 +21,6 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @ApplicationScoped
 public class FileService implements IFileService {
@@ -59,50 +56,37 @@ public class FileService implements IFileService {
     }
 
     // 异步得到文件信息
-    public Future<FileInfoEntity> asyncInfo(String id) {
+    public FileInfoEntity info(String id) throws FileException {
         if (id.contains("@")) {
             id = id.split("@")[0];
         }
-        Promise<FileInfoEntity> promise = Promise.promise();
-        String fileNamePath = suffixFileNameWithN(folderPath + id);
-        String fileContentPath = suffixFileNameWithO(folderPath + id);
-        File fileContent = new File(fileContentPath);
-        String finalId = id;
-        vertx.fileSystem().readFile(fileNamePath, result -> {
-            if (result.succeeded()) {
-                Buffer buffer = result.result();
-                String line = buffer.toString("UTF-8");
-                String suffix = line.split("\\.")[1];
-                Path path = Paths.get(fileNamePath);
-                String createTime = "00:00";
-                try {
-                    BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
-                    FileTime creationTime = attrs.creationTime();
-                    createTime = creationTime.toString();
-                } catch (IOException e) {
-                    logger.error("Failed to read file attributes", e);
-                }
-                FileInfoEntity entity = new FileInfoEntity(line, fileContent.length(), suffix, finalId, createTime);
-                promise.complete(entity);
-            } else {
-                logger.error("Failed to read file name: " + result.cause());
-                promise.fail(result.cause());
-            }
-        });
-        return promise.future();
-    }
 
-    public FileInfoEntity info(String id) {
-        CompletableFuture<FileInfoEntity> completableFuture = new CompletableFuture<FileInfoEntity>();
-        asyncInfo(id)
-            .onSuccess(completableFuture::complete)
-            .onFailure(completableFuture::completeExceptionally);
-        try {
-            return completableFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error("Failed to get file info", e);
-            throw new RuntimeException(e);
+        Path pathN = Paths.get(folderPath + suffixFileNameWithN(id));
+        Path pathO = Paths.get(folderPath + suffixFileNameWithO(id));
+
+        if (!Files.isReadable(pathN) || !Files.isReadable(pathO)) {
+            throw new FileException("File not found: " + id);
         }
+
+        File fileContent = pathO.toFile();
+        String finalId = id;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathN.toFile()))) {
+            String line = br.readLine();
+            String suffix = line.split("\\.")[1];
+            String createTime = "00:00";
+            try {
+                BasicFileAttributes attrs = Files.readAttributes(pathO, BasicFileAttributes.class);
+                FileTime creationTime = attrs.creationTime();
+                createTime = creationTime.toString();
+            } catch (IOException e) {
+                logger.error("Failed to read file attributes", e);
+            }
+            return new FileInfoEntity(line, fileContent.length(), suffix, finalId, createTime);
+        } catch (IOException e) {
+            throw new FileException(e);
+        }
+
     }
 
     public String save(File file) {
@@ -130,7 +114,7 @@ public class FileService implements IFileService {
     }
 
     // 获取文件
-    public File get(String idOrName) {
+    public File get(String idOrName) throws FileException {
         // 根据文件名查找文件
         File fileDirectory = new File(folderPath);
         File[] files = fileDirectory.listFiles();
@@ -147,31 +131,24 @@ public class FileService implements IFileService {
         if (idOrName.contains("@")) {
             id = id.split("@")[0];
         }
-        String nameFile = suffixFileNameWithN(id);
-        String contentFile = suffixFileNameWithO(id);
-        String nameFilePath = folderPath + nameFile;
-        String contentFilePath = folderPath + contentFile;
-        Path pathN = Paths.get(nameFilePath);
-        Path pathO = Paths.get(contentFilePath);
-        if (!Files.exists(pathN)) return null;
+
+        Path pathN = Paths.get(folderPath + suffixFileNameWithN(id));
+        Path pathO = Paths.get(folderPath + suffixFileNameWithO(id));
+
+        if (!Files.isReadable(pathN) || !Files.isReadable(pathO)) {
+            throw new FileException("File not found: " + idOrName);
+        }
+
         try {
-            String name = Files.readString(pathN, StandardCharsets.UTF_8);
-            byte[] bytes = Files.readAllBytes(pathO);
-            // 上传文件副本
-            File newFile = File.createTempFile(name.split("\\.")[0], "." + name.split("\\.")[1]);
-            Files.write(Paths.get(newFile.getPath()), bytes);
-            String indirectPath = newFile.getAbsolutePath().split(name.split("\\.")[0])[0];
-            String uid = generateBsyUid();
-            String directoryPath = indirectPath + uid;
-            File directory = new File(directoryPath);
-            boolean result = directory.mkdirs();
-            Path sourcePath = Paths.get(newFile.getAbsolutePath());
-            Path targetDir = Paths.get(directory.getAbsolutePath());
-            Path targetPath = targetDir.resolve(name);
-            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-            return targetPath.toFile();
+            //复制文件
+            File tempFile = File.createTempFile("fileserver", ".tmp");
+            tempFile.deleteOnExit();
+
+            Files.copy(pathO, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            return tempFile;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(e);
         }
     }
 
