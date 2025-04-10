@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class FileServer {
@@ -83,19 +85,18 @@ public class FileServer {
     private void upload(RoutingContext ctx) {
         // 支持分块传输编码
         ctx.response().setChunked(true);
+        List<String> ids = new ArrayList<>();
         for (FileUpload f : ctx.fileUploads()) {
             String uploadedFileName = f.uploadedFileName();
             String originalFileName = f.fileName();
             logger.info("uploaded file name: {}", uploadedFileName);
             File file = new File(uploadedFileName);
-            String id = fileService.save(file, originalFileName);
-            ctx.response()
-                .putHeader("Content-Type", "text/plain;charset=utf-8")
-                .write(id);
+            ids.add(fileService.save(file, originalFileName));
         }
+
         ctx.response()
-            // .putHeader("Content-Type", "text/plain;charset=utf-8")
-            .end();
+            .putHeader("Content-Type", "text/plain;charset=utf-8")
+            .end(String.join("\n", ids));
     }
 
     // @Route(path = "/fileServer/download/:id", methods = Route.HttpMethod.GET)
