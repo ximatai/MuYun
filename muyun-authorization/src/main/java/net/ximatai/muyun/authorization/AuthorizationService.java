@@ -33,15 +33,15 @@ public class AuthorizationService implements IAuthorizationService {
     MuYunConfig config;
 
     private final LoadingCache<String, Map<String, Object>> moduleCache = Caffeine.newBuilder()
-        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadModule);
 
     private final LoadingCache<String, Map<String, Object>> userinfoCache = Caffeine.newBuilder()
-        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .expireAfterWrite(30, TimeUnit.SECONDS)
         .build(this::loadUserinfo);
 
     private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
-        .expireAfterWrite(5, TimeUnit.MINUTES)
+        .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadAction);
 
     private final LoadingCache<String, Set<String>> organizationToRegions = Caffeine.newBuilder()
@@ -49,7 +49,7 @@ public class AuthorizationService implements IAuthorizationService {
         .build(this::loadRegions);
 
     private final LoadingCache<String, List<Map<String, Object>>> allOrgAndDept = Caffeine.newBuilder()
-        .expireAfterWrite(3, TimeUnit.MINUTES)
+        .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadOrgAndDept);
 
     public void invalidateAll() {
