@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import io.vertx.core.http.Cookie;
+import io.vertx.core.http.CookieSameSite;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import jakarta.inject.Inject;
@@ -194,7 +195,7 @@ public class SsoController implements IRuntimeAbility {
         String text = specCaptcha.text().toLowerCase();
 
         // 生成 MD5
-        response.addCookie(Cookie.cookie(KAPTCHA_COOKIE_KEY, hashText(text)).setHttpOnly(true).setPath("/"));
+        response.addCookie(Cookie.cookie(KAPTCHA_COOKIE_KEY, hashText(text)).setHttpOnly(true).setPath("/").setSameSite(CookieSameSite.STRICT));
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             specCaptcha.out(os);  // 将图片写入到 ByteArrayOutputStream
