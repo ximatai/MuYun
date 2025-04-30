@@ -1,0 +1,10 @@
+ POST http://127.0.0.1:8080/api/sso/login
+Content-Type: application/json
+
+{
+ "username":"admin",
+ "password":"admin",
+ "code":"xxx"
+}
+
+###

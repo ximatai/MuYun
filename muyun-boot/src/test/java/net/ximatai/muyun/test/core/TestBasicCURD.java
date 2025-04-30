@@ -4,6 +4,8 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
@@ -24,9 +26,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class)
@@ -273,6 +273,33 @@ class TestBasicCURD {
             .statusCode(404);
     }
 
+    @Test
+    @DisplayName("测试事务情况")
+    void testTransactional() {
+        String id = given()
+            .contentType("application/json")
+            .get("/api/test/test")
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        Map e = (Map) databaseOperations.row("select * from %s where id = :id ".formatted(tableName), Map.of("id", id));
+
+        assertNotNull(id);
+        assertNotNull(e);
+
+        given()
+            .contentType("application/json")
+            .get("/api/test/testFail")
+            .then()
+            .statusCode(500);
+
+        Map e2 = (Map) databaseOperations.row("select * from %s where name = :name ".formatted(tableName), Map.of("name", "test_fail"));
+
+        assertNull(e2);
+    }
+
 }
 
 @Path("/test")  // 访问路径
@@ -287,6 +314,22 @@ class TestBasicCURDController extends Scaffold implements ICURDAbility, ITableCr
     public String getMainTable() {
         return "test_table";
     }  // 表名
+
+    @GET
+    @Path("/testFail")
+    @Transactional
+    public String testFail() {
+        String id = this.create(Map.of("name", "test_fail"));
+        this.getDatabaseOperations().row("select 1/0");
+        return id;
+    }
+
+    @GET
+    @Path("/test")
+    @Transactional
+    public String test() {
+        return this.create(Map.of("name", "test_ok"));
+    }
 
     @Override
     public void fitOut(TableWrapper wrapper) {
