@@ -147,10 +147,5 @@ public class OnlineController implements IRuntimeAbility {
         });
     }
 
-    @Override
-    public RoutingContext getRoutingContext() {
-        return routingContext;
-    }
-
 }
 

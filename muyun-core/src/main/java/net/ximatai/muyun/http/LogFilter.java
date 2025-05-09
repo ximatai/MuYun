@@ -143,9 +143,4 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
         return host;
     }
 
-    @Override
-    public RoutingContext getRoutingContext() {
-        return routingContext;
-    }
-
 }

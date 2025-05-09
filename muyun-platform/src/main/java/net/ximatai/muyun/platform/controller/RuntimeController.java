@@ -93,10 +93,6 @@ public class RuntimeController implements IRuntimeAbility {
         }
     }
 
-    @Override
-    public RoutingContext getRoutingContext() {
-        return routingContext;
-    }
 
     private List<TreeNode> filterMenuByAuth(List<TreeNode> list) {
         String userID = getUser().getId();

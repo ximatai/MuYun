@@ -79,9 +79,6 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRunt
             .build();
     }
 
-    @Override
-    public RoutingContext getRoutingContext() {
-        return routingContext;
-    }
+
 
 }

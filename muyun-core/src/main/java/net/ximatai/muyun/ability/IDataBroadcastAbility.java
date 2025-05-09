@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import io.quarkus.arc.Arc;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import net.ximatai.muyun.model.DataChangeChannel;
@@ -9,7 +10,9 @@ import net.ximatai.muyun.model.DataChangeChannel;
  */
 public interface IDataBroadcastAbility extends IMetadataAbility {
 
-    EventBus getEventBus();
+    default EventBus getEventBus() {
+        return Arc.container().instance(EventBus.class).get();
+    }
 
     default DataChangeChannel getDataChangeChannel() {
         return new DataChangeChannel(this);

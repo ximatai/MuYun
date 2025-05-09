@@ -44,9 +44,4 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
 
     }
 
-    @Override
-    public RoutingContext getRoutingContext() {
-        return routingContext;
-    }
-
 }

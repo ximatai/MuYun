@@ -1,6 +1,7 @@
 package net.ximatai.muyun.platform.controller;
 
 import io.quarkus.runtime.Startup;
+import io.vertx.core.eventbus.EventBus;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IChildrenAbility;
@@ -28,6 +29,9 @@ import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 public class RegionController extends ScaffoldForPlatform implements ITreeAbility, IReferableAbility, IChildrenAbility, IDataCheckAbility, IDataBroadcastAbility {
 
     @Inject
+    EventBus eventBus;
+
+    @Inject
     SupervisionRegionController supervisionRegionController;
 
     @Override
@@ -40,7 +44,7 @@ public class RegionController extends ScaffoldForPlatform implements ITreeAbilit
     @Override
     protected void afterInit() {
         super.afterInit();
-        getEventBus().consumer(getDataChangeChannel().getAddress(), message -> {
+        eventBus.consumer(getDataChangeChannel().getAddress(), message -> {
             regions = null;
         });
     }

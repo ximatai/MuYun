@@ -3,6 +3,7 @@ package net.ximatai.muyun.platform.controller;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.quarkus.runtime.Startup;
+import io.vertx.core.eventbus.EventBus;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -39,6 +40,9 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     @Inject
     DictController dictController;
 
+    @Inject
+    EventBus eventBus;
+
     private final LoadingCache<String, List<DictTreeNode>> categoryCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadCategory);
@@ -47,7 +51,7 @@ public class DictCategoryController extends ScaffoldForPlatform implements ITree
     protected void afterInit() {
         super.afterInit();
         String address = dictController.getDataChangeChannel().getAddress();
-        getEventBus().consumer(address).handler(it -> {
+        eventBus.consumer(address).handler(it -> {
             categoryCache.invalidateAll();
         });
     }

@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import io.quarkus.arc.Arc;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -13,7 +14,9 @@ import java.util.stream.Collectors;
  */
 public interface IAuthAbility extends IRuntimeAbility {
 
-    IAuthorizationService getAuthorizationService();
+    default IAuthorizationService getAuthorizationService() {
+        return Arc.container().instance(IAuthorizationService.class).get();
+    }
 
     @GET
     @Path("/actions")

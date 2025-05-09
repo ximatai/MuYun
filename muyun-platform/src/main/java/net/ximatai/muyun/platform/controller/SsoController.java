@@ -219,10 +219,6 @@ public class SsoController implements IRuntimeAbility {
         return DigestUtils.sha256Hex(text + "MuYun").substring(0, 16);
     }
 
-    @Override
-    public RoutingContext getRoutingContext() {
-        return routingContext;
-    }
 
     private IRuntimeUser mapToUser(Map user) {
         return new RuntimeUser()
