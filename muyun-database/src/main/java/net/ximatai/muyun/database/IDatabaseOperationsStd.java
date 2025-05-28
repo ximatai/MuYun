@@ -12,7 +12,7 @@ public interface IDatabaseOperationsStd extends IDatabaseOperations {
         return (String) IDatabaseOperations.super.insertItem(schema, tableName, params);
     }
 
-    default List<String> insertList(String schema, String tableName, List<? extends Map<String, ?>> list) {
+    default List<String> insertList(String schema, String tableName, List<Map> list) {
         return (List<String>) IDatabaseOperations.super.insertList(schema, tableName, list);
     }
 
@@ -38,7 +38,7 @@ public interface IDatabaseOperationsStd extends IDatabaseOperations {
 
     <T> T insert(String sql, Map<String, ?> params, String pk, Class<T> idType);
 
-    <T> List<T> batchInsert(String sql, List<? extends Map<String, ?>> paramsList, String pk, Class<T> idType);
+    <T> List<T> batchInsert(String sql, List<Map> paramsList, String pk, Class<T> idType);
 
     Map<String, Object> row(String sql, List<?> params);
 

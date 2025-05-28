@@ -108,12 +108,12 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
     }
 
     @Override
-    public <T> List<T> batchInsert(String sql, List<? extends Map<String, ?>> paramsList, String pk, Class<T> idType) {
+    public <T> List<T> batchInsert(String sql, List<Map> paramsList, String pk, Class<T> idType) {
         return getJdbi().withHandle(handle -> {
             List<T> generatedKeys = new ArrayList<>();
             PreparedBatch batch = handle.prepareBatch(sql);
 
-            for (Map<String, ?> params : paramsList) {
+            for (Map params : paramsList) {
                 batch.bindMap(params).add();
             }
 

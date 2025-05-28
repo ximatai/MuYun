@@ -81,7 +81,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Operation(summary = "批量新增数据", description = "返回新增数据ID数组")
     default List<String> batchCreate(List<Map> list) {
 
-        List<Map<String, ?>> dataList = new ArrayList<>();
+        List<Map> dataList = new ArrayList<>();
 
         List<String> codeList = null;
 
