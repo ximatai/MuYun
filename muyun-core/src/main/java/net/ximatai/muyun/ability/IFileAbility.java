@@ -1,5 +1,6 @@
 package net.ximatai.muyun.ability;
 
+import io.quarkus.arc.Arc;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -25,7 +26,9 @@ import java.util.Map;
 
 public interface IFileAbility {
 
-    IFileService getFileService();
+    default IFileService getFileService() {
+        return Arc.container().instance(IFileService.class).get();
+    }
 
     List<String> fileColumns();
 

@@ -46,9 +46,9 @@ public class FileService implements IFileService {
         try {
             if (Files.notExists(path)) {
                 Files.createDirectories(path);
-                System.out.println("文件夹已创建: " + folderPath);
+                logger.info("文件夹已创建: {}", folderPath);
             } else {
-                System.out.println("文件夹已存在: " + folderPath);
+                logger.info("文件夹已存在: {}", folderPath);
             }
         } catch (Exception e) {
             logger.error("创建文件夹失败", e);
