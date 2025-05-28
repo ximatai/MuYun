@@ -79,6 +79,4 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRunt
             .build();
     }
 
-
-
 }

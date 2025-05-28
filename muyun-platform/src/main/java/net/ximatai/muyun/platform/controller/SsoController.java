@@ -219,7 +219,6 @@ public class SsoController implements IRuntimeAbility {
         return DigestUtils.sha256Hex(text + "MuYun").substring(0, 16);
     }
 
-
     private IRuntimeUser mapToUser(Map user) {
         return new RuntimeUser()
             .setUsername((String) user.get("v_username"))

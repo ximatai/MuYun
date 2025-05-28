@@ -93,7 +93,6 @@ public class RuntimeController implements IRuntimeAbility {
         }
     }
 
-
     private List<TreeNode> filterMenuByAuth(List<TreeNode> list) {
         String userID = getUser().getId();
         Map<String, Set<String>> authorizedResources = authorizationService.getAuthorizedResources(userID);
