@@ -2,6 +2,7 @@
 
 [![Maven Central Version](https://img.shields.io/maven-central/v/net.ximatai.muyun/muyun-core)](https://central.sonatype.com/artifact/net.ximatai.muyun/muyun-core/overview)
 [![ci](https://github.com/ximatai/MuYun/actions/workflows/ci.yml/badge.svg)](https://github.com/ximatai/MuYun/actions/workflows/ci.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ximatai/MuYun)
 
 ## 特点
 
