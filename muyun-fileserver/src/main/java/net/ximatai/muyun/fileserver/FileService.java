@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -140,8 +141,16 @@ public class FileService implements IFileService {
         }
 
         try {
-            //复制文件
-            File tempFile = File.createTempFile("fileserver", ".tmp");
+            String name = Files.readString(pathN, StandardCharsets.UTF_8);
+
+            //准备临时文件
+            File tempFile;
+            if (name.contains(".")) {
+                tempFile = File.createTempFile("fileserver", "." + name.split("\\.")[1]);
+            } else {
+                tempFile = File.createTempFile("fileserver", ".tmp");
+            }
+
             tempFile.deleteOnExit();
 
             Files.copy(pathO, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
