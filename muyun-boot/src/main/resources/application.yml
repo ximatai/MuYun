@@ -18,6 +18,8 @@ proxy:
 quarkus:
   http:
     port: 8080
+    limits:
+      max-body-size: 100M
     # root-path: /api
   rest:
     path: /api

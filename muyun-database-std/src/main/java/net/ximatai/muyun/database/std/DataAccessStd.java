@@ -111,7 +111,7 @@ public class DataAccessStd extends DBInfoProvider implements IDatabaseOperations
     public <T> List<T> batchInsert(String sql, List<Map> paramsList, String pk, Class<T> idType) {
         return getJdbi().withHandle(handle -> {
             List<T> generatedKeys = new ArrayList<>();
-            int batchSize = 1000; // 设置你想要的批大小
+            int batchSize = 500; // 设置你想要的批大小
 
             // 分批处理
             for (int i = 0; i < paramsList.size(); i += batchSize) {
