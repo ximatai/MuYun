@@ -22,6 +22,7 @@ public class QueryItem {
     private boolean isBoolean = false;
     private boolean isHide = false; //ui
     private boolean isRequired = false;
+    private boolean isNullQuery = false;
 
     private Object defaultValue;
 
@@ -166,6 +167,18 @@ public class QueryItem {
 
     public boolean isRequired() {
         return isRequired;
+    }
+
+    /**
+     * @return null 值是否参与查询
+     */
+    public boolean isNullQuery() {
+        return isNullQuery;
+    }
+
+    public QueryItem setNullQuery(boolean nullQuery) {
+        isNullQuery = nullQuery;
+        return this;
     }
 
     public Object getDefaultValue() {

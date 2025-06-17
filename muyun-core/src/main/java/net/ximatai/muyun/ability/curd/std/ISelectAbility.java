@@ -263,16 +263,20 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
 
         StringBuilder part = new StringBuilder();
 
-        if (qi != null && (queryBody.containsKey(qi.getAlias()) || qi.getDefaultValue() != null)) {
+        // 没传，但是有默认值
+        if (!queryBody.containsKey(qi.getAlias()) && qi.getDefaultValue() != null) {
+            buildUpCondition(part, qi, qi.getDefaultValue(), params);
+        } else if (queryBody.containsKey(qi.getAlias())) {
             Object v = queryBody.get(qi.getAlias());
 
-            if (!queryBody.containsKey(qi.getAlias())) { // queryItem 的默认值参与查询
-                v = qi.getDefaultValue();
-            }
-
-            if (!(v instanceof String str) || !str.isBlank()) { // 字符串为空不参与查询
+            if (v == null) {
+                if (qi.isNullQuery()) { // 值为 null isNullQuery 意味着 null 值参与查询
+                    buildUpCondition(part, qi, v, params);
+                }
+            } else if (!v.equals("")) { // 空字符串不参与查询
                 buildUpCondition(part, qi, v, params);
             }
+
         }
 
         if (part.isEmpty()) {
