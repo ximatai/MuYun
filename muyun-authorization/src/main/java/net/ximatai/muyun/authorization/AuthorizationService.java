@@ -476,6 +476,14 @@ public class AuthorizationService implements IAuthorizationService {
         String departmentID = (String) userInfo.get("id_at_org_department");
         String organizationID = (String) userInfo.get("id_at_org_organization");
 
+        if (departmentID == null) {
+            departmentID = "";
+        }
+
+        if (organizationID == null) {
+            organizationID = "";
+        }
+
         return condition.replace("@id@", id)
             .replace("@id_at_org_department@", departmentID)
             .replace("@id_at_org_organization@", organizationID);
