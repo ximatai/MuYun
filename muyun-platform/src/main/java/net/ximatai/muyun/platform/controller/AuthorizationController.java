@@ -10,6 +10,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IDatabaseAbilityStd;
+import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.authorization.AuthorizationService;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.config.MuYunConfig;
@@ -33,7 +34,7 @@ import static net.ximatai.muyun.platform.controller.AuthorizationController.MODU
 @Startup
 @Tag(description = "权限管理")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
-public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility {
+public class AuthorizationController extends Scaffold implements IDatabaseAbilityStd, IModuleRegisterAbility, IRuntimeAbility {
     public final static String MODULE_ALIAS = "authorization";
 
     private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
@@ -191,7 +192,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
 
         String authCondition = null;
         if ("custom".equals(dataAuth)) {
-            authCondition = customCondition;
+            authCondition = authorizationService.transformCustomCondition(getUser().getId(), customCondition);
         } else {
             authCondition = authorizationService.dictDataAuthToCondition(muYunConfig.superUserId(), module, dataAuth);
         }

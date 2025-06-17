@@ -465,7 +465,7 @@ public class AuthorizationService implements IAuthorizationService {
         return moduleGroupMap;
     }
 
-    private String transformCustomCondition(String userID, String condition) {
+    public String transformCustomCondition(String userID, String condition) {
         Map<String, Object> userInfo = userinfoCache.get(userID);
 
         if (userInfo == null) {
