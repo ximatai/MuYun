@@ -103,7 +103,7 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Override
     public List<QueryItem> queryItemList() {
         return List.of(
-            QueryItem.of("name").setSymbolType(QueryItem.SymbolType.LIKE),
+            QueryItem.of("v_name").setSymbolType(QueryItem.SymbolType.LIKE),
             QueryItem.of("id_at_org_organization")
         );
     }
