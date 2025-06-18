@@ -270,10 +270,14 @@ public interface ISelectAbility extends IDatabaseAbilityStd, IMetadataAbility {
             Object v = queryBody.get(qi.getAlias());
 
             if (v == null) {
-                if (qi.isNullQuery()) { // 值为 null isNullQuery 意味着 null 值参与查询
+                if (qi.isNullQuery()) { // 处理null值查询
                     buildUpCondition(part, qi, v, params);
                 }
-            } else if (!v.equals("")) { // 空字符串不参与查询
+            } else if (v instanceof String && ((String) v).isBlank()) {
+                if (qi.isStringBlankQuery()) { // 处理空字符串查询
+                    buildUpCondition(part, qi, v, params);
+                }
+            } else { // 处理非空且有值的情况
                 buildUpCondition(part, qi, v, params);
             }
 

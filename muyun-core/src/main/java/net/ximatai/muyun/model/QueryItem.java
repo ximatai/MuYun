@@ -23,6 +23,7 @@ public class QueryItem {
     private boolean isHide = false; //ui
     private boolean isRequired = false;
     private boolean isNullQuery = false;
+    private boolean isStringBlankQuery = false;
 
     private Object defaultValue;
 
@@ -178,6 +179,15 @@ public class QueryItem {
 
     public QueryItem setNullQuery(boolean nullQuery) {
         isNullQuery = nullQuery;
+        return this;
+    }
+
+    public boolean isStringBlankQuery() {
+        return isStringBlankQuery;
+    }
+
+    public QueryItem setStringBlankQuery(boolean stringBlankQuery) {
+        isStringBlankQuery = stringBlankQuery;
         return this;
     }
 
