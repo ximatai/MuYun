@@ -9,6 +9,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
+import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
@@ -16,6 +17,7 @@ import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -41,7 +43,7 @@ import static net.ximatai.muyun.platform.controller.UserInfoController.MODULE_AL
 @Startup
 @Tag(description = "用户管理")
 @Path(BASE_PATH + "/" + MODULE_ALIAS)
-public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility, IModuleRegisterAbility {
+public class UserInfoController extends ScaffoldForPlatform implements IReferableAbility, IReferenceAbility, ISoftDeleteAbility, IQueryAbility, IModuleRegisterAbility, IRuntimeAbility {
 
     public final static String MODULE_ALIAS = "userinfo";
 
@@ -274,6 +276,10 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     @Path("/disableUser/{id}")
     @Operation(summary = "禁用账户")
     public String disableUser(@PathParam("id") String id) {
+        IRuntimeUser currentUser = getUser();
+        if (currentUser.getId().equals(id)) {
+            throw new MuYunException("不能禁用当前登录用户");
+        }
         userController.update(id, Map.of("b_enabled", false));
         return id;
     }
