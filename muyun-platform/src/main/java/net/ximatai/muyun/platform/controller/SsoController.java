@@ -118,7 +118,7 @@ public class SsoController implements IRuntimeAbility {
             } else {
                 logger.error("用户已停用，用户名：{}", username);
                 apiRequest.setError(new RuntimeException("用户已停用，用户名：" + username));
-                throw new MuYunException("用户名或密码错误");
+                throw new MuYunException("用户已停用");
             }
         } else {
             logger.error("用户密码验证失败，用户名：{}", username);
