@@ -58,6 +58,9 @@ class TestDesensitizationAbility {
 @Path("/TestDesensitizationAbility")
 class TestDesensitizationAbilityController extends Scaffold implements ICURDAbility, ITableCreateAbility, IDesensitizationAbility {
 
+    private final Desensitizer desensitizer = new Desensitizer()
+        .registerAlgorithm("v_name", MaskMiddleAlgorithm.INSTANCE);
+
     @Override
     public String getSchemaName() {
         return "test";
@@ -79,7 +82,6 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
 
     @Override
     public Desensitizer getDesensitizer() {
-        return new Desensitizer()
-            .registerAlgorithm("v_name", MaskMiddleAlgorithm.INSTANCE);
+        return desensitizer;
     }
 }
