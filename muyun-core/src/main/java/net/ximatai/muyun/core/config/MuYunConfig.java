@@ -22,6 +22,14 @@ public interface MuYunConfig extends IProfile {
     @WithDefault("0")
     int userFailureMaxCount();
 
+    // 密码有效期，0 表示不检查
+    @WithDefault("0")
+    int userPasswordValidateDays();
+
+    // 密码是否允许重用
+    @WithDefault("false")
+    boolean userPasswordCheckReuse();
+
     @WithDefault("false")
     boolean useSession();
 

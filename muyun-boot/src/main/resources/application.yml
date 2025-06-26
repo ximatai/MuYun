@@ -1,7 +1,9 @@
 muyun:
-  use-session: false
+  use-session: true
   user-failure-lock-min: 5
   user-failure-max-count: 3
+  user-password-validate-days: 90
+  user-password-check-reuse: true
 file-server:
   upload-path: ./fileUploads/
 web:

@@ -6,6 +6,8 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
+import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.core.security.SMEncryptor;
 import net.ximatai.muyun.database.builder.Column;
@@ -13,8 +15,13 @@ import net.ximatai.muyun.database.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
+import net.ximatai.muyun.util.StringUtil;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class UserController extends ScaffoldForPlatform implements IQueryAbility, ISecurityAbility, IReferableAbility, IChildrenAbility {
@@ -25,10 +32,16 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
     }
 
     @Inject
+    MuYunConfig config;
+
+    @Inject
     SMEncryptor smEncryptor;
 
     @Inject
     UserRoleController userRoleController;
+
+    @Inject
+    DictCategoryController dictCategoryController;
 
     @Override
     public void fitOut(TableWrapper wrapper) {
@@ -40,6 +53,8 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
             .addColumn("t_update")
             .addColumn("t_last_login")
             .addColumn("t_this_login")
+            .addColumn("d_password_invalid", "密码失效时间")
+            .addColumn("av_used_password", "已经使用的密码")
             .addColumn(Column.of("b_enabled").setDefaultValue(true))
             .addIndex("v_username", true);
     }
@@ -68,7 +83,7 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
 
     @Override
     public List<String> getColumnsForEncryption() {
-        return List.of("v_password");
+        return List.of("v_password", "av_used_password");
     }
 
     @Override
@@ -86,6 +101,50 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
         return List.of(
             userRoleController.toChildTable("id_at_auth_user").setAutoDelete()
         );
+    }
+
+    public Integer updatePassword(String id, String password) {
+        checkPasswordComplexity(password);
+
+        Map<String, Object> user = view(id);
+
+        List<String> avUsedPassword = user.get("av_used_password") != null ? new ArrayList<>(Arrays.asList(((String[]) user.get("av_used_password")))) : new ArrayList<>();
+
+        if (config.userPasswordCheckReuse() && avUsedPassword.contains(password)) {
+            throw new MuYunException("新设置的密码曾经使用过，不允许再次使用");
+        }
+
+        String old = (String) user.get("v_password");
+
+        if (old != null) {
+            avUsedPassword.add(old);
+        }
+
+        LocalDate dPasswordInvalid = null;
+        if (config.userPasswordValidateDays() > 0) {
+            dPasswordInvalid = LocalDate.now().plusDays(config.userPasswordValidateDays());
+        }
+
+        return update(id, Map.of("v_password", password, "av_used_password", avUsedPassword, "d_password_invalid", dPasswordInvalid));
+
+    }
+
+    private void checkPasswordComplexity(String password) {
+        List<Map> childTableList = dictCategoryController.getChildTableList("password_complexity", "app_dict", null);
+        StringBuilder msgBuilder = new StringBuilder();
+        childTableList.forEach(map -> {
+            String regex = (String) map.get("v_value");
+            if (StringUtil.isNotBlank(regex) && !password.matches(regex)) {
+                String remark = (String) map.get("v_remark");
+                String name = (String) map.get("v_name");
+                msgBuilder.append("，").append(StringUtil.isNotBlank(remark) ? remark : name);
+            }
+        });
+        if (!msgBuilder.isEmpty()) {
+            String error = msgBuilder.substring(1);
+            logger.error("bad password :%s,%s".formatted(password, error));
+            throw new MuYunException(error);
+        }
     }
 
 }

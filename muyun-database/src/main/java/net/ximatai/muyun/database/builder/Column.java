@@ -189,6 +189,8 @@ public class Column {
             type = ColumnType.VARCHAR_ARRAY;
         } else if (name.startsWith("dicts_")) {
             type = ColumnType.VARCHAR_ARRAY;
+        } else if (name.startsWith("av_")) {
+            type = ColumnType.VARCHAR_ARRAY;
         }
 
         return type;

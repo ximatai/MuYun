@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -26,7 +26,7 @@ public class TestUserPasswordComplexity {
 
     String base = PlatformConst.BASE_PATH;
 
-    private String id = new String();
+    private String id = "";
 
     @BeforeEach
     void setUp() {
@@ -82,7 +82,7 @@ public class TestUserPasswordComplexity {
             .statusCode(500)
             .extract()
             .asString();
-        assertTrue("密码长度应不少于8位".equals(s1));
+        assertEquals("密码长度应不少于8位", s1);
         // 修改密码（自助）
         String s2 = given()
             .header("userID", config.superUserId())
@@ -98,7 +98,7 @@ public class TestUserPasswordComplexity {
             .statusCode(500)
             .extract()
             .asString();
-        assertTrue("密码长度应不少于8位".equals(s2));
+        assertEquals("密码长度应不少于8位", s2);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class TestUserPasswordComplexity {
             .statusCode(500)
             .extract()
             .asString();
-        assertTrue("密码应至少包含一个英文字母".equals(s1));
+        assertEquals("密码应至少包含一个英文字母", s1);
         // 修改密码（自助）
         String s2 = given()
             .header("userID", config.superUserId())
@@ -135,7 +135,7 @@ public class TestUserPasswordComplexity {
             .statusCode(500)
             .extract()
             .asString();
-        assertTrue("密码应至少包含一个英文字母".equals(s2));
+        assertEquals("密码应至少包含一个英文字母", s2);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class TestUserPasswordComplexity {
             .statusCode(500)
             .extract()
             .asString();
-        assertTrue("密码长度应不少于8位，密码应至少包含一个英文字母".equals(s1));
+        assertEquals("密码长度应不少于8位，密码应至少包含一个英文字母", s1);
         // 修改密码（自助）
         String s2 = given()
             .header("userID", config.superUserId())
@@ -172,7 +172,7 @@ public class TestUserPasswordComplexity {
             .statusCode(500)
             .extract()
             .asString();
-        assertTrue("密码长度应不少于8位，密码应至少包含一个英文字母".equals(s2));
+        assertEquals("密码长度应不少于8位，密码应至少包含一个英文字母", s2);
     }
 
     @Test
@@ -208,5 +208,76 @@ public class TestUserPasswordComplexity {
             .statusCode(200)
             .extract()
             .asString();
+    }
+
+    @Test
+    @DisplayName("修改重复的密码")
+    void testSetPasswordDuplicate() {
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_password", "12345678abc",
+                "v_password2", "12345678abc"
+            ))
+            .when()
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .then()
+            .statusCode(200);
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_password", "12345678abc2",
+                "v_password2", "12345678abc2"
+            ))
+            .when()
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .then()
+            .statusCode(200);
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_password", "12345678abc3",
+                "v_password2", "12345678abc3"
+            ))
+            .when()
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .then()
+            .statusCode(200);
+
+        String string = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_password", "12345678abc",
+                "v_password2", "12345678abc"
+            ))
+            .when()
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+
+        assertEquals("新设置的密码曾经使用过，不允许再次使用", string);
+
+    }
+
+    @Test
+    @DisplayName("检查密码有效期")
+    void testPasswordValid() {
+        String day = given()
+            .header("userID", config.superUserId())
+            .get("/api%s/userinfo/passwordValidDays/%s".formatted(base, id))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        assertEquals("90", day);
     }
 }

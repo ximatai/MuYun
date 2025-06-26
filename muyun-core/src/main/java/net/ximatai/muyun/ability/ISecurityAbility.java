@@ -4,6 +4,8 @@ import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.database.builder.Column;
 import net.ximatai.muyun.database.builder.ColumnType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +58,14 @@ public interface ISecurityAbility {
 
         getColumnsForEncryption().forEach(s -> {
             if (map.containsKey(s)) {
-                map.put(s, encryptor.encrypt(map.get(s).toString()));
+                if (map.get(s) instanceof String str) {
+                    map.put(s, encryptor.encrypt(str));
+                } else if (map.get(s) instanceof ArrayList) {
+                    ArrayList<String> list = (ArrayList<String>) map.get(s);
+                    map.put(s, list.stream().map(encryptor::encrypt).toArray(String[]::new));
+                } else if (map.get(s) instanceof String[] list) {
+                    map.put(s, Arrays.stream(list).map(encryptor::encrypt).toArray(String[]::new));
+                }
             }
         });
     }
@@ -67,7 +76,11 @@ public interface ISecurityAbility {
 
         getColumnsForEncryption().forEach(s -> {
             if (map.containsKey(s)) {
-                map.put(s, encryptor.decrypt(map.get(s).toString()));
+                if (map.get(s) instanceof String str) {
+                    map.put(s, encryptor.decrypt(str));
+                } else if (map.get(s) instanceof String[] list) {
+                    map.put(s, Arrays.stream(list).map(encryptor::decrypt).toArray(String[]::new));
+                }
             }
         });
     }

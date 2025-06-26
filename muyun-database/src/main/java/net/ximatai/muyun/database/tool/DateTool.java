@@ -47,6 +47,8 @@ public class DateTool {
             return null;
         } else if (value instanceof LocalDateTime localDateTime) {
             return Timestamp.valueOf(localDateTime);
+        } else if (value instanceof LocalDate localDate) {
+            return Timestamp.valueOf(localDate.atStartOfDay());
         } else if (value instanceof Date date) {
             return new Timestamp(date.getTime());
         } else if (value instanceof String str) {

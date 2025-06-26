@@ -27,10 +27,11 @@ import net.ximatai.muyun.platform.model.DictCategory;
 import net.ximatai.muyun.platform.model.ModuleAction;
 import net.ximatai.muyun.platform.model.ModuleConfig;
 import net.ximatai.muyun.service.IAuthorizationService;
-import net.ximatai.muyun.util.StringUtil;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -173,15 +174,14 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             throw new MuYunException("两次输入的密码不一致");
         }
 
-        checkPasswordComplexity(password);
-
         Map<String, ?> userInfo = this.view(id);
         if ((boolean) userInfo.get("b_user")) {
             throw new MuYunException("已经设置用户信息，无法再次设置");
         }
         this.update(id, Map.of("id", id, "b_user", true));
 
-        userController.create(Map.of("id", id, "v_username", username, "v_password", password));
+        userController.create(Map.of("id", id, "v_username", username));
+        userController.updatePassword(id, password);
 
         if (params.containsKey("roles") && params.get("roles") instanceof List roles) {
             this.setRoles(id, roles);
@@ -209,31 +209,11 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             throw new MuYunException("两次输入的密码不一致");
         }
 
-        checkPasswordComplexity(password);
-
         Map<String, ?> userInfo = this.view(id);
         if ((boolean) userInfo.get("b_user")) {
-            return userController.update(id, Map.of("v_password", password));
+            return userController.updatePassword(id, password);
         } else {
             throw new MuYunException("尚未创建对应的用户");
-        }
-    }
-
-    private void checkPasswordComplexity(String password) {
-        List<Map> childTableList = dictCategoryController.getChildTableList("password_complexity", "app_dict", null);
-        StringBuilder msgBuilder = new StringBuilder();
-        childTableList.forEach(map -> {
-            String regex = (String) map.get("v_value");
-            if (StringUtil.isNotBlank(regex) && !password.matches(regex)) {
-                String remark = (String) map.get("v_remark");
-                String name = (String) map.get("v_name");
-                msgBuilder.append("，").append(StringUtil.isNotBlank(remark) ? remark : name);
-            }
-        });
-        if (!msgBuilder.isEmpty()) {
-            String error = msgBuilder.substring(1);
-            logger.error("bad password :%s,%s".formatted(password, error));
-            throw new MuYunException(error);
         }
     }
 
@@ -256,9 +236,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             throw new MuYunException("两次输入的密码不一致");
         }
 
-        checkPasswordComplexity(password);
-
-        return userController.update(id, Map.of("v_password", password));
+        return userController.updatePassword(id, password);
     }
 
     @Override
@@ -290,6 +268,23 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     public String enableUser(@PathParam("id") String id) {
         userController.update(id, Map.of("b_enabled", true));
         return id;
+    }
+
+    @GET
+    @Path("/passwordValidDays/{id}")
+    @Operation(summary = "密码有效期")
+    public int passwordValidDays(@PathParam("id") String id) {
+        if (config.userPasswordValidateDays() > 0) {
+            Map<String, Object> user = userController.view(id);
+            java.sql.Date invalidDate = (java.sql.Date) user.get("d_password_invalid"); // 密码失效时间
+
+            LocalDate now = LocalDate.now();
+
+            return (int) ChronoUnit.DAYS.between(now, invalidDate.toLocalDate());
+
+        } else {
+            return 999;
+        }
     }
 
     @Override
