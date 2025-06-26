@@ -32,7 +32,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 @Path("/sso")
@@ -47,6 +51,15 @@ public class SsoController implements IRuntimeAbility {
     Cache<String, String> codeCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .maximumSize(100)
+        .build();
+
+    // 锁定用户记录在此缓存
+    Cache<String, LocalDateTime> lockUser = Caffeine.newBuilder()
+        .build();
+
+    // 登录失败的历次时间戳缓存
+    Cache<String, Queue<Long>> loginFailTimestamps = Caffeine.newBuilder()
+        .expireAfterAccess(10, TimeUnit.MINUTES) // 避免内存泄漏
         .build();
 
     @Inject
@@ -83,18 +96,25 @@ public class SsoController implements IRuntimeAbility {
         }
 
         apiRequest.setUsername(username);
-        RuntimeException runtimeException = verificationCode(code);
-        if (runtimeException != null) {
-            apiRequest.setError(runtimeException);
-            throw runtimeException;
+
+        try {
+            verificationCode(code);
+        } catch (MuYunException e) {
+            throw loginFail(username, "验证码错误", true, false);
+        }
+
+        LocalDateTime lockUserDateTime = lockUser.getIfPresent(username);
+
+        if (lockUserDateTime != null && lockUserDateTime.isAfter(LocalDateTime.now())) {
+            throw loginFail(username, "登录失败次数太多已被锁定，将于 %s 解锁".formatted(
+                lockUserDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            ), true, false);
         }
 
         PageResult pageResult = userController.query(Map.of("v_username", username));
 
         if (pageResult.getSize() == 0) {
-            apiRequest.setError(new RuntimeException("该用户不存在：%s".formatted(username)));
-            logger.error("该用户不存在：{}", username);
-            throw new MuYunException("用户名或密码错误");
+            throw loginFail(username, "用户不存在，用户名：" + username, false, true);
         }
 
         Map userInDB = (Map) pageResult.getList().getFirst();
@@ -114,17 +134,80 @@ public class SsoController implements IRuntimeAbility {
                 }
 
                 userController.checkIn((String) user.get("id"));
+                unlockUser(username);
                 return runtimeUser;
             } else {
-                logger.error("用户已停用，用户名：{}", username);
-                apiRequest.setError(new RuntimeException("用户已停用，用户名：" + username));
-                throw new MuYunException("用户名或密码错误");
+                throw loginFail(username, "用户已停用，用户名：" + username, false, true);
             }
         } else {
-            logger.error("用户密码验证失败，用户名：{}", username);
-            apiRequest.setError(new RuntimeException("用户密码验证失败，用户名：" + username));
-            throw new MuYunException("用户名或密码错误");
+            throw loginFail(username, "用户密码验证失败，用户名：" + username, false, true);
         }
+
+    }
+
+    protected MuYunException loginFail(String username, String reason, boolean openReason, boolean isRecord) {
+        ApiRequest apiRequest = getApiRequest();
+        logger.error(reason);
+        apiRequest.setError(new RuntimeException(reason));
+        int recentFailures = 0;
+
+        int userFailureMaxCount = config.userFailureMaxCount();
+        int userFailureLockMin = config.userFailureLockMin();
+
+        if (userFailureMaxCount > 0 && userFailureLockMin > 0 && isRecord) {
+            recordLoginFailure(username);
+
+            recentFailures = getRecentFailures(username);
+
+            if (recentFailures >= userFailureMaxCount) {
+                LocalDateTime openTime = LocalDateTime.now().plusMinutes(userFailureLockMin);
+                lockUser.put("username", openTime);
+                return new MuYunException(
+                    "登录失败次数太多已被锁定，将于 %s 解锁".formatted(openTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                );
+            }
+
+            return new MuYunException("用户名或密码错误，还有 %s 次重试机会".formatted(userFailureMaxCount - recentFailures));
+        } else if (openReason) {
+            return new MuYunException(reason);
+        } else {
+            return new MuYunException("用户名或密码错误");
+        }
+
+    }
+
+    public void unlockUser(String username) {
+        lockUser.invalidate(username);
+        loginFailTimestamps.invalidate(username);
+    }
+
+    // 用户登录失败时，记录当前时间戳
+    private void recordLoginFailure(String username) {
+        loginFailTimestamps.asMap().compute(username, (key, queue) -> {
+            if (queue == null) {
+                queue = new ConcurrentLinkedQueue<>();
+            }
+            queue.add(System.currentTimeMillis());
+            return queue;
+        });
+    }
+
+    // 获取最近60秒内的登录失败次数
+    private int getRecentFailures(String username) {
+        Queue<Long> timestamps = loginFailTimestamps.getIfPresent(username);
+        if (timestamps == null) {
+            return 0;
+        }
+
+        long now = System.currentTimeMillis();
+        long cutoff = now - 60_000; // 60秒前的时间戳
+
+        // 移除过期的记录（60秒前的）
+        while (!timestamps.isEmpty() && timestamps.peek() < cutoff) {
+            timestamps.poll();
+        }
+
+        return timestamps.size();
     }
 
     private String encryptPassword(String password, String code) {
@@ -132,30 +215,28 @@ public class SsoController implements IRuntimeAbility {
         return DigestUtils.md5Hex(md5Password + code).toUpperCase();
     }
 
-    private RuntimeException verificationCode(String code) {
+    private void verificationCode(String code) throws MuYunException {
         code = code.trim().toLowerCase();
         if (!isProdMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
-            return null;
+            return;
         }
 
         Cookie cookie = routingContext.request().getCookie(KAPTCHA_COOKIE_KEY);
         if (cookie == null) {
-            return new MuYunException("验证码已过期");
+            throw new MuYunException("验证码已过期");
         }
 
         String hashCodeInCookie = cookie.getValue();
 
         if (hashCodeInCookie.equals(hashText(code))) {
             if (codeCache.getIfPresent(code) != null) {
-                return new MuYunException("验证码已过期");
+                throw new MuYunException("验证码已过期");
             }
 
             codeCache.put(code, code);
         } else {
-            return new MuYunException("验证码不正确");
+            throw new MuYunException("验证码不正确");
         }
-
-        return null;
     }
 
     @POST

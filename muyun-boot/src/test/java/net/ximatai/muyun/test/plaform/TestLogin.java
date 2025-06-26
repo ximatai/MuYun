@@ -1,0 +1,206 @@
+package net.ximatai.muyun.test.plaform;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.Response;
+import jakarta.inject.Inject;
+import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.controller.SsoController;
+import net.ximatai.muyun.platform.model.RuntimeUser;
+import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.*;
+
+@QuarkusTest
+@QuarkusTestResource(value = PostgresTestResource.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestLogin {
+    @Inject
+    MuYunConfig config;
+
+    String base = PlatformConst.BASE_PATH;
+
+    String username = "testLogin";
+    String password = "testpw1234";
+    static String userID;
+
+    @Inject
+    SsoController ssoController;
+
+    @Test
+    @Order(1)
+    void createUser() {
+        // 新增人员信息
+        userID = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "测试",
+                "dict_user_gender", "0"
+            ))
+            .when()
+            .post("/api%s/userinfo/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        Map row = given()
+            .header("userID", config.superUserId())
+            .get("/api%s/userinfo/view/%s".formatted(base, userID))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertEquals("测试", row.get("v_name"));
+        assertFalse((Boolean) row.get("b_user"));
+
+        // 设置用户
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_username", username,
+                "v_password", password,
+                "v_password2", password
+            ))
+            .when()
+            .post("/api%s/userinfo/setUser/%s".formatted(base, userID))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        Map row2 = given()
+            .header("userID", config.superUserId())
+            .get("/api%s/userinfo/view/%s".formatted(base, userID))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(new TypeRef<>() {
+
+            });
+
+        assertTrue((Boolean) row2.get("b_user"));
+
+        // 登录
+        Response response = given()
+            .contentType("application/json")
+            .body(Map.of(
+                "username", username,
+                "password", password,
+                "code", "muyun"
+            ))
+            .when()
+            .post("/api/sso/login")
+            .then()
+            .statusCode(200)
+            .extract()
+            .response();
+
+        RuntimeUser loginUser = response.getBody().as(RuntimeUser.class);
+
+        assertEquals(username, loginUser.getUsername());
+        assertEquals("测试", loginUser.getName());
+    }
+
+    @Test
+    @Order(2)
+    void testLoginSuccess() {
+        // 登录
+        Response response = given()
+            .contentType("application/json")
+            .body(Map.of(
+                "username", username,
+                "password", password,
+                "code", "muyun"
+            ))
+            .when()
+            .post("/api/sso/login")
+            .then()
+            .statusCode(200)
+            .extract()
+            .response();
+    }
+
+    @Order(3)
+    @Test
+    void testLoginFailed() {
+        String err = loginFailed(username, "wrongpw", "muyun");
+        Assertions.assertEquals("用户名或密码错误，还有 2 次重试机会", err);
+
+        String err2 = loginFailed(username, "wrongpw", "muyun");
+        Assertions.assertEquals("用户名或密码错误，还有 1 次重试机会", err2);
+
+        String err3 = loginFailed(username, "wrongpw", "muyun");
+        Assertions.assertTrue(err3.contains("登录失败次数太多已被锁定"));
+    }
+
+    @Order(4)
+    @Test
+    void testLoginFailedWrongCode() {
+        ssoController.unlockUser(username);
+
+        String err = loginFailed(username, password, "muyun2");
+        Assertions.assertEquals("验证码错误", err);
+
+        String err2 = loginFailed(username, password, "muyun2");
+        Assertions.assertEquals("验证码错误", err2);
+
+        String err3 = loginFailed(username, password, "muyun2");
+        Assertions.assertTrue(err3.contains("验证码错误"));
+    }
+
+    @Order(5)
+    @Test
+    void testLoginFailedWrongUsername() {
+        String err = loginFailed(username + "x", "wrongpw", "muyun");
+        Assertions.assertEquals("用户名或密码错误，还有 2 次重试机会", err);
+
+        String err2 = loginFailed(username + "x", "wrongpw", "muyun");
+        Assertions.assertEquals("用户名或密码错误，还有 1 次重试机会", err2);
+
+        String err3 = loginFailed(username + "x", "wrongpw", "muyun");
+        Assertions.assertTrue(err3.contains("登录失败次数太多已被锁定"));
+    }
+
+    private String loginFailed(String username, String password, String code) {
+        return given()
+            .contentType("application/json")
+            .body(Map.of(
+                "username", username,
+                "password", password,
+                "code", code
+            ))
+            .when()
+            .post("/api/sso/login")
+            .then()
+            .statusCode(500)
+            .extract()
+            .asString();
+    }
+
+    @Test
+    @Order(10)
+    void deleteUser() {
+        // 删除用户
+        given()
+            .header("userID", config.superUserId())
+            .get("/api%s/userinfo/delete/%s".formatted(base, userID))
+            .then()
+            .statusCode(200);
+    }
+}

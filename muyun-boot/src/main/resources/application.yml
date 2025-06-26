@@ -1,5 +1,7 @@
 muyun:
-  use-session: true
+  use-session: false
+  user-failure-lock-min: 5
+  user-failure-max-count: 3
 file-server:
   upload-path: ./fileUploads/
 web:
