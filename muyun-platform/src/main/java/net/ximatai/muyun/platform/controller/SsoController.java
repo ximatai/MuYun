@@ -123,7 +123,9 @@ public class SsoController implements IRuntimeAbility {
         String encryptedPassword = encryptPassword(vPassword, code);
         if (password.equals(encryptedPassword)
             || (!isProdMode() && password.equals(vPassword))) { // 非生产环境允许使用非加密密码
-            if (config.userValidateDays() > 0) {
+
+            // 非管理员要判断账号有效期
+            if (!config.isSuperUser((String) userInDB.get("id")) && config.userValidateDays() > 0) {
                 java.sql.Date invalidDate = (java.sql.Date) userInDB.get("d_invalid");
 
                 if (invalidDate != null) {
