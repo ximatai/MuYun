@@ -6,10 +6,11 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 import java.util.Map;
@@ -18,53 +19,53 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @QuarkusTestResource(value = PostgresTestResource.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestUserPasswordComplexity {
     @Inject
     MuYunConfig config;
 
     String base = PlatformConst.BASE_PATH;
 
-    private String id = "";
+    static String userID;
 
-    @BeforeEach
-    void setUp() {
-        if (id.isEmpty()) {
-            //新增用户
-            id = given()
-                .header("userID", config.superUserId())
-                .contentType("application/json")
-                .body(Map.of(
-                    "v_name", "测试",
-                    "dict_user_gender", "0"
-                ))
-                .when()
-                .post("/api%s/userinfo/create".formatted(base))
-                .then()
-                .statusCode(200)
-                .extract()
-                .asString();
-            // 设置用户
-            given()
-                .header("userID", config.superUserId())
-                .contentType("application/json")
-                .body(Map.of(
-                    "v_username", "test",
-                    "v_password", "pw123456",
-                    "v_password2", "pw123456",
-                    "roles", List.of("1", "2")
-                ))
-                .when()
-                .post("/api%s/userinfo/setUser/%s".formatted(base, id))
-                .then()
-                .statusCode(200)
-                .extract()
-                .asString();
-        }
+    @Test
+    @Order(1)
+    void createUser() {
+        //新增用户
+        userID = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "测试",
+                "dict_user_gender", "0"
+            ))
+            .when()
+            .post("/api%s/userinfo/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+        // 设置用户
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_username", "test",
+                "v_password", "pw123456",
+                "v_password2", "pw123456",
+                "roles", List.of("1", "2")
+            ))
+            .when()
+            .post("/api%s/userinfo/setUser/%s".formatted(base, userID))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
     }
 
     @Test
+    @Order(2)
     @DisplayName("验证密码长度少于8位 但 包含英文字母")
     void testPasswordComplexity1() {
         //情况1：密码长度少于8位
@@ -77,7 +78,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345z"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -93,7 +94,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345z"
             ))
             .when()
-            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -102,6 +103,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
+    @Order(3)
     @DisplayName("验证密码不包含英文字母 但 长度达到8位")
     void testPasswordComplexity2() {
         //情况2：密码不包含英文字母
@@ -114,7 +116,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -130,7 +132,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678"
             ))
             .when()
-            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -139,6 +141,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
+    @Order(4)
     @DisplayName("验证密码长度少于8位 且 不包含英文字母")
     void testPasswordComplexity3() {
         //情况3：密码少于8位 且 不包含英文字母
@@ -151,7 +154,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "123"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -167,7 +170,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "123"
             ))
             .when()
-            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -176,6 +179,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
+    @Order(5)
     @DisplayName("验证密码长度达到8位 且 密码包含英文字母")
     void testPasswordComplexity4() {
         //情况4：修改密码成功
@@ -188,7 +192,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678z"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()
@@ -203,7 +207,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "z12345678"
             ))
             .when()
-            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPasswordSelf/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()
@@ -211,6 +215,7 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
+    @Order(6)
     @DisplayName("修改重复的密码")
     void testSetPasswordDuplicate() {
         given()
@@ -221,7 +226,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678abc"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(200);
 
@@ -233,7 +238,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678abc2"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(200);
 
@@ -245,7 +250,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678abc3"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(200);
 
@@ -257,7 +262,7 @@ public class TestUserPasswordComplexity {
                 "v_password2", "12345678abc"
             ))
             .when()
-            .post("/api%s/userinfo/setPassword/%s".formatted(base, id))
+            .post("/api%s/userinfo/setPassword/%s".formatted(base, userID))
             .then()
             .statusCode(500)
             .extract()
@@ -268,11 +273,12 @@ public class TestUserPasswordComplexity {
     }
 
     @Test
+    @Order(7)
     @DisplayName("检查密码有效期")
     void testPasswordValid() {
         String day = given()
             .header("userID", config.superUserId())
-            .get("/api%s/userinfo/passwordValidDays/%s".formatted(base, id))
+            .get("/api%s/userinfo/passwordValidDays/%s".formatted(base, userID))
             .then()
             .statusCode(200)
             .extract()

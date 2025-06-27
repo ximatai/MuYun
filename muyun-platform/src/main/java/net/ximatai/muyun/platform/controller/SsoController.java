@@ -184,7 +184,7 @@ public class SsoController implements IRuntimeAbility {
 
             if (recentFailures >= userFailureMaxCount) {
                 LocalDateTime openTime = LocalDateTime.now().plusMinutes(userFailureLockMin);
-                lockUser.put("username", openTime);
+                lockUser.put(username, openTime);
                 return new MuYunException(
                     "登录失败次数太多已被锁定，将于 %s 解锁".formatted(openTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 );

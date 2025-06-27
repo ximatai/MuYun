@@ -152,6 +152,9 @@ public class TestLogin {
 
         String err3 = loginFailed(username, "wrongpw", "muyun");
         Assertions.assertTrue(err3.contains("登录失败次数太多已被锁定"));
+
+        String err4 = loginFailed(username, password, "muyun");
+        Assertions.assertTrue(err4.contains("登录失败次数太多已被锁定"));
     }
 
     @Order(4)
