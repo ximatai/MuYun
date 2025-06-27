@@ -2,6 +2,7 @@ package net.ximatai.muyun.http;
 
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.vertx.web.RouteFilter;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.SessionHandler;
@@ -19,8 +20,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Optional;
 
-import static net.ximatai.muyun.MuYunConst.CONTEXT_KEY_API_REQUEST;
-import static net.ximatai.muyun.MuYunConst.CONTEXT_KEY_RUNTIME_USER;
+import static net.ximatai.muyun.MuYunConst.*;
 
 @ApplicationScoped
 public class RootFilter {
@@ -75,6 +75,8 @@ public class RootFilter {
             context.put(CONTEXT_KEY_API_REQUEST, ApiRequest.BLANK);
         }
 
+        context.put(CONTEXT_KEY_REQUEST_HOST, getHost(context.request().headers(), context.request().authority().host()));
+
         context.next();
     }
 
@@ -91,6 +93,32 @@ public class RootFilter {
         }
 
         return IRuntimeUser.WHITE;
+    }
+
+    private String getHost(MultiMap headers, String baseHost) {
+        String host = headers.get("X-Forwarded-For");
+
+        // 回退到标准的 `Forwarded` 头
+        if (host == null || host.isEmpty()) {
+            String forwardedHeader = headers.get("Forwarded");
+            if (forwardedHeader != null) {
+                // 从 `Forwarded` 头提取 `host`
+                String[] forwardedParts = forwardedHeader.split(";");
+                for (String part : forwardedParts) {
+                    if (part.trim().startsWith("for=")) {
+                        host = part.split("=")[1].trim();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // 最后回退到标准的 `Host` 头
+        if (host == null || host.isEmpty()) {
+            host = baseHost;
+        }
+
+        return host;
     }
 
 }

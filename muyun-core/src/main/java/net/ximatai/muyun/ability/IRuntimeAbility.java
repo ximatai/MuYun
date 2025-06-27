@@ -31,4 +31,12 @@ public interface IRuntimeAbility extends IProfile {
         }
     }
 
+    default String getRequestHost() {
+        try {
+            return getRoutingContext().get(MuYunConst.CONTEXT_KEY_REQUEST_HOST);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

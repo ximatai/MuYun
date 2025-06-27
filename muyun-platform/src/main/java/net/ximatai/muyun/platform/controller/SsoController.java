@@ -145,6 +145,13 @@ public class SsoController implements IRuntimeAbility {
 
     }
 
+    /**
+     * @param username
+     * @param reason
+     * @param openReason 是否对前端公开失败原因
+     * @param isRecord   是否参与失败次数记录
+     * @return 登录失败异常
+     */
     protected MuYunException loginFail(String username, String reason, boolean openReason, boolean isRecord) {
         ApiRequest apiRequest = getApiRequest();
         logger.error(reason);

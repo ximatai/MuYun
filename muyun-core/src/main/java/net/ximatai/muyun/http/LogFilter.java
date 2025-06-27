@@ -11,7 +11,6 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.log.LogItem;
@@ -41,9 +40,6 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
 
     @Inject
     Instance<ILogLogin> iLogLogin;
-
-    @Inject
-    MuYunConfig config;
 
     private static final Logger LOG = LoggerFactory.getLogger(LogFilter.class);
 
@@ -91,7 +87,7 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
             .setDataID(apiRequest.getDataID())
             .setUri(uri)
             .setMethod(method)
-            .setHost(getHost(requestContext))
+            .setHost(getRequestHost())
             .setUserAgent(userAgent)
             .setCostTime(costTime)
             .setOs(os)
@@ -115,32 +111,6 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
             iLogAccess.get().log(logItem);
         }
 
-    }
-
-    private String getHost(ContainerRequestContext requestContext) {
-        String host = requestContext.getHeaderString("X-Forwarded-For");
-
-        // 回退到标准的 `Forwarded` 头
-        if (host == null || host.isEmpty()) {
-            String forwardedHeader = requestContext.getHeaderString("Forwarded");
-            if (forwardedHeader != null) {
-                // 从 `Forwarded` 头提取 `host`
-                String[] forwardedParts = forwardedHeader.split(";");
-                for (String part : forwardedParts) {
-                    if (part.trim().startsWith("for=")) {
-                        host = part.split("=")[1].trim();
-                        break;
-                    }
-                }
-            }
-        }
-
-        // 最后回退到标准的 `Host` 头
-        if (host == null || host.isEmpty()) {
-            host = requestContext.getUriInfo().getBaseUri().getHost();
-        }
-
-        return host;
     }
 
 }
