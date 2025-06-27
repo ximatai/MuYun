@@ -53,10 +53,21 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
             .addColumn("t_update")
             .addColumn("t_last_login")
             .addColumn("t_this_login")
+            .addColumn("d_invalid", "账号失效时间")
             .addColumn("d_password_invalid", "密码失效时间")
             .addColumn("av_used_password", "已经使用的密码")
             .addColumn(Column.of("b_enabled").setDefaultValue(true))
             .addIndex("v_username", true);
+    }
+
+    @Override
+    public void fitOutDefaultValue(Map body) {
+        super.fitOutDefaultValue(body);
+
+        if (config.userValidateDays() > 0) {
+            body.put("d_invalid", LocalDate.now().plusDays(config.userValidateDays()));
+        }
+
     }
 
     @Override
@@ -120,12 +131,11 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
             avUsedPassword.add(old);
         }
 
-        LocalDate dPasswordInvalid = null;
         if (config.userPasswordValidateDays() > 0) {
-            dPasswordInvalid = LocalDate.now().plusDays(config.userPasswordValidateDays());
+            return update(id, Map.of("v_password", password, "av_used_password", avUsedPassword, "d_password_invalid", LocalDate.now().plusDays(config.userPasswordValidateDays())));
+        } else {
+            return update(id, Map.of("v_password", password, "av_used_password", avUsedPassword));
         }
-
-        return update(id, Map.of("v_password", password, "av_used_password", avUsedPassword, "d_password_invalid", dPasswordInvalid));
 
     }
 

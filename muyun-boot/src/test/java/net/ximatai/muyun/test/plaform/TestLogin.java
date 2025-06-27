@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.controller.SsoController;
+import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -27,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestLogin {
     @Inject
     MuYunConfig config;
+
+    @Inject
+    UserInfoController userInfoController;
 
     String base = PlatformConst.BASE_PATH;
 
@@ -175,6 +180,31 @@ public class TestLogin {
 
         String err3 = loginFailed(username + "x", "wrongpw", "muyun");
         Assertions.assertTrue(err3.contains("登录失败次数太多已被锁定"));
+    }
+
+    @Order(6)
+    @Test
+    void testUserInvalidDaySetOK() {
+        Map<String, Object> user = userInfoController.view(userID);
+
+        java.sql.Date invalidDate = (java.sql.Date) user.get("d_invalid");
+
+        assertEquals(LocalDate.now().plusDays(config.userValidateDays()), invalidDate.toLocalDate());
+    }
+
+    @Order(7)
+    @Test
+    void testUserInvalid() {
+
+        given()
+            .get("/api/platform/userinfo/setUserInvalid/%s?invalidDate=%s".formatted(userID, LocalDate.now().minusDays(1)))
+            .then()
+            .statusCode(200);
+
+        String failed = loginFailed(username, password, "muyun");
+
+        Assertions.assertTrue(failed.contains("该账号已超过有效期"));
+
     }
 
     private String loginFailed(String username, String password, String code) {

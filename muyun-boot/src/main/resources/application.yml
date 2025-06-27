@@ -1,9 +1,10 @@
 muyun:
   use-session: true
-  user-failure-lock-min: 5
-  user-failure-max-count: 3
-  user-password-validate-days: 90
-  user-password-check-reuse: true
+  user-failure-max-count: 3 #用户登录失败到达此个数后，用户被锁定
+  user-failure-lock-min: 5 #用户被锁定的时长
+  user-validate-days: 365 #账号有效期
+  user-password-validate-days: 90 #密码默认有效期
+  user-password-check-reuse: true #设置新密码时校验是否重复使用
 file-server:
   upload-path: ./fileUploads/
 web:

@@ -7,6 +7,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.IRuntimeAbility;
@@ -155,7 +156,12 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             organizationController.toReferenceInfo("id_at_org_organization"),
             departmentController.toReferenceInfo("id_at_org_department"),
             dictController.toReferenceInfo("dict_user_gender"),
-            userController.toReferenceInfo("id").add("b_enabled").add("v_username", "v_username"));
+            userController.toReferenceInfo("id")
+                .add("b_enabled")
+                .add("v_username", "v_username")
+                .add("d_invalid", "d_invalid")
+        );
+
     }
 
     @POST
@@ -271,6 +277,19 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
     }
 
     @GET
+    @Path("/setUserInvalid/{id}")
+    public int setUserInvalid(@PathParam("id") String id, @QueryParam("invalidDate") String invalidDate) {
+
+//        LocalDate localDate = LocalDate.parse(invalidDate);
+
+//        if (localDate.isBefore(LocalDate.now())) {
+//            throw new MuYunException("有效期必须设置为今天以后");
+//        }
+
+        return this.userController.update(id, Map.of("d_invalid", invalidDate));
+    }
+
+    @GET
     @Path("/passwordValidDays/{id}")
     @Operation(summary = "密码有效期")
     public int passwordValidDays(@PathParam("id") String id) {
@@ -278,9 +297,12 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
             Map<String, Object> user = userController.view(id);
             java.sql.Date invalidDate = (java.sql.Date) user.get("d_password_invalid"); // 密码失效时间
 
-            LocalDate now = LocalDate.now();
-
-            return (int) ChronoUnit.DAYS.between(now, invalidDate.toLocalDate());
+            if (invalidDate != null) {
+                LocalDate now = LocalDate.now();
+                return (int) ChronoUnit.DAYS.between(now, invalidDate.toLocalDate());
+            } else {
+                return 999;
+            }
 
         } else {
             return 999;

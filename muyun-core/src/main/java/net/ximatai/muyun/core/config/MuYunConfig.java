@@ -22,6 +22,10 @@ public interface MuYunConfig extends IProfile {
     @WithDefault("0")
     int userFailureMaxCount();
 
+    // 账号有效期，0 表示不检查
+    @WithDefault("0")
+    int userValidateDays();
+
     // 密码有效期，0 表示不检查
     @WithDefault("0")
     int userPasswordValidateDays();

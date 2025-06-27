@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -122,6 +123,19 @@ public class SsoController implements IRuntimeAbility {
         String encryptedPassword = encryptPassword(vPassword, code);
         if (password.equals(encryptedPassword)
             || (!isProdMode() && password.equals(vPassword))) { // 非生产环境允许使用非加密密码
+            if (config.userValidateDays() > 0) {
+                java.sql.Date invalidDate = (java.sql.Date) userInDB.get("d_invalid");
+
+                if (invalidDate != null) {
+                    LocalDate now = LocalDate.now();
+                    LocalDate invalidLocalDate = invalidDate.toLocalDate();
+
+                    if (now.isAfter(invalidLocalDate)) {
+                        throw loginFail(username, "该账号已超过有效期，用户名：" + username, true, false);
+                    }
+                }
+            }
+
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
