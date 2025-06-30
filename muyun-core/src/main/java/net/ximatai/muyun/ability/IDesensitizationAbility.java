@@ -15,6 +15,6 @@ public interface IDesensitizationAbility {
         Desensitizer desensitizer = getDesensitizer();
         if (desensitizer == null) return;
 
-        map.replaceAll((k, v) -> v != null ? desensitizer.desensitize(k, v.toString()) : null);
+        map.replaceAll((k, v) -> v != null && desensitizer.getAlgorithm(k) != null ? desensitizer.desensitize(k, v.toString()) : null);
     }
 }
