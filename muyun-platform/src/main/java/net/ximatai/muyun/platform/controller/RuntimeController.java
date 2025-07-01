@@ -93,6 +93,13 @@ public class RuntimeController implements IRuntimeAbility {
         }
     }
 
+    @GET
+    @Path("/authorizedResources")
+    @Operation(summary = "查询当前用户权限资源")
+    public Map<String, Set<String>> authorizedResources() {
+        return authorizationService.getAuthorizedResources(getUser().getId());
+    }
+
     private List<TreeNode> filterMenuByAuth(List<TreeNode> list) {
         String userID = getUser().getId();
         Map<String, Set<String>> authorizedResources = authorizationService.getAuthorizedResources(userID);
