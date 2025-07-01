@@ -42,7 +42,8 @@ class TestDesensitizationAbility {
     void test() {
         String text = "hello world!";
         String id = testController.create(Map.of(
-            "v_name", text
+            "v_name", text,
+            "v_name3", text
         ));
         Map<String, ?> response = testController.view(id);
 
@@ -51,6 +52,7 @@ class TestDesensitizationAbility {
         assertNotEquals(text, responseVName);
         assertEquals("h**********!", responseVName);
         assertNull(response.get("v_name2"));
+        assertEquals(text, response.get("v_name3"));
     }
 
 }
@@ -77,6 +79,7 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
             .setPrimaryKey(Column.ID_POSTGRES)
             .addColumn(Column.of("v_name"))
             .addColumn(Column.of("v_name2"))
+            .addColumn(Column.of("v_name3"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
     }
 
