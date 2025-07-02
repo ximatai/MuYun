@@ -49,17 +49,17 @@ public class SsoController implements IRuntimeAbility {
     private static final String ALL_PURPOSE_CODE_FOR_DEBUG = "muyun";
     private static final String KAPTCHA_COOKIE_KEY = "KCODE";
 
-    Cache<String, String> codeCache = Caffeine.newBuilder()
+    protected Cache<String, String> codeCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .maximumSize(100)
         .build();
 
     // 锁定用户记录在此缓存
-    Cache<String, LocalDateTime> lockUser = Caffeine.newBuilder()
+    protected Cache<String, LocalDateTime> lockUser = Caffeine.newBuilder()
         .build();
 
     // 登录失败的历次时间戳缓存
-    Cache<String, Queue<Long>> loginFailTimestamps = Caffeine.newBuilder()
+    protected Cache<String, Queue<Long>> loginFailTimestamps = Caffeine.newBuilder()
         .expireAfterAccess(10, TimeUnit.MINUTES) // 避免内存泄漏
         .build();
 
