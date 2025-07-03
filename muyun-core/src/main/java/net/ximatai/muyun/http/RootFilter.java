@@ -19,11 +19,15 @@ import net.ximatai.muyun.service.IRuntimeProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static net.ximatai.muyun.MuYunConst.*;
 
 @ApplicationScoped
 public class RootFilter {
+
+    private static final Pattern FORWARDED_PATTERN = Pattern.compile("for=([^;,\"]+)");
 
     @ConfigProperty(name = "quarkus.rest.path")
     String restPath;
@@ -75,7 +79,7 @@ public class RootFilter {
             context.put(CONTEXT_KEY_API_REQUEST, ApiRequest.BLANK);
         }
 
-        context.put(CONTEXT_KEY_REQUEST_HOST, getHost(context.request().headers(), context.request().authority().host()));
+        context.put(CONTEXT_KEY_REQUEST_HOST, getClientIp(context.request().headers(), context.request().authority().host()));
 
         context.next();
     }
@@ -95,30 +99,28 @@ public class RootFilter {
         return IRuntimeUser.WHITE;
     }
 
-    private String getHost(MultiMap headers, String baseHost) {
-        String host = headers.get("X-Forwarded-For");
-
-        // 回退到标准的 `Forwarded` 头
-        if (host == null || host.isEmpty()) {
-            String forwardedHeader = headers.get("Forwarded");
-            if (forwardedHeader != null) {
-                // 从 `Forwarded` 头提取 `host`
-                String[] forwardedParts = forwardedHeader.split(";");
-                for (String part : forwardedParts) {
-                    if (part.trim().startsWith("for=")) {
-                        host = part.split("=")[1].trim();
-                        break;
-                    }
-                }
+    private String getClientIp(MultiMap headers, String fallbackHost) {
+        // 1. 优先从 X-Forwarded-For 提取第一个 IP
+        String xForwardedFor = headers.get("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            String[] ips = xForwardedFor.split(",");
+            if (ips.length > 0) {
+                return ips[0].trim();
             }
         }
 
-        // 最后回退到标准的 `Host` 头
-        if (host == null || host.isEmpty()) {
-            host = baseHost;
+        // 2. 回退到 Forwarded 头（RFC 7239）
+        String forwardedHeader = headers.get("Forwarded");
+        if (forwardedHeader != null) {
+
+            Matcher matcher = FORWARDED_PATTERN.matcher(forwardedHeader);
+            if (matcher.find()) {
+                return matcher.group(1).trim();
+            }
         }
 
-        return host;
+        // 3. 最后回退到 fallbackHost（但需谨慎！）
+        return fallbackHost;
     }
 
 }
