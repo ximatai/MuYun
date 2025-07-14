@@ -48,6 +48,7 @@ public class SsoController implements IRuntimeAbility {
 
     private static final String ALL_PURPOSE_CODE_FOR_DEBUG = "muyun";
     private static final String KAPTCHA_COOKIE_KEY = "KCODE";
+    public static final String CONTEXT_KEY_SKIP_KAPTCHA = "skipKaptcha";
 
     protected Cache<String, String> codeCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
@@ -239,6 +240,10 @@ public class SsoController implements IRuntimeAbility {
     }
 
     private void verificationCode(String code) throws MuYunException {
+        if (routingContext.get(CONTEXT_KEY_SKIP_KAPTCHA, false)) {
+            return;
+        }
+
         code = code.trim().toLowerCase();
         if (!isProdMode() && ALL_PURPOSE_CODE_FOR_DEBUG.equals(code)) { // 非生产环境允许万能验证码
             return;
