@@ -15,6 +15,7 @@ import jakarta.ws.rs.Priorities;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
+import net.ximatai.muyun.service.IContextFilter;
 import net.ximatai.muyun.service.IRuntimeProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -37,6 +38,9 @@ public class RootFilter {
 
     @Inject
     Instance<IRuntimeProvider> runtimeProvider;
+
+    @Inject
+    Instance<IContextFilter> contextFilters;
 
     private SessionHandler sessionHandler;
 
@@ -63,6 +67,12 @@ public class RootFilter {
         IRuntimeUser runtimeUser = resolveRuntimeUser(context);
 
         context.put(CONTEXT_KEY_RUNTIME_USER, runtimeUser);
+
+        if (contextFilters.isResolvable()) {
+            for (IContextFilter filter : contextFilters.stream().toList()) {
+                filter.filter(context, runtimeUser);
+            }
+        }
 
         context.next();
     }
