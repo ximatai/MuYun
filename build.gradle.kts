@@ -12,9 +12,8 @@ allprojects {
 //    version = "0.1.11"
 
     repositories {
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenLocal()
-        maven { url = uri("https://mirrors.cloud.tencent.com/repository/maven") }
-//        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenCentral()
     }
 }
