@@ -1,0 +1,33 @@
+stages:
+  - test
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GIT_DEPTH: 0  # 禁用浅克隆，解决 fetch-pack 错误
+  GIT_STRATEGY: fetch  # 使用 fetch 而不是默认的 clone
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+    - build
+
+check:
+  stage: test
+  image: eclipse-temurin:21-jdk
+  tags:
+    - host
+  before_script:
+    - export GRADLE_USER_HOME=$(pwd)/.gradle
+    # 清理可能的git问题
+    - git config --global http.postBuffer 524288000  # 增大缓冲区
+    - git config --global https.postBuffer 524288000
+    - git fsck
+    - git reset --hard
+  script:
+    - ./gradlew test
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
