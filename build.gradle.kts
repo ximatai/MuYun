@@ -4,6 +4,15 @@ plugins {
     signing
     id("io.github.jeadyx.sonatype-uploader") version "2.8"
     id("org.kordamp.gradle.jandex") version "2.1.0"
+    id("org.sonarqube") version "6.2.0.5505"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "platform_muyun_573ff8fe-7847-43a8-9d83-10039863dc0e")
+        property("sonar.projectName", "muyun")
+        property("sonar.qualitygate.wait", true)
+    }
 }
 
 allprojects {
