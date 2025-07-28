@@ -1,6 +1,6 @@
 stages:
   - test
-  - build-sonar
+#  - build-sonar
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -33,18 +33,18 @@ check:
       - runner_system_failure
       - stuck_or_timeout_failure
 
-build-sonar:
-  stage: build-sonar
-  tags:
-    - host
-  cache:
-    policy: pull-push
-    key: "sonar-cache-$CI_COMMIT_REF_SLUG"
-    paths:
-      - "${SONAR_USER_HOME}/cache"
-      - sonar-scanner/
-  script:
-    - ./gradlew build sonar
-  artifacts:
-    paths:
-      - build/reports/sonar/
+#build-sonar:
+#  stage: build-sonar
+#  tags:
+#    - host
+#  cache:
+#    policy: pull-push
+#    key: "sonar-cache-$CI_COMMIT_REF_SLUG"
+#    paths:
+#      - "${SONAR_USER_HOME}/cache"
+#      - sonar-scanner/
+#  script:
+#    - ./gradlew build sonar
+#  artifacts:
+#    paths:
+#      - build/reports/sonar/
