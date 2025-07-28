@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
 import static net.ximatai.muyun.platform.controller.AuthorizationController.MODULE_ALIAS;
@@ -38,6 +39,7 @@ public class AuthorizationController extends Scaffold implements IDatabaseAbilit
     public final static String MODULE_ALIAS = "authorization";
 
     private final LoadingCache<String, Map<String, Object>> actionCache = Caffeine.newBuilder()
+        .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(this::loadAction);
 
     public static final List<Dict> DATA_AUTH_DICT = List.of(
