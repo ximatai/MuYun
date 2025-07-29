@@ -4,8 +4,6 @@ plugins {
 }
 
 dependencies {
-    api(project(":muyun-util"))
     api(libs.jdbi.core)
-//    api(libs.jdbi.postgres)
 }
 

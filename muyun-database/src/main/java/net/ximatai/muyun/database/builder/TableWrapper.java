@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static net.ximatai.muyun.util.PreconditionUtil.requireNotNull;
+
 public class TableWrapper extends TableBase {
 
     private String comment;
@@ -55,9 +57,7 @@ public class TableWrapper extends TableBase {
 
     public TableWrapper addIndex(String columnName, boolean unique) {
         Column col = getColumns().stream().filter(column -> column.getName().equals(columnName)).findFirst().orElse(null);
-        if (col == null) {
-            throw new IllegalArgumentException("No such column: " + columnName);
-        }
+        requireNotNull(col, () -> "No such column: " + columnName);
 
         indexes.add(new Index(columnName, unique));
         return this;
@@ -66,9 +66,7 @@ public class TableWrapper extends TableBase {
     public TableWrapper addIndex(List<String> columns) {
         columns.forEach(columnName -> {
             Column col = getColumns().stream().filter(column -> column.getName().equals(columnName)).findFirst().orElse(null);
-            if (col == null) {
-                throw new IllegalArgumentException("No such column: " + columnName);
-            }
+            requireNotNull(col, () -> "No such column: " + columnName);
         });
 
         this.addIndex(columns, false);

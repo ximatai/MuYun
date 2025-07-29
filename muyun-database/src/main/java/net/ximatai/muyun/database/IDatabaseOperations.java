@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import static net.ximatai.muyun.util.PreconditionUtil.require;
+
 public interface IDatabaseOperations extends IDBInfoProvider {
 
     default Map<String, ?> transformDataForDB(DBTable dbTable, Map<String, ?> data) {
@@ -57,9 +59,7 @@ public interface IDatabaseOperations extends IDBInfoProvider {
 
     default Object insertList(String schema, String tableName, List<Map> list) {
         Objects.requireNonNull(list, "The list must not be null");
-        if (list.isEmpty()) {
-            throw new IllegalArgumentException("The list must not be empty");
-        }
+        require(!list.isEmpty(), () -> "The list must not be empty");
 
         DBTable table = getDBInfo().getSchema(schema).getTable(tableName);
         List<Map> transformedList = list.stream().map(it -> transformDataForDB(table, it)).toList();

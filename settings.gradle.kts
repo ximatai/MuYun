@@ -10,6 +10,7 @@ pluginManagement {
 
 rootProject.name = "MuYun"
 
+include("muyun-util")
 include("muyun-core")
 include("muyun-runtime-session")
 include("muyun-runtime-gateway")

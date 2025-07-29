@@ -7,14 +7,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import static net.ximatai.muyun.util.PreconditionUtil.require;
+import static net.ximatai.muyun.util.PreconditionUtil.requireNotNull;
+
 public class DateTool {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Date stringToSqlDate(String dateString) {
-        if (dateString == null || dateString.isEmpty()) {
-            throw new IllegalArgumentException("Date string cannot be null or empty.");
-        }
+        requireNotNull(dateString, () -> "Date string cannot be null or empty.");
+        require(!dateString.isEmpty(), () -> "Date string cannot be null or empty.");
 
         try {
             LocalDate localDate = LocalDate.parse(dateString.substring(0, 10), DATE_FORMATTER);
@@ -25,9 +27,8 @@ public class DateTool {
     }
 
     public static Timestamp stringToSqlTimestamp(String dateString) {
-        if (dateString == null || dateString.isEmpty()) {
-            return null;
-        }
+        requireNotNull(dateString, () -> "Date string cannot be null or empty.");
+        require(!dateString.isEmpty(), () -> "Date string cannot be null or empty.");
 
         try {
             if (dateString.length() == 10) {
