@@ -110,6 +110,6 @@ docker run --rm  -p 54324:5432 -e POSTGRES_PASSWORD=muyun2024 -e POSTGRES_DB=muy
 ./gradlew --console=plain :muyun-boot:quarkusDev
 ```
 ## 一些视频教程
-* https://www.bilibili.com/video/BV1w6zGYkEPo/
-* https://www.bilibili.com/video/BV1W2z8YhEqV/
-* https://www.bilibili.com/video/BV1DHiUYSEHD/
+* [你从未见过的 Java 快速开发框架](https://www.bilibili.com/video/BV1w6zGYkEPo)
+* [给 Java 企业级开发来点不一样的](https://www.bilibili.com/video/BV1W2z8YhEqV)
+* [软删除如果你不满意的话，那么数据归档呢？](https://www.bilibili.com/video/BV1DHiUYSEHD)
