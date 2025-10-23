@@ -95,7 +95,7 @@ class FooMigrate extends AbstractMigration {
 
 @ApplicationScoped
 class FooController extends BaseScaffold {
-    public static final List<Map> initData = List.of(
+    public static List<Map> initData = List.of(
         Map.of("id", "1", "v_name", "张三", "i_age", 18),
         Map.of("id", "2", "v_name", "李四", "i_age", 20),
         Map.of("id", "3", "v_name", "王五", "i_age", 22)

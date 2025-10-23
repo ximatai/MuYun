@@ -5,7 +5,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IMetadataAbility;
-import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICreateAbility;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
 import net.ximatai.muyun.ability.curd.std.IUpdateAbility;
