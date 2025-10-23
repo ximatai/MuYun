@@ -47,6 +47,7 @@ public abstract class AbstractMigration {
             }
         });
 
-        logger.info("Migrated {} to {}", getAlias(), getAlias());
+        int finalVer = migrateSteps.isEmpty() ? 0 : migrateSteps.getLast().version();
+        logger.info("Migrated {} to {}", getAlias(), finalVer);
     }
 }
