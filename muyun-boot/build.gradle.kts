@@ -19,10 +19,11 @@ dependencies {
     implementation("io.quarkus:quarkus-config-yaml")
 
     implementation(project(":muyun-core"))
-    implementation(project(":muyun-runtime-session"))
-//    implementation(project(":muyun-runtime-gateway"))
+//    implementation(project(":muyun-runtime-session"))
+    implementation(project(":muyun-runtime-gateway"))
 
-    implementation(project(":muyun-database-std"))
+    implementation(libs.muyun.database.jdbi.jdk8)
+
     implementation(project(":muyun-platform"))
     implementation(project(":muyun-proxy"))
     implementation(project(":muyun-log"))

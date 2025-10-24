@@ -11,9 +11,10 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -58,7 +59,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name", "模块名称")
             .addColumn("v_alias", "模块标识，同后端Controller拦截入口名")

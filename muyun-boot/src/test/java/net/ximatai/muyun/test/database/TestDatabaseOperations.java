@@ -3,9 +3,9 @@ package net.ximatai.muyun.test.database;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.database.IDatabaseOperationsStd;
-import net.ximatai.muyun.database.builder.TableBuilder;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.TableBuilder;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.List;
 import java.util.Map;
 
-import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
+import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestDatabaseOperations {
 
     @Inject
-    IDatabaseOperationsStd db;
+    IDatabaseOperations db;
 
     @BeforeAll
     void setUp() {

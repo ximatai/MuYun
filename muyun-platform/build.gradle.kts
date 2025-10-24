@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     api(project(":muyun-core"))
-    api(project(":muyun-database-std"))
+    api(libs.muyun.database)
     api(project(":muyun-authorization"))
 
     api(libs.easyCaptcha)

@@ -4,7 +4,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.authorization.AuthorizationService;
-import net.ximatai.muyun.database.IDatabaseOperationsStd;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
 import net.ximatai.muyun.platform.controller.ModuleController;
 import net.ximatai.muyun.platform.controller.RoleActionController;
 import net.ximatai.muyun.platform.controller.RoleController;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestAuth {
 
     @Inject
-    IDatabaseOperationsStd db;
+    IDatabaseOperations db;
 
     @Inject
     AuthorizationService authService;

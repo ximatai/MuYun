@@ -8,10 +8,10 @@ import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -64,7 +64,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("v_name")
             .addColumn("ids_at_auth_role")
             .addColumn("ids_at_orga_organization")

@@ -6,7 +6,7 @@ plugins {
 dependencies {
     api(enforcedPlatform(libs.quarkus.platform.bom))
 
-    api(project(":muyun-database"))
+    api(libs.muyun.database)
     api(project(":muyun-fileserver"))
 
     api("io.quarkus:quarkus-rest")

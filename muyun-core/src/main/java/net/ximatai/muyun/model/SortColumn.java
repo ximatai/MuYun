@@ -1,12 +1,13 @@
 package net.ximatai.muyun.model;
 
-import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.Column;
 
 public class SortColumn {
 
-    public static final SortColumn CREATE = new SortColumn(Column.CREATE, Type.DESC);
-    public static final SortColumn ORDER = new SortColumn(Column.ORDER, Type.ASC);
-    public static final SortColumn CODE = new SortColumn(Column.CODE, Type.ASC);
+    public static final SortColumn CREATE = new SortColumn(PresetColumn.CREATE, Type.DESC);
+    public static final SortColumn ORDER = new SortColumn(PresetColumn.ORDER, Type.ASC);
+    public static final SortColumn CODE = new SortColumn(PresetColumn.CODE, Type.ASC);
 
     private Column column;
     private final String columnName;

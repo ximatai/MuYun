@@ -1,6 +1,6 @@
 package net.ximatai.muyun.ability;
 
-import net.ximatai.muyun.database.IDatabaseOperations;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
 
 import java.util.Map;
 import java.util.Objects;

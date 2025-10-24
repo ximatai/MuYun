@@ -7,11 +7,13 @@ import net.ximatai.muyun.ability.IReferableAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.core.security.SMEncryptor;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.ColumnType;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -46,7 +48,7 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("v_username")
             .addColumn("v_password")
             .addColumn("t_create")
@@ -55,7 +57,7 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
             .addColumn("t_this_login")
             .addColumn("d_invalid", "账号失效时间")
             .addColumn("d_password_invalid", "密码失效时间")
-            .addColumn("av_used_password", "已经使用的密码")
+            .addColumn(Column.of("av_used_password").setComment("已经使用的密码").setType(ColumnType.VARCHAR_ARRAY))
             .addColumn(Column.of("b_enabled").setDefaultValue(true))
             .addIndex("v_username", true);
     }

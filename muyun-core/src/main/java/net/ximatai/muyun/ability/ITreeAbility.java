@@ -4,7 +4,8 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
-import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.Column;
 import net.ximatai.muyun.model.TreeNode;
 import net.ximatai.muyun.util.TreeBuilder;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -19,7 +20,7 @@ import java.util.Objects;
 public interface ITreeAbility extends ISelectAbility, ISortAbility, IMetadataAbility, ILabelAbility {
 
     default Column getParentKeyColumn() {
-        return Column.TREE_PID.setDefaultValue(TreeBuilder.ROOT_PID);
+        return PresetColumn.TREE_PID.setDefaultValue(TreeBuilder.ROOT_PID);
     }
 
     @GET

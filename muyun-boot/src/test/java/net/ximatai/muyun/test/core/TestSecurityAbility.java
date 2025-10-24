@@ -7,12 +7,13 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.security.AbstractEncryptor;
 import net.ximatai.muyun.core.security.SMEncryptor;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,7 +84,7 @@ class TestSecurityAbilityController extends Scaffold implements ICURDAbility, IT
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn(Column.of("v_for_sign"))
             .addColumn(Column.of("v_for_encrypt"))
             .addColumn(Column.of("pid"))

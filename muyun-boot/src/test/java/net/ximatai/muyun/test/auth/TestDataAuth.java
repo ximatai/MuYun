@@ -5,10 +5,10 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.authorization.AuthorizationService;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.database.IDatabaseOperationsStd;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableBuilder;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.TableBuilder;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.platform.controller.*;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.*;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTestResource(value = PostgresTestResource.class)
 public class TestDataAuth {
     @Inject
-    IDatabaseOperationsStd db;
+    IDatabaseOperations db;
 
     @Inject
     AuthorizationService authService;
@@ -60,7 +60,7 @@ public class TestDataAuth {
         new TableBuilder(db).build(
             TableWrapper.withName("module1")
                 .setSchema("public")
-                .setPrimaryKey(Column.ID_POSTGRES)
+                .setPrimaryKey(PresetColumn.ID_POSTGRES)
                 .setInherit(BaseBusinessTable.TABLE)
                 .addColumn("v_name")
         );
@@ -68,7 +68,7 @@ public class TestDataAuth {
         new TableBuilder(db).build(
             TableWrapper.withName("module2")
                 .setSchema("public")
-                .setPrimaryKey(Column.ID_POSTGRES)
+                .setPrimaryKey(PresetColumn.ID_POSTGRES)
                 .setInherit(BaseBusinessTable.TABLE)
                 .addColumn("v_name")
         );

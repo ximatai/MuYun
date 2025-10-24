@@ -6,9 +6,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.base.BaseScaffold;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.config.MuYunConfig;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -203,7 +203,7 @@ class TestDataCheckAbilityController extends BaseScaffold implements IDataCheckA
 
     @Override
     public void fitOut(TableWrapper wrapper) {
-        wrapper.setPrimaryKey(Column.ID_POSTGRES)
+        wrapper.setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("v_name", "名称", null, false)
             .addColumn("v_title", "标题", null, false)
             .addColumn("ids_test", "数组测试", null, false)

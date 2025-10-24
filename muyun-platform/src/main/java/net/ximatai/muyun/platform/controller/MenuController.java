@@ -6,8 +6,9 @@ import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.model.Dict;
@@ -46,7 +47,7 @@ public class MenuController extends ScaffoldForPlatform implements ITreeAbility,
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name")
             .addColumn("v_icon")

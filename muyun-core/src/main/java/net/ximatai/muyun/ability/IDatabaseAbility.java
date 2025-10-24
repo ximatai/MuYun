@@ -1,7 +1,7 @@
 package net.ximatai.muyun.ability;
 
 import io.quarkus.arc.Arc;
-import net.ximatai.muyun.database.IDatabaseOperations;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
 
 /**
  * 数据库操作能力

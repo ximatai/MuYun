@@ -5,7 +5,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.*;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.database.builder.Column;
+import net.ximatai.muyun.database.core.builder.Column;
 import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.util.StringUtil;
@@ -81,7 +81,7 @@ public interface ICreateAbility extends IDatabaseAbilityStd, IMetadataAbility {
     @Operation(summary = "批量新增数据", description = "返回新增数据ID数组")
     default List<String> batchCreate(List<Map> list) {
 
-        List<Map> dataList = new ArrayList<>();
+        List<Map<String, Object>> dataList = new ArrayList<>();
 
         List<String> codeList = null;
 

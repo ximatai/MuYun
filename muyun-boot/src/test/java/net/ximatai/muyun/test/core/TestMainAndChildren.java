@@ -10,10 +10,11 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.BatchResult;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
@@ -316,7 +317,7 @@ class TestMain extends Scaffold implements ICURDAbility, ITableCreateAbility, IQ
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn(Column.of("v_name"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
     }
@@ -353,7 +354,7 @@ class TestChildren extends Scaffold implements ICURDAbility, ITableCreateAbility
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn(Column.of("v_name"))
             .addColumn(Column.of("id_at_testmain"));
     }

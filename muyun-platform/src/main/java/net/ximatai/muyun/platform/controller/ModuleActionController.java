@@ -4,8 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.IChildrenAbility;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.SortColumn;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -31,7 +31,7 @@ public class ModuleActionController extends ScaffoldForPlatform implements IChil
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("id_at_app_module", "模块id")
             .addColumn("v_name", "功能名称")
             .addColumn("v_alias", "功能标识")

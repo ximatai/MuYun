@@ -10,8 +10,9 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.model.TreeNode;
@@ -42,7 +43,7 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name", "名称")
             .addColumn("v_remark", "备注")
@@ -55,7 +56,7 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     public String create(Map body) {
         check(body, false);
 
-        String treePidName = Column.TREE_PID.getName();
+        String treePidName = PresetColumn.TREE_PID.getName();
         HashMap map = new HashMap<>(body);
         if (map.get(treePidName) == null) {
             map.put(treePidName, body.get("id_at_org_organization"));

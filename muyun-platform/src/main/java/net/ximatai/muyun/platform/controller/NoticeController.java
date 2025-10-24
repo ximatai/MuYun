@@ -10,19 +10,15 @@ import net.ximatai.muyun.ability.IFileAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.fileserver.IFileService;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 import net.ximatai.muyun.platform.ability.IModuleRegisterAbility;
-import net.ximatai.muyun.platform.model.Dict;
-import net.ximatai.muyun.platform.model.DictCategory;
-import net.ximatai.muyun.platform.model.ModuleAction;
-import net.ximatai.muyun.platform.model.ModuleConfig;
-import net.ximatai.muyun.platform.model.MuYunMessage;
+import net.ximatai.muyun.platform.model.*;
 import net.ximatai.muyun.platform.service.MessageCenter;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -81,7 +77,7 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setComment("通知公告")
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_title", "标题")
             .addColumn("v_context", "内容")

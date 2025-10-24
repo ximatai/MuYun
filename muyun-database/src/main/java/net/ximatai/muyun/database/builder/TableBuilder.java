@@ -1,6 +1,6 @@
 package net.ximatai.muyun.database.builder;
 
-import net.ximatai.muyun.database.IDatabaseOperations;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBIndex;

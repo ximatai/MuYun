@@ -3,12 +3,12 @@ package net.ximatai.muyun.test.database;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableBuilder;
-import net.ximatai.muyun.database.builder.TableWrapper;
-import net.ximatai.muyun.database.metadata.DBIndex;
-import net.ximatai.muyun.database.metadata.DBSchema;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableBuilder;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
+import net.ximatai.muyun.database.core.metadata.DBIndex;
+import net.ximatai.muyun.database.core.metadata.DBSchema;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static net.ximatai.muyun.database.builder.Column.ID_POSTGRES;
+import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.*;
 
 //@Disabled
@@ -60,7 +60,7 @@ public class TableBuilderTest {
             comment on column test.test_table_x.name is '名称';
             """);
 
-        db.resetDBInfo();
+//        db.resetDBInfo();
 
         DBSchema test = db.getDBInfo().getSchema("test");
         assertNotNull(test);

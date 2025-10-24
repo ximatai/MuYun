@@ -9,11 +9,12 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.ColumnType;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.ColumnType;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.BeforeEach;
@@ -334,7 +335,7 @@ class TestBasicCURDController extends Scaffold implements ICURDAbility, ITableCr
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))  // 字段名
             .addColumn(Column.of("t_create"))
             .addColumn(Column.of("t_update"));

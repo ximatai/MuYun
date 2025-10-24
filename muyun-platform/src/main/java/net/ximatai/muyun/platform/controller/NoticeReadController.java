@@ -4,8 +4,8 @@ import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import net.ximatai.muyun.ability.IChildAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
 
@@ -23,7 +23,7 @@ public class NoticeReadController extends ScaffoldForPlatform implements IChildA
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setComment("通知公告已读记录")
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("id_at_app_notice")
             .addColumn("id_at_auth_user")
             .addColumn("t_create")

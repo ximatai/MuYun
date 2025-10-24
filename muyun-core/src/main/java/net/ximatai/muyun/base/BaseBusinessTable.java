@@ -3,10 +3,10 @@ package net.ximatai.muyun.base;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Singleton;
 import net.ximatai.muyun.ability.ITableCreateAbility;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.Scaffold;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableBase;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.TableBase;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 
 @Startup(1000)
 @Singleton
@@ -29,7 +29,7 @@ public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("t_create")
             .addColumn("t_update")
             .addColumn("id_at_app_region") // 数据归属行政区划

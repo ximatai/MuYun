@@ -7,13 +7,14 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.IDesensitizationAbility;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.Scaffold;
 import net.ximatai.muyun.core.desensitization.Desensitizer;
 import net.ximatai.muyun.core.desensitization.MaskMiddleAlgorithm;
 import net.ximatai.muyun.core.security.SMEncryptor;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,7 +77,7 @@ class TestDesensitizationAbilityController extends Scaffold implements ICURDAbil
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn(Column.of("v_name"))
             .addColumn(Column.of("v_name2"))
             .addColumn(Column.of("v_name3"))

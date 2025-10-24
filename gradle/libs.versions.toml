@@ -6,6 +6,7 @@ yasson = "3.0.4"
 bcprov = "1.80"
 caffeine = "3.2.0"
 codec = "1.18.0"
+muyun-database = "1.25.11"
 
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
@@ -17,6 +18,8 @@ bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
 commons-codes = { module = "commons-codec:commons-codec", version.ref = "codec" }
 easyCaptcha = { module = "com.github.whvcse:easy-captcha", version = "1.6.2" }
+muyun-database = { module = "net.ximatai.muyun.database:muyun-database-core", version.ref = "muyun-database" }
+muyun-database-jdbi-jdk8 = { module = "net.ximatai.muyun.database:muyun-database-jdbi-jdk8", version.ref = "muyun-database" }
 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }

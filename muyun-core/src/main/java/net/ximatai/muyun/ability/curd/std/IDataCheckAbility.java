@@ -3,8 +3,8 @@ package net.ximatai.muyun.ability.curd.std;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.database.metadata.DBColumn;
-import net.ximatai.muyun.database.metadata.DBTable;
+import net.ximatai.muyun.database.core.metadata.DBColumn;
+import net.ximatai.muyun.database.core.metadata.DBTable;
 import net.ximatai.muyun.model.CheckConfig;
 
 import java.util.List;

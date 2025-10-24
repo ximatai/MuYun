@@ -1,7 +1,7 @@
 package net.ximatai.muyun.ability;
 
-import net.ximatai.muyun.database.builder.TableBase;
-import net.ximatai.muyun.database.metadata.DBTable;
+import net.ximatai.muyun.database.core.builder.TableBase;
+import net.ximatai.muyun.database.core.metadata.DBTable;
 
 /**
  * 元数据信息能力

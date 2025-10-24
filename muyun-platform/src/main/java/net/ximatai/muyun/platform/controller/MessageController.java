@@ -7,8 +7,8 @@ import net.ximatai.muyun.ability.IChildrenAbility;
 import net.ximatai.muyun.ability.IReferenceAbility;
 import net.ximatai.muyun.ability.ISoftDeleteAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
@@ -38,7 +38,7 @@ public class MessageController extends ScaffoldForPlatform implements IChildrenA
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("id_at_auth_user__create", "创建人/发件人")
             .addColumn("t_create", "创建时间")
             .addColumn("v_title", "标题")
@@ -111,7 +111,7 @@ class MessageForPerson extends ScaffoldForPlatform implements IChildAbility, IRe
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("id_at_app_message", "主表id")
             .addColumn("id_at_auth_user__to", "收件人")
             .addColumn("b_read", "是否已读", false)

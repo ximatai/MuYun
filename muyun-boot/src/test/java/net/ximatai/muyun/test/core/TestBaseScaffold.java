@@ -6,7 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.base.BaseBusinessTable;
 import net.ximatai.muyun.base.BaseScaffold;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

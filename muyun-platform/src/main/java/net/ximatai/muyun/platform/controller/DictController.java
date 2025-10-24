@@ -8,9 +8,9 @@ import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.ability.curd.std.IDataCheckAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
@@ -58,7 +58,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("id_at_app_dictcategory")
             .addColumn("v_value", "字典值")
@@ -71,7 +71,7 @@ public class DictController extends ScaffoldForPlatform implements ITreeAbility,
     public String create(Map body) {
         //这样就可以把id_at_app_dictcategory当作ROOT_ID使用了
         Objects.requireNonNull(body.get("id_at_app_dictcategory"));
-        String treePidName = Column.TREE_PID.getName();
+        String treePidName = PresetColumn.TREE_PID.getName();
         HashMap map = new HashMap<>(body);
         if (map.get(treePidName) == null) {
             map.put(treePidName, body.get("id_at_app_dictcategory"));

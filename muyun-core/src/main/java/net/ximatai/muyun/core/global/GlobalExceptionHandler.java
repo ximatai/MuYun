@@ -12,7 +12,7 @@ import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.IToFrontendException;
 import net.ximatai.muyun.core.exception.PermsException;
-import net.ximatai.muyun.database.exception.MyDatabaseException;
+import net.ximatai.muyun.database.core.exception.MuYunDatabaseException;
 import net.ximatai.muyun.model.IRuntimeUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRunt
             message = exception.getMessage();
         } else if (e instanceof PermsException) { // 权限报错
             responseStatus = getUser().getId().equals(IRuntimeUser.WHITE.getId()) ? UNAUTHORIZED : FORBIDDEN; //说明是白名单用户，也就是登录过期情况
-        } else if (e instanceof MyDatabaseException exception) {
+        } else if (e instanceof MuYunDatabaseException exception) {
             switch (exception.getType()) {
                 case DATA_NOT_FOUND -> responseStatus = Response.Status.NOT_FOUND;
                 case DEFAULT -> responseStatus = Response.Status.BAD_REQUEST;

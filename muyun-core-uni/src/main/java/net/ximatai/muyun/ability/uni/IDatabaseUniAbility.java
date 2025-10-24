@@ -1,6 +1,6 @@
 package net.ximatai.muyun.ability.uni;
 
-import net.ximatai.muyun.database.IDatabaseOperations;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
 import net.ximatai.muyun.database.uni.IDatabaseOperationsUni;
 
 public interface IDatabaseUniAbility {

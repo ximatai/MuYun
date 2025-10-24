@@ -5,10 +5,11 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.ability.IMetadataAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.ability.curd.std.ISelectAbility;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableBuilder;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.TableBuilder;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.log.LogItem;
 
@@ -29,7 +30,7 @@ public abstract class LogBaseController implements IMetadataAbility, ISelectAbil
 
         TableWrapper wrapper = new TableWrapper(getMainTable())
             .setSchema(getSchemaName())
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("v_uri")
             .addColumn("v_method")
             .addColumn("j_params")

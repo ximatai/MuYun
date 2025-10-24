@@ -8,7 +8,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.core.exception.PermsException;
-import net.ximatai.muyun.database.IDatabaseOperationsStd;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.service.IAuthorizationService;
 
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 public class AuthorizationService implements IAuthorizationService {
 
     @Inject
-    IDatabaseOperationsStd db;
+    IDatabaseOperations db;
 
     @Inject
     MuYunConfig config;

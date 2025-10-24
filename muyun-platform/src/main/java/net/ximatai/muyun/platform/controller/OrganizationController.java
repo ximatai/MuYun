@@ -2,15 +2,11 @@ package net.ximatai.muyun.platform.controller;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
-import net.ximatai.muyun.ability.IChildrenAbility;
-import net.ximatai.muyun.ability.IDataBroadcastAbility;
-import net.ximatai.muyun.ability.IReferableAbility;
-import net.ximatai.muyun.ability.IReferenceAbility;
-import net.ximatai.muyun.ability.ITreeAbility;
+import net.ximatai.muyun.ability.*;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.model.ReferenceInfo;
@@ -70,7 +66,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_remark", "备注")
             .addColumn("v_name", "名称")

@@ -6,8 +6,8 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ISortAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
 import net.ximatai.muyun.base.BaseBusinessTable;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.model.PageResult;
 import net.ximatai.muyun.model.QueryItem;
 import net.ximatai.muyun.platform.ScaffoldForPlatform;
@@ -40,7 +40,7 @@ public class MsgConfigController extends ScaffoldForPlatform implements ISortAbi
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setComment("消息配置")
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_title", "标题", null, false)
             .addColumn("v_alias", "别名", null, false)

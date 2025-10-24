@@ -2,9 +2,9 @@ package net.ximatai.muyun.ability;
 
 import jakarta.transaction.Transactional;
 import net.ximatai.muyun.core.exception.MuYunException;
-import net.ximatai.muyun.database.IDatabaseOperations;
-import net.ximatai.muyun.database.builder.TableBuilder;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.TableBuilder;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 
 /**
  * 创建表能力
