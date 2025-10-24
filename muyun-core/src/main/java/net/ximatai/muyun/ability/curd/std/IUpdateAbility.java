@@ -12,6 +12,7 @@ import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.ability.ISecurityAbility;
 import net.ximatai.muyun.ability.ITreeAbility;
 import net.ximatai.muyun.core.exception.MuYunException;
+import net.ximatai.muyun.database.core.exception.MuYunDatabaseException;
 import net.ximatai.muyun.model.DataChangeChannel;
 import net.ximatai.muyun.model.TreeNode;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -93,6 +94,10 @@ public interface IUpdateAbility extends IDatabaseAbilityStd, IMetadataAbility {
         }
 
         int result = getDB().updateItem(getSchemaName(), getMainTable(), map);
+
+        if (result == 0) {
+            throw new MuYunDatabaseException(MuYunDatabaseException.Type.DATA_NOT_FOUND);
+        }
 
         if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {
             dataBroadcastAbility.broadcast(DataChangeChannel.Type.UPDATE, id);

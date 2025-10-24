@@ -4,13 +4,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import net.ximatai.muyun.ability.IArchiveWhenDelete;
-import net.ximatai.muyun.ability.IChildrenAbility;
-import net.ximatai.muyun.ability.IDataBroadcastAbility;
-import net.ximatai.muyun.ability.IDatabaseAbilityStd;
-import net.ximatai.muyun.ability.IMetadataAbility;
-import net.ximatai.muyun.ability.IRuntimeAbility;
-import net.ximatai.muyun.ability.ISoftDeleteAbility;
+import net.ximatai.muyun.ability.*;
+import net.ximatai.muyun.database.core.exception.MuYunDatabaseException;
 import net.ximatai.muyun.model.ChildTableInfo;
 import net.ximatai.muyun.model.DataChangeChannel;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -69,6 +64,10 @@ public interface IDeleteAbility extends IDatabaseAbilityStd, IMetadataAbility {
             result = getDB().updateItem(getSchemaName(), getMainTable(), map);
         } else {
             result = getDB().deleteItem(getSchemaName(), getMainTable(), id);
+        }
+
+        if (result == 0) {
+            throw new MuYunDatabaseException(MuYunDatabaseException.Type.DATA_NOT_FOUND);
         }
 
         if (this instanceof IDataBroadcastAbility dataBroadcastAbility) {

@@ -1,4 +1,4 @@
-package net.ximatai.muyun.boot.db;
+package net.ximatai.muyun.database.plugin;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;

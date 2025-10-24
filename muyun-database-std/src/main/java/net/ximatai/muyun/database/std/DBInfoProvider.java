@@ -1,4 +1,4 @@
-package net.ximatai.muyun.database.std;
+package net.ximatai.muyun.database.plugin;
 
 import jakarta.inject.Inject;
 import net.ximatai.muyun.database.IDBInfoProvider;

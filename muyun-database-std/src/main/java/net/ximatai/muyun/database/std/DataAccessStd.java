@@ -1,4 +1,4 @@
-package net.ximatai.muyun.database.std;
+package net.ximatai.muyun.database.plugin;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
@@ -8,7 +8,7 @@ import net.ximatai.muyun.database.IDatabaseOperationsStd;
 import net.ximatai.muyun.database.exception.MyDatabaseException;
 import net.ximatai.muyun.database.metadata.DBColumn;
 import net.ximatai.muyun.database.metadata.DBTable;
-import net.ximatai.muyun.database.std.mapper.MyPgMapMapper;
+import net.ximatai.muyun.database.plugin.mapper.MyPgMapMapper;
 import net.ximatai.muyun.database.tool.DateTool;
 import org.jdbi.v3.core.statement.PreparedBatch;
 import org.postgresql.util.PGobject;

@@ -1,6 +1,5 @@
 package net.ximatai.muyun.database.plugin;
 
-import io.agroal.api.AgroalDataSource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -10,11 +9,13 @@ import net.ximatai.muyun.database.plugin.argument.PgArrayArgumentFactory;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
 
+import javax.sql.DataSource;
+
 @ApplicationScoped
 public class JdbiProducer {
 
     @Inject
-    AgroalDataSource dataSource;
+    DataSource dataSource;
 
     @Produces
     @ApplicationScoped

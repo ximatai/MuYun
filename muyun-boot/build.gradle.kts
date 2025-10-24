@@ -17,6 +17,7 @@ tasks.named("quarkusDependenciesBuild") {
 dependencies {
     implementation(enforcedPlatform(libs.quarkus.platform.bom))
     implementation("io.quarkus:quarkus-config-yaml")
+    implementation(project(":muyun-database-jdbi-plugin"))
 
     implementation(project(":muyun-core"))
 //    implementation(project(":muyun-runtime-session"))
