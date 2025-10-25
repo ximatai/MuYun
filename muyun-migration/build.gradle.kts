@@ -5,5 +5,5 @@ plugins {
 
 dependencies {
     api(project(":muyun-core"))
-    api(project(":muyun-database-std"))
+    api(libs.muyun.database)
 }

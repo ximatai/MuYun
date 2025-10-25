@@ -6,8 +6,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.base.BaseScaffold;
-import net.ximatai.muyun.database.builder.Column;
-import net.ximatai.muyun.database.builder.TableWrapper;
+import net.ximatai.muyun.core.db.PresetColumn;
+import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.migration.AbstractMigration;
 import net.ximatai.muyun.migration.MigrateStep;
 import net.ximatai.muyun.model.PageResult;
@@ -109,7 +109,7 @@ class FooController extends BaseScaffold {
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(Column.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("v_name")
             .addColumn("i_age");
     }
