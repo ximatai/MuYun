@@ -17,17 +17,18 @@ sonar {
 
 allprojects {
     group = "net.ximatai.muyun"
-    version = "1.0.0-SNAPSHOT"
-//    version = "0.1.12"
+//    version = "1.0.0-SNAPSHOT"
+    version = "0.1.12"
 
     repositories {
         mavenLocal()
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
         mavenCentral()
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
     }
 }
 
 subprojects {
+    val subprojectName = this.name
     apply {
         plugin("java")
         plugin("checkstyle")
@@ -50,6 +51,7 @@ subprojects {
             create<MavenPublication>("mavenJava") {
                 from(components["java"])
                 pom {
+                    name = subprojectName
                     description =
                         "A cloud-native, asynchronous, developer-first, frontend-backend decoupled, and plug-and-play light-code platform."
                     url = "https://github.com/ximatai/MuYun"
@@ -76,19 +78,18 @@ subprojects {
             }
         }
         repositories {
-//            maven {
-//                url = uri(layout.buildDirectory.dir("repo"))
-//            }
-
             maven {
-                url = uri("http://192.168.6.205:8081/repository/maven-snapshots/")
-//                url = uri("http://127.0.0.1:8081/repository/maven-snapshots/")
-                isAllowInsecureProtocol = true
-                credentials {
-                    username = findProperty("office.maven.username").toString()
-                    password = findProperty("office.maven.password").toString()
-                }
+                url = uri(layout.buildDirectory.dir("repo"))
             }
+
+//            maven {
+//                url = uri("http://127.0.0.1:8081/repository/maven-snapshots/")
+//                isAllowInsecureProtocol = true
+//                credentials {
+//                    username = findProperty("office.maven.username").toString()
+//                    password = findProperty("office.maven.password").toString()
+//                }
+//            }
         }
     }
 
@@ -142,4 +143,10 @@ tasks.register("prepareRepo") {
 tasks.register("releaseAllJars") {
     group = "release"
     dependsOn(subprojects.flatMap { it.tasks.matching { task -> task.name == "publishToSonatype" } })
+}
+
+
+tasks.register("releaseAllJarsToMavenLocal") {
+    group = "release"
+    dependsOn(subprojects.flatMap { it.tasks.matching { task -> task.name == "publishToMavenLocal" } })
 }
