@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.database.core.IDatabaseOperations;
 import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.ColumnType;
 import net.ximatai.muyun.database.core.builder.TableBuilder;
 import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.database.core.metadata.DBIndex;
@@ -41,26 +42,13 @@ public class TableBuilderTest {
 
     @BeforeAll
     void setUp() {
-        db.execute("DROP TABLE IF EXISTS test.test_table_x");
+        TableWrapper wrapper = TableWrapper.withName("test_table_x")
+            .setPrimaryKey(ID_POSTGRES)
+            .setSchema("test")
+            .addColumn(Column.of("name").setType(ColumnType.VARCHAR).setComment("名称"))
+            .addColumn(Column.of("t_create").setDefaultValue("now()"));
 
-        db.execute("create schema if not exists test");
-
-        db.execute("""
-            create table test.%s
-            (
-                id       varchar   default gen_random_uuid() not null
-                    constraint test_table_x_pk
-                        primary key,
-                name     varchar,
-                t_create timestamp default now()
-            )
-            """.formatted("test_table_x"));
-
-        db.execute("""
-            comment on column test.test_table_x.name is '名称';
-            """);
-
-//        db.resetDBInfo();
+        new TableBuilder(db).build(wrapper);
 
         DBSchema test = db.getDBInfo().getSchema("test");
         assertNotNull(test);

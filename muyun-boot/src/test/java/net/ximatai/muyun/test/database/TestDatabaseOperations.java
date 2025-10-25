@@ -4,19 +4,19 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.database.core.IDatabaseOperations;
+import net.ximatai.muyun.database.core.builder.Column;
+import net.ximatai.muyun.database.core.builder.ColumnType;
 import net.ximatai.muyun.database.core.builder.TableBuilder;
 import net.ximatai.muyun.database.core.builder.TableWrapper;
 import net.ximatai.muyun.test.testcontainers.PostgresTestResource;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Map;
 
 import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -32,9 +32,27 @@ public class TestDatabaseOperations {
             .setSchema("public")
             .setPrimaryKey(ID_POSTGRES)
             .addColumn("v_name")
-            .addColumn("i_age");
+            .addColumn("i_age")
+            .addColumn(Column.of("av_test").setType(ColumnType.VARCHAR_ARRAY));
 
         new TableBuilder(db).build(basic);
+    }
+
+    @Test
+    void testArray() {
+        String id = db.insertItem("public", "basic", Map.of(
+            "v_name", "test",
+            "i_age", 1,
+            "av_test", List.of("a", "b")
+        ));
+
+        Map row = db.row("select * from public.basic where id = ?", id);
+        assertEquals("test", row.get("v_name"));
+        assertEquals(1, row.get("i_age"));
+        String[] avTest = (String[]) row.get("av_test");
+        assertTrue(avTest.length == 2);
+        assertTrue(avTest[0].equals("a"));
+        assertTrue(avTest[1].equals("b"));
     }
 
     @Test

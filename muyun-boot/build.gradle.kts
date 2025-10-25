@@ -20,8 +20,8 @@ dependencies {
     implementation(project(":muyun-database-jdbi-plugin"))
 
     implementation(project(":muyun-core"))
-//    implementation(project(":muyun-runtime-session"))
-    implementation(project(":muyun-runtime-gateway"))
+    implementation(project(":muyun-runtime-session"))
+//    implementation(project(":muyun-runtime-gateway"))
 
     implementation(libs.muyun.database.jdbi.jdk8)
 
