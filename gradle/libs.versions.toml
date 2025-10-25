@@ -1,6 +1,6 @@
 [versions]
 testcontainers = "2.0.1"
-quarkus = "3.19.1"
+quarkus = "3.27.0"
 #jdbi = "3.48.0"
 yasson = "3.0.4"
 bcprov = "1.82"
