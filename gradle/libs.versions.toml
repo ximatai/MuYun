@@ -1,18 +1,18 @@
 [versions]
-testcontainers = "1.20.3"
+testcontainers = "2.0.1"
 quarkus = "3.19.1"
-jdbi = "3.48.0"
+#jdbi = "3.48.0"
 yasson = "3.0.4"
-bcprov = "1.80"
-caffeine = "3.2.0"
-codec = "1.18.0"
-muyun-database = "1.25.11"
+bcprov = "1.82"
+caffeine = "3.2.2"
+codec = "1.19.0"
+muyun-database = "1.25.12"
 
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
-jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
-jdbi-postgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbi" }
+#jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+#jdbi-postgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbi" }
 yasson = { module = "org.eclipse:yasson", version.ref = "yasson" }
 bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
