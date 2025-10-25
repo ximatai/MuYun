@@ -6,7 +6,7 @@ muyun:
   user-password-validate-days: 90 #密码默认有效期
   user-password-check-reuse: true #设置新密码时校验是否重复使用
 file-server:
-  upload-path: /Users/aruis/Downloads/download/
+  upload-path: ./fileUploads/
 web:
   redirects:
     - from: /
@@ -57,4 +57,4 @@ quarkus:
         file-suffix: .yyyy-MM-dd
         rotate-on-boot: true
         max-backup-index: 7
-#  profile: test
+  profile: test
