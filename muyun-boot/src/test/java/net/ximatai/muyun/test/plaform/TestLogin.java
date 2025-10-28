@@ -9,7 +9,7 @@ import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.platform.PlatformConst;
-import net.ximatai.muyun.platform.checker.IExtraAuthChecker;
+import net.ximatai.muyun.platform.checker.IExtraLoginChecker;
 import net.ximatai.muyun.platform.controller.SsoController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
@@ -308,7 +308,7 @@ public class TestLogin {
 }
 
 @ApplicationScoped
-class TestLoginUser2ForbidChecker implements IExtraAuthChecker {
+class TestLoginUser2ForbidChecker implements IExtraLoginChecker {
     @Override
     public void check(IRuntimeUser runtimeUser) {
         if (runtimeUser.getUsername().equals("testLoginUser2")) {
@@ -318,7 +318,7 @@ class TestLoginUser2ForbidChecker implements IExtraAuthChecker {
 }
 
 @ApplicationScoped
-class TestLoginUser3ForbidChecker implements IExtraAuthChecker {
+class TestLoginUser3ForbidChecker implements IExtraLoginChecker {
     @Override
     public void check(IRuntimeUser runtimeUser) {
         if (runtimeUser.getUsername().equals("testLoginUser3")) {

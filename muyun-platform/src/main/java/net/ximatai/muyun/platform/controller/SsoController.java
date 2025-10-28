@@ -23,7 +23,7 @@ import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
-import net.ximatai.muyun.platform.checker.IExtraAuthChecker;
+import net.ximatai.muyun.platform.checker.IExtraLoginChecker;
 import net.ximatai.muyun.platform.model.LoginUser;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.util.StringUtil;
@@ -80,7 +80,7 @@ public class SsoController implements IRuntimeAbility {
     MuYunConfig config;
 
     @Inject
-    Instance<IExtraAuthChecker> extraAuthCheckerProvider;
+    Instance<IExtraLoginChecker> extraLoginCheckerProvider;
 
     @GET
     @Path("/login")
@@ -149,8 +149,8 @@ public class SsoController implements IRuntimeAbility {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
 
-                if (!extraAuthCheckerProvider.isUnsatisfied()) {
-                    extraAuthCheckerProvider.forEach((checker) -> checker.check(runtimeUser));
+                if (!extraLoginCheckerProvider.isUnsatisfied()) {
+                    extraLoginCheckerProvider.forEach((checker) -> checker.check(runtimeUser));
                 }
 
                 if (config.useSession()) {
