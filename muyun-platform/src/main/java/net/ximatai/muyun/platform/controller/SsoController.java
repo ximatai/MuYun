@@ -80,7 +80,7 @@ public class SsoController implements IRuntimeAbility {
     MuYunConfig config;
 
     @Inject
-    Instance<IExtraAuthChecker> extraAuthCheckProvider;
+    Instance<IExtraAuthChecker> extraAuthCheckerProvider;
 
     @GET
     @Path("/login")
@@ -149,9 +149,9 @@ public class SsoController implements IRuntimeAbility {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
 
-                extraAuthCheckProvider.forEach((extraAuthCheck) -> {
-                    extraAuthCheck.check(runtimeUser);
-                });
+                if (!extraAuthCheckerProvider.isUnsatisfied()) {
+                    extraAuthCheckerProvider.forEach((checker) -> checker.check(runtimeUser));
+                }
 
                 if (config.useSession()) {
                     Session session = getRoutingContext().session();
