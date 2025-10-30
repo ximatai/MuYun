@@ -38,7 +38,7 @@ public class AuthorizationFilter implements ContainerRequestFilter, IRuntimeAbil
             ApiRequest apiRequest = getApiRequest();
 
             if (authorizationService.isResolvable() && !authorizationService.get().isAuthorized(apiRequest)) {
-                throw apiRequest.getError();
+                throw apiRequest.getAccessException();
             }
         }
 

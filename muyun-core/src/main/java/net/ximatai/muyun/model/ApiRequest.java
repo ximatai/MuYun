@@ -16,7 +16,7 @@ public class ApiRequest {
     private String username;
     private String authCondition;
 
-    private RuntimeException error;
+    private RuntimeException accessException;
 
     public ApiRequest(String path) {
         this.path = path;
@@ -57,8 +57,8 @@ public class ApiRequest {
         isSkip = true;
     }
 
-    public void setError(RuntimeException error) {
-        this.error = error;
+    public void setAccessException(RuntimeException accessException) {
+        this.accessException = accessException;
     }
 
     public String getModule() {
@@ -81,8 +81,8 @@ public class ApiRequest {
         return isSkip;
     }
 
-    public RuntimeException getError() {
-        return error;
+    public RuntimeException getAccessException() {
+        return accessException;
     }
 
     public String getModuleID() {

@@ -11,6 +11,7 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
+import net.ximatai.muyun.core.exception.IExceptionForLog;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.log.LogItem;
@@ -99,13 +100,21 @@ public class LogFilter implements ContainerRequestFilter, ContainerResponseFilte
             logItem.setParams(params);
         }
 
+        String errorMessage = "Unknown error";
+        RuntimeException accessException = apiRequest.getAccessException();
+        if (accessException instanceof IExceptionForLog exception) {
+            errorMessage = exception.getLogMessage();
+        } else if (accessException != null && accessException.getMessage() != null) {
+            errorMessage = accessException.getMessage();
+        }
+
         if (MuYunConst.SSO_MODULE_NAME.equals(moduleName) && iLogLogin.isResolvable()) {
-            if (apiRequest.getError() != null) {
-                logItem.setError(apiRequest.getError().getMessage()); // 对应登录失败的日志
+            if (accessException != null) {
+                logItem.setError(errorMessage);
             }
             iLogLogin.get().log(logItem);
         } else if (status > 400 && iLogError.isResolvable()) {
-            logItem.setError(responseContext.getEntity() != null ? responseContext.getEntity().toString() : "Unknown error");
+            logItem.setError(errorMessage);
             iLogError.get().log(logItem);
         } else if (iLogAccess.isResolvable()) {
             iLogAccess.get().log(logItem);

@@ -148,7 +148,7 @@ public class AuthorizationService implements IAuthorizationService {
 
         if (!authorized) { // 功能权限验证失败
             PermsException permsException = new PermsException("您没有[%s]的[%s]功能权限".formatted(moduleRow.get("v_name"), actionRow.get("v_name")));
-            request.setError(permsException);
+            request.setAccessException(permsException);
             return false;
         }
 
@@ -156,7 +156,7 @@ public class AuthorizationService implements IAuthorizationService {
             boolean dataAuthorized = isDataAuthorized(userID, request.getModule(), action, request.getDataID());
             if (!dataAuthorized) {
                 PermsException permsException1 = new PermsException("您没有[%s]中[%S]数据[%s]的权限".formatted(moduleRow.get("v_name"), actionRow.get("v_name"), request.getDataID()));
-                request.setError(permsException1);
+                request.setAccessException(permsException1);
                 return false;
             }
         }

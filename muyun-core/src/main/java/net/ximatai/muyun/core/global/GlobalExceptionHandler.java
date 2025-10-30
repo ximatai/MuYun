@@ -1,6 +1,5 @@
 package net.ximatai.muyun.core.global;
 
-import io.vertx.ext.web.RoutingContext;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotAllowedException;
 import jakarta.ws.rs.NotFoundException;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import static jakarta.ws.rs.core.Response.Status.*;
 
 @Provider
-public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRuntimeAbility {
+public class GlobalExceptionHandler implements ExceptionMapper<RuntimeException>, IRuntimeAbility {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -30,11 +29,8 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRunt
     @Inject
     UriInfo uriInfo;
 
-    @Inject
-    RoutingContext routingContext;
-
     @Override
-    public Response toResponse(Throwable e) {
+    public Response toResponse(RuntimeException e) {
         // 默认的响应状态是内部服务器错误
         Response.Status responseStatus = INTERNAL_SERVER_ERROR;
         String requestPath = uriInfo.getRequestUri().getPath();
@@ -72,6 +68,9 @@ public class GlobalExceptionHandler implements ExceptionMapper<Throwable>, IRunt
         } else {
             LOGGER.error("ERROR DETAIL:", e);
         }
+
+        // 把错误写入到上下文，方便 LogFilter 获取
+        setRuntimeException(e);
 
         return Response
             .status(responseStatus)

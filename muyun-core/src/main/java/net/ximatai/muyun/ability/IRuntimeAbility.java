@@ -39,4 +39,7 @@ public interface IRuntimeAbility extends IProfile {
         }
     }
 
+    default void setRuntimeException(RuntimeException exception) {
+        getApiRequest().setAccessException(exception);
+    }
 }

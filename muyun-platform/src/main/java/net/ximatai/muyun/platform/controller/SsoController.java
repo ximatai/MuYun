@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 import net.ximatai.muyun.MuYunConst;
 import net.ximatai.muyun.ability.IRuntimeAbility;
 import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.core.exception.LoginException;
 import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
@@ -86,15 +87,15 @@ public class SsoController implements IRuntimeAbility {
         apiRequest.setActionName("登录");
 
         if (StringUtil.isBlank(username)) {
-            throw new MuYunException("请输入用户名");
+            throw new LoginException("请输入用户名");
         }
 
         if (StringUtil.isBlank(password)) {
-            throw new MuYunException("请输入密码");
+            throw new LoginException("请输入密码");
         }
 
         if (StringUtil.isBlank(code)) {
-            throw new MuYunException("请输入验证码");
+            throw new LoginException("请输入验证码");
         }
 
         apiRequest.setUsername(username);
@@ -169,10 +170,7 @@ public class SsoController implements IRuntimeAbility {
      * @param isRecord   是否参与失败次数记录
      * @return 登录失败异常
      */
-    protected MuYunException loginFail(String username, String reason, boolean openReason, boolean isRecord) {
-        ApiRequest apiRequest = getApiRequest();
-        logger.error(reason);
-        apiRequest.setError(new RuntimeException(reason));
+    protected LoginException loginFail(String username, String reason, boolean openReason, boolean isRecord) {
         int recentFailures = 0;
 
         int userFailureMaxCount = config.userFailureMaxCount();
@@ -186,16 +184,16 @@ public class SsoController implements IRuntimeAbility {
             if (recentFailures >= userFailureMaxCount) {
                 LocalDateTime openTime = LocalDateTime.now().plusMinutes(userFailureLockMin);
                 lockUser.put(username, openTime);
-                return new MuYunException(
+                return new LoginException(
                     "登录失败次数太多已被锁定，将于 %s 解锁".formatted(openTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 );
             }
 
-            return new MuYunException("用户名或密码错误，还有 %s 次重试机会".formatted(userFailureMaxCount - recentFailures));
+            return new LoginException("用户名或密码错误，还有 %s 次重试机会".formatted(userFailureMaxCount - recentFailures));
         } else if (openReason) {
-            return new MuYunException(reason);
+            return new LoginException(reason);
         } else {
-            return new MuYunException("用户名或密码错误");
+            return new LoginException("用户名或密码错误").setLogMessage(reason);
         }
 
     }
@@ -239,7 +237,7 @@ public class SsoController implements IRuntimeAbility {
         return DigestUtils.md5Hex(md5Password + code).toUpperCase();
     }
 
-    private void verificationCode(String code) throws MuYunException {
+    private void verificationCode(String code) throws LoginException {
         if (routingContext.get(CONTEXT_KEY_SKIP_KAPTCHA, false)) {
             return;
         }
@@ -251,19 +249,19 @@ public class SsoController implements IRuntimeAbility {
 
         Cookie cookie = routingContext.request().getCookie(KAPTCHA_COOKIE_KEY);
         if (cookie == null) {
-            throw new MuYunException("验证码已过期");
+            throw new LoginException("验证码已过期");
         }
 
         String hashCodeInCookie = cookie.getValue();
 
         if (hashCodeInCookie.equals(hashText(code))) {
             if (codeCache.getIfPresent(code) != null) {
-                throw new MuYunException("验证码已过期");
+                throw new LoginException("验证码已过期");
             }
 
             codeCache.put(code, code);
         } else {
-            throw new MuYunException("验证码不正确");
+            throw new LoginException("验证码不正确");
         }
     }
 
