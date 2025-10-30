@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.core.exception.LoginException;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.platform.PlatformConst;
 import net.ximatai.muyun.platform.checker.IExtraLoginChecker;
@@ -310,9 +311,9 @@ public class TestLogin {
 @ApplicationScoped
 class TestLoginUser2ForbidChecker implements IExtraLoginChecker {
     @Override
-    public void check(IRuntimeUser runtimeUser) {
+    public void check(IRuntimeUser runtimeUser) throws LoginException {
         if (runtimeUser.getUsername().equals("testLoginUser2")) {
-            throw new RuntimeException("用户名 testLoginUser2 被禁止登录");
+            throw new LoginException("用户名 testLoginUser2 被禁止登录");
         }
     }
 }
@@ -320,9 +321,9 @@ class TestLoginUser2ForbidChecker implements IExtraLoginChecker {
 @ApplicationScoped
 class TestLoginUser3ForbidChecker implements IExtraLoginChecker {
     @Override
-    public void check(IRuntimeUser runtimeUser) {
+    public void check(IRuntimeUser runtimeUser) throws LoginException {
         if (runtimeUser.getUsername().equals("testLoginUser3")) {
-            throw new RuntimeException("用户名 testLoginUser3 被禁止登录");
+            throw new LoginException("用户名 testLoginUser3 被禁止登录");
         }
     }
 }
