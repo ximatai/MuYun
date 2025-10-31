@@ -4,9 +4,13 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import net.ximatai.muyun.core.config.MuYunConfig;
+import net.ximatai.muyun.core.exception.LoginException;
+import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.platform.PlatformConst;
+import net.ximatai.muyun.platform.checker.IExtraLoginChecker;
 import net.ximatai.muyun.platform.controller.SsoController;
 import net.ximatai.muyun.platform.controller.UserInfoController;
 import net.ximatai.muyun.platform.model.RuntimeUser;
@@ -120,6 +124,62 @@ public class TestLogin {
 
         assertEquals(username, loginUser.getUsername());
         assertEquals("测试", loginUser.getName());
+
+        String uid2 = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "222"
+            ))
+            .when()
+            .post("/api%s/userinfo/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_username", "testLoginUser2",
+                "v_password", "testLoginUser2",
+                "v_password2", "testLoginUser2"
+            ))
+            .when()
+            .post("/api%s/userinfo/setUser/%s".formatted(base, uid2))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        String uid3 = given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_name", "333"
+            ))
+            .when()
+            .post("/api%s/userinfo/create".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
+
+        given()
+            .header("userID", config.superUserId())
+            .contentType("application/json")
+            .body(Map.of(
+                "v_username", "testLoginUser3",
+                "v_password", "testLoginUser3",
+                "v_password2", "testLoginUser3"
+            ))
+            .when()
+            .post("/api%s/userinfo/setUser/%s".formatted(base, uid3))
+            .then()
+            .statusCode(200)
+            .extract()
+            .asString();
     }
 
     @Test
@@ -235,5 +295,35 @@ public class TestLogin {
             .get("/api%s/userinfo/delete/%s".formatted(base, userID))
             .then()
             .statusCode(200);
+    }
+
+    @Test
+    @Order(11)
+    void testLoginBlockedByExtraChecker() {
+        String err = loginFailed("testLoginUser2", "testLoginUser2", "muyun");
+        Assertions.assertEquals("用户名 testLoginUser2 被禁止登录", err);
+
+        String err2 = loginFailed("testLoginUser3", "testLoginUser3", "muyun");
+        Assertions.assertEquals("用户名 testLoginUser3 被禁止登录", err2);
+    }
+}
+
+@ApplicationScoped
+class TestLoginUser2ForbidChecker implements IExtraLoginChecker {
+    @Override
+    public void check(IRuntimeUser runtimeUser) throws LoginException {
+        if (runtimeUser.getUsername().equals("testLoginUser2")) {
+            throw new LoginException("用户名 testLoginUser2 被禁止登录");
+        }
+    }
+}
+
+@ApplicationScoped
+class TestLoginUser3ForbidChecker implements IExtraLoginChecker {
+    @Override
+    public void check(IRuntimeUser runtimeUser) throws LoginException {
+        if (runtimeUser.getUsername().equals("testLoginUser3")) {
+            throw new LoginException("用户名 testLoginUser3 被禁止登录");
+        }
     }
 }

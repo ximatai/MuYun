@@ -8,6 +8,7 @@ import io.vertx.core.http.Cookie;
 import io.vertx.core.http.CookieSameSite;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -22,6 +23,7 @@ import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.ApiRequest;
 import net.ximatai.muyun.model.IRuntimeUser;
 import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.platform.checker.IExtraLoginChecker;
 import net.ximatai.muyun.platform.model.LoginUser;
 import net.ximatai.muyun.platform.model.RuntimeUser;
 import net.ximatai.muyun.util.StringUtil;
@@ -76,6 +78,9 @@ public class SsoController implements IRuntimeAbility {
 
     @Inject
     MuYunConfig config;
+
+    @Inject
+    Instance<IExtraLoginChecker> extraLoginCheckerProvider;
 
     @GET
     @Path("/login")
@@ -143,6 +148,10 @@ public class SsoController implements IRuntimeAbility {
             if ((boolean) userInDB.get("b_enabled")) {
                 Map<String, ?> user = userInfoController.view((String) userInDB.get("id"));
                 IRuntimeUser runtimeUser = mapToUser(user);
+
+                if (!extraLoginCheckerProvider.isUnsatisfied()) {
+                    extraLoginCheckerProvider.forEach((checker) -> checker.check(runtimeUser));
+                }
 
                 if (config.useSession()) {
                     Session session = getRoutingContext().session();
