@@ -49,7 +49,7 @@ public class DateTool {
             return Timestamp.valueOf(localDateTime);
         } else if (value instanceof LocalDate localDate) {
             return Timestamp.valueOf(localDate.atStartOfDay());
-        } else if (value instanceof Date date) {
+        } else if (value instanceof java.util.Date date) {
             return new Timestamp(date.getTime());
         } else if (value instanceof String str) {
             return stringToSqlTimestamp(str);
