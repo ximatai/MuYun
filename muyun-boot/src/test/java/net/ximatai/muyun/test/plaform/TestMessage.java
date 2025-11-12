@@ -50,6 +50,16 @@ public class TestMessage {
             .extract()
             .asString();
 
+        Map inboxCount = given()
+            .header("userID", config.superUserId())
+            .get("/api%s/inbox/unread_count".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(Map.class);
+
+        Assertions.assertEquals(1, inboxCount.get("count"));
+
         PageResult outbox = given()
             .header("userID", config.superUserId())
             .get("/api%s/outbox/view".formatted(base))
@@ -71,6 +81,22 @@ public class TestMessage {
             });
 
         Assertions.assertEquals(1, inbox.getTotal());
+
+        given()
+            .header("userID", config.superUserId())
+            .get("/api%s/inbox/view/%s".formatted(base, msgID))
+            .then()
+            .statusCode(200);
+
+        inboxCount = given()
+            .header("userID", config.superUserId())
+            .get("/api%s/inbox/unread_count".formatted(base))
+            .then()
+            .statusCode(200)
+            .extract()
+            .as(Map.class);
+
+        Assertions.assertEquals(0, inboxCount.get("count"));
 
         // 收件箱删除
         given()
