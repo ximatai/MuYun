@@ -1,22 +1,10 @@
 plugins {
-    id("java")
-}
-
-group = "net.ximatai.muyun"
-
-repositories {
-    mavenCentral()
+    java
+    `java-library`
 }
 
 dependencies {
-    implementation(project(":muyun-core"))
+    api(project(":muyun-core"))
     implementation("io.quarkus:quarkus-arc")
-
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation("io.quarkus:quarkus-jackson")
 }
-
-tasks.test {
-    useJUnitPlatform()
-}
-

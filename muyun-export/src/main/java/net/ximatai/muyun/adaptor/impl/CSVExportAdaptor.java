@@ -15,7 +15,6 @@ import java.util.Map;
 
 /**
  * CSV 导出适配器
- * 使用流式处理，减少内存占用，避免 OOM
  */
 @ApplicationScoped
 public class CSVExportAdaptor implements IExportAdaptor {

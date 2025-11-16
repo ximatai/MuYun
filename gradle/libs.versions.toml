@@ -8,6 +8,8 @@ caffeine = "3.2.2"
 codec = "1.19.0"
 muyun-database = "1.25.12"
 
+poi = "5.5.0"
+
 [libraries]
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
@@ -20,6 +22,8 @@ commons-codes = { module = "commons-codec:commons-codec", version.ref = "codec" 
 easyCaptcha = { module = "com.github.whvcse:easy-captcha", version = "1.6.2" }
 muyun-database = { module = "net.ximatai.muyun.database:muyun-database-core", version.ref = "muyun-database" }
 muyun-database-jdbi-jdk8 = { module = "net.ximatai.muyun.database:muyun-database-jdbi-jdk8", version.ref = "muyun-database" }
+
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }

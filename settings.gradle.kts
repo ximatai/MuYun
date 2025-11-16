@@ -22,6 +22,8 @@ include("muyun-authorization")
 include("muyun-proxy")
 include("muyun-log")
 include("muyun-fileserver")
+
 include("muyun-export")
+include("muyun-export-excel")
 
 include("muyun-boot")
