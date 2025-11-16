@@ -30,6 +30,9 @@ dependencies {
     implementation(project(":muyun-log"))
     implementation(project(":muyun-fileserver"))
 
+    implementation(project(":muyun-export"))
+    implementation(project(":muyun-export-excel"))
+
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
 

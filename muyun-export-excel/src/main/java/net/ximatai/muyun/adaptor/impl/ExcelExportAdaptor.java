@@ -55,20 +55,13 @@ public class ExcelExportAdaptor implements IExportAdaptor {
     @Override
     public StreamingOutput export(ExportContext context) {
         return output -> {
-            // 使用 SXSSFWorkbook 进行流式写入（这是 POI 官方推荐的大文件导出方案）
-            // 工作原理：
-            // 1. 内存中只保持 WINDOW_SIZE 行数据
-            // 2. 超出的行会自动序列化到磁盘临时文件（.tmp）
-            // 3. 最后将所有临时文件整合成完整的 XLSX
-            // 4. 调用 dispose() 清理临时文件
             try (SXSSFWorkbook workbook = new SXSSFWorkbook(WINDOW_SIZE)) {
-
                 // 压缩临时文件，进一步减少磁盘占用（使用 GZIP 压缩）
                 workbook.setCompressTempFiles(true);
 
                 Sheet sheet = workbook.createSheet("Sheet1");
 
-                List<Map> dataList = context.getPageResult().getList();
+                List<Map> dataList = context.getItems();
                 List<ExportColumn> columns = context.getColumns();
 
                 // 如果没有配置列，则从第一行数据推断
@@ -81,7 +74,7 @@ public class ExcelExportAdaptor implements IExportAdaptor {
                     } else {
                         // 没有数据，创建空工作簿
                         workbook.write(output);
-                        workbook.dispose(); // 清理临时文件
+                        workbook.close();
                         return;
                     }
                 }
@@ -96,7 +89,7 @@ public class ExcelExportAdaptor implements IExportAdaptor {
                 // 如果没有数据，只输出表头
                 if (dataList == null || dataList.isEmpty()) {
                     workbook.write(output);
-                    workbook.dispose();
+                    workbook.close();
                     return;
                 }
 
@@ -122,8 +115,7 @@ public class ExcelExportAdaptor implements IExportAdaptor {
                 workbook.write(output);
 
                 // 清理临时文件
-                workbook.dispose();
-
+                workbook.close();
             } catch (IOException e) {
                 throw new RuntimeException("Excel 导出失败", e);
             }

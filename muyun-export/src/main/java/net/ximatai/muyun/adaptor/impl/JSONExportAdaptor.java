@@ -49,7 +49,7 @@ public class JSONExportAdaptor implements IExportAdaptor {
         return output -> {
             try (BufferedOutputStream bufferedOutput = new BufferedOutputStream(output)) {
 
-                List<Map> dataList = context.getPageResult().getList();
+                List<Map> dataList = context.getItems();
                 List<ExportColumn> columns = context.getColumns();
 
                 // 开始 JSON 数组
@@ -86,8 +86,12 @@ public class JSONExportAdaptor implements IExportAdaptor {
                             outputRow = new LinkedHashMap<>();
                             for (ExportColumn column : columns) {
                                 Object value = row.get(column.getFieldName());
-                                String formattedValue = column.format(value);
-                                outputRow.put(column.getFieldName(), formattedValue);
+                                String formattedValue = null;
+                                if (column.getFormatter() != null) {
+                                    formattedValue = column.getFormatter().apply(value);
+                                }
+                                Object transformedValue = formattedValue != null ? formattedValue : value;
+                                outputRow.put(column.getFieldName(), transformedValue);
                             }
                         } else {
                             // 没有配置列，导出所有字段

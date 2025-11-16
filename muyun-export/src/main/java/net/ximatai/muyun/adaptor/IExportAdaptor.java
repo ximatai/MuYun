@@ -26,7 +26,6 @@ public interface IExportAdaptor {
 
     /**
      * 执行导出操作
-     * 使用 StreamingOutput 以流式方式写入，避免 OOM
      *
      * @param context 导出上下文
      * @return StreamingOutput 流式输出

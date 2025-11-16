@@ -14,18 +14,18 @@ import net.ximatai.muyun.adaptor.IExportAdaptor;
 import net.ximatai.muyun.core.exception.MuYunException;
 import net.ximatai.muyun.model.ExportColumn;
 import net.ximatai.muyun.model.ExportContext;
-import net.ximatai.muyun.model.PageResult;
+import net.ximatai.muyun.model.ExportTypeItem;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public interface IExportAbility extends IQueryAbility {
-
     default Instance<IExportAdaptor> getExportAdaptors() {
         return Arc.container().select(IExportAdaptor.class);
     }
@@ -33,13 +33,10 @@ public interface IExportAbility extends IQueryAbility {
     @Path("/exportTypes")
     @GET
     @Operation(summary = "获取支持的导出类型列表")
-    default List<Map<String, String>> getExportTypes() {
+    default List<ExportTypeItem> getExportTypes() {
         return getExportAdaptors()
             .stream()
-            .map(adaptor -> Map.of(
-                "name", adaptor.getName(),
-                "type", adaptor.getType()
-            ))
+            .map(adaptor -> new ExportTypeItem(adaptor.getName(), adaptor.getType()))
             .toList();
     }
 
@@ -70,22 +67,19 @@ public interface IExportAbility extends IQueryAbility {
      * 导出前的数据过滤处理
      * 子类可以覆盖此方法以对数据进行预处理
      *
-     * @param data 导出数据列表
+     * @param items 导出数据列表
      */
-    default void filterExportData(List<Map> data) {
+    default void filterExportData(List<Map> items) {
     }
 
     @POST
     @Path("/export/{type}")
     @Operation(summary = "导出数据")
     default Response export(
-            @Parameter(description = "导出类型", required = true) @PathParam("type") String type,
-            @Parameter(description = "页码") @QueryParam("page") Integer page,
-            @Parameter(description = "分页大小") @QueryParam("size") Long size,
-            @Parameter(description = "是否分页") @QueryParam("noPage") Boolean noPage,
-            @Parameter(description = "排序", example = "t_create,desc") @QueryParam("sort") List<String> sort,
-            @RequestBody(description = "查询条件信息") Map<String, Object> queryBody) {
-
+        @Parameter(description = "导出类型", required = true) @PathParam("type") String type,
+        @Parameter(description = "排序", example = "t_create,desc") @QueryParam("sort") List<String> sort,
+        @RequestBody(description = "查询条件信息") Map<String, Object> queryBody
+    ) {
         // 查找对应的导出适配器
         IExportAdaptor adaptor = getExportAdaptors()
             .stream()
@@ -94,15 +88,15 @@ public interface IExportAbility extends IQueryAbility {
             .orElseThrow(() -> new MuYunException("不支持的导出类型: " + type));
 
         // 查询数据（导出时通常需要所有数据，所以设置 noPage = true）
-        PageResult<Map> pageResult = this.view(page, size, true, sort, queryBody);
+        List<Map> items = new ArrayList<>(this.view(null, null, true, sort, queryBody).getList());
 
         // 数据过滤处理
-        filterExportData(pageResult.getList());
+        filterExportData(items);
 
         // 构建导出上下文
         ExportContext context = new ExportContext();
         context.setColumns(getExportColumns(type));
-        context.setPageResult(pageResult);
+        context.setItems(items);
         context.setFileName(getExportFileName(type));
 
         // 执行导出

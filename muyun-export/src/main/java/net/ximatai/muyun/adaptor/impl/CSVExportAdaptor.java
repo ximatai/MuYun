@@ -51,7 +51,7 @@ public class CSVExportAdaptor implements IExportAdaptor {
                 output.write(0xBB);
                 output.write(0xBF);
 
-                List<Map> dataList = context.getPageResult().getList();
+                List<Map> dataList = context.getItems();
                 List<ExportColumn> columns = context.getColumns();
 
                 // 如果没有配置列，则从第一行数据推断
