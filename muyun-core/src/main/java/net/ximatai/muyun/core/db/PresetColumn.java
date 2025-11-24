@@ -4,6 +4,11 @@ import net.ximatai.muyun.database.core.builder.Column;
 import net.ximatai.muyun.database.core.builder.ColumnType;
 
 public class PresetColumn {
+    public static final Column ID_POSTGRES_BEFORE_18 = new Column("id")
+        .setPrimaryKey()
+        .setType(ColumnType.VARCHAR)
+        .setDefaultValueAny("gen_random_uuid()");
+
     public static final Column ID_POSTGRES = new Column("id")
         .setPrimaryKey()
         .setType(ColumnType.VARCHAR)
