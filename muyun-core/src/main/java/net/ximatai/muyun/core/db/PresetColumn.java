@@ -7,7 +7,7 @@ public class PresetColumn {
     public static final Column ID_POSTGRES = new Column("id")
         .setPrimaryKey()
         .setType(ColumnType.VARCHAR)
-        .setDefaultValueAny("gen_random_uuid()");
+        .setDefaultValueAny("uuidv7()");
 
     public static final Column DELETE_FLAG = new Column("b_delete")
         .setType(ColumnType.BOOLEAN)
