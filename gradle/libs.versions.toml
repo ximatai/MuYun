@@ -1,25 +1,33 @@
 [versions]
-testcontainers = "2.0.1"
-quarkus = "3.27.0"
-#jdbi = "3.48.0"
+testcontainers-core = "2.0.2"
+testcontainers = "1.21.3"
+quarkus = "3.27.1"
 yasson = "3.0.4"
 bcprov = "1.82"
-caffeine = "3.2.2"
-codec = "1.19.0"
-muyun-database = "1.25.12"
+caffeine = "3.2.3"
+codec = "1.20.0"
+muyun-database = "2.26.5"
 
 [libraries]
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers-core" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+
 quarkus-platform-bom = { module = "io.quarkus.platform:quarkus-bom", version.ref = "quarkus" }
-#jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
-#jdbi-postgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbi" }
 yasson = { module = "org.eclipse:yasson", version.ref = "yasson" }
 bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bcprov" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
 commons-codes = { module = "commons-codec:commons-codec", version.ref = "codec" }
 easyCaptcha = { module = "com.github.whvcse:easy-captcha", version = "1.6.2" }
 muyun-database = { module = "net.ximatai.muyun.database:muyun-database-core", version.ref = "muyun-database" }
-muyun-database-jdbi-jdk8 = { module = "net.ximatai.muyun.database:muyun-database-jdbi-jdk8", version.ref = "muyun-database" }
+muyun-database-jdbi = { module = "net.ximatai.muyun.database:muyun-database-jdbi", version.ref = "muyun-database" }
+
+[bundles]
+testcontainers-all = [
+    "testcontainers",
+    "testcontainers-junit-jupiter",
+    "testcontainers-postgresql"
+]
 
 [plugins]
 quarkus = { id = "io.quarkus", version.ref = "quarkus" }

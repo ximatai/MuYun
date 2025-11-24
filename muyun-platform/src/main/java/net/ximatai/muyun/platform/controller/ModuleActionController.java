@@ -36,7 +36,7 @@ public class ModuleActionController extends ScaffoldForPlatform implements IChil
             .addColumn("v_name", "功能名称")
             .addColumn("v_alias", "功能标识")
             .addColumn("v_remark", "备注")
-            .addColumn("b_white", "是否白名单", false)
+            .addColumn("b_white", "是否白名单", "false")
             .addColumn("i_order", "序号")
             .addIndex(List.of("id_at_app_module", "v_alias"), true);
     }

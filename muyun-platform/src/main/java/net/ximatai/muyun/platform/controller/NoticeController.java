@@ -82,11 +82,11 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
             .addColumn("v_title", "标题")
             .addColumn("v_context", "内容")
             .addColumn("files_att", "附件")
-            .addColumn("i_views", "浏览量", 0)
+            .addColumn("i_views", "浏览量", "0")
             .addColumn("dict_notice_access_scope", "公开范围")
             .addColumn("ids_at_org_organization", "公开机构范围")
             .addColumn("ids_at_org_department", "公开部门范围")
-            .addColumn("b_release", "是否发布", false)
+            .addColumn("b_release", "是否发布", "false")
             .addColumn("t_release", "发布时间");
     }
 

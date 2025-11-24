@@ -18,7 +18,7 @@ sonar {
 allprojects {
     group = "net.ximatai.muyun"
 //    version = "1.0.0-SNAPSHOT"
-    version = "0.1.12"
+    version = "0.1.13"
 
     repositories {
         mavenLocal()

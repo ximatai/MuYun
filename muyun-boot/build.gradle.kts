@@ -2,6 +2,12 @@ plugins {
     alias(libs.plugins.quarkus)
 }
 
+configurations.all {
+    resolutionStrategy {
+        force(libs.testcontainers)
+    }
+}
+
 tasks.named<Jar>("sourcesJar") {
     dependsOn(tasks.named("compileQuarkusGeneratedSourcesJava"))
 }
@@ -23,7 +29,7 @@ dependencies {
     implementation(project(":muyun-runtime-session"))
 //    implementation(project(":muyun-runtime-gateway"))
 
-    implementation(libs.muyun.database.jdbi.jdk8)
+    implementation(libs.muyun.database.jdbi)
 
     implementation(project(":muyun-platform"))
     implementation(project(":muyun-proxy"))

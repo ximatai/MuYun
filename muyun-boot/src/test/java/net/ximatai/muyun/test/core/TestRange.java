@@ -9,8 +9,8 @@ import jakarta.ws.rs.Path;
 import net.ximatai.muyun.ability.ITableCreateAbility;
 import net.ximatai.muyun.ability.curd.std.ICURDAbility;
 import net.ximatai.muyun.ability.curd.std.IQueryAbility;
-import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.core.Scaffold;
+import net.ximatai.muyun.core.db.PresetColumn;
 import net.ximatai.muyun.database.core.IDatabaseOperations;
 import net.ximatai.muyun.database.core.builder.Column;
 import net.ximatai.muyun.database.core.builder.ColumnType;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @QuarkusTestResource(value = PostgresTestResource.class)

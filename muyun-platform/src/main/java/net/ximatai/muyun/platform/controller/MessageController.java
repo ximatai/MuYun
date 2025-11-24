@@ -114,9 +114,9 @@ class MessageForPerson extends ScaffoldForPlatform implements IChildAbility, IRe
             .setPrimaryKey(PresetColumn.ID_POSTGRES)
             .addColumn("id_at_app_message", "主表id")
             .addColumn("id_at_auth_user__to", "收件人")
-            .addColumn("b_read", "是否已读", false)
+            .addColumn("b_read", "是否已读", "false")
             .addColumn("t_read", "阅读时间")
-            .addColumn("b_delete", "是否删除", false);
+            .addColumn("b_delete", "是否删除", "false");
     }
 
     @Override
