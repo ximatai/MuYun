@@ -59,7 +59,7 @@ public class ModuleController extends ScaffoldForPlatform implements ITreeAbilit
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name", "模块名称")
             .addColumn("v_alias", "模块标识，同后端Controller拦截入口名")

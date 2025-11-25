@@ -75,7 +75,7 @@ class TestTimeFormatCRController extends Scaffold implements ICURDAbility, ITabl
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("d_test"))
             .addColumn(Column.of("t_test2"));
 

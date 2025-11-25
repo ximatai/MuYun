@@ -118,7 +118,7 @@ class TestReferenceController extends Scaffold implements ICURDAbility, ITableCr
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("id_at_test_table_referable").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
@@ -162,7 +162,7 @@ class TestReferableController extends Scaffold implements ICURDAbility, ITableCr
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("v_name"))
             .addColumn("id_at_test_table_referable2")
             .addColumn(Column.of("t_create"));
@@ -200,7 +200,7 @@ class TestReferableController2 extends Scaffold implements ICURDAbility, ITableC
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("v_name"))
             .addColumn(Column.of("t_create"));
 

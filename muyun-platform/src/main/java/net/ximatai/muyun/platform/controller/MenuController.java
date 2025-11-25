@@ -47,7 +47,7 @@ public class MenuController extends ScaffoldForPlatform implements ITreeAbility,
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name")
             .addColumn("v_icon")

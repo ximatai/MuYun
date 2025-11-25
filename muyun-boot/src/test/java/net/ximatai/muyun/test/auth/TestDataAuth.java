@@ -60,7 +60,7 @@ public class TestDataAuth {
         new TableBuilder(db).build(
             TableWrapper.withName("module1")
                 .setSchema("public")
-                .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+                .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
                 .setInherit(BaseBusinessTable.TABLE)
                 .addColumn("v_name")
         );
@@ -68,7 +68,7 @@ public class TestDataAuth {
         new TableBuilder(db).build(
             TableWrapper.withName("module2")
                 .setSchema("public")
-                .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+                .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
                 .setInherit(BaseBusinessTable.TABLE)
                 .addColumn("v_name")
         );

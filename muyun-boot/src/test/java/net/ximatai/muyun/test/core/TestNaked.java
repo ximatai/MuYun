@@ -66,7 +66,7 @@ class Demo implements IDatabaseAbility, IMetadataAbility, ITableCreateAbility, I
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("v_name")
             .addColumn("i_age");
     }

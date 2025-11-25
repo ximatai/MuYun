@@ -66,7 +66,7 @@ public class OrganizationController extends ScaffoldForPlatform implements ITree
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_remark", "备注")
             .addColumn("v_name", "名称")

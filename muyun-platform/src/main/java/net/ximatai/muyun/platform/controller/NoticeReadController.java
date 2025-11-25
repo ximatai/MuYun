@@ -23,7 +23,7 @@ public class NoticeReadController extends ScaffoldForPlatform implements IChildA
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setComment("通知公告已读记录")
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("id_at_app_notice")
             .addColumn("id_at_auth_user")
             .addColumn("t_create")

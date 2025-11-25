@@ -88,7 +88,7 @@ class TestRangeController extends Scaffold implements ICURDAbility, ITableCreate
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))  // 字段名
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 

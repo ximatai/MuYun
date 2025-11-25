@@ -48,7 +48,7 @@ public class UserController extends ScaffoldForPlatform implements IQueryAbility
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("v_username")
             .addColumn("v_password")
             .addColumn("t_create")

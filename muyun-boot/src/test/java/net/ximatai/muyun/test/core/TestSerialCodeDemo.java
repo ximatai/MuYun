@@ -79,7 +79,7 @@ class SerialCodeDemo extends Scaffold implements ITableCreateAbility, ICodeGener
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("v_code")
             .addColumn("v_name");
     }

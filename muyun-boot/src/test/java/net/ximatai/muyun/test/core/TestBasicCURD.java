@@ -335,7 +335,7 @@ class TestBasicCURDController extends Scaffold implements ICURDAbility, ITableCr
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))  // 字段名
             .addColumn(Column.of("t_create"))
             .addColumn(Column.of("t_update"));

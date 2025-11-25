@@ -38,7 +38,7 @@ public class MessageController extends ScaffoldForPlatform implements IChildrenA
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("id_at_auth_user__create", "创建人/发件人")
             .addColumn("t_create", "创建时间")
             .addColumn("v_title", "标题")
@@ -111,7 +111,7 @@ class MessageForPerson extends ScaffoldForPlatform implements IChildAbility, IRe
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("id_at_app_message", "主表id")
             .addColumn("id_at_auth_user__to", "收件人")
             .addColumn("b_read", "是否已读", "false")

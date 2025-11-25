@@ -95,7 +95,7 @@ class TestGroupQueryController extends Scaffold implements ICURDAbility, ITableC
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("av_name").setType(ColumnType.VARCHAR_ARRAY))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));

@@ -262,7 +262,7 @@ class TestTreeAbilityController extends Scaffold implements ICURDAbility, ITable
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("v_name"))
             .addColumn(Column.of("pid"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));

@@ -43,7 +43,7 @@ public class DepartmentController extends ScaffoldForPlatform implements ITreeAb
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name", "名称")
             .addColumn("v_remark", "备注")

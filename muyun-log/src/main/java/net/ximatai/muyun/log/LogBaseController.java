@@ -30,7 +30,7 @@ public abstract class LogBaseController implements IMetadataAbility, ISelectAbil
 
         TableWrapper wrapper = new TableWrapper(getMainTable())
             .setSchema(getSchemaName())
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn("v_uri")
             .addColumn("v_method")
             .addColumn("j_params")

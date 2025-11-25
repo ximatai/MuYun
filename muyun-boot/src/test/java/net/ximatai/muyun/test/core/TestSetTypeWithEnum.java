@@ -82,7 +82,7 @@ class TestSetTypeWithEnumController extends Scaffold implements ICURDAbility, IT
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("age").setType(ColumnType.INT))
             .addColumn(Column.of("creat_time").setType(ColumnType.DATE))
