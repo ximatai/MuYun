@@ -40,7 +40,7 @@ public class MsgConfigController extends ScaffoldForPlatform implements ISortAbi
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setComment("消息配置")
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_title", "标题", null, false)
             .addColumn("v_alias", "别名", null, false)

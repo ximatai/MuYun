@@ -52,7 +52,7 @@ public class RegionController extends ScaffoldForPlatform implements ITreeAbilit
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("v_name", "区划名称")
             .addColumn("v_shortname", "区划简称");
     }

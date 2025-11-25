@@ -109,7 +109,7 @@ class TestAuthAbilityController extends BaseScaffold {
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("v_name").setType(ColumnType.VARCHAR));
     }
 

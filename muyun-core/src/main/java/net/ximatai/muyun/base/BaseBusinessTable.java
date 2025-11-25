@@ -29,7 +29,7 @@ public class BaseBusinessTable extends Scaffold implements ITableCreateAbility {
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("t_create")
             .addColumn("t_update")
             .addColumn("id_at_app_region") // 数据归属行政区划

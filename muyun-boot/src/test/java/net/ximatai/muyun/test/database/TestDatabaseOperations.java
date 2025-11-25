@@ -14,7 +14,7 @@ import org.junit.jupiter.api.*;
 import java.util.List;
 import java.util.Map;
 
-import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES;
+import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES_UUID_V7;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,7 +30,7 @@ public class TestDatabaseOperations {
     void setUp() {
         TableWrapper basic = TableWrapper.withName("basic")
             .setSchema("public")
-            .setPrimaryKey(ID_POSTGRES)
+            .setPrimaryKey(ID_POSTGRES_UUID_V7)
             .addColumn("v_name")
             .addColumn("i_age")
             .addColumn(Column.of("av_test").setType(ColumnType.VARCHAR_ARRAY));

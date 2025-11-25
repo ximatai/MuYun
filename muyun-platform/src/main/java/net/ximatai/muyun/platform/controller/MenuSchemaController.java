@@ -64,7 +64,7 @@ public class MenuSchemaController extends ScaffoldForPlatform implements IChildr
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("v_name")
             .addColumn("ids_at_auth_role")
             .addColumn("ids_at_orga_organization")

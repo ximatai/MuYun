@@ -39,7 +39,7 @@ public class RoleActionController extends ScaffoldForPlatform implements IChildA
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("id_at_auth_role", "角色id")
             .addColumn("id_at_app_module", "模块id")
             .addColumn("v_alias_at_app_module", "冗余：模块别名")

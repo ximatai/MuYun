@@ -203,7 +203,7 @@ class TestDataCheckAbilityController extends BaseScaffold implements IDataCheckA
 
     @Override
     public void fitOut(TableWrapper wrapper) {
-        wrapper.setPrimaryKey(PresetColumn.ID_POSTGRES)
+        wrapper.setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("v_name", "名称", null, false)
             .addColumn("v_title", "标题", null, false)
             .addColumn("ids_test", "数组测试", null, false)

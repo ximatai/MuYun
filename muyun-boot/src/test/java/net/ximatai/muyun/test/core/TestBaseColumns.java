@@ -74,7 +74,7 @@ class TestBaseColumnsController extends Scaffold implements ICURDAbility, ITable
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setInherit(BaseBusinessTable.TABLE)
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("v_test"));
     }
 

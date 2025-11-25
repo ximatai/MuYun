@@ -77,7 +77,7 @@ public class NoticeController extends ScaffoldForPlatform implements IModuleRegi
     public void fitOut(TableWrapper wrapper) {
         wrapper
             .setComment("通知公告")
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_title", "标题")
             .addColumn("v_context", "内容")

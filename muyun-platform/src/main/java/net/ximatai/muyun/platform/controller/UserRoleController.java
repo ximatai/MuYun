@@ -24,7 +24,7 @@ public class UserRoleController extends ScaffoldForPlatform implements IChildAbi
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("id_at_auth_user").setNullable(false).setComment("用户id"))
             .addColumn(Column.of("id_at_auth_role").setNullable(false).setComment("角色id"))
             .addIndex(List.of("id_at_auth_user", "id_at_auth_role"), true);

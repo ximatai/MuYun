@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES;
+import static net.ximatai.muyun.core.db.PresetColumn.ID_POSTGRES_UUID_V7;
 import static org.junit.jupiter.api.Assertions.*;
 
 //@Disabled
@@ -43,7 +43,7 @@ public class TableBuilderTest {
     @BeforeAll
     void setUp() {
         TableWrapper wrapper = TableWrapper.withName("test_table_x")
-            .setPrimaryKey(ID_POSTGRES)
+            .setPrimaryKey(ID_POSTGRES_UUID_V7)
             .setSchema("test")
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR).setComment("名称"))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
@@ -71,7 +71,7 @@ public class TableBuilderTest {
         TableWrapper wrapper = TableWrapper.withName("test_table_x2")
             .setSchema("test")
             .setComment("a demo")
-            .setPrimaryKey(ID_POSTGRES)
+            .setPrimaryKey(ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("v_test"))
             .addColumn(Column.of("v_test2"))
             .addColumn(Column.of("b_test").setDefaultValue(true))
@@ -103,7 +103,7 @@ public class TableBuilderTest {
         TableBuilder tableBuilder = new TableBuilder(db);
         TableWrapper wrapper = TableWrapper.withName("test_table_x3")
             .setSchema("test")
-            .setPrimaryKey(ID_POSTGRES)
+            .setPrimaryKey(ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("b_test").setDefaultValue(false));
         tableBuilder.build(wrapper);
 
@@ -145,14 +145,14 @@ public class TableBuilderTest {
     void testInherits() {
         TableWrapper basic = TableWrapper.withName("basic")
             .setSchema("public")
-            .setPrimaryKey(ID_POSTGRES)
+            .setPrimaryKey(ID_POSTGRES_UUID_V7)
             .addColumn("v_name");
 
         new TableBuilder(db).build(basic);
 
         TableWrapper child = TableWrapper.withName("child")
             .setSchema("public")
-            .setPrimaryKey(ID_POSTGRES)
+            .setPrimaryKey(ID_POSTGRES_UUID_V7)
             .addColumn("v_test")
             .setInherits(List.of(basic));
 

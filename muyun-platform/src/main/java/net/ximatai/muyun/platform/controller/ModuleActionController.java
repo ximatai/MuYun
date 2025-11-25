@@ -31,7 +31,7 @@ public class ModuleActionController extends ScaffoldForPlatform implements IChil
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("id_at_app_module", "模块id")
             .addColumn("v_name", "功能名称")
             .addColumn("v_alias", "功能标识")

@@ -129,7 +129,7 @@ class TestFileAbilityController extends BaseScaffold implements IFileAbility {
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("v_name").setType(ColumnType.VARCHAR))
             .addColumn("file_att")
             .addColumn("files_att");

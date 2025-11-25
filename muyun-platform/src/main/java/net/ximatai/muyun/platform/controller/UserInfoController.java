@@ -81,7 +81,7 @@ public class UserInfoController extends ScaffoldForPlatform implements IReferabl
 
     @Override
     public void fitOut(TableWrapper wrapper) {
-        wrapper.setPrimaryKey(PresetColumn.ID_POSTGRES)
+        wrapper.setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .setInherit(BaseBusinessTable.TABLE)
             .addColumn("v_name", "姓名")
             .addColumn("v_work_code", "工号")

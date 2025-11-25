@@ -107,7 +107,7 @@ class TestDataBroadcastAbilityController extends Scaffold implements ICURDAbilit
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn(Column.of("name").setType(ColumnType.VARCHAR))
             .addColumn(Column.of("t_create").setDefaultValue("now()"));
 

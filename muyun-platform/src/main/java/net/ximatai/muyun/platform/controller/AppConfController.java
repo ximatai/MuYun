@@ -39,7 +39,7 @@ public class AppConfController extends Scaffold implements ICreateAbility, ISele
     @Override
     public void fitOut(TableWrapper wrapper) {
         wrapper
-            .setPrimaryKey(PresetColumn.ID_POSTGRES)
+            .setPrimaryKey(PresetColumn.ID_POSTGRES_UUID_V7)
             .addColumn("j_conf");
     }
 
