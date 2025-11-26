@@ -35,9 +35,6 @@ public class ObjectMapperConfig {
 
 // 自定义 Date 序列化器
 class CustomDateSerializer extends StdSerializer<Date> {
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final SimpleDateFormat CALENDAR_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
     public CustomDateSerializer() {
         this(null);
     }
@@ -48,11 +45,13 @@ class CustomDateSerializer extends StdSerializer<Date> {
 
     @Override
     public void serialize(Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        SimpleDateFormat formatter;
         if (value instanceof java.sql.Date) {
-            gen.writeString(CALENDAR_FORMAT.format(value));
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
         } else {
-            gen.writeString(DATE_FORMAT.format(value));
+            formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         }
+        gen.writeString(formatter.format(value));
     }
 }
 
