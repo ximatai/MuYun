@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestDatabaseOperations {
 
     @Inject
-    IDatabaseOperations db;
+    IDatabaseOperations<String> db;
 
     @BeforeAll
     void setUp() {

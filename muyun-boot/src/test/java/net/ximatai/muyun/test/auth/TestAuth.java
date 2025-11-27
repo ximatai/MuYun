@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestAuth {
 
     @Inject
-    IDatabaseOperations db;
+    IDatabaseOperations<String> db;
 
     @Inject
     AuthorizationService authService;

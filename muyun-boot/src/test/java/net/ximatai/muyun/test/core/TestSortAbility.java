@@ -32,7 +32,7 @@ class TestSortAbility {
     private String path = "/TestSortAbility";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestSortAbilityController testController;

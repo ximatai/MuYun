@@ -38,7 +38,7 @@ class TestReference {
     private String path = "/test_reference";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestReferenceController testController;

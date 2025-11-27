@@ -17,9 +17,9 @@ public class DBProducer {
 
     @Produces
     @ApplicationScoped
-    public IDatabaseOperations createDatabaseOperations() {
+    public IDatabaseOperations<String> createDatabaseOperations() {
         JdbiMetaDataLoader loader = new JdbiMetaDataLoader(jdbi);
-        JdbiDatabaseOperations db = new JdbiDatabaseOperations(jdbi, loader);
+        JdbiDatabaseOperations<String> db = new JdbiDatabaseOperations<>(jdbi, loader, String.class, "id");
 
         db.setRowMapper(new MyPgMapMapper());
         return db;

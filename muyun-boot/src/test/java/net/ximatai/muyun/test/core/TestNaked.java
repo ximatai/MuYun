@@ -41,7 +41,7 @@ public class TestNaked {
 class Demo implements IDatabaseAbility, IMetadataAbility, ITableCreateAbility, ISelectAbility {
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @PostConstruct
     void init() {

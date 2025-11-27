@@ -33,7 +33,7 @@ class TestSoftDelete {
     private String path = "/TestSoftDelete";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Test
     @DisplayName("测试软删除功能")

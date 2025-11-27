@@ -1,6 +1,7 @@
 package net.ximatai.muyun.ability;
 
 import io.quarkus.arc.Arc;
+import jakarta.enterprise.util.TypeLiteral;
 import net.ximatai.muyun.database.core.IDatabaseOperations;
 
 /**
@@ -8,8 +9,9 @@ import net.ximatai.muyun.database.core.IDatabaseOperations;
  */
 public interface IDatabaseAbility {
 
-    default IDatabaseOperations getDatabaseOperations() {
-        return Arc.container().instance(IDatabaseOperations.class).get();
+    default IDatabaseOperations<String> getDatabaseOperations() {
+        return Arc.container().instance(new TypeLiteral<IDatabaseOperations<String>>() {
+        }).get();
     }
 
 }

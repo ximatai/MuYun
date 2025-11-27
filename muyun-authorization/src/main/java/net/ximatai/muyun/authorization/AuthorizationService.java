@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 public class AuthorizationService implements IAuthorizationService {
 
     @Inject
-    IDatabaseOperations db;
+    IDatabaseOperations<String> db;
 
     @Inject
     MuYunConfig config;

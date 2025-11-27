@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @QuarkusTestResource(value = PostgresTestResource.class)
 public class TestDataAuth {
     @Inject
-    IDatabaseOperations db;
+    IDatabaseOperations<String> db;
 
     @Inject
     AuthorizationService authService;

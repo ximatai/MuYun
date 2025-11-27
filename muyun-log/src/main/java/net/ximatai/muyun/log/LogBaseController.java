@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class LogBaseController implements IMetadataAbility, ISelectAbility, IQueryAbility {
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Override
     public String getSchemaName() {

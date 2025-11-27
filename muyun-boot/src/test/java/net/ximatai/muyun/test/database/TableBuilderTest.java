@@ -38,7 +38,7 @@ public class TableBuilderTest {
     Jdbi jdbi;
 
     @Inject
-    IDatabaseOperations db;
+    IDatabaseOperations<String> db;
 
     @BeforeAll
     void setUp() {

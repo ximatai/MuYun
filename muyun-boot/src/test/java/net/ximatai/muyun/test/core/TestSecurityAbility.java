@@ -34,7 +34,7 @@ class TestSecurityAbility {
     SMEncryptor smEncryptor;
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestSecurityAbilityController testController;

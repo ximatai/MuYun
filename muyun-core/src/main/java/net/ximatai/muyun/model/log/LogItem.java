@@ -168,7 +168,7 @@ public class LogItem {
         return this;
     }
 
-    public Map<String, ?> toMap() {
+    public Map<String, Object> toMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("v_uri", uri);
         map.put("v_method", method);

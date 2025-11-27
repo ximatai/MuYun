@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestBasicCURD {
 
     @Inject
-    IDatabaseOperations databaseOperations;  // 数据库配置注入
+    IDatabaseOperations<String> databaseOperations;  // 数据库配置注入
 
     @Inject
     TestBasicCURDController testController;  // 注入controller

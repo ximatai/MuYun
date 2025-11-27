@@ -35,7 +35,7 @@ class TestCustomSqlQuery {
     private String path = "/TestCustomSqlQuery";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestCustomSqlQueryController testController;

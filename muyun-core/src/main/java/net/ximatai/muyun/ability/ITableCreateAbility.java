@@ -22,7 +22,7 @@ public interface ITableCreateAbility extends IMetadataAbility {
     }
 
     @Transactional
-    default void create(IDatabaseOperations db) {
+    default void create(IDatabaseOperations<String> db) {
         String mainTable = getMainTable();
         if (!mainTable.toLowerCase().equals(mainTable)) {
             throw new MuYunException("%s表名不合法，不允许使用大写字母".formatted(mainTable));

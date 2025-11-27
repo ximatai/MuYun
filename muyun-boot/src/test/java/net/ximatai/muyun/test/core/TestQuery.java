@@ -34,7 +34,7 @@ class TestQuery {
     private String path = "/test_query";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestQueryController testController;

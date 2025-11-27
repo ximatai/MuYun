@@ -38,7 +38,7 @@ public class RuntimeController implements IRuntimeAbility {
     MuYunConfig config;
 
     @Inject
-    IDatabaseOperations db;
+    IDatabaseOperations<String> db;
 
     @Inject
     IAuthorizationService authorizationService;

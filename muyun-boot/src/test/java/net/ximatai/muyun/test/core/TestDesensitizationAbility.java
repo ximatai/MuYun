@@ -33,7 +33,7 @@ class TestDesensitizationAbility {
     SMEncryptor smEncryptor;
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestDesensitizationAbilityController testController;

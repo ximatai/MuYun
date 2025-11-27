@@ -35,7 +35,7 @@ public class TestRange {
     private String path = "/test_range";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestRangeController controller;

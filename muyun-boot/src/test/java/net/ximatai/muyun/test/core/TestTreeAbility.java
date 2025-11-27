@@ -36,7 +36,7 @@ class TestTreeAbility {
     private String path = "/TestTreeAbility";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestTreeAbilityController testController;

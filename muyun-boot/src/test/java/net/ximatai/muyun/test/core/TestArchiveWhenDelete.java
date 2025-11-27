@@ -33,7 +33,7 @@ class TestArchiveWhenDelete {
     private String path = "/TestArchiveWhenDelete";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestArchiveWhenDeleteController controller;

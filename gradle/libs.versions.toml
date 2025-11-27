@@ -6,7 +6,7 @@ yasson = "3.0.4"
 bcprov = "1.82"
 caffeine = "3.2.3"
 codec = "1.20.0"
-muyun-database = "2.26.5"
+muyun-database = "2.26.6"
 
 [libraries]
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers-core" }

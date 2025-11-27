@@ -39,7 +39,7 @@ class TestMainAndChildren {
     private String childPath = "/testchildren";
 
     @Inject
-    IDatabaseOperations databaseOperations;
+    IDatabaseOperations<String> databaseOperations;
 
     @Inject
     TestMain testMain;
