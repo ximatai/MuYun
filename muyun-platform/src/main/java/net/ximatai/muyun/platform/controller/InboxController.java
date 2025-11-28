@@ -1,9 +1,12 @@
 package net.ximatai.muyun.platform.controller;
 
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import net.ximatai.muyun.core.exception.MuYunException;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.util.List;
 import java.util.Map;
 
 import static net.ximatai.muyun.platform.PlatformConst.BASE_PATH;
@@ -37,5 +40,24 @@ public class InboxController extends MessageController {
     @Override
     public Integer update(String id, Map body) {
         throw new MuYunException("收件箱内容不可修改");
+    }
+
+    /**
+     * 获取当前用户的未读消息数量
+     */
+    @GET
+    @Path("/unread_count")
+    @Operation(summary = "查询当前用户未读消息数量")
+    public Map<String, Object> getUnreadCount() {
+        String userId = getUser().getId();
+
+        List<Map<String, Object>> result = getDB().query(
+            "SELECT COUNT(*) as count FROM %s.app_message_person WHERE id_at_auth_user__to = ? AND b_read = false AND b_delete = false"
+                .formatted(getSchemaName()),
+            userId
+        );
+
+        long count = result.isEmpty() ? 0 : ((Number) result.getFirst().get("count")).longValue();
+        return Map.of("count", count);
     }
 }
