@@ -32,34 +32,35 @@ public abstract class AbstractMigration {
             throw new IllegalStateException("Duplicate migration version found in " + getAlias());
         }
 
+        final int finalVer = migrateSteps.isEmpty() ? 0 : migrateSteps.getLast().version();
         int beforeVersion = 0;
+        int currentVersion = 0;
+        Map<String, Object> view = migrationController.view(getAlias());
+        if (view == null) {
+            migrationController.create(Map.of(
+                "id", getAlias(),
+                "i_version", 0
+            ));
+        } else {
+            currentVersion = (Integer) view.get("i_version");
+            beforeVersion = currentVersion;
+        }
+
+        if (beforeVersion == finalVer) {
+            logger.info("Do not need to migrate {}, current version is {}", getAlias(), beforeVersion);
+            return;
+        }
+
         for (MigrateStep step : migrateSteps) {
-            Map<String, Object> view = migrationController.view(getAlias());
-            Integer currentVersion;
-            if (view == null) {
-                migrationController.create(Map.of(
-                    "id", getAlias(),
-                    "i_version", 0
-                ));
-                currentVersion = 0;
-                beforeVersion = 0;
-            } else {
-                currentVersion = (Integer) view.get("i_version");
-                beforeVersion = currentVersion;
-            }
             if (currentVersion < step.version()) {
                 logger.info("Migrating {} to version {}", getAlias(), step.version());
                 step.action().migrate();
                 migrationController.update(getAlias(), Map.of("i_version", step.version()));
                 logger.info("Migrated {} to version {}", getAlias(), step.version());
+                currentVersion = step.version();
             }
         }
 
-        int finalVer = migrateSteps.isEmpty() ? 0 : migrateSteps.getLast().version();
-        if (beforeVersion == finalVer) {
-            logger.info("Do not need migrate {} , current version is {}", getAlias(), beforeVersion);
-        } else {
-            logger.info("Migrated {} from {} to {}", getAlias(), beforeVersion, finalVer);
-        }
+        logger.info("Migrated {} from {} to {}", getAlias(), beforeVersion, finalVer);
     }
 }
